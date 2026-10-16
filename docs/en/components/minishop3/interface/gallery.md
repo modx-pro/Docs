@@ -5,39 +5,17 @@ title: Product gallery
 
 ![Product gallery tab](/components/minishop3/screenshots/mgr-product-gallery.png)
 
-Product image management system in MiniShop3.
-
-## Overview
-
-The product gallery allows you to:
-
-- Upload images via a modern drag-and-drop interface
-- Automatically generate thumbnails in various sizes
-- Edit images before upload
-- Support modern formats (WebP, AVIF)
-- Sort images by dragging
+A tab on the product card: upload, thumbnails, sorting.
 
 ## Image processing technology
 
-### Intervention Image
-
-MiniShop3 uses [Intervention Image](https://image.intervention.io/) v3 — a modern PHP image processing library.
-
-**Advantages over legacy phpThumb:**
-
-| Feature | phpThumb | Intervention Image |
-| --- | --- | --- |
-| Generation speed | 800ms | **250ms** (3× faster) |
-| Memory usage | 45MB | **28MB** (-38%) |
-| WebP support | Partial | **Full** |
-| AVIF support | No | **Yes** (with Imagick) |
-| Modern algorithms | No | **Yes** |
+MiniShop3 uses the [Intervention Image](https://image.intervention.io/) v3 library instead of the obsolete phpThumb.
 
 **Requirements:**
 
-- PHP 8.1+
-- Imagick (recommended) or GD extension
-- For AVIF: Imagick with libheif required
+- PHP 8.2+
+- Imagick (recommended) or the GD extension
+- For AVIF — Imagick built with libheif (the code only checks that the `imagick` extension is present)
 
 ### Supported formats
 
@@ -46,18 +24,16 @@ MiniShop3 uses [Intervention Image](https://image.intervention.io/) v3 — a mod
 | JPEG | ✅ | ✅ | Primary format |
 | PNG | ✅ | ✅ | With transparency |
 | GIF | ✅ | ✅ | Animation (first frame only) |
-| WebP | ✅ | ✅ | ~30% smaller than JPEG |
-| AVIF | ✅ | ✅ | ~50% smaller (requires Imagick) |
-| HEIC | ✅ | ❌ | Converted on upload |
+| WebP | ✅ | ✅ | Roughly a quarter smaller than JPEG (approximate, depends on the content) |
+| AVIF | ✅ | ✅ | Roughly half the size of JPEG (approximate); writing requires Imagick |
+| HEIC | depends on the build | ❌ | Reading depends on Imagick with libheif — the code does not check it |
 
 ## Management interface
 
-The product gallery is built with Vue 3 + PrimeVue and includes:
-
 - **Image grid** — drag-and-drop sort, search, and pagination
-- **Context menu** — right-click an image for quick actions (edit, delete, set as main)
-- **Toolbar** — Media Source selection, bulk actions (delete, regenerate thumbnails)
-- **Edit dialog** — change file name, description, alt text
+- **Context menu** — right-click: edit, show, set as main, generate thumbnails, delete
+- **Toolbar** — Media Source selection, bulk delete and thumbnail regeneration
+- **Edit dialog** — file name, title (goes into `alt` on the frontend), description
 
 ### Changing Media Source
 
@@ -65,20 +41,28 @@ Selecting a file source in the toolbar switches Media Source without saving the 
 
 ### Main image (preview)
 
-The “Set as main” action in the context menu does **not** change `position` in the gallery. It calls processor `MiniShop3\Processors\Gallery\SetPreview`, which writes `preview_file_id` to `msProductData`. Method `ProductImageService::setProductPreview()` links the file to the product card. Drag-and-drop sort and storefront preview are separate mechanisms.
+The “Set as main” action in the context menu does **not** change `position` in the gallery. It calls processor `MiniShop3\Processors\Gallery\SetPreview`, which writes `preview_file_id` to `msProductData`. Method `ProductImageService::setProductPreview()` links the file to the product card. Drag-and-drop sort and the preview on the frontend are separate mechanisms.
+
+```mermaid
+flowchart TB
+  Upload[Uppy_upload] --> Original[Original_in_MediaSource]
+  Original --> Thumbs[Thumbnails_from_JSON_thumbnails]
+  DnD[Drag_and_drop_position] --> GalleryOrder[Order_in_gallery]
+  SetMain[Set_as_main] --> SetPreview[Gallery_SetPreview]
+  SetPreview --> PreviewId[preview_file_id_msProductData]
+  GalleryOrder --> PositionField[file_position]
+  PreviewId --> FrontPreview[Preview_on_frontend]
+```
 
 ## Image uploader
 
-### Uppy technology
-
-The image uploader is built on [Uppy](https://uppy.io/) — a modern file upload library.
+The uploader is built on the [Uppy](https://uppy.io/) library.
 
 **Features:**
 
 - **Drag & Drop** — drag files into the upload area
 - **Multiple upload** — several files at once
 - **Preview** — thumbnails before upload
-- **Built-in editor** — crop, rotate, scale
 - **Progress** — upload progress display
 - **Validation** — file type and size checks
 
@@ -87,9 +71,9 @@ The image uploader is built on [Uppy](https://uppy.io/) — a modern file upload
 | Parameter | Default | Description |
 | --- | --- | --- |
 | `maxFileSize` | 10 MB | Maximum file size |
-| `maxWidth` | 1920 px | Maximum width |
-| `maxHeight` | 1080 px | Maximum height |
 | `allowedFileTypes` | JPEG, PNG, GIF, WebP, AVIF, HEIC | Allowed types |
+
+Upload has no width or height limits: only file type and size are checked. The Media Source properties `maxUploadWidth` / `maxUploadHeight` do not affect upload.
 
 ### Image editor
 
@@ -152,84 +136,15 @@ Thumbnail configuration is stored in **Media Source**:
 | `quality` | int | Compression quality (0-100) |
 | `mode` | string | Scaling mode |
 | `format` | string | File format |
-| `position` | string | Crop position |
-| `background` | string | Background color (hex) |
 
 ### Scaling modes (mode)
 
-#### cover — Fill with crop
-
-Image is scaled and cropped to fill the size exactly.
-
-```json
-{
-  "mode": "cover",
-  "width": 300,
-  "height": 300,
-  "position": "center"
-}
-```
-
-**Use case:** Product cards, grids, thumbnails — when a fixed size is needed.
-
-#### contain — Fit with background
-
-Image fits entirely; empty space is filled with background.
-
-```json
-{
-  "mode": "contain",
-  "width": 300,
-  "height": 300,
-  "background": "#ffffff"
-}
-```
-
-**Use case:** Products on white background, vendor logos.
-
-#### max — Fit without upscale
-
-Image is reduced to the given size but not enlarged.
-
-```json
-{
-  "mode": "max",
-  "width": 800,
-  "height": 800
-}
-```
-
-**Use case:** Product gallery, zoom — when quality matters.
-
-#### fit — Scale with aspect ratio
-
-Image is scaled preserving aspect ratio; may be smaller than the given size.
-
-```json
-{
-  "mode": "fit",
-  "width": 1200,
-  "height": 800
-}
-```
-
-**Use case:** Responsive galleries with different aspect ratios.
-
-### Crop positions (position)
-
-For `cover` and `crop` modes:
-
-| Position | Description |
-| --- | --- |
-| `center` | Center (default) |
-| `top` | Top |
-| `bottom` | Bottom |
-| `left` | Left |
-| `right` | Right |
-| `top-left` | Top-left corner |
-| `top-right` | Top-right corner |
-| `bottom-left` | Bottom-left corner |
-| `bottom-right` | Bottom-right corner |
+| `mode` | Behavior | When to use |
+| --- | --- | --- |
+| `cover` | Fills the area and crops the rest | One fixed size: product cards, grids, thumbnails |
+| `contain` | Fits inside with proportions kept, via `scale()`. The code draws no background and ignores a `background` parameter | Show the whole object without cropping |
+| `max` | Shrinks to the given size, never enlarges | Product gallery and zoom: keep the quality |
+| `stretch` | Exactly `width`×`height`, proportions not kept (`resize()`) | A strict rectangle, distortion acceptable |
 
 ## Ready configurations
 
@@ -263,11 +178,12 @@ For small shops with limited disk space.
 }
 ```
 
-**Result:** ~256 KB per image, 12-20 files per product.
+**Result (approximate):** ~256 KB per image, 12-20 files per product — depends on the content and the settings.
 
 ### Optimal (recommended)
 
 Balance of quality and performance with support for all browsers.
+
 
 ```json
 {
@@ -373,9 +289,7 @@ Maximum quality for large stores.
 </picture>
 ```
 
-## Additional features
-
-### Watermarks
+## Watermarks
 
 ```json
 {
@@ -397,19 +311,19 @@ Maximum quality for large stores.
 }
 ```
 
-| Key | Value |
+| Key | Description |
 | --- | --- |
-| `enabled` | Turns the watermark on. An empty `path` with the watermark enabled is logged and the thumbnail is built without it |
-| `path` | A path from the site root: both `assets/watermark.png` and `/assets/watermark.png` work. A file outside the site root, or an unreadable one, is rejected and logged |
-| `position` | Intervention names only: `top-left`, `top`, `top-right`, `left`, `center`, `right`, `bottom-left`, `bottom`, `bottom-right` — plus `tile`. Case and spaces do not matter, an empty value means `bottom-right` |
+| `enabled` | Turns the watermark on. If the watermark is on and `path` is empty, the thumbnail is built without it and the reason goes to the log |
+| `path` | A path from the site root, with or without a leading slash. A file outside the site root, or an unreadable one, is rejected and logged |
+| `position` | Intervention names: `top-left`, `top`, `top-right`, `left`, `center`, `right`, `bottom-left`, `bottom`, `bottom-right`, plus `tile` — the watermark fills the whole frame. Case and spaces do not matter, an empty value gives `bottom-right` |
 | `offset_x`, `offset_y` | Margins from the edge in pixels. With `tile` they are the gaps between tiles |
-| `opacity` | 0–100, cast to an integer and clamped to that range; empty or `null` gives 100. Works on both GD and Imagick, including transparent PNG and WebP |
+| `opacity` | 0–100: the value is cast to an integer, anything outside the range is clamped; empty or `null` gives 100. Works on both GD and Imagick, including transparent PNG and WebP |
 
-phpThumb and miniShop2 codes (`BR`, `C`, `*` and the like) are not supported: an unknown value leaves the image without a watermark and logs `Unknown watermark position`. The value `tile` fills the whole frame.
+phpThumb and miniShop2 codes (`BR`, `C`, `*` and the like) are not supported: an unknown value leaves the image without a watermark and logs `Unknown watermark position`.
 
-#### Text watermark
+### Text watermark
 
-The watermark can be text instead of an image — add `type: text` to `watermark`:
+The watermark can be text instead of an image — the `type: text` key:
 
 ```json
 {
@@ -427,54 +341,7 @@ The watermark can be text instead of an image — add `type: text` to `watermark
 }
 ```
 
-`font` is a path to a TTF file from the site root and it is required: with no font or no text the watermark is skipped and the reason is logged. The `position`, `offset_x`, `offset_y` and `opacity` keys behave as they do for an image, except `tile` — the mosaic is image-only.
-
-### Processing effects
-
-| Parameter | Description | Values |
-| --- | --- | --- |
-| `sharpen` | Sharpness | 0-100 |
-| `blur` | Blur | 0-100 |
-| `brightness` | Brightness | -100 to +100 |
-| `contrast` | Contrast | -100 to +100 |
-| `greyscale` | Grayscale | true/false |
-
-**Example:**
-
-```json
-{
-  "thumbnail_bw": {
-    "width": 200,
-    "height": 200,
-    "mode": "cover",
-    "quality": 85,
-    "greyscale": true,
-    "contrast": 10,
-    "sharpen": 15
-  }
-}
-```
-
-### Optimization
-
-```json
-{
-  "optimized": {
-    "width": 600,
-    "height": 400,
-    "quality": 80,
-    "mode": "cover",
-    "format": "jpg",
-    "progressive": true,
-    "strip_exif": true
-  }
-}
-```
-
-| Parameter | Description |
-| --- | --- |
-| `progressive` | Progressive JPEG (faster perceived load) |
-| `strip_exif` | Remove EXIF data (saves 20-50 KB) |
+`font` is required — a path to a TTF file from the site root. With no font or no text the watermark is skipped and the reason goes to the log. The `position`, `offset_x`, `offset_y` and `opacity` keys work as they do for an image, but `tile` is not available for text.
 
 ## Quality recommendations
 
@@ -486,12 +353,12 @@ The watermark can be text instead of an image — add `type: text` to `watermark
 | Zoom (>1000px) | — | 90-92% | Maximum quality |
 
 ::: tip Rule
-WebP can use 3-5% lower quality than JPEG for the same visual result.
+Roughly speaking, WebP can use 3-5% lower quality than JPEG for the same visual result (a measurement, not a guarantee from the component).
 :::
 
 ## File structure
 
-```
+```text
 assets/images/products/
 └── {product_id}/
     ├── photo.jpg           # Original
@@ -506,19 +373,12 @@ assets/images/products/
     └── ...
 ```
 
-## Related pages
-
-- [Utilities: Gallery](utilities/gallery) — bulk thumbnail regeneration
-- [msGallery](../snippets/msgallery) — gallery output snippet on the site
-
 ## Developer API
 
-### ImageService
-
-Service for programmatic image handling:
+Service `ms3_image`:
 
 ```php
-// Get service
+// Get the service
 $imageService = $modx->services->get('ms3_image');
 
 // Generate thumbnail
@@ -540,17 +400,8 @@ $path = $imageService->saveThumbnailToSource(
 
 // Driver info
 $driverInfo = $imageService->getDriverInfo();
-// ['driver' => 'Imagick', 'version' => '7.1.0', 'formats' => ['jpeg', 'png', 'webp', 'avif']]
+// ['name' => 'Imagick'|'GD', 'supports_webp' => true, 'supports_avif' => true|false]
 ```
-
-### Events
-
-Gallery operations fire these events:
-
-- `msOnBeforeFileUpload` — before file upload
-- `msOnFileUpload` — after file upload
-- `msOnBeforeThumbnailGenerate` — before thumbnail generation
-- `msOnThumbnailGenerate` — after thumbnail generation
 
 ## Troubleshooting
 
@@ -567,15 +418,14 @@ Gallery operations fire these events:
 
 **Requirements:**
 
-- Imagick with WebP support, or
-- GD compiled with `--enable-webp`
+- Imagick with WebP support, or GD compiled with `--enable-webp`
 
 **Check:**
 
 ```php
 $imageService = $modx->services->get('ms3_image');
 $info = $imageService->getDriverInfo();
-var_dump(in_array('webp', $info['formats']));
+var_dump($info['supports_webp']);
 ```
 
 ### AVIF not generated
@@ -585,7 +435,7 @@ AVIF requires Imagick with libheif. GD does not support AVIF.
 **Check:**
 
 ```bash
-convert -list format | grep AVIF
+php -r "var_dump(Imagick::queryFormats('AVIF'));"
 ```
 
 ### Images upload but don't display
@@ -595,3 +445,8 @@ convert -list format | grep AVIF
 - Media Source URL in settings
 - File accessibility at the given path
 - `.htaccess` for static files
+
+## Related pages
+
+- [Utilities: Gallery](utilities/gallery) — bulk thumbnail regeneration
+- [msGallery](../snippets/msgallery) — gallery output snippet on the site
