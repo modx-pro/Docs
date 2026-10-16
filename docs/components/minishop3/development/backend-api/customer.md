@@ -124,17 +124,17 @@ $response = $ms3->customer->updateToken($currentToken);
 
 ```mermaid
 flowchart TB
-  cred[credentials] --> loop[Перебор провайдеров]
+  cred[credentials] --> loop[Следующий провайдер]
   loop --> supports{supports}
+  supports -->|нет| loop
   supports -->|да| auth[authenticate провайдера]
-  supports -->|нет подходящего| failed[null]
-  auth -->|нет покупателя| failed
+  auth -->|нет покупателя| loop
+  loop -->|список исчерпан| failed["null, invalid_credentials"]
   failed --> lock["Login: handleFailedLoginByEmail"]
   auth -->|msCustomer| access{активен и не заблокирован}
-  access -->|нет| empty[null]
-  access -->|да| ok[Покупатель]
-  ok --> token[createToken]
-  ok --> session[establishCustomerSession]
+  access -->|нет| denied["null, inactive или blocked:<br/>перебор прерван, счётчик не растёт"]
+  access -->|да| ok["Покупатель: last_login_at,<br/>счётчик попыток сброшен"]
+  ok --> session["establishCustomerSession: новый токен,<br/>сессия, cookie, перенос черновика"]
 ```
 
 ```php

@@ -97,7 +97,7 @@ $ms3->order->initDraft();
 | `setCustomerAddress($hash)` | Применить сохранённый адрес покупателя |
 | `cleanCustomerAddress()` | Очистить адресные поля |
 | `getDeliveryValidationRules($deliveryId)` | Правила валидации доставки |
-| `getDeliveryRequiresFields($deliveryId)` | Обязательные поля доставки |
+| `getDeliveryRequiresFields($deliveryId)` | Обязательные поля доставки. Имя не опечатка: у контроллера и Web API метод называется `Requires`, а у `OrderFieldManager` — `getDeliveryRequiredFields()` |
 | `getDraft()` | Объект черновика `msOrder` |
 | `hasPayment($deliveryId, $paymentId)` | Допустима ли пара «доставка и оплата» |
 | `getUserId()` | ID пользователя MODX для текущего заказа. Если его нет, регистрирует |
@@ -312,18 +312,21 @@ curl -X POST 'https://example.com/api/mgr/orders/42/recalculate-cost' \
 
 ```mermaid
 flowchart TB
-  a[msOnSubmitOrder] --> b[Корзина не пуста]
-  b --> c[Валидация доставки и оплаты]
-  c --> d[msCustomer]
-  d --> e[Пользователь MODX по настройке]
-  e --> f[Расчёт стоимости]
-  f --> g[assertOrderAvailable]
-  g --> h[runWithNextNumber]
-  h --> i[Адрес при save_address]
-  i --> j[msOnCreateOrder]
-  j --> k[Статус ms3_status_new]
-  k --> l[msPayment send]
-  l --> m[redirect если его не было]
+  a["1. msOnSubmitOrder"] --> b["2. Корзина не пуста"]
+  b --> c["3-6. Доставка, оплата, допустимость пары,<br/>обязательные поля доставки"]
+  c --> d["7. msCustomer, необязательно"]
+  d --> e["8. Пользователь MODX по настройке"]
+  e --> f["9. Расчёт стоимости"]
+  f --> g["10. assertOrderAvailable"]
+  g --> h["11. runWithNextNumber: номер выдан"]
+  h --> i["12. Адрес при save_address"]
+  i --> j["13. msOnBeforeCreateOrder и msOnCreateOrder"]
+  j --> k["14. Статус ms3_status_new"]
+  k --> l["15. msPayment send"]
+  l --> m["16. redirect, если его не было"]
+  j -. сбой .-> r["Номер снимается,<br/>если включён складской учёт"]
+  k -. сбой .-> r
+  l -. сбой .-> s["Номер остаётся,<br/>снимается только резерв склада"]
 ```
 
 ```php
@@ -354,7 +357,7 @@ $result = $submitHandler->submit($draft, $orderData, $token);
 11. Номер и суммы пишет `OrderNumberGenerator::runWithNextNumber()` — выдача номера и сохранение идут под блокировкой
 12. Адрес покупателя сохраняется в адресную книгу, только если в `properties` есть `save_address` и у заказа есть `customer_id`
 13. События `msOnBeforeCreateOrder` / `msOnCreateOrder`
-14. Смена статуса на `ms3_status_new` (по умолчанию: 2)
+14. Остаток проверяется ещё раз, и статус меняется на `ms3_status_new` (по умолчанию: 2)
 15. Вызов `$msPayment->send()`
 16. Если в ответе оплаты нет `data.redirect`, обработчик дописывает URL страницы «Спасибо» с uuid заказа
 

@@ -40,7 +40,9 @@ $response->getObject();
 flowchart LR
   php[Сниппет или плагин] -->|runProcessor| proc[Processors]
   mgr[Vue-админка] -->|заказы и покупатели| manager[ApiManager]
+  mgr -->|"connector, action"| proc
   web[Фронтенд и SPA] --> webapi[ApiWeb]
+  webapi -->|вход и регистрация| proc
 ```
 
 | Слой | Когда использовать |

@@ -64,7 +64,8 @@ $options = $optionService->loadOptionsForProduct($productId);
 //     'color.caption' => 'Цвет',
 //     'color.type' => 'comboMultiple',
 //     'color.description' => 'Выберите цвет',
-//     'color.category_name' => 'Свойства товара',
+//     'color.measure_unit' => null,
+//     'color.group_name' => 'Свойства товара',
 //     'size' => ['L', 'XL'],
 //     'size.caption' => 'Размер',
 //     ...
@@ -73,6 +74,8 @@ $options = $optionService->loadOptionsForProduct($productId);
 // Без метаданных (только ключи и значения)
 $options = $optionService->loadOptionsForProduct($productId, false);
 ```
+
+Ключи метаданных загрузчик не перечисляет заранее: он складывает в массив **каждую** колонку выборки под именем `ключ.колонка`. Поэтому доступны все поля `msOption` (`caption`, `description`, `type`, `measure_unit`, `properties` и прочие) плюс `group_name` — имя группы опций, которое приходит join-ом с `msOptionGroup`. Название группы лежит именно в `group_name`, ключа `category_name` не существует.
 
 ### Пакетная загрузка
 
