@@ -666,7 +666,7 @@ $user = $userResolver->createUser([
 | `Address` | msOrderAddress | composite (one) | Адрес заказа |
 | `Products` | msOrderProduct | composite (many) | Позиции заказа |
 | `Log` | msOrderLog | composite (many) | Журнал изменений |
-| `Customer` | msCustomer | aggregate | Клиент |
+| `msCustomer` | msCustomer | aggregate | Покупатель. Алиас именно такой, `getOne('Customer')` вернёт `null` |
 | `Status` | msOrderStatus | aggregate | Статус |
 | `Delivery` | msDelivery | aggregate | Способ доставки |
 | `Payment` | msPayment | aggregate | Способ оплаты |

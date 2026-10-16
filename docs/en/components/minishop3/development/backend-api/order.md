@@ -665,7 +665,7 @@ The `ms3_order_user_groups` setting defines the groups for new users. The format
 | `Address` | msOrderAddress | composite (one) | Order address |
 | `Products` | msOrderProduct | composite (many) | Order products |
 | `Log` | msOrderLog | composite (many) | Change log |
-| `Customer` | msCustomer | aggregate | Customer |
+| `msCustomer` | msCustomer | aggregate | Customer. That is the actual alias — `getOne('Customer')` returns `null` |
 | `Status` | msOrderStatus | aggregate | Status |
 | `Delivery` | msDelivery | aggregate | Delivery method |
 | `Payment` | msPayment | aggregate | Payment method |
