@@ -35,7 +35,7 @@ Telegram-бот не может инициировать диалог. Поку�
 
 #### Шаг 1: Добавить поле для Chat ID
 
-Создайте поле `telegram_chat_id` для класса `msCustomer` в утилите [«Дополнительные поля»](/components/minishop3/interface/utilities/extra-fields).
+Создайте поле `telegram_chat_id` для класса `msCustomer` в утилите [«Свои поля»](/components/minishop3/interface/utilities/extra-fields).
 
 ::: warning Колонка, добавленная руками, в шаблоны не попадёт
 `ALTER TABLE modx_ms3_customers ADD COLUMN telegram_chat_id …` выглядит коротким путём, но с 1.14.2-beta1 данные покупателя идут в чанки кабинета и в плейсхолдеры письма через `CustomerPublicDto`. К [публичному набору](#recipient) он добавляет только ключи активных дополнительных полей, поэтому колонки, созданной в обход утилиты, в `{$customer}` не окажется. Утилита создаёт колонку сама.
@@ -263,6 +263,14 @@ switch ($modx->event->name) {
 | `recipientType` | `string` | Тип получателя: `customer` или `manager` |
 | `results` | `array<string,bool>` | Результат отправки по каналам, например `['email' => true, 'telegram' => false]` |
 
+::: warning Событие приходит не всегда
+`msOnAfterSendNotification` вызывается только тогда, когда дошло до перебора каналов. Если отправку отменил `msOnBeforeSendNotification` или список каналов оказался пуст, `NotificationManager::send()` выходит раньше, и события не будет вовсе. Для аналитики это разные случаи: «события не было» и «все каналы вернули `false`».
+:::
+
+::: warning `false` в `results` — не обязательно неудачная отправка
+Это же значение попадает в массив, когда канал не зарегистрирован или его `isAvailable()` вернул `false`: попытки отправки в таких случаях не было. Отличить одно от другого внутри события нельзя — если нужна точная причина, проверяйте регистрацию и доступность канала сами.
+:::
+
 ### Пример использования
 
 ```php
@@ -319,6 +327,10 @@ switch ($modx->event->name) {
 ### Регистрация своего канала
 
 `NotificationManager::registerChannel()` принимает объект `ChannelInterface`, не callback.
+
+::: tip Для SMS есть готовая основа
+В поставке лежит абстрактный `MiniShop3\Notifications\Channels\SmsChannel`: он уже отдаёт имя канала `sms`, достаёт телефон из получателя, покупателя или адреса и нормализует его. По умолчанию канал не зарегистрирован — наследуйте его и реализуйте один метод `sendSms(string $phone, SmsMessage $message): bool` под своего оператора, вместо того чтобы писать канал с нуля. Из коробки зарегистрированы только `EmailChannel` и `TelegramChannel`.
+:::
 
 ```php
 <?php

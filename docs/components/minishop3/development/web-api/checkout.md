@@ -27,7 +27,7 @@ Webhooks провайдеров (подпись handler’а, не customer toke
 | `POST` | `/delivery/webhook/{delivery_id}` | Handler доставки + при `ms3_shipment_enabled=0` → 404 |
 | `POST` | `/payment/webhook/{payment_method_id}` | Нужен `PaymentWebhookHandlerInterface`, иначе 400 |
 
-Оплата: JSON body → `verifyWebhook` → `parseWebhook` → `PaymentLifecycleService::applyWebhook`. Ответ success: `attempt_id`, `status`, `order_id`. Классические `webhook.php` / `callback.php` у платёжных extras остаются валидны, если класс не реализует интерфейс Web API.
+Оплата: JSON body → `verifyWebhook` → `parseWebhook` → `PaymentLifecycleService::applyWebhook`. Ответ success: `attempt_id`, `status`, `order_id`. Классические `webhook.php` / `callback.php` у платёжных дополнений остаются валидны, если класс не реализует интерфейс Web API.
 
 ## Черновик заказа
 
@@ -52,9 +52,9 @@ Webhooks провайдеров (подпись handler’а, не customer toke
 
 В черновике типичны `delivery_id`, `payment_id`, `address_*` и контактные поля. Точный набор зависит от правил доставки.
 
-### Какие поля витрина менять не вправе
+### Какие поля фронтенд менять не вправе {#protected-fields}
 
-С 1.14.2-beta1 служебные колонки черновика закрыты для записи с витрины. До этого `/order/add` принимал любой ключ с одноимённой колонкой: посетитель с токеном своей корзины мог подставить чужой `customer_id` или обнулить `cost`.
+С 1.14.2-beta1 служебные колонки черновика закрыты для записи с фронтенда. До этого `/order/add` принимал любой ключ с одноимённой колонкой: посетитель с токеном своей корзины мог подставить чужой `customer_id` или обнулить `cost`.
 
 | Объект | Закрытые колонки |
 | --- | --- |
@@ -80,7 +80,7 @@ Webhooks провайдеров (подпись handler’а, не customer toke
 
 После успешного `submit` ответ может содержать redirect (страница «Спасибо» / оплата). Читайте `data` и заголовки/поля redirect в `Response` контроллера.
 
-Онлайн-оплату даёт платёжный extra. Базовый способ без class только фиксирует выбор.
+Онлайн-оплату даёт платёжное дополнение. Базовый способ без class только фиксирует выбор.
 
 ## Типичный порядок
 
@@ -90,4 +90,4 @@ Webhooks провайдеров (подпись handler’а, не customer toke
 4. `GET /order/cost`
 5. `POST /order/submit`
 
-Fenom-витрина может собирать форму через `msOrder`. Headless использует списки выше. См. [Примеры](examples).
+Фронтенд на Fenom может собирать форму через `msOrder`. Headless использует списки выше. См. [Примеры](examples).

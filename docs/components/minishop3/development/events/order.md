@@ -342,10 +342,10 @@ switch ($modx->event->name) {
 
 | Параметр | Тип | Описание |
 | --- | --- | --- |
-| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Обработчик сабмита заказа |
+| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Обработчик оформления заказа |
 | `draft` | `msOrder` | Черновик заказа на момент отправки |
 | `orderData` | `array` | Снимок текущих полей заказа (включая адресные) |
-| `data` | `array` | Дополнительные данные, переданные в сабмит-запрос |
+| `data` | `array` | Дополнительные данные, переданные в запрос оформления |
 
 ### Прерывание операции
 
@@ -404,7 +404,7 @@ switch ($modx->event->name) {
 
 Вызывается **перед** финальным созданием заказа (присвоением статуса «Новый»). Три сценария:
 
-1. Сабмит на витрине — `OrderSubmitHandler` (в params **нет** `origin` / `from_manager`; есть `handler`, `customFields`)
+1. Оформление на фронтенде — `OrderSubmitHandler` (в params **нет** `origin` / `from_manager`; есть `handler`, `customFields`)
 2. Финализация в админке — `OrderFinalizeService` (`origin=manager`, `from_manager=true`, `service`)
 3. Программное создание — `ProgrammaticOrderService` → `finalize` (`origin=integration`, `from_manager=false`, `service`)
 
@@ -413,11 +413,11 @@ switch ($modx->event->name) {
 | Параметр | Тип | Описание |
 | --- | --- | --- |
 | `msOrder` | `msOrder` | Объект заказа (всегда) |
-| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Только сабмит с витрины |
+| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Только оформление с фронтенда |
 | `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Только finalize-пути (менеджер / integration) |
 | `origin` | `string` | Только finalize-пути: `manager` \| `integration` (константы `OrderOrigin`) |
-| `from_manager` | `bool` | Присутствует на обоих finalize-путях (`true` при `origin=manager`, `false` при `origin=integration`); отсутствует только на витринном сабмите |
-| `customFields` | `array` | Только витрина — поля из `properties._validated` |
+| `from_manager` | `bool` | Присутствует на обоих finalize-путях (`true` при `origin=manager`, `false` при `origin=integration`); отсутствует только при оформлении с фронтенда |
+| `customFields` | `array` | Только фронтенд — поля из `properties._validated` |
 
 ::: tip Различение сценариев
 
@@ -484,18 +484,18 @@ switch ($modx->event->name) {
 
 ## msOnCreateOrder
 
-Вызывается **после** успешного создания заказа. Парный к `msOnBeforeCreateOrder` — те же три сценария и тот же набор параметров (на витрине без `origin`).
+Вызывается **после** успешного создания заказа. Парный к `msOnBeforeCreateOrder` — те же три сценария и тот же набор параметров (на фронтенде без `origin`).
 
 ### Параметры
 
 | Параметр | Тип | Описание |
 | --- | --- | --- |
 | `msOrder` | `msOrder` | Созданный заказ (всегда) |
-| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Только витрина |
+| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Только фронтенд |
 | `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Менеджер или integration |
 | `origin` | `string` | Только finalize-пути |
-| `from_manager` | `bool` | Присутствует на обоих finalize-путях (`true`/`false`), отсутствует только на витрине |
-| `customFields` | `array` | Только витрина |
+| `from_manager` | `bool` | Присутствует на обоих finalize-путях (`true`/`false`), отсутствует только на фронтенде |
+| `customFields` | `array` | Только фронтенд |
 
 ### Пример использования
 

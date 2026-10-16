@@ -247,6 +247,14 @@ Fired **after** the notification has been processed — once for all the selecte
 | `recipientType` | `string` | `customer` or `manager` |
 | `results` | `array<string,bool>` | The send result per channel, e.g. `['email' => true, 'telegram' => false]` |
 
+::: warning The event does not always fire
+`msOnAfterSendNotification` only fires once the channel loop has been reached. If `msOnBeforeSendNotification` cancelled the send, or the channel list came out empty, `NotificationManager::send()` returns earlier and no event happens at all. For analytics these are different cases: "no event" and "every channel returned `false`".
+:::
+
+::: warning `false` in `results` is not necessarily a failed send
+The same value lands in the array when a channel is not registered or its `isAvailable()` returned `false` — no send was attempted in those cases. The event cannot tell them apart, so check channel registration and availability yourself if you need the exact reason.
+:::
+
 ### Example
 
 ```php
@@ -303,6 +311,10 @@ Fired when registering notification channels. Lets you add your own channels.
 ### Registering your own channel
 
 `NotificationManager::registerChannel()` takes a `ChannelInterface` object, not a callback.
+
+::: tip SMS already has a base class
+The package ships an abstract `MiniShop3\Notifications\Channels\SmsChannel`: it already reports the channel name `sms`, pulls the phone number from the recipient, the customer or the address, and normalises it. The channel is not registered by default — extend it and implement the single `sendSms(string $phone, SmsMessage $message): bool` method for your provider instead of writing a channel from scratch. Only `EmailChannel` and `TelegramChannel` are registered out of the box.
+:::
 
 ```php
 <?php

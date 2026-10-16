@@ -45,9 +45,9 @@ description: "Формат ошибок MiniShop3: code, errors, error_code, HTT
 
 ## Закрытое поле черновика
 
-С 1.14.2-beta1 служебные колонки черновика заказа недоступны для записи с витрины. Попытка отдаёт лексикон `ms3_err_field_protected`: `POST /order/add` — 400 с `business_rule`, `POST /order/set` — 422 с `validation_failed` и ключом в `errors`. `POST /order/remove` на таком ключе отвечает 404 `ms3_err_field_nf`, а `POST /order/submit` отбрасывает его молча.
+С 1.14.2-beta1 служебные колонки черновика заказа недоступны для записи с фронтенда. Попытка отдаёт лексикон `ms3_err_field_protected`: `POST /order/add` — 400 с `business_rule`, `POST /order/set` — 422 с `validation_failed` и ключом в `errors`. `POST /order/remove` на таком ключе отвечает 404 `ms3_err_field_nf`, а `POST /order/submit` отбрасывает его молча.
 
-Перечень закрытых колонок и способ расширить его — в [оформлении заказа](checkout#какие-поля-витрина-менять-не-вправе).
+Перечень закрытых колонок и способ расширить его — в [оформлении заказа](checkout#protected-fields).
 
 В TypeScript описывайте ответ как union: success | error с `error_code` и необязательным `errors`.
 
