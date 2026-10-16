@@ -50,6 +50,27 @@ description: "Публичный product и category API MiniShop3 для headle
 | `GET` | `/category/list` | Список |
 | `GET` | `/category/tree` | Дерево |
 
+Параметры запроса для `get` и resolve: `context`, `include_children`, `include_hidden`, `include_content`, `include_seo` (по умолчанию **1**). У `list` и `tree` тот же `include_seo`, но по умолчанию **0** — SEO-блок приходит только если его запросить.
+
+При `include_children=1` дети в `children` тоже получают `seo`, если `include_seo` не выключен.
+
+## SEO-блок
+
+Приходит в `seo`, когда `include_seo` включён. Собирается так: базовые значения из полей ресурса, затем canonical, затем переопределения из карты TV, затем событие `msOnGetPublicSeo`.
+
+| Ключ | Откуда |
+| --- | --- |
+| `title`, `description` | Поля ресурса, при наличии — переопределения из карты TV |
+| `canonical` | Через `makeUrl` MODX. При выключенных дружественных адресах получается вид `index.php?id=N`, поэтому ссылка остаётся рабочей |
+| `robots` | `index,follow` либо `noindex,nofollow` |
+| `og.*` | Из карты TV: `og.title`, `og.description`, `og.image`, `og.type` |
+
+Карта TV задаётся системной настройкой `ms3_public_seo_tv_map` — это JSON, где ключу SEO сопоставляется имя TV. Допустимые ключи: `title`, `description`, `canonical`, `robots`, `og.title`, `og.description`, `og.image`, `og.type`. Некорректный JSON игнорируется.
+
+### Поле `searchable`
+
+В ответе товара и категории есть `searchable` (признак «Доступен для поиска» у ресурса MODX). Когда он выключен, `robots` в SEO-блоке становится `noindex,nofollow` — это единственное, на что он влияет: из выдачи API запись не исчезает.
+
 ## ACL групп ресурсов
 
 Настройка `ms3_web_catalog_respect_resource_groups`: если включена, публичный каталог скрывает товары и категории из групп ресурсов MODX, закрытых ACL для контекста запроса.

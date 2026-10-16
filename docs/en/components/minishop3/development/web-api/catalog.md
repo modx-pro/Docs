@@ -50,6 +50,27 @@ Product fields are returned according to an allowlist in `ProductCatalogService`
 | `GET` | `/category/list` | List |
 | `GET` | `/category/tree` | Tree |
 
+Query parameters for `get` and resolve: `context`, `include_children`, `include_hidden`, `include_content`, `include_seo` (default **1**). `list` and `tree` take the same `include_seo`, but its default there is **0** — the SEO block only arrives when you ask for it.
+
+With `include_children=1` the entries in `children` also get `seo`, unless `include_seo` is switched off.
+
+## The SEO block
+
+It arrives in `seo` when `include_seo` is on, and is assembled in this order: base values from the resource fields, then canonical, then overrides from the TV map, then the `msOnGetPublicSeo` event.
+
+| Key | Source |
+| --- | --- |
+| `title`, `description` | Resource fields, overridden by the TV map where present |
+| `canonical` | Built with MODX `makeUrl`. With friendly URLs off it comes out as `index.php?id=N`, so the link keeps working |
+| `robots` | Either `index,follow` or `noindex,nofollow` |
+| `og.*` | From the TV map: `og.title`, `og.description`, `og.image`, `og.type` |
+
+The TV map is the `ms3_public_seo_tv_map` system setting: JSON mapping an SEO key to a TV name. Allowed keys are `title`, `description`, `canonical`, `robots`, `og.title`, `og.description`, `og.image`, `og.type`. Invalid JSON is ignored.
+
+### The `searchable` field
+
+Product and category responses carry `searchable` (the "Searchable" flag of the MODX resource). When it is off, `robots` in the SEO block becomes `noindex,nofollow` — that is all it affects: the entry itself stays in the API output.
+
 ## Resource group ACL
 
 Setting `ms3_web_catalog_respect_resource_groups`: when enabled, the public catalog hides products and categories that sit in MODX resource groups closed by ACL for the request context.
