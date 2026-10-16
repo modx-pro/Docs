@@ -194,11 +194,13 @@ curl -c jar.txt -b jar.txt -sS -X POST \
   "${API}?route=/api/v1/order/set" \
   -H 'Content-Type: application/json' \
   -d '{
-    "delivery_id": 1,
-    "payment_id": 1,
-    "email": "user@example.com",
-    "first_name": "Ivan",
-    "phone": "+79001234567"
+    "fields": {
+      "delivery_id": 1,
+      "payment_id": 1,
+      "email": "user@example.com",
+      "first_name": "Ivan",
+      "phone": "+79001234567"
+    }
   }'
 
 curl -c jar.txt -b jar.txt -sS \
@@ -231,10 +233,12 @@ async function checkout(api: string, token: string) {
     method: 'POST',
     headers,
     body: {
-      delivery_id: 1,
-      payment_id: 1,
-      email: 'user@example.com',
-      first_name: 'Ivan',
+      fields: {
+        delivery_id: 1,
+        payment_id: 1,
+        email: 'user@example.com',
+        first_name: 'Ivan',
+      },
     },
   })
 

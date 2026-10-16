@@ -58,12 +58,18 @@ MiniShop3 использует встроенный DI-контейнер MODX (
 
 ### Регистрация сервисов
 
-Все сервисы регистрируются через `ServiceRegistry` при инициализации компонента:
+Регистрация идёт в два шага:
+
+1. `bootstrap.php` компонента добавляет в контейнер единственный ключ — `ms3`.
+2. Конструктор `MiniShop3` вызывает `ServiceRegistry::register()`, и тогда появляются остальные ключи.
+
+Второй шаг происходит сам: плагин компонента на событии `OnMODXInit` получает `ms3` в начале каждого запроса. Поэтому к моменту работы сниппета, плагина или контроллера ключи уже на месте, и получать `ms3` ради них не нужно.
 
 ```php
-// bootstrap.php
-$serviceRegistry = new \MiniShop3\ServiceRegistry($modx);
-$serviceRegistry->register();
+// bootstrap.php — только точка входа
+$modx->services->add('ms3', function ($c) use ($modx) {
+    return new MiniShop3\MiniShop3($modx);
+});
 ```
 
 ### Получение сервисов
@@ -147,7 +153,7 @@ $customer = $ms3->customer->getFields();
 | `ms3_product_image` | `Services\Product\ProductImageService` | Изображения, превью (`preview_file_id`) |
 | `ms3_product_catalog` | `Services\Product\ProductCatalogService` | Каталог Web API (список разрешённых полей) |
 | `ms3_product_import` | `Services\Product\Import\ProductImportService` | Импорт CSV |
-| `ms3_product_category_tree` | `Services\Product\ProductCategoryTreeService` | Дерево категорий товара в менеджере |
+| `ms3_product_category_tree` | `Services\Product\ProductCategoryTreeService` | Дерево категорий товара в админке |
 | `ms3_product_link_service` | `Services\Product\ProductLinkService` | Связи товара (mgr Vue-вкладка) |
 | `ms3_product_facets` | `Services\Product\ProductFacetService` | Фасеты каталога |
 | `ms3_product_gallery_public` | `Services\Product\ProductGalleryPublicService` | Публичная галерея (get/list/images) |
@@ -168,7 +174,7 @@ $imageService = $modx->services->get('ms3_product_image');
 | `ms3_rate_limiter` | `Services\Customer\RateLimiter` | Ограничение частоты запросов |
 | `ms3_customer_address_manager` | `Services\Customer\CustomerAddressManager` | Управление адресами покупателя |
 | `ms3_customer_field_manager` | `Services\Customer\CustomerFieldManager` | Поля профиля покупателя |
-| `ms3_customer_order` | `Services\Customer\CustomerOrderService` | Заказы покупателя на витрине |
+| `ms3_customer_order` | `Services\Customer\CustomerOrderService` | Заказы покупателя на фронтенде |
 | `ms3_customer_order_resolver` | `Services\Customer\CustomerOrderResolver` | Привязка заказа к покупателю при оформлении |
 | `ms3_customer_duplicate_checker` | `Services\CustomerDuplicateChecker` | Проверка дубликатов |
 | `ms3_customer_factory` | `Services\CustomerFactory` | Фабрика покупателей |
@@ -206,10 +212,10 @@ $authManager->registerProvider(new SmsAuthProvider($modx));
 | `ms3_order_log` | `Services\Order\OrderLogService` | Логирование изменений заказа |
 | `ms3_order_status` | `Services\Order\OrderStatusService` | Смена статуса + уведомления |
 | `ms3_order_finalize` | `Services\Order\OrderFinalizeService` | Финализация заказа (валидация, создание клиента) |
-| `ms3_programmatic_order` | `Services\Order\ProgrammaticOrderService` | Создание заказа без витринной сессии для компонентов и cron (`idempotency_key`) |
+| `ms3_programmatic_order` | `Services\Order\ProgrammaticOrderService` | Создание заказа без сессии на фронтенде — для компонентов и cron (`idempotency_key`) |
 | `ms3_order_number_generator` | `Services\Order\OrderNumberGenerator` | Нумерация заказов |
 | `ms3_manager_order_cost_recalculator` | `Services\Order\ManagerOrderCostRecalculator` | Пересчёт в карточке заказа (mgr) |
-| `ms3_manager_order_list` | `Services\Order\ManagerOrderListService` | Список заказов в менеджере |
+| `ms3_manager_order_list` | `Services\Order\ManagerOrderListService` | Список заказов в админке |
 | `ms3_manager_order_mutation` | `Services\Order\ManagerOrderMutationService` | Мутации заказа в mgr |
 | `ms3_manager_order_presenter` | `Services\Order\ManagerOrderPresenter` | Презентация карточки заказа |
 | `ms3_manager_order_products` | `Services\Order\ManagerOrderProductsService` | Позиции заказа в mgr |
@@ -297,7 +303,7 @@ OrderFieldManager    — поля заказа (Order-specific)
 | `ms3_domain_events` | `Services\Events\DomainEventBridge` | Мост событий домена |
 | `ms3_webhook_dispatcher` | `Services\Events\NullWebhookDispatcher` | Диспетчер outbound webhooks (по умолчанию null-реализация) |
 
-### Extra fields и поля моделей
+### Свои поля и поля моделей
 
 | Ключ | Класс | Назначение |
 | --- | --- | --- |
@@ -313,7 +319,7 @@ OrderFieldManager    — поля заказа (Order-specific)
 | --- | --- | --- |
 | `ms3_category_service` | `Services\Category\CategoryService` | Работа с категориями |
 | `ms3_category_catalog` | `Services\Category\CategoryCatalogService` | Публичный каталог категорий (Web API) |
-| `ms3_category_tree` | `Services\Category\CategoryTreeService` | Дерево для Web API / менеджера |
+| `ms3_category_tree` | `Services\Category\CategoryTreeService` | Дерево для Web API / админки |
 | `ms3_category_option_service` | `Services\Category\CategoryOptionService` | Опции категорий |
 | `ms3_category_product_scope` | `Services\Category\CategoryProductScopeService` | Доп. категории товара для msProducts |
 | `ms3_category_products_list` | `Services\Category\CategoryProductsListService` | Грид товаров категории |
@@ -686,10 +692,14 @@ $authManager->registerProvider(new TelegramAuthProvider($modx));
 
 ## Системные настройки
 
-| Настройка | По умолчанию | Описание |
+Пути к конфигурации сервисов зашиты в код, и в поставке этих настроек нет — создавать их нужно самому, и только если пути надо изменить:
+
+| Настройка | Путь, если настройки нет | Описание |
 | --- | --- | --- |
 | `ms3_services_config` | `core/config/ms3.services.php` | Путь к основному конфигу |
 | `ms3_services_addons_dir` | `core/config/ms3.services.d/` | Директория конфигов компонентов |
+
+Отсутствие файла или каталога по этим путям ошибкой не считается: реестр просто идёт дальше.
 
 ## Устранение проблем
 

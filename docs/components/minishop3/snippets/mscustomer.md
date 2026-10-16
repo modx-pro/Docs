@@ -328,7 +328,7 @@ tpl.msCustomer.base          — базовый layout (sidebar + content)
 
 | Плейсхолдер | Описание |
 | --- | --- |
-| `{$customer}` | Данные покупателя (массив) |
+| `{$customer}` | Публичные поля покупателя и его свои поля (массив). Пароля, токена и служебных счётчиков в нём нет |
 | `{$customer.id}` | ID покупателя |
 | `{$customer.email}` | Email |
 | `{$customer.first_name}` | Имя |

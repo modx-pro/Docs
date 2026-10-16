@@ -23,29 +23,23 @@ Uses standard MODX modMail. Templates are configured via chunks.
 Sends messages via Telegram Bot API. Requires settings:
 
 - `ms3_telegram_bot_token` — bot token
-- `ms3_telegram_manager_chat_id` — recipient Chat ID
+- `ms3_telegram_manager` — recipient Chat ID
 
 ::: warning Telegram limitation
-A Telegram bot cannot start a conversation with a user. The user must send the first message to the bot. So Telegram notifications only work for managers who have set their Chat ID in advance.
+A Telegram bot cannot start a conversation. The customer must send the first message to the bot. So Telegram notifications only work for managers who have set their Chat ID in advance.
 :::
 
-### Sending Telegram notifications to customers
+### Telegram notifications for customers
 
-To send Telegram notifications to customers you need to:
-
-1. Get customer consent for notifications
-2. Link the customer’s Telegram account to their store profile
-3. Store the customer’s Chat ID
+You need the customer's consent for notifications and their Chat ID stored in the store profile.
 
 #### Step 1: Add a field for Chat ID
 
-Add a field to msCustomer to store Chat ID:
+Create a `telegram_chat_id` field for the `msCustomer` class in the [Extra fields](/en/components/minishop3/interface/utilities/extra-fields) utility.
 
-```sql
-ALTER TABLE modx_ms3_customers ADD COLUMN telegram_chat_id VARCHAR(50) NULL;
-```
-
-Or use Extra Fields in MiniShop3 settings.
+::: warning A column added by hand will not reach templates
+`ALTER TABLE modx_ms3_customers ADD COLUMN telegram_chat_id …` looks like a shortcut, but since 1.14.2-beta1 customer data reaches account chunks and email placeholders through `CustomerPublicDto`. It adds only the keys of active extra fields to the [public set](#recipient), so a column created outside the utility never shows up in `{$customer}`. The utility creates the column itself.
+:::
 
 #### Step 2: Create a bot with Deep Linking
 
@@ -152,45 +146,47 @@ Instead of your own bot, you can use third-party services (SendPulse, Unisender,
 
 ## msOnBeforeSendNotification
 
-Fired **before** sending a notification. Lets you modify data or cancel sending.
+Fired **before** sending a notification. Lets you modify the recipient, replace the channel list or cancel sending.
 
 ### Parameters
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `notification` | `Notification` | Notification instance |
-| `recipient` | `array` (by reference) | Recipient payload |
+| `notification` | `Notification` | The notification object (an abstract class; the concrete subclass is e.g. `StatusChangedNotification`) |
+| `recipient` | `array` (by reference) | Recipient data — see the payload below |
 | `recipientType` | `string` | `customer` or `manager` |
 | `channels` | `string[]` (by reference) | Channel names, e.g. `['email', 'telegram']` |
 
-### The `recipient` payload
+### The `recipient` payload {#recipient}
 
-For a **customer** recipient (since MiniShop3 1.12.0) `recipient` is assembled in `OrderStatusService::getCustomerRecipient()` with the following source priority:
+For a `customer` recipient (since 1.12.0) `recipient` is assembled by `OrderStatusService::getCustomerRecipient()`. Source priority:
 
 1. **`msOrderAddress`** of the order — the email and phone from the checkout form of **this particular** order.
-2. **`msCustomer`** — a fallback for email and phone, plus the source of `telegram_chat_id` and of the `customer` payload.
-3. **`modUserProfile`** — the last fallback for email, phone and telegram when the first two are empty.
+2. **`msCustomer`** — a fallback for email and phone, and the source of `telegram_chat_id` and of the `customer` array.
+3. **`modUserProfile`** — the last fallback for email, phone and Telegram when the first two are empty.
 
-The resolved `email` and `phone` are also mirrored into `recipient['customer']['email']` and `['phone']`, for plugins that read the contact from there.
+The resulting `email` and `phone` are also copied into `recipient['customer']['email']` and `['phone']` — for plugins that read the contact from there.
 
 | Key | Type | Source | Description |
 | --- | --- | --- | --- |
 | `type` | `string` | — | `customer` or `manager` (duplicates `recipientType`) |
-| `email` | `string \| null` | address → customer → profile | Resolved recipient email |
-| `phone` | `string \| null` | address → customer → profile | Resolved phone number |
+| `email` | `string \| null` | address → customer → profile | Resulting recipient email |
+| `phone` | `string \| null` | address → customer → profile | Resulting phone number |
 | `telegram_chat_id` | `string \| null` | `customer.extended` → profile | Telegram chat ID, when set |
-| `address` | `array` | `msOrderAddress->toArray()` | The full order address (customer recipient only) |
-| `customer` | `array` | `msCustomer->toArray()` | The customer object (customer recipient only); its `email` and `phone` are already synced with the resolved values |
+| `address` | `array` | `msOrderAddress->toArray()` | The full order address (`customer` recipient only) |
+| `customer` | `array` | `CustomerPublicDto::fromCustomer()` | The customer's public fields (`customer` recipient only); its `email` and `phone` already match the resulting values |
+
+::: warning No customer secrets in `customer`
+Since 1.14.2-beta1 the array is built by `CustomerPublicDto`, not by a raw `toArray()`. It leaves out `password`, `token`, `user_id`, `customer_group_id`, login attempt counters and the IP the privacy policy was accepted from. The public set is `id`, `first_name`, `last_name`, `email`, `phone`, `email_verified_at`, `is_active`, `created_at`, `updated_at`, `last_login_at`, `orders_count`, `total_spent`, `last_order_at`, `privacy_accepted_at` plus the customer's active extra fields.
+:::
 
 ::: tip Why the address and the customer are kept apart
-Before 1.12.0 notifications went to the contacts stored on `msCustomer`, which could differ from the contacts of the order at hand — if two orders were placed in one session with different emails, both notifications went to the `msCustomer` email.
+Before 1.12.0 notifications went to the contacts stored on `msCustomer`, which could differ from the contacts of the order at hand: if two orders were placed in one session with different emails, both notifications went to the `msCustomer` email.
 :::
 
 ### Aborting the operation
 
-If the plugin returns non-empty output, sending is cancelled:
-
-Use `return false` or `return 'cancel'`. The event uses `EventGate::invokeRaw()`.
+Sending is cancelled by `return false`, `return 'cancel'` or `$modx->event->output(...)`. The event goes through `EventGate::invokeRaw()`, not `Utils::invokeEvent`.
 
 ```php
 <?php
@@ -217,6 +213,8 @@ switch ($modx->event->name) {
 
 ### Modifying via returnedValues
 
+You can also change `$recipient` and `$channels` by reference, but the explicit contract is the keys in `returnedValues`:
+
 ```php
 <?php
 switch ($modx->event->name) {
@@ -226,6 +224,7 @@ switch ($modx->event->name) {
             $scriptProperties['recipient'],
             ['email' => 'ops@example.com']
         );
+        // the list replaces the channel set entirely
         $values['channels'] = ['email'];
         break;
 }
@@ -235,17 +234,24 @@ switch ($modx->event->name) {
 
 ## msOnAfterSendNotification
 
-Fired **after** sending a notification (success or failure).
+Fired **after** the notification has been processed — once for all the selected channels together.
 
 ### Parameters
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `notification` | `NotificationInterface` | Notification object |
-| `channel` | `ChannelInterface` | Channel |
-| `recipient` | `array` | Recipient data |
-| `success` | `bool` | Send result |
-| `error` | `string \| null` | Error message (if any) |
+| `notification` | `Notification` | The notification object (an abstract class; the concrete subclass is e.g. `StatusChangedNotification`) |
+| `recipient` | `array` | Recipient data — see [the `recipient` payload](#recipient) above |
+| `recipientType` | `string` | `customer` or `manager` |
+| `results` | `array<string,bool>` | The send result per channel, e.g. `['email' => true, 'telegram' => false]` |
+
+::: warning The event does not always fire
+`msOnAfterSendNotification` only fires once the channel loop has been reached. If `msOnBeforeSendNotification` cancelled the send, or the channel list came out empty, `NotificationManager::send()` returns earlier and no event happens at all. For analytics these are different cases: "no event" and "every channel returned `false`".
+:::
+
+::: warning `false` in `results` is not necessarily a failed send
+The same value lands in the array when a channel is not registered or its `isAvailable()` returned `false` — no send was attempted in those cases. The event cannot tell them apart, so check channel registration and availability yourself if you need the exact reason.
+:::
 
 ### Example
 
@@ -254,25 +260,18 @@ Fired **after** sending a notification (success or failure).
 switch ($modx->event->name) {
     case 'msOnAfterSendNotification':
         $notification = $scriptProperties['notification'];
-        $channel = $scriptProperties['channel'];
         $recipient = $scriptProperties['recipient'];
-        $success = $scriptProperties['success'];
-        $error = $scriptProperties['error'];
+        $results = $scriptProperties['results']; // ['email' => true, 'telegram' => false]
 
-        // Log
-        if ($success) {
-            $modx->log(modX::LOG_LEVEL_INFO, sprintf(
-                '[Notification] Sent: %s → %s (%s)',
-                get_class($notification),
-                $recipient['email'] ?? $recipient['phone'] ?? 'unknown',
-                get_class($channel)
-            ));
-        } else {
-            $modx->log(modX::LOG_LEVEL_ERROR, sprintf(
-                '[Notification] Error: %s → %s: %s',
-                get_class($notification),
-                $recipient['email'] ?? $recipient['phone'] ?? 'unknown',
-                $error
+        foreach ($results as $channelName => $success) {
+            $contact = $recipient['email'] ?? $recipient['phone'] ?? 'unknown';
+            $level = $success ? modX::LOG_LEVEL_INFO : modX::LOG_LEVEL_ERROR;
+            $modx->log($level, sprintf(
+                '[Notification] %s → %s (%s): %s',
+                $notification::class,
+                $contact,
+                $channelName,
+                $success ? 'ok' : 'fail'
             ));
         }
         break;
@@ -285,21 +284,11 @@ switch ($modx->event->name) {
 <?php
 switch ($modx->event->name) {
     case 'msOnAfterSendNotification':
-        $success = $scriptProperties['success'];
+        $results = $scriptProperties['results'];
 
-        if (!$success) {
-            $notification = $scriptProperties['notification'];
-            $recipient = $scriptProperties['recipient'];
-
-            // Add to retry queue
-            $queue = $modx->newObject('msNotificationQueue', [
-                'notification_class' => get_class($notification),
-                'notification_data' => json_encode($notification->getContext()),
-                'recipient' => json_encode($recipient),
-                'retry_count' => 0,
-                'scheduled_at' => date('Y-m-d H:i:s', strtotime('+5 minutes')),
-            ]);
-            $queue->save();
+        if (in_array(false, $results, true)) {
+            // Your own retry queue — the package has no msNotificationQueue
+            $modx->log(modX::LOG_LEVEL_WARN, '[Notification] Partial failure: ' . json_encode($results));
         }
         break;
 }
@@ -309,7 +298,7 @@ switch ($modx->event->name) {
 
 ## msOnRegisterNotificationChannels
 
-Fired when registering notification channels. Lets you add custom channels.
+Fired when registering notification channels. Lets you add your own channels.
 
 ### Parameters
 
@@ -317,7 +306,13 @@ Fired when registering notification channels. Lets you add custom channels.
 | --- | --- | --- |
 | `manager` | `NotificationManager` | Notification manager |
 
-### Registering a custom channel
+### Registering your own channel
+
+`NotificationManager::registerChannel()` takes a `ChannelInterface` object, not a callback.
+
+::: tip SMS already has a base class
+The package ships an abstract `MiniShop3\Notifications\Channels\SmsChannel`: it already reports the channel name `sms`, pulls the phone number from the recipient, the customer or the address, and normalises it. The channel is not registered by default — extend it and implement the single `sendSms(string $phone, SmsMessage $message): bool` method for your provider instead of writing a channel from scratch. Only `EmailChannel` and `TelegramChannel` are registered out of the box.
+:::
 
 ```php
 <?php
@@ -326,61 +321,50 @@ switch ($modx->event->name) {
         /** @var \MiniShop3\Notifications\NotificationManager $manager */
         $manager = $scriptProperties['manager'];
 
-        // Register Telegram channel
-        $manager->registerChannel('telegram', function($modx) {
-            return new MyTelegramChannel($modx);
-        });
-
-        // Register Push channel
-        $manager->registerChannel('push', function($modx) {
-            return new MyPushChannel($modx);
-        });
+        $manager->registerChannel(new MyComponent\Notifications\SmsChannel($modx));
         break;
 }
 ```
 
-### Custom channel example
+### Example of your own channel
 
 ```php
 <?php
 namespace MyComponent\Notifications;
 
-use MiniShop3\Notifications\Channels\ChannelInterface;
-use MiniShop3\Notifications\NotificationInterface;
+use MiniShop3\Model\msOrder;
+use MiniShop3\Notifications\ChannelInterface;
+use MiniShop3\Notifications\Notification;
 use MODX\Revolution\modX;
 
-class TelegramChannel implements ChannelInterface
+class SmsChannel implements ChannelInterface
 {
-    protected modX $modx;
-    protected string $botToken;
+    public function __construct(protected modX $modx) {}
 
-    public function __construct(modX $modx)
+    public function getName(): string
     {
-        $this->modx = $modx;
-        $this->botToken = $modx->getOption('my_telegram_bot_token');
+        return 'sms';
     }
 
-    public function send(NotificationInterface $notification, array $recipient): bool
+    public function isAvailable(): bool
     {
-        $chatId = $recipient['telegram_id'] ?? null;
-        if (!$chatId) return false;
+        return (bool) $this->modx->getOption('my_sms_api_key');
+    }
 
-        $message = $notification->toTelegram($recipient);
-        $url = "https://api.telegram.org/bot{$this->botToken}/sendMessage";
-        $data = [
-            'chat_id' => $chatId,
-            'text' => $message,
-            'parse_mode' => 'HTML',
-        ];
+    public function getRequirements(): array
+    {
+        return ['my_sms_api_key'];
+    }
 
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $result = curl_exec($ch);
-        curl_close($ch);
+    public function send(Notification $notification, array $recipient, msOrder $order): bool
+    {
+        $phone = $recipient['phone'] ?? null;
+        if (!$phone) {
+            return false;
+        }
 
-        return json_decode($result, true)['ok'] ?? false;
+        // Call your SMS API
+        return true;
     }
 }
 ```
@@ -402,40 +386,31 @@ switch ($modx->event->name) {
 
     case 'msOnBeforeSendNotification':
         $notification = $scriptProperties['notification'];
+
+        // Remember the start time to measure the duration
         $modx->eventData['notification_start'] = microtime(true);
         break;
 
     case 'msOnAfterSendNotification':
         $notification = $scriptProperties['notification'];
-        $channel = $scriptProperties['channel'];
         $recipient = $scriptProperties['recipient'];
-        $success = $scriptProperties['success'];
-        $error = $scriptProperties['error'];
+        $results = $scriptProperties['results'];
 
         $startTime = $modx->eventData['notification_start'] ?? microtime(true);
         $duration = round((microtime(true) - $startTime) * 1000, 2);
 
-        $stats = $modx->newObject('msNotificationStats', [
-            'notification_type' => get_class($notification),
-            'channel' => get_class($channel),
-            'recipient_type' => $recipient['type'] ?? 'unknown',
-            'success' => $success ? 1 : 0,
-            'error' => $error,
-            'duration_ms' => $duration,
-            'createdon' => date('Y-m-d H:i:s'),
-        ]);
-        $stats->save();
-
-        if (!$success) {
-            $errorCount = $modx->getCount('msNotificationStats', [
-                'success' => 0,
-                'createdon:>=' => date('Y-m-d H:i:s', strtotime('-1 hour')),
-            ]);
-            if ($errorCount > 10) {
-                $modx->log(modX::LOG_LEVEL_ERROR,
-                    "[Notifications] ALERT: {$errorCount} errors in the last hour!"
-                );
-            }
+        foreach ($results as $channelName => $success) {
+            $modx->log(
+                $success ? modX::LOG_LEVEL_INFO : modX::LOG_LEVEL_ERROR,
+                sprintf(
+                    '[Notification] %s → %s (%s): %s in %sms',
+                    $notification::class,
+                    $recipient['email'] ?? $recipient['phone'] ?? 'unknown',
+                    $channelName,
+                    $success ? 'ok' : 'fail',
+                    $duration
+                )
+            );
         }
         break;
 }

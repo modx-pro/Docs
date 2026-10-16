@@ -33,7 +33,7 @@ MiniShop3 использует библиотеку [Intervention Image](https:/
 - **Сетка изображений** — drag-and-drop сортировка, поиск и пагинация
 - **Контекстное меню** — правый клик: редактировать, показать, сделать главным, сгенерировать миниатюры, удалить
 - **Панель инструментов** — выбор Media Source, массовое удаление и перегенерация миниатюр
-- **Диалог редактирования** — имя файла, название (уходит в `alt` на витрине), описание
+- **Диалог редактирования** — имя файла, название (уходит в `alt` на фронтенде), описание
 
 ### Смена Media Source
 
@@ -41,7 +41,7 @@ MiniShop3 использует библиотеку [Intervention Image](https:/
 
 ### Главное изображение (превью)
 
-Действие «Сделать главным» в контекстном меню **не меняет** `position` в галерее. Вызывается процессор `MiniShop3\Processors\Gallery\SetPreview`, который пишет `preview_file_id` в `msProductData`. Метод `ProductImageService::setProductPreview()` связывает файл с карточкой товара. Сортировка drag-and-drop и превью для витрины — разные механизмы.
+Действие «Сделать главным» в контекстном меню **не меняет** `position` в галерее. Вызывается процессор `MiniShop3\Processors\Gallery\SetPreview`, который пишет `preview_file_id` в `msProductData`. Метод `ProductImageService::setProductPreview()` связывает файл с карточкой товара. Сортировка drag-and-drop и превью для фронтенда — разные механизмы.
 
 ```mermaid
 flowchart TB
@@ -51,7 +51,7 @@ flowchart TB
   SetMain[Сделать_главным] --> SetPreview[Gallery_SetPreview]
   SetPreview --> PreviewId[preview_file_id_msProductData]
   GalleryOrder --> PositionField[position_файла]
-  PreviewId --> VitrinaPreview[Превью_на_витрине]
+  PreviewId --> FrontPreview[Превью_на_фронтенде]
 ```
 
 ## Загрузчик изображений
@@ -309,6 +309,38 @@ flowchart TB
   }
 }
 ```
+
+| Ключ | Описание |
+| --- | --- |
+| `enabled` | Включает знак. Если знак включён, а `path` пуст — миниатюра создаётся без знака, причина уходит в журнал |
+| `path` | Путь от корня сайта, с ведущим слэшем или без. Файл вне корня сайта или нечитаемый отклоняется с записью в журнал |
+| `position` | Названия Intervention: `top-left`, `top`, `top-right`, `left`, `center`, `right`, `bottom-left`, `bottom`, `bottom-right`, а также `tile` — знак заполняет весь кадр. Регистр и пробелы не важны, пустое значение даёт `bottom-right` |
+| `offset_x`, `offset_y` | Отступы от края в пикселях. При `tile` — расстояние между плитками |
+| `opacity` | 0–100: значение приводится к целому, выходящее за границы обрезается; пусто или `null` даёт 100. Работает и на GD, и на Imagick, в том числе на прозрачных PNG и WebP |
+
+Коды phpThumb и miniShop2 (`BR`, `C`, `*` и прочие) не поддерживаются: при неизвестном значении знак не ставится, а в журнал уходит запись `Unknown watermark position`.
+
+### Текстовый знак
+
+Вместо картинки знак может быть текстом — ключ `type: text`:
+
+```json
+{
+  "watermark": {
+    "enabled": true,
+    "type": "text",
+    "text": "© Мой магазин",
+    "font": "assets/fonts/roboto.ttf",
+    "size": 24,
+    "color": "#ffffff",
+    "angle": 0,
+    "position": "bottom-right",
+    "opacity": 60
+  }
+}
+```
+
+`font` обязателен — путь к файлу TTF от корня сайта. Без шрифта или без текста знак не ставится, причина уходит в журнал. Ключи `position`, `offset_x`, `offset_y` и `opacity` работают как у картинки, но `tile` для текста недоступен.
 
 ## Рекомендации по качеству
 

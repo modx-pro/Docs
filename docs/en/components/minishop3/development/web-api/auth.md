@@ -34,7 +34,7 @@ The cookie inherits MODX session parameters: `session_cookie_domain`, `session_c
 
 On routes with `TokenMiddleware` (cart, order, part of customer) the server creates a guest token and sets a cookie whenever no valid token arrives. The catalog routes and `/health` do not use the middleware at all.
 
-`GET /customer/token/get` and `POST /customer/logout` do use the middleware, but their paths are listed in `publicRoutes` — the `optional` mode: without a token the server neither mints a guest one nor returns 401.
+`GET /customer/token/get` and `POST /customer/logout` do use the middleware, but their paths are listed in `publicRoutes` — the `optional` mode. Without a token the server neither mints a guest token nor returns 401.
 
 ## GET /customer/token/get
 
@@ -53,10 +53,10 @@ Public. Returns the current or a new token and sets an httpOnly cookie.
 
 `lifetime` is milliseconds until expiry: the seconds from `ms3_customer_token_ttl` multiplied by 1000. The internal generator has an `expires` field, but `data` does not return it.
 
-::: warning Two different TTL values ship in the package
-The transport package creates `ms3_customer_token_ttl` with the value **86400** (24 hours) — that is what applies on an installed site, and a fresh token reports a `lifetime` of about `86400000`.
+The default for `ms3_customer_token_ttl` is **86400** seconds (24 hours). The transport package creates the setting with that value, and the code falls back to it when the setting is missing from the database.
 
-When the setting is missing, the code falls back to **604800** (7 days). Go by that figure and you overestimate the token lifetime sevenfold. Check the actual value of the setting in your own project ([issue #848](https://github.com/modx-pro/MiniShop3/issues/848)).
+::: warning Sites upgraded from versions before 1.14.2-beta1
+On sites with no such setting in the database, the code before 1.14.2-beta1 fell back to **604800** (7 days). Once you upgrade, customers will have to sign in again after a day rather than a week. Set `ms3_customer_token_ttl` explicitly if you need the week-long lifetime.
 :::
 
 ## Login / register

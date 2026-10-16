@@ -5,7 +5,7 @@ description: "Обзор Web API MiniShop3: api.php, формат ответа �
 
 # Web API
 
-Точка входа витрины и headless:
+Точка входа фронтенда и headless:
 
 ```text
 /assets/components/minishop3/api.php?route=/api/v1/{path}

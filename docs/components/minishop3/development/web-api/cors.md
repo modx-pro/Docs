@@ -36,6 +36,6 @@ OPTIONS preflight отвечает 200 без mint токена.
 
 ## Nuxt на другом origin
 
-1. В `ms3_cors_allowed_origins` перечислите origin фронта (или BFF).
+1. В `ms3_cors_allowed_origins` перечислите origin фронтенда (или BFF).
 2. Запросы с `credentials: 'include'` или Bearer без cookie.
 3. Не используйте `*` вместе с cookie-сессией.

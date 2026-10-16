@@ -1,11 +1,11 @@
 ---
 title: Cookbook полей модели
-description: Секции, sort_order, visible list и связь с page-fields в Vue-менеджере
+description: Секции, sort_order, visible list и связь с page-fields в админке
 ---
 
 # Cookbook полей модели
 
-Поля модели настраивают **отображение** колонок, которые уже есть в БД. Новую колонку создают через [extra fields](/components/minishop3/manager/extra-fields/cookbook).
+Поля модели настраивают **отображение** колонок, которые уже есть в БД. Новую колонку создают через [Свои поля](/components/minishop3/manager/extra-fields/cookbook).
 
 Справочник: [Поля модели](/components/minishop3/interface/utilities/model-fields).
 
@@ -17,7 +17,7 @@ description: Секции, sort_order, visible list и связь с page-fields
 
 ## Модели
 
-| model (короткое имя) | Форма в менеджере |
+| model (короткое имя) | Форма в админке |
 | --- | --- |
 | `msOrder` | Карточка заказа |
 | `msOrderAddress` | Адрес в заказе |
@@ -70,7 +70,7 @@ description: Секции, sort_order, visible list и связь с page-fields
 | Model fields | `ms3_model_fields` | `/api/mgr/model-fields/*` | Модели MS3 (заказ, vendor, …) |
 | Page fields | `ms3_product_fields` | `/api/mgr/config/page-fields/product_data` | Только вкладка «Данные» товара |
 
-Extra field на `msProductData` создаёт колонку **и** строку в `ms3_product_fields`. Дальше раскладку вкладки правят в [Поля товара](/components/minishop3/interface/utilities/product-fields), не дублируя запись в model fields.
+Своё поле на `msProductData` создаёт колонку **и** строку в `ms3_product_fields`. Дальше раскладку вкладки правят в [Поля товара](/components/minishop3/interface/utilities/product-fields), не дублируя запись в полях модели.
 
 ## API appendix
 
@@ -107,7 +107,7 @@ GET /api/mgr/model-fields/combo-options/{model}/{field_name}
 | --- | --- |
 | 403 | Политики MS3, см. [issue #613](https://github.com/modx-pro/MiniShop3/issues/613) |
 | Поле не на форме | `visible = false` или поле не в `visible`-ответе |
-| Путаница с extra fields | Extra fields создают колонку, model fields меняют только отображение. См. [#214](https://github.com/modx-pro/MiniShop3/issues/214) |
+| Путаница со своими полями | Свои поля создают колонку, поля модели меняют только отображение. См. [#214](https://github.com/modx-pro/MiniShop3/issues/214) |
 | Изменения не видны | Обновите страницу карточки |
 
-См. [Cookbook менеджера](/components/minishop3/manager/).
+См. [Cookbook админки](/components/minishop3/manager/).

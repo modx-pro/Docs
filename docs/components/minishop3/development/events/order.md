@@ -17,6 +17,10 @@ title: События заказа
 
 Вызывается **перед** добавлением или изменением поля заказа.
 
+::: warning Для служебных полей событие не придёт
+С 1.14.2-beta1 `OrderFieldManager` отклоняет служебные колонки черновика до вызова события. Плагин, который перехватывал запись в `customer_id`, `status_id`, `cost` или `properties`, больше не сработает. Проверка одна для всех четырёх событий поля: `msOnBeforeAddToOrder`, `msOnAddToOrder`, `msOnBeforeRemoveFromOrder`, `msOnRemoveFromOrder`. Перечень закрытых колонок — в разделе [какие поля фронтенд менять не вправе](/components/minishop3/development/web-api/checkout#protected-fields).
+:::
+
 ### Параметры
 
 | Параметр | Тип | Описание |
@@ -176,7 +180,7 @@ switch ($modx->event->name) {
 
 ## msOnErrorValidateOrderValue
 
-Вызывается при **ошибке** валидации поля. Позволяет изменить сообщение об ошибке или отменить ошибку.
+Вызывается при **ошибке** валидации поля.
 
 ### Параметры
 
@@ -197,7 +201,7 @@ switch ($modx->event->name) {
 
         $values = &$modx->event->returnedValues;
 
-        // Кастомизация сообщений об ошибках
+        // Свои сообщения об ошибках
         if ($key === 'email') {
             $values['error'] = [$key => 'Введите корректный email для получения чека'];
         }
@@ -336,16 +340,16 @@ switch ($modx->event->name) {
 
 ## msOnSubmitOrder
 
-Вызывается при **отправке** заказа (нажатие кнопки «Оформить»). Позволяет проверить данные и добавить дополнительную информацию.
+Вызывается при **отправке** заказа (нажатие кнопки «Оформить»).
 
 ### Параметры
 
 | Параметр | Тип | Описание |
 | --- | --- | --- |
-| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Обработчик сабмита заказа |
+| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Обработчик оформления заказа |
 | `draft` | `msOrder` | Черновик заказа на момент отправки |
 | `orderData` | `array` | Снимок текущих полей заказа (включая адресные) |
-| `data` | `array` | Дополнительные данные, переданные в сабмит-запрос |
+| `data` | `array` | Дополнительные данные, переданные в запрос оформления |
 
 ### Прерывание операции
 
@@ -404,7 +408,7 @@ switch ($modx->event->name) {
 
 Вызывается **перед** финальным созданием заказа (присвоением статуса «Новый»). Три сценария:
 
-1. Сабмит на витрине — `OrderSubmitHandler` (в params **нет** `origin` / `from_manager`; есть `handler`, `customFields`)
+1. Оформление на фронтенде — `OrderSubmitHandler` (в params **нет** `origin` / `from_manager`; есть `handler`, `customFields`)
 2. Финализация в админке — `OrderFinalizeService` (`origin=manager`, `from_manager=true`, `service`)
 3. Программное создание — `ProgrammaticOrderService` → `finalize` (`origin=integration`, `from_manager=false`, `service`)
 
@@ -413,11 +417,11 @@ switch ($modx->event->name) {
 | Параметр | Тип | Описание |
 | --- | --- | --- |
 | `msOrder` | `msOrder` | Объект заказа (всегда) |
-| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Только сабмит с витрины |
-| `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Только finalize-пути (менеджер / integration) |
+| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Только оформление с фронтенда |
+| `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Только finalize-пути (админка / integration) |
 | `origin` | `string` | Только finalize-пути: `manager` \| `integration` (константы `OrderOrigin`) |
-| `from_manager` | `bool` | Присутствует на обоих finalize-путях (`true` при `origin=manager`, `false` при `origin=integration`); отсутствует только на витринном сабмите |
-| `customFields` | `array` | Только витрина — поля из `properties._validated` |
+| `from_manager` | `bool` | Присутствует на обоих finalize-путях (`true` при `origin=manager`, `false` при `origin=integration`); отсутствует только при оформлении с фронтенда |
+| `customFields` | `array` | Только фронтенд — поля из `properties._validated` |
 
 ::: tip Различение сценариев
 
@@ -426,11 +430,11 @@ $origin = $scriptProperties['origin'] ?? null;
 $fromManager = !empty($scriptProperties['from_manager']);
 
 if ($fromManager) {
-    // карточка заказа в mgr
+    // карточка заказа в админке
 } elseif ($origin === \MiniShop3\Services\Order\OrderOrigin::INTEGRATION) {
     // ProgrammaticOrderService / cron
 } elseif (!empty($scriptProperties['handler'])) {
-    // витрина
+    // фронтенд
 }
 ```
 
@@ -484,20 +488,23 @@ switch ($modx->event->name) {
 
 ## msOnCreateOrder
 
-Вызывается **после** успешного создания заказа. Парный к `msOnBeforeCreateOrder` — те же три сценария и тот же набор параметров (на витрине без `origin`).
+Вызывается **после** успешного создания заказа. Парный к `msOnBeforeCreateOrder` — те же три сценария и тот же набор параметров (на фронтенде без `origin`).
 
 ### Параметры
 
 | Параметр | Тип | Описание |
 | --- | --- | --- |
 | `msOrder` | `msOrder` | Созданный заказ (всегда) |
-| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Только витрина |
-| `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Менеджер или integration |
+| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Только фронтенд |
+| `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Админка или integration |
 | `origin` | `string` | Только finalize-пути |
-| `from_manager` | `bool` | Присутствует на обоих finalize-путях (`true`/`false`), отсутствует только на витрине |
-| `customFields` | `array` | Только витрина |
+| `from_manager` | `bool` | Присутствует на обоих finalize-путях (`true`/`false`), отсутствует только на фронтенде |
+| `customFields` | `array` | Только фронтенд |
 
 ### Пример использования
+
+<!-- EXAMPLE? 38 строк и четыре независимых сценария в одном примере: лог, CRM, остатки, бонусы -->
+<!-- FACT? пример уменьшает `stock` вручную, хотя в MS3 есть сервис остатков -->
 
 ```php
 <?php
@@ -539,6 +546,8 @@ switch ($modx->event->name) {
 ```
 
 ### Интеграция с внешними сервисами
+
+<!-- EXAMPLE? 35 строк; сборка тела запроса к службе доставки, а не механизм события -->
 
 ```php
 <?php
