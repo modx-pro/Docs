@@ -143,11 +143,15 @@ if ($customer) {
 }
 ```
 
-`AuthManager` checks `is_active` and `is_blocked` before authenticating.
+`AuthManager` checks `is_active` and `is_blocked` — not before the providers run, but right after one of them has found the customer. A blocked or inactive customer never gets a token, even with the correct password.
 
 ### Pluggable providers
 
-`PasswordAuthProvider` (email + password) is registered by default. You can add your own:
+`PasswordAuthProvider` (email + password) is registered by default. `authenticate()` goes through the providers and asks each one whether it handles the given credentials (`supports()`).
+
+A matching provider does not end the search. If its own `authenticate()` returns `null` — a wrong password, say — the next provider gets its turn. Only one case stops the loop early: the provider found the customer, but that customer is inactive or blocked. Then `authenticate()` returns `null` immediately, and `getLastAuthFailure()` says why: `inactive`, `blocked`, `invalid_credentials`, or `none` after a success. The difference matters, because `blocked` and `inactive` must not increment the failed-attempt counter — the `Api\Customer\Login` processor relies on that.
+
+You can add your own provider:
 
 ```php
 use MiniShop3\Controllers\Auth\AuthProviderInterface;
@@ -179,8 +183,6 @@ class TelegramAuthProvider implements AuthProviderInterface
 // Register provider
 $authManager->registerProvider(new TelegramAuthProvider($modx));
 ```
-
-When `authenticate()` is called, `AuthManager` iterates the providers and uses the first whose `supports()` returns `true`.
 
 ### Token management
 
@@ -261,8 +263,21 @@ if ($result['success']) {
 
 ```php
 $result = $registerService->validatePassword('weak');
-// ['valid' => false, 'message' => 'Password must be at least 8 characters']
+// ['valid' => false, 'message' => ms3_customer_err_password_too_short lexicon entry]
 ```
+
+::: warning The message keeps the `{length}` placeholder
+The code does pass the value to the lexicon (`['length' => $minLength]`), but the shipped `ms3_customer_err_password_too_short` entry uses a `{length}` placeholder, and `modLexicon` substitutes only `[[+length]]`. So `message` comes back with the placeholder intact: "Password must be at least {length} characters long".
+
+Until that is fixed, read the length from the setting and substitute it yourself:
+
+```php
+$minLength = (int) $modx->getOption('ms3_password_min_length', null, 8);
+$message = str_replace('{length}', (string) $minLength, $result['message']);
+```
+
+Or redefine the entry in your own language pack with `[[+length]]` — then the substitution works.
+:::
 
 | Setting | Default | Description |
 | --- | --- | --- |
@@ -498,7 +513,7 @@ If `ms3_customer_sync_create_moduser` = true, also creates `modUser` + `modUserP
 ::: warning A twin setting sits in the manager
 The same area of the manager holds `ms3_customer_api_token_ttl`, and its value is the same — but no line of code reads it. The working setting is `ms3_customer_token_ttl` from the table above ([issue #797](https://github.com/modx-pro/MiniShop3/issues/797)).
 
-The working setting has a quirk of its own: when the row is missing from the database, the code uses `604800` (7 days), while the transport package creates it with `86400` (24 hours) — [issue #848](https://github.com/modx-pro/MiniShop3/issues/848).
+The default is `86400` (24 hours): the transport package creates the setting with that value, and the code falls back to the same number when the row is missing from the database.
 :::
 
 ## Events

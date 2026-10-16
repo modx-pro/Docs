@@ -154,11 +154,19 @@ Option definition is stored in table `ms3_options`.
 
 ### Key validation
 
-Option key must:
+The model map holds two validation rules for `key`. The first is a regex — `/^(?!\W+)(?!\d)[a-zA-Z0-9\x2d-\x2f\x7f-\xff-_]+(?!\s)$/` — which means a key must:
 
-- Contain only Latin letters, digits, hyphen, underscore
-- Not start with a digit or space
-- Not match reserved field names (`id`, `type`, `price`, `weight`, `image`, `published`, and other `modResource` fields)
+- Not start with a digit, and not start with a non-word character
+- Not end with a space
+- Otherwise consist of Latin letters, digits, `-`, `.`, `/`, `_` or bytes in the `\x7f-\xff` range — so a Cyrillic key passes too
+
+The second rule rejects reserved field names: `id`, `type`, `price`, `weight`, `image`, `published` and the other `modResource` and product columns.
+
+::: warning Neither rule is enforced on save
+Both live in the map as validation rules, so they run only when code calls `$option->validate()`. Neither `POST /api/mgr/options` nor a plain `$option->save()` calls it: the controller only trims the key, replaces a dot with `_` and checks uniqueness.
+
+So a key like `1c_code` or a reserved `color` passes through the Manager API without a complaint. In templates a reserved key is then shadowed by the product's own field ([#841](https://github.com/modx-pro/MiniShop3/issues/841)).
+:::
 
 ### Programmatic usage
 
@@ -412,14 +420,20 @@ Controller `MiniShop3\Controllers\Api\Manager\CategoryOptionsController`, permis
 ::: info Since v1.10.0-beta1
 :::
 
-Each type class in `Controllers/Options/Types/` returns a declarative description of its field instead of a JS string for ExtJS:
+Every type class in `Controllers/Options/Types/` can describe its field in two ways: as a JS string for the old ExtJS manager (`getField()`) or as an array (`getSchema()`):
 
 ```php
 abstract class msOptionType
 {
-    abstract public function getField($field);        // legacy — returns JS string for ExtJS
-    public function getSchema(array $field): array;   // new — array for Vue renderer
+    abstract public function getField($field);
+    public function getSchema(array $field): array;
 }
 ```
 
-`OptionLoaderService::getFieldsForProduct()` adds `schema` to every `option_fields` row, next to the legacy `ext_field`. The Vue product card reads `schema`; `ext_field` stays for backward compatibility, but core no longer uses it.
+::: warning Neither description reaches the Vue manager
+`getSchema()` is declared on `msOptionType` and mirrored on the `msOption` model, but nothing in the package calls it: `OptionLoaderService::getFieldsForProduct()` does not put the schema into `option_fields`, and no Vue component asks for it.
+
+`getField()` is still called — `CategoryOptionService` and `AdminOptionFields` fill `ext_field` from it, through the `msOption::getManagerField()` wrapper — but that value is a leftover of the ExtJS manager, and the Vue code does not read `ext_field` either.
+
+Both paths are therefore dead ends today: the Vue product card builds the field from `type` alone, and overriding `getSchema()` in your own option type changes nothing.
+:::
