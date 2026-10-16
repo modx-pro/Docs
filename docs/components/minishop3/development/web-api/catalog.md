@@ -33,7 +33,7 @@ description: "Публичный product и category API MiniShop3 для headle
 | `limit`, `offset` / `page` | Пагинация |
 | `sort`, `dir`, `query`, `context` | Сортировка и поиск |
 | `include_options`, `include_content`, `include_images` | Вложения (`include_images` по умолчанию 0, не более 10 файлов на товар) |
-| `include_seo` | SEO-блок; у `list` по умолчанию **0**, у `get` — `1` |
+| `include_seo` | [SEO-блок](#seo); у `list` по умолчанию **0**, у `get` — `1` |
 
 Ответ `list`: `{ items, total, limit, offset }` внутри `data`.
 
@@ -50,26 +50,32 @@ description: "Публичный product и category API MiniShop3 для headle
 | `GET` | `/category/list` | Список |
 | `GET` | `/category/tree` | Дерево |
 
-Параметры запроса для `get` и resolve: `context`, `include_children`, `include_hidden`, `include_content`, `include_seo` (по умолчанию **1**). У `list` и `tree` тот же `include_seo`, но по умолчанию **0** — SEO-блок приходит только если его запросить.
+Параметры запроса для `get` и resolve: `context`, `include_children`, `include_hidden`, `include_content`, `include_seo` (по умолчанию **1**). У `list` и `tree` `include_seo` по умолчанию **0**.
 
 При `include_children=1` дети в `children` тоже получают `seo`, если `include_seo` не выключен.
 
-## SEO-блок
+## SEO-блок {#seo}
 
-Приходит в `seo`, когда `include_seo` включён. Собирается так: базовые значения из полей ресурса, затем canonical, затем переопределения из карты TV, затем событие `msOnGetPublicSeo`.
+Приходит в `seo`, когда `include_seo` включён. Порядок сборки:
+
+1. Базовые значения из полей ресурса.
+2. `canonical`.
+3. Переопределения из карты TV.
+4. Событие `msOnGetPublicSeo`.
 
 | Ключ | Откуда |
 | --- | --- |
 | `title`, `description` | Поля ресурса, при наличии — переопределения из карты TV |
 | `canonical` | Через `makeUrl` MODX. При выключенных дружественных адресах получается вид `index.php?id=N`, поэтому ссылка остаётся рабочей |
-| `robots` | `index,follow` либо `noindex,nofollow` |
+| `robots` | `index,follow` либо `noindex,nofollow` — см. [`searchable`](#searchable) |
 | `og.*` | Из карты TV: `og.title`, `og.description`, `og.image`, `og.type` |
 
 Карта TV задаётся системной настройкой `ms3_public_seo_tv_map` — это JSON, где ключу SEO сопоставляется имя TV. Допустимые ключи: `title`, `description`, `canonical`, `robots`, `og.title`, `og.description`, `og.image`, `og.type`. Некорректный JSON игнорируется.
+<!-- FACT? значение по умолчанию у ms3_public_seo_tv_map не указано: что в SEO-блоке при незаполненной карте -->
 
-### Поле `searchable`
+### Поле `searchable` {#searchable}
 
-В ответе товара и категории есть `searchable` (признак «Доступен для поиска» у ресурса MODX). Когда он выключен, `robots` в SEO-блоке становится `noindex,nofollow` — это единственное, на что он влияет: из выдачи API запись не исчезает.
+В ответе товара и категории есть `searchable` (признак «Доступен для поиска» у ресурса MODX). Когда он выключен, `robots` в SEO-блоке становится `noindex,nofollow`. Больше ни на что он не влияет: из выдачи API запись не исчезает.
 
 ## ACL групп ресурсов
 
