@@ -32,7 +32,7 @@ $response->getObject();
 Права процессоров перечислены на страницах разделов: [товары](./product#processors), [заказы](./order), [покупатели](./customer).
 :::
 
-Короткое имя вроде `Gallery\Upload` не работает. Не распознав полное имя класса, MODX переходит к старой схеме поиска: склеивает `processors_path` с действием и ждёт файл `<processors_path>/gallery/upload.class.php`. Процессоры MS3 — автозагружаемые классы PSR-4, таких файлов в поставке нет. Вызов отвечает «Requested processor not found», а ожидаемый путь уходит в журнал MODX. `RunsMs3Processors` передаёт `processors_path` рядом с полным именем, не вместо него.
+Короткое имя вроде `Gallery\Upload` не работает. Не распознав полное имя класса, MODX переходит к старой схеме поиска: склеивает `processors_path` с действием и ждёт файл `<processors_path>/gallery/upload.class.php`. Процессоры MS3 — классы PSR-4, которые подключает автозагрузчик, и таких файлов в поставке нет. Вызов отвечает «Requested processor not found», а ожидаемый путь уходит в журнал MODX. `RunsMs3Processors` передаёт `processors_path` рядом с полным именем, не вместо него.
 
 ## Manager API vs процессоры
 
