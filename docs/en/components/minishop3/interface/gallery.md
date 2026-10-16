@@ -397,6 +397,38 @@ Maximum quality for large stores.
 }
 ```
 
+| Key | Value |
+| --- | --- |
+| `enabled` | Turns the watermark on. An empty `path` with the watermark enabled is logged and the thumbnail is built without it |
+| `path` | A path from the site root: both `assets/watermark.png` and `/assets/watermark.png` work. A file outside the site root, or an unreadable one, is rejected and logged |
+| `position` | Intervention names only: `top-left`, `top`, `top-right`, `left`, `center`, `right`, `bottom-left`, `bottom`, `bottom-right` — plus `tile`. Case and spaces do not matter, an empty value means `bottom-right` |
+| `offset_x`, `offset_y` | Margins from the edge in pixels. With `tile` they are the gaps between tiles |
+| `opacity` | 0–100, cast to an integer and clamped to that range; empty or `null` gives 100. Works on both GD and Imagick, including transparent PNG and WebP |
+
+phpThumb and miniShop2 codes (`BR`, `C`, `*` and the like) are not supported: an unknown value leaves the image without a watermark and logs `Unknown watermark position`. The value `tile` fills the whole frame.
+
+#### Text watermark
+
+The watermark can be text instead of an image — add `type: text` to `watermark`:
+
+```json
+{
+  "watermark": {
+    "enabled": true,
+    "type": "text",
+    "text": "© My store",
+    "font": "assets/fonts/roboto.ttf",
+    "size": 24,
+    "color": "#ffffff",
+    "angle": 0,
+    "position": "bottom-right",
+    "opacity": 60
+  }
+}
+```
+
+`font` is a path to a TTF file from the site root and it is required: with no font or no text the watermark is skipped and the reason is logged. The `position`, `offset_x`, `offset_y` and `opacity` keys behave as they do for an image, except `tile` — the mosaic is image-only.
+
 ### Processing effects
 
 | Parameter | Description | Values |

@@ -64,11 +64,15 @@ System setting parameters:
 
 For the email body you can specify a chunk name in `template` — for example, `tpl.msEmail.order.new`. If empty, the channel default template is used.
 
-The email subject (`subject`) supports Fenom syntax; you can use order placeholders:
+The email subject (`subject`) takes order placeholders in three shapes:
 
 ```
+Order #{num} — status change
 Order #{$num} — status change
+Order #[[+num]] — status change
 ```
+
+All three behave the same. Before 1.14.2-beta1 the plain `{num}` form combined with any Fenom construct on the same line produced an empty subject — for instance `Order #{num} / {$status_name}`.
 
 ### Telegram
 
@@ -89,11 +93,22 @@ An SMS channel skeleton exists in code. Any component can register its own chann
 
 The `template` field holds a MODX chunk name rendered through Fenom. Available placeholders:
 
-- `{$order}` — order field array (`num`, `cost`, `status_id`, etc.).
-- `{$customer}` — customer data.
-- `{$products}` — order line items array.
+- `{$order}` — order fields (`num`, `cost`, `status_id` and so on). Without `token` and `idempotency_key`; `uuid` is there.
+- `{$customer}` — the customer's public fields plus their extra fields. No password, no token.
+- `{$address}` — order address fields.
+- `{$delivery}`, `{$payment}` — delivery and payment method: `id`, `name`, `description`, `price`, `logo`.
+- `{$products}` — order line items.
+- `{$total}` — totals with formatted sums.
 - `{$status_name}`, `{$old_status_name}` — for status change events.
-- `{$shop_name}` — store name from a system setting.
+- `{$site_name}` — store name from the `site_name` system setting.
+
+::: warning Customer data in a template is text, not markup
+MODX tags and Fenom constructs that end up in an order comment, a name or an address are not executed in the email — before 1.14.2-beta1 they were parsed on the server. The shipped chunks escape customer fields, and your own chunks should do the same, or a customer can slip their own link or image into the email a manager reads:
+
+```fenom
+<td>{$address.comment | e}</td>
+```
+:::
 
 Minimal chunk example `tpl.msEmail.order.new`:
 

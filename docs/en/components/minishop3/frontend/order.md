@@ -128,7 +128,11 @@ Clear address fields: `POST /api/v1/order/address/clean`.
 
 Fields outside the order model (for example a consent checkbox `agreement`) go into the draft and are stored in `msOrder.properties['_validated']`. On order-create events they are available as `customFields`.
 
-On the storefront the checkbox must send `input.checked` (`1` / `0`), not a static `value`. For consent use the `accepted` rule on the delivery.
+On the storefront the checkbox must send `input.checked` (`1` / `0`), not a static `value`. For consent use the `accepted` rule on the delivery.
+
+::: tip A custom field named after an order column will not go through
+A key lands in `_validated` only when neither the order nor the address has a column of that name. The internal columns are closed since 1.14.2-beta1, so such a key returns an error instead of being stored in properties: [fields the storefront may not change](/en/components/minishop3/development/web-api/checkout#fields-the-storefront-may-not-change).
+:::
 
 ## JavaScript API
 
