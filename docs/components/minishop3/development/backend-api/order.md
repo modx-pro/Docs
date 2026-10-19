@@ -817,6 +817,37 @@ $origin = $params['origin'] ?? 'storefront'; // ключа нет — значи
 
 Чтение списка, карточки, фильтров, статистики, позиций, журнала и отгрузки требует `msorder_list`. Запись, включая оба `DELETE`, требует `msorder_save`. Отдельного `msorder_remove` на этих маршрутах нет.
 
+::: warning Правка позиций сверяется с остатком {#inventory-reconcile}
+При включённом учёте остатков (`ms3_inventory_enabled`) добавление, изменение количества и удаление позиции приводят резерв склада к итоговому количеству по каждому товару, а остаток двигают на разницу. С 1.14.3-beta1 это делается до сохранения строки: если остатка не хватает, строка не сохраняется, резерв и остаток остаются прежними.
+
+Отказ приходит с кодом `409 Conflict` и одним из двух ключей:
+
+| Ключ | Когда |
+| --- | --- |
+| `ms3_err_inventory_short` | Остатка не хватает на запрошенное количество |
+| `ms3_err_inventory_adjust_unsupported` | Складской сервис подменён своим и не реализует `AdjustableInventoryInterface`, а заказ уже держит остаток |
+
+В `data` отказа приходят подробности, в том числе флаг `can_override` — есть ли у текущего пользователя право `msorder_inventory_override`. Интерфейс по нему решает, предлагать ли повтор операции:
+
+```json
+{
+  "success": false,
+  "message": "Недостаточно остатка",
+  "code": 409,
+  "errors": null,
+  "error_code": "conflict",
+  "data": {
+    "product_id": 15,
+    "available": 3,
+    "required": 10,
+    "can_override": true
+  }
+}
+```
+
+Чтобы провести правку в минус, передайте в теле `force: true`. Если права нет, ответ будет `403 Forbidden` с тем же сообщением: флаг `force` сам по себе ничего не разрешает. При `ms3_err_inventory_adjust_unsupported` значение `can_override` всегда `false` — здесь дело не в правах, а в подменённом сервисе.
+:::
+
 `POST /api/mgr/orders` создаёт черновик (`ms3_status_draft`, запасной id 1) и события `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder` не вызывает. Эти события вызывает `POST /api/mgr/orders/{id}/finalize`, когда `OrderFinalizeService` работает с `origin=manager`.
 
 Параметры событий: [События](../events).
