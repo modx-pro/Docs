@@ -201,6 +201,19 @@ flowchart TB
 | `msOnBeforeInventoryReserve` / `msOnInventoryReserve` | Резерв на `ms3_status_new` (и перед commit, если заказ сразу переходит в paid) |
 | `msOnBeforeInventoryCommit` / `msOnInventoryCommit` | Commit на `ms3_status_paid` (повторно остаток не уменьшает) |
 | `msOnBeforeInventoryRelease` / `msOnInventoryRelease` | Release на `ms3_status_canceled` до commit. Также при сбое `payment send()` |
+| `msOnBeforeInventoryAdjust` / `msOnInventoryAdjust` | Правка состава заказа в админке: резерв приводится к новому количеству строки (с 1.14.3-beta1) |
+
+У пары `Adjust` набор параметров свой, не такой, как у reserve, commit и release:
+
+| Параметр | Тип | Значение |
+| --- | --- | --- |
+| `product_id` | `int` | Товар, резерв по которому меняется |
+| `order_id` | `int` | Заказ |
+| `old_qty` | `float` | Сколько заказ держал до правки |
+| `new_qty` | `float` | Сколько будет держать после |
+| `forced` | `bool` | Правка проведена в обход нехватки остатка, по праву `msorder_inventory_override` |
+
+Событие приходит на каждый товар, количество которого изменилось, в том числе при удалении строки — тогда `new_qty` равно нулю. `msOnBeforeInventoryAdjust` с `success=false` отменяет правку: строка заказа не сохраняется, остаток и резерв остаются прежними.
 
 ```mermaid
 flowchart TB
