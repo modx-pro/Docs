@@ -30,7 +30,7 @@ items: [
 
 - MODX 2.6–2.8, PHP 7.4+;
 - miniShop2, pdoTools;
-- [UniversalEventBus](https://modstore.pro/packages/utilities/universaleventbus) — шина
+- [UniversalEventBus](https://modstore.pro/packages/utilities/universaleventbus) 1.4.0-rc+ — шина
   событий, через которую серверные события доставляются в браузер.
 
 ## Быстрый старт
@@ -123,9 +123,13 @@ items: [
   30 минут. Так повторная доставка из очереди шины при перезагрузке страницы или в новой
   вкладке не создаёт дублей.
 - Measurement Protocol кодирует строку запроса по RFC 3986 (пробел — `%20`).
-- С версии 1.3.1 пуши, рождённые рендером страницы (`view_item`, `view_cart`, `begin_checkout`,
-  `dl_purchase`), несут `event_page` (= `ecsConfig.pageId`) и попадают в `dataLayer` только своей
-  вкладки; с UniversalEventBus 1.3.6-rc вторая вкладка дочитывает их сама (`eventbus:replay`).
+- С версии 1.4.0 в `dataLayer` попадают только события своей вкладки: какой вкладке они
+  принадлежат, решает шина (`detail.own`, UniversalEventBus 1.4.0-rc+). События рендера
+  страницы (`view_item`, `view_cart`, `begin_checkout`, `dl_purchase`) шина адресует по id
+  страницы. Метка `event_page` и `ecsConfig.pageId` из 1.3.1 убраны.
+- С версии 1.4.0 ответ на оформление заказа хранится в памяти вкладки, которая отправила заказ,
+  и на оплату переходит только она. Если событие заказа от шины не пришло за 5 с после того, как
+  шина приняла его (`fallbackRedirectTimeout` в `ecsConfig`), переход выполняется по таймеру.
 
 ::: tip
 Поле называется `event_uid`, а не `event_id`: `event_id` зарезервирован для склейки
