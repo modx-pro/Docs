@@ -123,6 +123,9 @@ items: [
   30 минут. Так повторная доставка из очереди шины при перезагрузке страницы или в новой
   вкладке не создаёт дублей.
 - Measurement Protocol кодирует строку запроса по RFC 3986 (пробел — `%20`).
+- С версии 1.3.1 пуши, рождённые рендером страницы (`view_item`, `view_cart`, `begin_checkout`,
+  `dl_purchase`), несут `event_page` (= `ecsConfig.pageId`) и попадают в `dataLayer` только своей
+  вкладки; с UniversalEventBus 1.3.6-rc вторая вкладка дочитывает их сама (`eventbus:replay`).
 
 ::: tip
 Поле называется `event_uid`, а не `event_id`: `event_id` зарезервирован для склейки
