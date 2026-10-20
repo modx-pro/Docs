@@ -15,12 +15,12 @@ title: ms3fLexiconScript
 
 | Параметр | Описание | По умолчанию |
 |----------|----------|--------------|
-| **cultureKey** | Язык лексикона (`ru, en`) | из контекста или `cultureKey` |
+| **cultureKey** | Язык лексикона (`ru`, `en`) | параметр, иначе контекст `cultureKey` / `culture_key`, иначе системный `cultureKey`, иначе `en` |
 | **resource_type** | Тип ресурсов по умолчанию | `products` |
 
 `maxItems` и `storageType` берутся из системных настроек `ms3favorites.max_items`, `ms3favorites.storage_type`.
 
-При **register_global_config = Да** (по умолчанию) сниппет в шаблоне не нужен: конфиг выводит плагин. Без лексикона (ни плагином, ни сниппетом) JS использует запасные русские фразы.
+Без `window.ms3fLexicon` русскими остаются `list_cleared`, `share_login_required`, `share_success`, `copy_to_my_list`, `cart_success` и `cart_error`. Остальные ключи показываются как `ms3favorites_*`.
 
 ## Использование
 
@@ -73,4 +73,4 @@ title: ms3fLexiconScript
 | `commentsEnabled` | Включены ли заметки к элементам |
 | `iziToastBaseUrl` | Базовый URL каталога vendor iziToast (для ленивой загрузки CSS/JS) |
 
-Ключи `mfilterContainer`, `refreshEvents`, `mfilterMutationFallback` сниппет не выставляет. Колбэки `onAdd`, `onRemove`, `notify`, `showToast` задаёт автор темы до загрузки `favorites.js`. См. [Подключение на сайте](../frontend) и [Интеграцию](../integration).
+Ключи `mfilterContainer`, `refreshEvents`, `mfilterMutationFallback` сниппет не выставляет. Функции `onAdd`, `onRemove`, `notify`, `showToast` задаёт автор темы до загрузки `favorites.js`. См. [Подключение на сайте](../frontend) и [Интеграцию](../integration).
