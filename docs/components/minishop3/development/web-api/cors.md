@@ -9,30 +9,49 @@ description: "ms3_cors_allowed_origins, credentials и rate limit Web API"
 
 ## CORS
 
-`web.php` создаёт `CorsMiddleware` с `allow_credentials => true`. Origins берутся из `ms3_cors_allowed_origins` (default в transport: пустая строка).
-
-| Значение настройки | Поведение |
+| Значение `ms3_cors_allowed_origins` | Поведение |
 | --- | --- |
-| пусто | Same-origin only: CORS-заголовки не ставятся |
-| `*` | `Access-Control-Allow-Origin: *`. Credentials выключаются (`CorsConfig` форсит `allow_credentials=false`) |
-| список через запятую | Echo Origin + `Vary: Origin` + `Allow-Credentials: true` |
+| пусто, так пишет установщик | Только same-origin: CORS-заголовки не ставятся |
+| `*` | `Access-Control-Allow-Origin: *`. Credentials выключаются |
+| список через запятую | Echo Origin, `Vary: Origin`, `Allow-Credentials: true` |
+
+`web.php` создаёт `CorsMiddleware` с `allow_credentials => true`. Origins берутся из `ms3_cors_allowed_origins`.
 
 При `*` cookie с Nuxt на другом origin не заработает. Нужны явные origins и `credentials: 'include'` на клиенте.
 
-Разрешённые methods: GET, POST, PUT, DELETE, OPTIONS. Headers: `Content-Type`, `Authorization`, `X-Requested-With`, `MS3TOKEN`. `max_age` 86400.
+Разрешённые методы: GET, POST, PUT, DELETE, OPTIONS. Заголовки: `Content-Type`, `Authorization`, `X-Requested-With`, `MS3TOKEN`. `max_age` 86400.
 
 Паттерн вида `https://*.example.com`: одна DNS-метка, не произвольный `.*`.
 
-OPTIONS preflight отвечает 200 без mint токена.
+OPTIONS preflight отвечает 200 без создания токена.
 
 ## Rate limit
 
-| Ключ | Default | Смысл |
+Превышение квоты:
+
+```http
+HTTP/1.1 429 Too Many Requests
+Retry-After: 42
+```
+
+```json
+{
+  "success": false,
+  "message": "ms3_err_rate_limit",
+  "code": 429,
+  "errors": null,
+  "error_code": "rate_limited"
+}
+```
+
+`Retry-After` ставится только на 429. `X-RateLimit-Limit`, `X-RateLimit-Remaining` и `X-RateLimit-Reset` ставятся на запросы, которые ещё входят в окно. Бакет считается по IP. OPTIONS в квоту не входит.
+
+| Ключ | По умолчанию | Смысл |
 | --- | --- | --- |
 | `ms3_rate_limit_max_attempts` | 60 | Запросов |
 | `ms3_rate_limit_decay_seconds` | 60 | Окно |
 
-Превышение → HTTP 429, `error_code` `rate_limited`. См. [Ошибки](errors).
+Хранилище: `ms3_rate_limit_store` (по умолчанию `file`). Рядом в установщике есть ключи redis, memcached и путь к файлу. См. [Ошибки](errors).
 
 ## Nuxt на другом origin
 

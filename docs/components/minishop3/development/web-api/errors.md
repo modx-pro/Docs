@@ -24,24 +24,41 @@ description: "Формат ошибок MiniShop3: code, errors, error_code, HTT
 | `error_code` | Машинный код |
 | `data` | Есть только тогда, когда его передали |
 
-Ключ `errors` есть в теле ошибки всегда (часто с `null`), `error_code` — обычно. Поля валидации приходят либо в `errors`, либо в `data`: зависит от сценария.
+В ответе роутера ключи `errors` и `error_code` есть всегда (`errors` часто `null`). До роутера при пустом `route` этих ключей нет. Карта полей валидации приходит в `errors` со статусом 422 и кодом `validation_failed`. Пустой `fields` у `order/set` и пустой ключ корзины остаются 400.
 
 ## Значения error_code
 
-Полный перечень из `ApiErrorCode` — двенадцать значений: `validation_failed`, `unauthorized`, `token_required`, `token_expired`, `token_invalid`, `not_found`, `conflict`, `rate_limited`, `business_rule`, `bad_request`, `forbidden`, `internal_error`. Других ядро не отдаёт; дополнение может прислать свой код через `Response::errorWithCode()`.
+| `error_code` | Когда |
+| --- | --- |
+| `validation_failed` | 422, карта полей |
+| `unauthorized` | 401, нет покупателя там, где он нужен |
+| `token_required` | 401, токен обязателен и гостевой не создан |
+| `token_expired` | 401, срок токена вышел |
+| `token_invalid` | 401, токен не найден или испорчен |
+| `not_found` | 404 |
+| `conflict` | 409 |
+| `rate_limited` | 429 |
+| `business_rule` | Правило магазина, статус берёт вызывающий код |
+| `bad_request` | 400 |
+| `forbidden` | 403. Контроллеры Web API этот код не возвращают |
+| `internal_error` | 500 и 503 |
+
+Других кодов ядро не отдаёт. Дополнение может прислать свой через `Response::errorWithCode()`.
 
 ## HTTP
 
 | Статус | Когда |
 | --- | --- |
-| 400 | Валидация, некорректный запрос |
-| 401 | Токена нет, он просрочен или испорчен |
+| 400 | Битый запрос без карты полей: пустой `route`, пустой `fields`, пустой ключ позиции |
+| 401 | Токен просрочен, испорчен или обязателен там, где сервер не создал гостевой токен: `token_expired`, `token_invalid`, `token_required`, `unauthorized` |
 | 404 | Сущность не найдена |
 | 409 | Конфликт |
+| 422 | Карта полей: адрес, профиль, `validation_failed` |
 | 429 | Rate limit |
 | 500 | Внутренняя ошибка |
+| 503 | Сервис `ms3` не поднят. `error_code` при этом `internal_error` |
 
-Код 403 на фронтенде встречается реже, чем 401 и 400.
+На маршрутах Web API контроллеры не возвращают 403. Этот статус есть у middleware прав менеджерского API.
 
 ## Закрытое поле черновика
 
@@ -49,10 +66,10 @@ description: "Формат ошибок MiniShop3: code, errors, error_code, HTT
 
 Перечень закрытых колонок и способ расширить его — в [оформлении заказа](checkout#protected-fields).
 
-В TypeScript описывайте ответ как union: success | error с `error_code` и необязательным `errors`.
+В TypeScript описывайте ответ роутера как union: success | error с обязательным `error_code`. У ответа до роутера `error_code` и `errors` нет.
 
 ## Rate limit
 
-`RateLimitMiddleware`: настройки `ms3_rate_limit_max_attempts`, `ms3_rate_limit_decay_seconds`. Превышение → 429 / `rate_limited`.
+`RateLimitMiddleware`: настройки `ms3_rate_limit_max_attempts`, `ms3_rate_limit_decay_seconds`. Превышение даёт 429 и `rate_limited`.
 
 См. [CORS и rate limit](cors).
