@@ -164,7 +164,7 @@ The product is saved by this point, yet the plugin can still call `$modx->event-
 :::
 
 ::: tip Not fired when the same product is added again
-If the product+options key is already in the cart, `add()` hands the work over to `change()` — `msOnBeforeChangeInCart`/`msOnChangeInCart` fire instead of `msOnBeforeAddToCart`/`msOnAddToCart`. The quantity is summed with what is already there: 2 units on top of 3 give `count = 5`, and that is the value the change events receive.
+If the product+options key is already in the cart, `msOnBeforeAddToCart` still fires — an `output()` on it blocks the quantity increase as well. Only then does `add()` hand the work over to `change()`: `msOnBeforeChangeInCart` and `msOnChangeInCart` fire, while `msOnAddToCart` does not. The quantity is summed with what is already there: 2 units on top of 3 give `count = 5`, and that is the value the change events receive.
 :::
 
 ### Parameters

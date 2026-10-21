@@ -11,11 +11,11 @@ title: Работа с плагинами
 
 | MODX-событие | Назначение |
 | --- | --- |
-| `OnMODXInit` | Сервис `ms3` уже зарегистрирован. Плагин вызывает `loadMap()` и в контексте `mgr` планирует сброс ACL-кэша каталога |
-| `OnManagerPageBeforeRender` | Лексикон и `ms3.manager.js`. Если версия файлов на диске отстаёт от установленного пакета, показывает баннер |
-| `OnLoadWebDocument` | Подключение фронтенд-assets, `registerFrontend()` |
+| `OnMODXInit` | Сервис `ms3` уже зарегистрирован: плагин вызывает `loadMap()`, а в контексте `mgr` планирует сброс ACL-кэша каталога |
+| `OnManagerPageBeforeRender` | Подключение лексикона и `ms3.manager.js`. Если версия файлов на диске отстаёт от установленного пакета, показывает баннер |
+| `OnLoadWebDocument` | Подключение файлов фронтенда через `registerFrontend()` |
 | `OnDocFormSave` | Конвертация ресурса в товар через `ProductService::handleConversion()` |
-| `OnBeforeUserFormSave` / `OnUserSave` | Sync `msCustomer` ↔ `modUser` при `ms3_customer_sync_enabled` |
+| `OnBeforeUserFormSave` / `OnUserSave` | Синхронизация `msCustomer` ↔ `modUser` при `ms3_customer_sync_enabled` |
 | `OnUserRemove` | Если включены `ms3_customer_sync_enabled` и `ms3_customer_sync_delete_with_user`, обнуляет `msCustomer.user_id`. Покупателя не удаляет. Без второго флага обработчик ничего не делает |
 | `OnResourceGroupSave`, `OnResourceGroupRemove`, `OnResourceAddToResourceGroup`, `OnResourceRemoveFromResourceGroup`, `OnUserGroupRemove` | Сброс ACL-кэша каталога |
 
@@ -103,7 +103,7 @@ switch ($modx->event->name) {
 
 ## Прерывание операции
 
-Прерывание работает только у тех событий, где вызывающий код читает ответ. Префикс `Before` сам по себе ничего не гарантирует. `msOnBeforeSaveOrder` и `msOnBeforeRemoveOrder` ответ плагина не читают. У `msOnBeforeValidateOrderValue` из ответа берётся только `value`.
+Прерывание работает только там, где вызывающий код читает ответ: префикс `Before` сам по себе ничего не гарантирует. `msOnBeforeSaveOrder` и `msOnBeforeRemoveOrder` ответ плагина не читают, а у `msOnBeforeValidateOrderValue` из него берётся только `value`.
 
 ### Метод $modx->event->output()
 
@@ -134,13 +134,21 @@ switch ($modx->event->name) {
 flowchart LR
   plugins["Плагины"] --> collect["Сбор output()"]
   collect --> check{"Есть непустой вывод?"}
-  check -->|да| cancel["Операция отменена, текст клиенту"]
+  check -->|да| cancel["Операция отменена, текст покупателю"]
   check -->|нет| go["Операция продолжается"]
 ```
 
-1. Метод `invokeEvent()` MiniShop3 собирает все выводы плагинов
-2. Если есть хотя бы один непустой вывод, операция прерывается
-3. Сообщение возвращается пользователю (на фронтенде или в ответе API)
+1. Метод `invokeEvent()` MiniShop3 собирает все выводы плагинов.
+2. Если есть хотя бы один непустой вывод, операция прерывается.
+3. Сообщение возвращается пользователю: на фронтенде или в ответе API.
+
+::: warning `return` из плагина операцию не отменяет
+В результат события попадает только то, что плагин отдал через `output()`: `modX::invokeEvent()` кладёт в массив результатов `$this->event->_output`, а возвращённое плагином значение использует иначе. Строку оно запишет в `error.log` как ошибку события, а `false` — как «Plugin … failed!».
+
+То есть `return 'cancel'` не просто не сработает: он ещё и засорит журнал записью об ошибке. Отменяйте через `output()`, а `return` используйте только чтобы выйти из `switch`.
+
+И ещё одно свойство `output()`: при повторном вызове он **дописывает** текст к уже накопленному, а не заменяет его. Два вызова в одном плагине склеятся в одно сообщение.
+:::
 
 ### События, поддерживающие прерывание
 
@@ -151,7 +159,10 @@ flowchart LR
 - `msOnBeforeRemoveFromCart`
 - `msOnBeforeEmptyCart`
 - `msOnBeforeAddToOrder`
+- `msOnAddToOrder`
 - `msOnBeforeRemoveFromOrder`
+- `msOnBeforeEmptyOrder`
+- `msOnEmptyOrder`
 - `msOnSubmitOrder`
 - `msOnBeforeCreateOrder`
 - `msOnBeforeChangeOrderStatus`
@@ -181,7 +192,7 @@ switch ($modx->event->name) {
 }
 ```
 
-Менять `$scriptProperties` по ссылке бесполезно. `modX::invokeEvent()` собирает параметры через `array_merge()`, и ссылка до вызывающего кода не доходит. Единственный канал: `returnedValues`. Вызывающий код читает `$response['data']['count']` после merge.
+Менять `$scriptProperties` по ссылке бесполезно: `modX::invokeEvent()` собирает параметры через `array_merge()`, и ссылка до вызывающего кода не доходит. Единственный канал — `returnedValues`: после слияния вызывающий код читает `$response['data']['count']`.
 
 ### Берите returnedValues по ссылке (&)
 
@@ -225,9 +236,9 @@ flowchart TD
 | Сигнал | Где работает | Эффект |
 | --- | --- | --- |
 | `$modx->event->output('cancel')` или `output(false)` | import, notifications | `EventGate::isCancelled()` → `true` |
-| `$modx->event->output('текст')` | `Utils::invokeEvent` | `success = false`, текст в `message`. Любой непустой вывод |
+| `$modx->event->output('текст')` | `Utils::invokeEvent` | `success = false`, текст в `message`. Срабатывает любой непустой вывод |
 
-`return false` и `return 'cancel'` отмену не делают. MODX кладёт в результат события только `$modx->event->_output`, а не значение `return`. Для `isCancelled()` равнозначны `false` и строка `cancel`. Что означает отмена, решает вызывающий код:
+`return false` и `return 'cancel'` отмены не делают — ядро читает только `output()`. Для `isCancelled()` равнозначны `false` и строка `cancel`, а что означает сама отмена, решает вызывающий код:
 
 | Событие | Что делает ядро при отмене |
 | --- | --- |
@@ -240,7 +251,7 @@ flowchart TD
 // Импорт: пропустить строку без ошибки
 case 'msOnImportRow':
     if (empty($scriptProperties['data']['price'])) {
-            $modx->event->output('cancel');
+        $modx->event->output('cancel');
     }
     break;
 ```
@@ -255,23 +266,23 @@ case 'msOnImportRow':
 
 | Событие | Ключ в `returnedValues` | Поведение |
 | --- | --- | --- |
-| `msOnBeforeImport` | `params` | list → замена; assoc → `array_replace` |
-| `msOnImportRow` | `data`, `tvData`, `optionData`, `gallery` | то же |
-| `msOnProductsLoad` | `rows` | то же |
-| `msOnProductPrepare` | `row` | то же |
-| `msOnBeforeSendNotification` | `recipient`, `channels` | то же; `channels` list заменяет список каналов целиком |
+| `msOnBeforeImport` | `params` | Список заменяет канал целиком, ассоциативный массив накладывается через `array_replace` |
+| `msOnImportRow` | `data`, `tvData`, `optionData`, `gallery` | То же |
+| `msOnProductsLoad` | `rows` | То же |
+| `msOnProductPrepare` | `row` | То же |
+| `msOnBeforeSendNotification` | `recipient`, `channels` | То же; список в `channels` заменяет набор каналов целиком |
 
 ```php
 <?php
 case 'msOnImportRow':
     $modx->event->returnedValues = [
-        'data' => ['vendor_id' => 1],           // patch полей ресурса
-        // 'gallery' => ['/path/a.jpg', '/path/b.jpg'], // list: полная замена галереи
+        'data' => ['vendor_id' => 1],           // правка отдельных полей ресурса
+        // 'gallery' => ['/path/a.jpg', '/path/b.jpg'], // список: полная замена галереи
     ];
     break;
 ```
 
-События import / msProducts / notifications вызываются через `EventGate::invokeRaw()`, не через `Utils::invokeEvent()`.
+Эти события вызываются через `EventGate::invokeRaw()`, а не через `Utils::invokeEvent()`.
 
 ## Передача данных между плагинами
 
@@ -385,19 +396,13 @@ switch ($modx->event->name) {
 
 ## Приоритет плагинов
 
-Порядок задаёт поле **priority** в настройках плагина.
-
-| Правило | Значение |
-| --- | --- |
-| Меньше значение | раньше выполняется |
-| По умолчанию | 0 |
-| Диапазон | любое целое число |
+Порядок задаёт поле **priority** в настройках плагина: чем меньше значение, тем раньше плагин выполняется. По умолчанию 0, допустимо любое целое число.
 
 ### Когда важен приоритет
 
-1. **Модификация цены:** плагины применяют скидки последовательно
-2. **Валидация:** один плагин может зависеть от результата другого
-3. **Передача данных:** плагин-источник должен выполниться раньше плагина-получателя
+- **Модификация цены:** плагины применяют скидки последовательно.
+- **Валидация:** один плагин может зависеть от результата другого.
+- **Передача данных:** плагин-источник должен выполниться раньше плагина-получателя.
 
 ## Отладка плагинов
 
@@ -472,25 +477,14 @@ if ($error) {
 }
 ```
 
-### 2. Не используют ссылку для returnedValues
+### 2. Проверка в after-событии вместо before
 
 ```php
-// Неправильно
-$values = $modx->event->returnedValues;
-$values['count'] = 10; // Изменения потеряются
-
-// Правильно
-$values = &$modx->event->returnedValues;
-$values['count'] = 10;
-```
-
-### 3. Неправильный тип события для прерывания
-
-```php
-// msOnAddToCart: событие ПОСЛЕ добавления
-// Прерывание здесь не остановит добавление (товар уже добавлен)
+// msOnAddToCart: событие ПОСЛЕ добавления.
+// Товар уже в корзине, и output() его оттуда не уберёт. Но ответ всё равно
+// станет ошибочным: покупатель увидит сообщение при изменившейся корзине
 case 'msOnAddToCart':
-    $modx->event->output('Ошибка'); // Бесполезно
+    $modx->event->output('Ошибка');
     break;
 
 // msOnBeforeAddToCart: событие ДО добавления
@@ -499,7 +493,9 @@ case 'msOnBeforeAddToCart':
     break;
 ```
 
-### 4. Забыли break в switch
+Расхождение между корзиной и ответом хуже, чем честный отказ: фронтенд покажет ошибку, а счётчик товаров уже вырос. Проверки размещайте в `msOnBefore*`.
+
+### 3. Забыли break в switch
 
 ```php
 switch ($modx->event->name) {

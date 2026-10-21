@@ -35,10 +35,15 @@ You need the customer's consent for notifications and their Chat ID stored in th
 
 #### Step 1: Add a field for Chat ID
 
-Create a `telegram_chat_id` field for the `msCustomer` class in the [Extra fields](/en/components/minishop3/interface/utilities/extra-fields) utility.
+The channel looks for a Chat ID in two places, in this order:
 
-::: warning A column added by hand will not reach templates
-`ALTER TABLE modx_ms3_customers ADD COLUMN telegram_chat_id …` looks like a shortcut, but since 1.14.2-beta1 customer data reaches account chunks and email placeholders through `CustomerPublicDto`. It adds only the keys of active extra fields to the [public set](#recipient), so a column created outside the utility never shows up in `{$customer}`. The utility creates the column itself.
+1. **`modUserProfile.extended`**, key `telegram_chat_id`, on the MODX user whose id is stored in `msOrder.user_id`. Works when the customer is tied to an account.
+2. **A `telegram_chat_id` extra field on `msCustomer`** — it reaches the recipient payload through `CustomerPublicDto`, which adds the keys of active fields from the [Extra fields](/en/components/minishop3/interface/utilities/extra-fields) utility to the public set. This path also covers customers without a MODX account.
+
+::: warning A column added by hand will not work
+`ALTER TABLE modx_ms3_customers ADD COLUMN telegram_chat_id …` looks like a shortcut, but only the keys of **active fields** registered through the utility reach the recipient payload. A column created outside it never shows up in `{$customer}` — the utility creates the column itself.
+
+Separately: `OrderStatusService` has a branch reading `extended` on `msCustomer` itself. The customer schema has no `extended` field, so that branch is dead — see [bug #900](https://github.com/modx-pro/MiniShop3/issues/900). Neither working source above is affected.
 :::
 
 #### Step 2: Create a bot with Deep Linking
@@ -103,8 +108,18 @@ switch ($modx->event->name) {
         $customer = $order->getOne('Customer');
         if (!$customer) return;
 
-        $chatId = $customer->get('telegram_chat_id');
-        if (empty($chatId)) return;
+        // Same order as the built-in channel: the linked user's profile first,
+        // then the customer's own extra field
+        $userId = (int) $order->get('user_id');
+        $profile = $userId
+            ? $modx->getObject(\MODX\Revolution\modUserProfile::class, ['internalKey' => $userId])
+            : null;
+        $extended = $profile ? $profile->get('extended') : [];
+        $chatId = is_array($extended) ? ($extended['telegram_chat_id'] ?? '') : '';
+        if ($chatId === '') {
+            $chatId = (string) $customer->get('telegram_chat_id');
+        }
+        if ($chatId === '') return;
 
         $statusName = $modx->lexicon($newStatus->get('name'));
         $orderNum = $order->get('num');
@@ -172,7 +187,7 @@ The resulting `email` and `phone` are also copied into `recipient['customer']['e
 | `type` | `string` | — | `customer` or `manager` (duplicates `recipientType`) |
 | `email` | `string \| null` | address → customer → profile | Resulting recipient email |
 | `phone` | `string \| null` | address → customer → profile | Resulting phone number |
-| `telegram_chat_id` | `string \| null` | `customer.extended` → profile | Telegram chat ID, when set |
+| `telegram_chat_id` | `string \| null` | `modUserProfile.extended` | Telegram chat ID of the user linked to the order. A customer extra field arrives separately, inside `customer` |
 | `address` | `array` | `msOrderAddress->toArray()` | The full order address (`customer` recipient only) |
 | `customer` | `array` | `CustomerPublicDto::fromCustomer()` | The customer's public fields (`customer` recipient only); its `email` and `phone` already match the resulting values |
 
@@ -186,7 +201,7 @@ Before 1.12.0 notifications went to the contacts stored on `msCustomer`, which c
 
 ### Aborting the operation
 
-Sending is cancelled by `return false`, `return 'cancel'` or `$modx->event->output(...)`. The event goes through `EventGate::invokeRaw()`, not `Utils::invokeEvent`.
+Sending is cancelled by `$modx->event->output('cancel')` or `output(false)`. Any other text, and a plain `return`, do not cancel anything: `EventGate::isCancelled()` inspects the values plugins passed to `output()`. The event goes through `EventGate::invokeRaw()`, not `Utils::invokeEvent`.
 
 ```php
 <?php
@@ -197,14 +212,16 @@ switch ($modx->event->name) {
         // Disallow sending at night
         $hour = (int)date('G');
         if ($hour >= 23 || $hour < 8) {
-            return false;
+            $modx->event->output(false);
+            return;
         }
 
         // Block temporary emails
         if (!empty($recipient['email'])) {
             $domain = substr($recipient['email'], strpos($recipient['email'], '@') + 1);
             if (in_array($domain, ['tempmail.com', 'throwaway.com'], true)) {
-                return 'cancel';
+                $modx->event->output('cancel');
+                return;
             }
         }
         break;

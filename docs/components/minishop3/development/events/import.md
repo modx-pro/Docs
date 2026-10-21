@@ -3,7 +3,7 @@ title: События импорта
 ---
 # События импорта
 
-События импорта товаров из CSV через утилиту импорта в админке.
+События утилиты импорта товаров из CSV в админке.
 
 ## msOnBeforeImport
 
@@ -14,7 +14,7 @@ title: События импорта
 | Параметр | Тип | Описание |
 | --- | --- | --- |
 | `file` | `string` | Путь к файлу импорта |
-| `params` | `array` | Параметры импорта. Менять массив в `$scriptProperties` бесполезно, пишите `returnedValues['params']` |
+| `params` | `array` | Параметры импорта. Менять их можно только через `returnedValues['params']` |
 
 **Структура params:**
 
@@ -36,7 +36,7 @@ title: События импорта
 
 ### Прерывание операции
 
-Отмена всегда возвращает лексикон `ms3_utilities_import_cancelled`. Текст из `output()` в сообщение не попадает. Нужны `output('cancel')` или `output(false)`.
+Импорт отменяют `output('cancel')` или `output(false)`. Сообщение об отмене всегда берётся из лексикона `ms3_utilities_import_cancelled` — свой текст, переданный в `output()`, в него не попадёт.
 
 ```php
 <?php
@@ -62,7 +62,7 @@ switch ($modx->event->name) {
 
 ### Модификация параметров
 
-Assoc в `returnedValues['params']` патчит через `array_replace`, list заменяет массив целиком.
+Ассоциативный массив в `returnedValues['params']` накладывается на параметры через `array_replace`, список заменяет их целиком.
 
 ```php
 <?php
@@ -70,7 +70,7 @@ switch ($modx->event->name) {
     case 'msOnBeforeImport':
         $params = $scriptProperties['params'];
 
-        // Дефолт для поля, которого нет в CSV
+        // Значение по умолчанию для поля, которого нет в CSV
         $params['default_vendor'] = 1;
 
         // Ключ поиска дубликатов
@@ -83,7 +83,7 @@ switch ($modx->event->name) {
 }
 ```
 
-Краткий patch:
+Короткая запись:
 
 ```php
 <?php
@@ -179,9 +179,9 @@ flowchart TD
 | `optionData` | `array` | Данные для опций товара |
 | `gallery` | `array` | Пути к изображениям галереи |
 
-Ядро после события применяет `EventGate::applyReturnedArray()` для ключей `data`, `tvData`, `optionData`, `gallery`. List-массив в `returnedValues` заменяет канал целиком, assoc патчит поля.
+После события ядро применяет `EventGate::applyReturnedArray()` к ключам `data`, `tvData`, `optionData`, `gallery`. Список в `returnedValues` заменяет канал целиком, ассоциативный массив накладывается на отдельные поля.
 
-::: warning Мутация `$scriptProperties` по ссылке не работает
+::: warning Менять `$scriptProperties` по ссылке бесполезно
 `modX::invokeEvent()` собирает параметры через `array_merge()`, и ссылка до импорта не доходит. Изменённый массив нужно записать в `$modx->event->returnedValues`.
 :::
 
@@ -258,7 +258,7 @@ switch ($modx->event->name) {
 }
 ```
 
-Краткий patch (list в `gallery` заменяет всю галерею):
+Короткая запись:
 
 ```php
 <?php
@@ -272,7 +272,7 @@ switch ($modx->event->name) {
             'optionData' => [
                 'color' => $scriptProperties['csv'][10] ?? '',
             ],
-            // list в gallery заменяет галерею целиком
+            // список в gallery заменяет галерею целиком
             // 'gallery' => ['assets/gallery/sku-001.jpg'],
         ];
         break;
