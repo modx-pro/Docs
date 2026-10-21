@@ -7,11 +7,20 @@ title: События заказа
 
 ## Какие события могут прервать операцию
 
-В отличие от [событий корзины](cart), здесь ядро читает ответ плагина почти всюду — в том числе у after-событий. Вернуть ошибку через `$modx->event->output(...)` можно у всех событий страницы, **кроме** `msOnMgrCreateOrder`: его вызывают, не читая ответ.
+```mermaid
+flowchart TD
+  plugin["Плагин вызвал output()"] --> validate{"Событие валидации?"}
+  validate -->|да| swap["Подмена value или error, запрос не отменяется"]
+  validate -->|нет| mgr{"msOnMgrCreateOrder?"}
+  mgr -->|да| skip["Ответ не читается"]
+  mgr -->|нет| fail["Клиент получает ошибку"]
+```
+
+В отличие от [событий корзины](cart), здесь ядро читает ответ плагина почти всюду, в том числе у after-событий. Вернуть ошибку через `$modx->event->output(...)` можно у событий страницы, кроме `msOnMgrCreateOrder` и трёх событий валидации.
 
 Поэтому `msOnRemoveFromOrder`, `msOnEmptyOrder` и `msOnCreateOrder` способны провалить уже выполненную операцию: поле удалено или заказ создан, но клиент получит ошибку.
 
-У событий валидации ответ работает иначе — не прерывает операцию, а подменяет значение: `msOnBeforeValidateOrderValue` и `msOnValidateOrderValue` возвращают `value`, `msOnErrorValidateOrderValue` — `error`.
+У событий валидации ответ не прерывает операцию, а подменяет значение: `msOnBeforeValidateOrderValue` и `msOnValidateOrderValue` возвращают `value`, `msOnErrorValidateOrderValue` возвращает `error`.
 
 ## msOnBeforeAddToOrder
 
@@ -38,7 +47,7 @@ switch ($modx->event->name) {
         $key = $scriptProperties['key'];
         $value = $scriptProperties['value'];
 
-        // Запретить выбор определённого способа доставки
+        // Запретить выбранный способ доставки
         if ($key === 'delivery_id' && $value == 5) {
             $modx->event->output('Доставка временно недоступна');
             return;
@@ -58,12 +67,12 @@ switch ($modx->event->name) {
 
         $values = &$modx->event->returnedValues;
 
-        // Форматирование телефона
+        // Телефон: оставить только цифры
         if ($key === 'phone') {
             $values['value'] = preg_replace('/\D/', '', $value);
         }
 
-        // Приведение email к нижнему регистру
+        // Email в нижнем регистре
         if ($key === 'email') {
             $values['value'] = strtolower(trim($value));
         }
@@ -75,7 +84,7 @@ switch ($modx->event->name) {
 
 ## msOnAddToOrder
 
-Вызывается **после** добавления поля в заказ (после успешной валидации).
+Вызывается после успешной валидации и до записи черновика. `output()` отменяет сохранение. Значение из `returnedValues['value']` всё равно попадает в черновик, если отмены не было.
 
 ### Параметры
 
@@ -96,12 +105,11 @@ switch ($modx->event->name) {
         /** @var \MiniShop3\Model\msOrder|null $draft */
         $draft = $scriptProperties['draft'];
 
-        // Логирование изменений
+        // Лог изменения поля
         $modx->log(modX::LOG_LEVEL_INFO,
             "[Order] Поле {$key} установлено: {$value}"
         );
 
-        // При выборе доставки — обновить связанные поля черновика
         if ($key === 'delivery_id' && !empty($value) && $draft) {
             // ... через сервисы MS3 при необходимости
         }
@@ -134,9 +142,8 @@ switch ($modx->event->name) {
 
         $values = &$modx->event->returnedValues;
 
-        // Предобработка перед валидацией
+        // Пробелы из индекса
         if ($key === 'index') {
-            // Удалить пробелы из индекса
             $values['value'] = str_replace(' ', '', $value);
         }
         break;
@@ -167,9 +174,8 @@ switch ($modx->event->name) {
 
         $values = &$modx->event->returnedValues;
 
-        // Постобработка после валидации
+        // Дописать регион к городу
         if ($key === 'city') {
-            // Добавить регион к городу
             $values['value'] = $value . ', Московская область';
         }
         break;
@@ -180,7 +186,7 @@ switch ($modx->event->name) {
 
 ## msOnErrorValidateOrderValue
 
-Вызывается при **ошибке** валидации поля.
+Вызывается при **ошибке** валидации поля. Можно изменить сообщение об ошибке или отменить ошибку.
 
 ### Параметры
 
@@ -201,7 +207,7 @@ switch ($modx->event->name) {
 
         $values = &$modx->event->returnedValues;
 
-        // Свои сообщения об ошибках
+        // Свой текст ошибки email
         if ($key === 'email') {
             $values['error'] = [$key => 'Введите корректный email для получения чека'];
         }
@@ -222,7 +228,6 @@ switch ($modx->event->name) {
         $key = $scriptProperties['key'];
         $value = $scriptProperties['value'];
 
-        // Для определённых полей — игнорировать ошибку
         if ($key === 'comment') {
             $values = &$modx->event->returnedValues;
             $values['error'] = []; // Пустой массив = нет ошибки
@@ -252,7 +257,7 @@ switch ($modx->event->name) {
     case 'msOnBeforeRemoveFromOrder':
         $key = $scriptProperties['key'];
 
-        // Запретить удаление обязательных полей
+        // Обязательные поля черновика
         $required = ['delivery_id', 'payment_id', 'email'];
         if (in_array($key, $required)) {
             $modx->event->output('Это поле нельзя удалить');
@@ -285,7 +290,6 @@ switch ($modx->event->name) {
         /** @var \MiniShop3\Model\msOrder $draft */
         $draft = $scriptProperties['draft'];
 
-        // При удалении способа доставки — сбросить способ оплаты
         if ($key === 'delivery_id') {
             // ... через сервисы MS3 при необходимости
         }
@@ -307,7 +311,7 @@ switch ($modx->event->name) {
 
 ### Что остаётся после очистки
 
-Ядро обнуляет поля адреса и заказа, кроме служебных: у адреса — `id`, `order_id`, `user_id`, `createdon`; у заказа — `id`, `user_id`, `token`, `status_id`, `createdon`.
+Ядро обнуляет поля адреса и заказа, кроме служебных. У адреса остаются `id`, `order_id`, `user_id`, `createdon`. У заказа остаются `id`, `user_id`, `token`, `status_id`, `createdon`.
 
 ```php
 <?php
@@ -328,7 +332,7 @@ switch ($modx->event->name) {
 
 ## msOnEmptyOrder
 
-Вызывается **после** очистки полей черновика — поля адреса и заказа к этому моменту уже обнулены и сохранены. Ошибка плагина (`output`) делает ответ вызывающему коду неуспешным, но **не откатывает** сохранённое: черновик остаётся очищенным.
+Вызывается **после** очистки полей черновика. Поля адреса и заказа к этому моменту уже обнулены и сохранены. Ошибка плагина (`output`) делает ответ вызывающему коду неуспешным, но **не откатывает** сохранённое: черновик остаётся очищенным.
 
 ### Параметры
 
@@ -361,13 +365,13 @@ switch ($modx->event->name) {
         $draft = $scriptProperties['draft'];
         $orderData = $scriptProperties['orderData'];
 
-        // Проверка минимальной суммы заказа
+        // Минимальная сумма
         if (($draft->get('cart_cost') ?? 0) < 1000) {
-            $modx->event->output('Минимальная сумма заказа — 1000 ₽');
+            $modx->event->output('Минимальная сумма заказа: 1000 ₽');
             return;
         }
 
-        // Проверка рабочего времени
+        // Часы приёма заказов
         $hour = (int)date('G');
         if ($hour < 9 || $hour > 21) {
             $modx->event->output('Заказы принимаются с 9:00 до 21:00');
@@ -379,7 +383,7 @@ switch ($modx->event->name) {
 
 ### Модификация данных
 
-Дополнительные поля заказа возвращают в ключе `data` — ядро применит их к черновику обычной цепочкой `add()` ещё до создания заказа.
+Дополнительные поля заказа возвращают в ключе `data`. Ядро применит их к черновику обычной цепочкой `add()` ещё до создания заказа.
 
 ```php
 <?php
@@ -389,13 +393,13 @@ switch ($modx->event->name) {
 
         $values = &$modx->event->returnedValues;
 
-        // Добавить UTM-метки из сессии в дополнительные данные сабмита
+        // UTM из сессии в properties заказа
         if (!empty($_SESSION['utm'])) {
             $data['properties']['utm'] = $_SESSION['utm'];
             $values['data'] = $data;
         }
 
-        // Добавить источник заказа
+        // Источник перехода
         $data['properties']['source'] = $_SERVER['HTTP_REFERER'] ?? 'direct';
         $values['data'] = $data;
         break;
@@ -406,22 +410,31 @@ switch ($modx->event->name) {
 
 ## msOnBeforeCreateOrder
 
-Вызывается **перед** финальным созданием заказа (присвоением статуса «Новый»). Три сценария:
+```mermaid
+flowchart TD
+  store["Сабмит витрины: handler, без origin"] --> event["msOnBeforeCreateOrder"]
+  admin["finalize из админки: origin manager"] --> event
+  api["ProgrammaticOrderService: origin integration"] --> event
+  event --> draft["Статус ещё черновик, номер уже есть"]
+  draft --> statusNew["Дальше статус Новый"]
+```
 
-1. Оформление на фронтенде — `OrderSubmitHandler` (в params **нет** `origin` / `from_manager`; есть `handler`, `customFields`)
-2. Финализация в админке — `OrderFinalizeService` (`origin=manager`, `from_manager=true`, `service`)
-3. Программное создание — `ProgrammaticOrderService` → `finalize` (`origin=integration`, `from_manager=false`, `service`)
+Вызывается, когда номер заказа уже выделен, а статус всё ещё черновик. Статус «Новый» ставится позже. Если событие вернёт ошибку, номер сбрасывается только при включённом учёте остатков. Три сценария:
+
+1. Сабмит на витрине: `OrderSubmitHandler` (в params **нет** `origin` / `from_manager`. Есть `handler`, `customFields`)
+2. Финализация в админке: `OrderFinalizeService` (`origin=manager`, `from_manager=true`, `service`)
+3. Программное создание: `ProgrammaticOrderService` → `finalize` (`origin=integration`, `from_manager=false`, `service`)
 
 ### Параметры
 
 | Параметр | Тип | Описание |
 | --- | --- | --- |
 | `msOrder` | `msOrder` | Объект заказа (всегда) |
-| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Только оформление с фронтенда |
-| `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Только finalize-пути (админка / integration) |
-| `origin` | `string` | Только finalize-пути: `manager` \| `integration` (константы `OrderOrigin`) |
-| `from_manager` | `bool` | Присутствует на обоих finalize-путях (`true` при `origin=manager`, `false` при `origin=integration`); отсутствует только при оформлении с фронтенда |
-| `customFields` | `array` | Только фронтенд — поля из `properties._validated` |
+| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Только сабмит с витрины |
+| `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Только finalize-пути (менеджер / integration) |
+| `origin` | `string` | Только finalize-пути: `manager`, `storefront` или `integration`. По умолчанию у `finalize()` значение `manager`, у программного создания `integration`. На витринном сабмите ключа нет |
+| `from_manager` | `bool` | Присутствует на обоих finalize-путях (`true` при `origin=manager`, `false` при `origin=integration`). Отсутствует только на витринном сабмите |
+| `customFields` | `array` | Только витрина: поля из `properties._validated` |
 
 ::: tip Различение сценариев
 
@@ -449,7 +462,7 @@ switch ($modx->event->name) {
         /** @var \MiniShop3\Model\msOrder $order */
         $order = $scriptProperties['msOrder'];
 
-        // Проверка остатка на складе (поле msProductData.stock, доступно через msProduct::get)
+        // Поле msProductData.stock, доступно через msProduct::get
         foreach ($order->getMany('Products') as $product) {
             $msProduct = $product->getOne('Product');
             if (!$msProduct) {
@@ -476,7 +489,7 @@ switch ($modx->event->name) {
     case 'msOnBeforeCreateOrder':
         $order = $scriptProperties['msOrder'];
 
-        // Добавить комментарий менеджеру
+        // Заметка менеджеру в properties
         $properties = $order->get('properties') ?? [];
         $properties['manager_note'] = 'Заказ создан ' . date('d.m.Y H:i');
         $order->set('properties', $properties);
@@ -488,7 +501,7 @@ switch ($modx->event->name) {
 
 ## msOnCreateOrder
 
-Вызывается **после** успешного создания заказа. Парный к `msOnBeforeCreateOrder` — те же три сценария и тот же набор параметров (на фронтенде без `origin`).
+Вызывается сразу после `msOnBeforeCreateOrder`, пока статус ещё черновик. Парный к `msOnBeforeCreateOrder`: те же три сценария и тот же набор параметров (на витрине без `origin`). `msOnMgrCreateOrder` вызывается уже после смены статуса.
 
 ### Параметры
 
@@ -545,54 +558,14 @@ switch ($modx->event->name) {
 }
 ```
 
-### Интеграция с внешними сервисами
-
-<!-- EXAMPLE? 35 строк; сборка тела запроса к службе доставки, а не механизм события -->
-
-```php
-<?php
-switch ($modx->event->name) {
-    case 'msOnCreateOrder':
-        $order = $scriptProperties['msOrder'];
-        $address = $order->getOne('Address');
-
-        // Отправка в службу доставки
-        $deliveryData = [
-            'order_id' => $order->get('num'),
-            'recipient' => [
-                'name' => $address->get('first_name') . ' ' . $address->get('last_name'),
-                'phone' => $address->get('phone'),
-                'email' => $address->get('email'),
-            ],
-            'address' => [
-                'city' => $address->get('city'),
-                'street' => $address->get('street'),
-                'building' => $address->get('building'),
-            ],
-            'items' => [],
-        ];
-
-        foreach ($order->getMany('Products') as $product) {
-            $deliveryData['items'][] = [
-                'name' => $product->get('name'),
-                'count' => $product->get('count'),
-                'price' => $product->get('price'),
-            ];
-        }
-
-        // $deliveryApi->createShipment($deliveryData);
-        break;
-}
-```
-
 ---
 
 ## msOnBeforeMgrCreateOrder
 
-Вызывается **перед** финализацией заказа из админки — когда менеджер превращает черновик в полноценный заказ кнопкой «Оформить» в карточке заказа. Это аналог `msOnSubmitOrder` для админки.
+Вызывается **перед** финализацией заказа из админки, когда менеджер превращает черновик в заказ кнопкой «Оформить» в карточке. Это аналог `msOnSubmitOrder` для админки.
 
 ::: tip Связка с msOnBeforeCreateOrder
-После `msOnBeforeMgrCreateOrder` всё равно срабатывает универсальное `msOnBeforeCreateOrder` с теми же четырьмя параметрами (`service`, `msOrder`, `origin`, `from_manager`). Берите `msOnBeforeMgrCreateOrder`, если нужна логика только для админки, и `msOnBeforeCreateOrder` — если одна и та же логика нужна и на фронтенде, и в админке.
+После `msOnBeforeMgrCreateOrder` всё равно срабатывает универсальное `msOnBeforeCreateOrder` с теми же четырьмя параметрами (`service`, `msOrder`, `origin`, `from_manager`). Берите `msOnBeforeMgrCreateOrder`, если нужна логика только для админки. Берите `msOnBeforeCreateOrder`, если одна и та же логика нужна и на фронтенде, и в админке.
 :::
 
 ### Параметры

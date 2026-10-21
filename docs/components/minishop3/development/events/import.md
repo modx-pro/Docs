@@ -3,22 +3,18 @@ title: События импорта
 ---
 # События импорта
 
-События для управления импортом товаров из CSV-файлов.
-
-::: info Контекст
-Эти события вызываются при импорте товаров через утилиту импорта в админке. Позволяют модифицировать данные, пропускать строки или выполнять дополнительные действия.
-:::
+События импорта товаров из CSV через утилиту импорта в админке.
 
 ## msOnBeforeImport
 
-Вызывается **перед** началом импорта файла. Позволяет проверить параметры или отменить импорт.
+Вызывается **перед** началом импорта файла.
 
 ### Параметры
 
 | Параметр | Тип | Описание |
 | --- | --- | --- |
 | `file` | `string` | Путь к файлу импорта |
-| `params` | `array` (по ссылке) | Параметры импорта |
+| `params` | `array` | Параметры импорта. Менять массив в `$scriptProperties` бесполезно, пишите `returnedValues['params']` |
 
 **Структура params:**
 
@@ -40,24 +36,25 @@ title: События импорта
 
 ### Прерывание операции
 
+Отмена всегда возвращает лексикон `ms3_utilities_import_cancelled`. Текст из `output()` в сообщение не попадает. Нужны `output('cancel')` или `output(false)`.
+
 ```php
 <?php
 switch ($modx->event->name) {
     case 'msOnBeforeImport':
         $file = $scriptProperties['file'];
-        $params = &$scriptProperties['params'];
 
         // Проверка размера файла
         if (filesize($file) > 10 * 1024 * 1024) { // 10MB
-            $modx->event->output('Файл слишком большой');
-            return 'cancel';
+            $modx->event->output('cancel');
+            return;
         }
 
         // Проверка рабочего времени
         $hour = (int)date('G');
         if ($hour >= 10 && $hour < 18) {
-            $modx->event->output('Импорт запрещён в рабочее время');
-            return 'cancel';
+            $modx->event->output('cancel');
+            return;
         }
         break;
 }
@@ -65,32 +62,28 @@ switch ($modx->event->name) {
 
 ### Модификация параметров
 
+Assoc в `returnedValues['params']` патчит через `array_replace`, list заменяет массив целиком.
+
 ```php
 <?php
 switch ($modx->event->name) {
     case 'msOnBeforeImport':
-        $params = &$scriptProperties['params'];
+        $params = $scriptProperties['params'];
 
-        // Добавить дефолтное значение для поля
+        // Дефолт для поля, которого нет в CSV
         $params['default_vendor'] = 1;
 
-        // Изменить ключ поиска дубликатов
+        // Ключ поиска дубликатов
         if (empty($params['key'])) {
             $params['key'] = 'article';
         }
 
-        $modx->log(modX::LOG_LEVEL_INFO, sprintf(
-            '[Import] Начало импорта: %s, полей: %d',
-            basename($params['file']),
-            count($params['keys'])
-        ));
+        $modx->event->returnedValues['params'] = $params;
         break;
 }
 ```
 
-### returnedValues для params
-
-Параметры импорта можно патчить через `returnedValues['params']` (assoc → `array_replace`, list → полная замена):
+Краткий patch:
 
 ```php
 <?php
@@ -107,7 +100,7 @@ switch ($modx->event->name) {
 
 ## msOnAfterImport
 
-Вызывается **после** завершения импорта. Позволяет выполнить пост-обработку или отправить уведомления.
+Вызывается **после** завершения импорта.
 
 ### Параметры
 
@@ -135,7 +128,7 @@ switch ($modx->event->name) {
     case 'msOnAfterImport':
         $stats = $scriptProperties['stats'];
 
-        // Логирование результатов
+        // Лог итогов
         $modx->log(modX::LOG_LEVEL_INFO, sprintf(
             '[Import] Завершено: всего %d, создано %d, обновлено %d, ошибок %d',
             $stats['total'],
@@ -144,39 +137,17 @@ switch ($modx->event->name) {
             $stats['errors']
         ));
 
-        // Отправка уведомления администратору
+        // Сброс кэша MODX
+        $modx->cacheManager->refresh();
+
         if ($stats['errors'] > 0) {
             $message = "Импорт завершён с ошибками!\n\n";
             $message .= "Создано: {$stats['created']}\n";
             $message .= "Обновлено: {$stats['updated']}\n";
             $message .= "Ошибок: {$stats['errors']}\n";
 
+            // Письмо администратору. В пакете своей очереди писем нет.
             // mail($adminEmail, 'Отчёт импорта', $message);
-        }
-        break;
-}
-```
-
-### Пост-обработка
-
-```php
-<?php
-switch ($modx->event->name) {
-    case 'msOnAfterImport':
-        $stats = $scriptProperties['stats'];
-
-        // Очистка кэша
-        $modx->cacheManager->refresh();
-
-        // Обновление поиска
-        // $modx->runProcessor('MySearch\\Processors\\Reindex');
-
-        // Генерация sitemap
-        // $modx->runProcessor('pdoSitemap\\Processors\\Generate');
-
-        // Синхронизация с 1С
-        if ($stats['created'] > 0 || $stats['updated'] > 0) {
-            // $onec->syncProducts();
         }
         break;
 }
@@ -186,7 +157,16 @@ switch ($modx->event->name) {
 
 ## msOnImportRow
 
-Вызывается при обработке **каждой строки** CSV-файла. Позволяет модифицировать данные или пропустить строку.
+```mermaid
+flowchart TD
+  csv["Строка CSV"] --> event["msOnImportRow"]
+  event --> cancelled{"output cancel или false?"}
+  cancelled -->|да| skipped["Строка в счётчике skipped"]
+  cancelled -->|нет| values["returnedValues"]
+  values --> fields["data, tvData, optionData, gallery"]
+```
+
+Вызывается при обработке **каждой строки** CSV-файла.
 
 ### Параметры
 
@@ -194,12 +174,16 @@ switch ($modx->event->name) {
 | --- | --- | --- |
 | `row` | `int` | Номер текущей строки |
 | `csv` | `array` | Сырые данные строки CSV |
-| `data` | `array` (по ссылке) | Данные для создания/обновления ресурса |
-| `tvData` | `array` (по ссылке) | Данные для TV-полей |
-| `optionData` | `array` (по ссылке) | Данные для опций товара |
-| `gallery` | `array` (по ссылке) | Пути к изображениям галереи |
+| `data` | `array` | Данные для создания/обновления ресурса |
+| `tvData` | `array` | Данные для TV-полей |
+| `optionData` | `array` | Данные для опций товара |
+| `gallery` | `array` | Пути к изображениям галереи |
 
-Ядро после события применяет `EventGate::applyReturnedArray()` для ключей `data`, `tvData`, `optionData`, `gallery`. List-массив в `returnedValues` **заменяет** канал целиком, assoc — патчит поля.
+Ядро после события применяет `EventGate::applyReturnedArray()` для ключей `data`, `tvData`, `optionData`, `gallery`. List-массив в `returnedValues` заменяет канал целиком, assoc патчит поля.
+
+::: warning Мутация `$scriptProperties` по ссылке не работает
+`modX::invokeEvent()` собирает параметры через `array_merge()`, и ссылка до импорта не доходит. Изменённый массив нужно записать в `$modx->event->returnedValues`.
+:::
 
 ### Прерывание строки (пропуск)
 
@@ -207,22 +191,24 @@ switch ($modx->event->name) {
 <?php
 switch ($modx->event->name) {
     case 'msOnImportRow':
-        $data = &$scriptProperties['data'];
+        $data = $scriptProperties['data'];
         $row = $scriptProperties['row'];
 
-        // Пропуск товаров без цены
+        // Пропуск строки без цены
         if (empty($data['price']) || $data['price'] <= 0) {
             $modx->log(modX::LOG_LEVEL_WARN, sprintf(
                 '[Import] Строка %d пропущена: нет цены',
                 $row
             ));
-            return 'cancel';
+            $modx->event->output('cancel');
+            return;
         }
 
-        // Пропуск товаров определённых категорий
+        // Пропуск строк из исключённых категорий
         $excludedParents = [10, 15, 20];
         if (in_array($data['parent'], $excludedParents)) {
-            return 'cancel';
+            $modx->event->output('cancel');
+            return;
         }
         break;
 }
@@ -234,41 +220,45 @@ switch ($modx->event->name) {
 <?php
 switch ($modx->event->name) {
     case 'msOnImportRow':
-        $data = &$scriptProperties['data'];
+        $data = $scriptProperties['data'];
         $csv = $scriptProperties['csv'];
-        $tvData = &$scriptProperties['tvData'];
-        $optionData = &$scriptProperties['optionData'];
+        $tvData = $scriptProperties['tvData'];
+        $optionData = $scriptProperties['optionData'];
 
-        // Генерация alias из названия
+        // Alias из названия
         if (empty($data['alias'])) {
             $data['alias'] = $modx->filterPathSegment($data['pagetitle']);
         }
 
-        // Установка дефолтных значений
+        // Шаблон по умолчанию
         if (empty($data['template'])) {
-            $data['template'] = 5; // шаблон товара
+            $data['template'] = 5;
         }
 
-        // Автоматическое вычисление старой цены
+        // Старая цена, если колонки нет
         if (!empty($data['price']) && empty($data['old_price'])) {
             $data['old_price'] = round($data['price'] * 1.2, 2);
         }
 
-        // Добавление TV-полей на основе данных
+        // Бренд уходит в TV, из полей ресурса его убираем
         if (!empty($data['brand'])) {
             $tvData['product_brand'] = $data['brand'];
-            unset($data['brand']); // убираем из основных данных
+            unset($data['brand']);
         }
 
-        // Добавление опций
-        if (!empty($csv[10])) { // 10-я колонка = цвет
+        // Опция из 10-й колонки CSV
+        if (!empty($csv[10])) {
             $optionData['color'] = $csv[10];
         }
+
+        $modx->event->returnedValues['data'] = $data;
+        $modx->event->returnedValues['tvData'] = $tvData;
+        $modx->event->returnedValues['optionData'] = $optionData;
         break;
 }
 ```
 
-### returnedValues вместо только by-ref
+Краткий patch (list в `gallery` заменяет всю галерею):
 
 ```php
 <?php
@@ -282,7 +272,8 @@ switch ($modx->event->name) {
             'optionData' => [
                 'color' => $scriptProperties['csv'][10] ?? '',
             ],
-            // 'gallery' => ['assets/gallery/sku-001.jpg'], // list — замена всей галереи
+            // list в gallery заменяет галерею целиком
+            // 'gallery' => ['assets/gallery/sku-001.jpg'],
         ];
         break;
 }
@@ -294,29 +285,31 @@ switch ($modx->event->name) {
 <?php
 switch ($modx->event->name) {
     case 'msOnImportRow':
-        $data = &$scriptProperties['data'];
-        $gallery = &$scriptProperties['gallery'];
+        $data = $scriptProperties['data'];
+        $gallery = $scriptProperties['gallery'];
 
-        // Добавление изображений из внешнего источника
+        // Локальные пути из колонки external_images
         if (!empty($data['external_images'])) {
             $images = explode(',', $data['external_images']);
             foreach ($images as $imageUrl) {
-                // Скачиваем изображение
-                $localPath = $this->downloadImage(trim($imageUrl));
-                if ($localPath) {
+                $localPath = ltrim(trim($imageUrl), '/');
+                if ($localPath !== '' && file_exists(MODX_BASE_PATH . $localPath)) {
                     $gallery[] = $localPath;
                 }
             }
             unset($data['external_images']);
         }
 
-        // Автоматическое главное фото из SKU
+        // Главное фото по артикулу, если галерея пустая
         if (!empty($data['article']) && empty($gallery)) {
             $imagePath = "assets/images/products/{$data['article']}.jpg";
             if (file_exists(MODX_BASE_PATH . $imagePath)) {
                 $gallery[] = $imagePath;
             }
         }
+
+        $modx->event->returnedValues['data'] = $data;
+        $modx->event->returnedValues['gallery'] = $gallery;
         break;
 }
 ```
@@ -327,173 +320,41 @@ switch ($modx->event->name) {
 <?php
 switch ($modx->event->name) {
     case 'msOnImportRow':
-        $data = &$scriptProperties['data'];
+        $data = $scriptProperties['data'];
         $row = $scriptProperties['row'];
 
-        // Очистка и валидация цены
+        // Цена: убрать пробелы, запятую заменить на точку
         if (!empty($data['price'])) {
-            // Удаляем пробелы и заменяем запятую на точку
             $data['price'] = preg_replace('/[^\d.,]/', '', $data['price']);
             $data['price'] = str_replace(',', '.', $data['price']);
             $data['price'] = (float)$data['price'];
         }
 
-        // Валидация артикула
+        // Артикул в верхнем регистре и проверка формата
         if (!empty($data['article'])) {
-            // Приводим к верхнему регистру
             $data['article'] = mb_strtoupper(trim($data['article']));
 
-            // Проверка формата артикула
             if (!preg_match('/^[A-Z0-9\-]+$/', $data['article'])) {
                 $modx->log(modX::LOG_LEVEL_ERROR, sprintf(
                     '[Import] Строка %d: некорректный артикул "%s"',
                     $row,
                     $data['article']
                 ));
-                return 'cancel';
+                $modx->event->output('cancel');
+                return;
             }
         }
 
-        // Очистка HTML из названия
+        // HTML из названия
         $data['pagetitle'] = strip_tags($data['pagetitle']);
         $data['pagetitle'] = html_entity_decode($data['pagetitle'], ENT_QUOTES, 'UTF-8');
 
-        // Ограничение длины описания
+        // Описание не длиннее 500 символов
         if (!empty($data['description']) && mb_strlen($data['description']) > 500) {
             $data['description'] = mb_substr($data['description'], 0, 497) . '...';
         }
-        break;
-}
-```
 
----
-
-## Полный пример: расширенный импорт
-
-```php
-<?php
-/**
- * Плагин: Расширенный импорт товаров
- * События: msOnBeforeImport, msOnImportRow, msOnAfterImport
- */
-
-switch ($modx->event->name) {
-
-    case 'msOnBeforeImport':
-        $params = &$scriptProperties['params'];
-
-        // Сохраняем время начала для статистики
-        $modx->eventData['import_start'] = microtime(true);
-        $modx->eventData['import_log'] = [];
-
-        $modx->log(modX::LOG_LEVEL_INFO, sprintf(
-            '[Import] Начало импорта: %s',
-            basename($params['file'])
-        ));
-        break;
-
-    case 'msOnImportRow':
-        $data = &$scriptProperties['data'];
-        $tvData = &$scriptProperties['tvData'];
-        $optionData = &$scriptProperties['optionData'];
-        $gallery = &$scriptProperties['gallery'];
-        $row = $scriptProperties['row'];
-
-        // 1. Генерация alias
-        if (empty($data['alias'])) {
-            $data['alias'] = $modx->filterPathSegment($data['pagetitle']);
-            // Добавляем артикул для уникальности
-            if (!empty($data['article'])) {
-                $data['alias'] .= '-' . mb_strtolower($data['article']);
-            }
-        }
-
-        // 2. Обработка цен
-        foreach (['price', 'old_price', 'wholesale_price'] as $priceField) {
-            if (isset($data[$priceField])) {
-                $data[$priceField] = (float)str_replace([' ', ','], ['', '.'], $data[$priceField]);
-            }
-        }
-
-        // 3. Расчёт скидки
-        if ($data['price'] > 0 && $data['old_price'] > $data['price']) {
-            $discount = round((($data['old_price'] - $data['price']) / $data['old_price']) * 100);
-            $tvData['discount_percent'] = $discount;
-        }
-
-        // 4. Автоматическое определение остатков
-        if (isset($data['remains'])) {
-            $remains = (int)$data['remains'];
-            $data['remains'] = $remains;
-
-            // Статус публикации по остаткам
-            if ($remains <= 0) {
-                $data['published'] = 0;
-            }
-        }
-
-        // 5. Обработка характеристик из CSV
-        if (!empty($data['specifications'])) {
-            // Формат: "Цвет:Красный;Размер:XL;Материал:Хлопок"
-            $specs = explode(';', $data['specifications']);
-            foreach ($specs as $spec) {
-                $parts = explode(':', $spec, 2);
-                if (count($parts) === 2) {
-                    $key = mb_strtolower(trim($parts[0]));
-                    $key = preg_replace('/[^a-zа-яё0-9_]/u', '_', $key);
-                    $optionData[$key] = trim($parts[1]);
-                }
-            }
-            unset($data['specifications']);
-        }
-
-        // 6. Логирование
-        $modx->eventData['import_log'][] = sprintf(
-            'Row %d: %s (price: %s)',
-            $row,
-            $data['pagetitle'],
-            $data['price'] ?? 'N/A'
-        );
-        break;
-
-    case 'msOnAfterImport':
-        $stats = $scriptProperties['stats'];
-        $startTime = $modx->eventData['import_start'] ?? microtime(true);
-        $duration = round(microtime(true) - $startTime, 2);
-
-        // Формирование отчёта
-        $report = [
-            'duration' => $duration . ' сек',
-            'total' => $stats['total'],
-            'created' => $stats['created'],
-            'updated' => $stats['updated'],
-            'errors' => $stats['errors'],
-            'skipped' => $stats['skipped'],
-        ];
-
-        $modx->log(modX::LOG_LEVEL_INFO, sprintf(
-            '[Import] Завершено за %s сек. Создано: %d, обновлено: %d, ошибок: %d',
-            $duration,
-            $stats['created'],
-            $stats['updated'],
-            $stats['errors']
-        ));
-
-        // Сохранение отчёта
-        $reportFile = MODX_CORE_PATH . 'cache/import_reports/' . date('Y-m-d_H-i-s') . '.json';
-        if (!is_dir(dirname($reportFile))) {
-            mkdir(dirname($reportFile), 0755, true);
-        }
-        file_put_contents($reportFile, json_encode($report, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-
-        // Очистка кэша после импорта
-        $modx->cacheManager->refresh();
-
-        // Отправка отчёта
-        if ($stats['errors'] > 0) {
-            $adminEmail = $modx->getOption('emailsender');
-            // mail($adminEmail, 'Import completed with errors', json_encode($report));
-        }
+        $modx->event->returnedValues['data'] = $data;
         break;
 }
 ```
