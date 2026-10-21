@@ -11,11 +11,13 @@ title: Работа с плагинами
 
 | MODX-событие | Назначение |
 | --- | --- |
-| `OnMODXInit` | Регистрация сервисов, namespace |
-| `OnLoadWebDocument` | Подключение фронтенд-assets, `registerFrontend()` |
+| `OnMODXInit` | Сервис `ms3` уже зарегистрирован: плагин вызывает `loadMap()`, а в контексте `mgr` планирует сброс ACL-кэша каталога |
+| `OnManagerPageBeforeRender` | Подключение лексикона и `ms3.manager.js`. Если версия файлов на диске отстаёт от установленного пакета, показывает баннер |
+| `OnLoadWebDocument` | Подключение файлов фронтенда через `registerFrontend()` |
 | `OnDocFormSave` | Конвертация ресурса в товар через `ProductService::handleConversion()` |
-| `OnBeforeUserFormSave` / `OnUserSave` | Sync `msCustomer` ↔ `modUser` при `ms3_customer_sync_enabled` |
-| `OnUserRemove` | Очистка связанных данных покупателя |
+| `OnBeforeUserFormSave` / `OnUserSave` | Синхронизация `msCustomer` ↔ `modUser` при `ms3_customer_sync_enabled` |
+| `OnUserRemove` | Если включены `ms3_customer_sync_enabled` и `ms3_customer_sync_delete_with_user`, обнуляет `msCustomer.user_id`. Покупателя не удаляет. Без второго флага обработчик ничего не делает |
+| `OnResourceGroupSave`, `OnResourceGroupRemove`, `OnResourceAddToResourceGroup`, `OnResourceRemoveFromResourceGroup`, `OnUserGroupRemove` | Сброс ACL-кэша каталога |
 
 Для бизнес-логики корзины и заказов подписывайтесь на события из раздела [События](../events).
 
@@ -30,11 +32,11 @@ title: Работа с плагинами
 
 switch ($modx->event->name) {
     case 'msOnBeforeAddToCart':
-        // Код для события "перед добавлением"
+        // До добавления в корзину
         break;
 
     case 'msOnAddToCart':
-        // Код для события "после добавления"
+        // После добавления в корзину
         break;
 }
 ```
@@ -43,13 +45,10 @@ switch ($modx->event->name) {
 
 ### Способ 1: Массив $scriptProperties
 
-Все параметры события доступны в массиве `$scriptProperties`:
-
 ```php
 <?php
 switch ($modx->event->name) {
     case 'msOnBeforeAddToCart':
-        // Получение конкретных параметров
         $product = $scriptProperties['msProduct'];
         $count = $scriptProperties['count'];
         $options = $scriptProperties['options'];
@@ -65,7 +64,7 @@ switch ($modx->event->name) {
 switch ($modx->event->name) {
     case 'msOnBeforeAddToCart':
         extract($scriptProperties);
-        // Теперь доступны переменные: $msProduct, $count, $options, $controller
+        // Доступны: $msProduct, $count, $options, $controller
         break;
 }
 ```
@@ -74,17 +73,15 @@ switch ($modx->event->name) {
 
 ```php
 <?php
-// Вывести список всех доступных параметров
 $modx->log(modX::LOG_LEVEL_ERROR, '[' . $modx->event->name . '] Параметры: ' . print_r(array_keys($scriptProperties), true));
 
-// Вывести параметры с их значениями
 $modx->log(modX::LOG_LEVEL_ERROR, '[' . $modx->event->name . '] ' . print_r($scriptProperties, true));
 ```
 
 ## Параметр controller
 
 ::: info Приходит автоматически
-Во всех событиях контроллеров MiniShop3 передаётся параметр `controller` — экземпляр текущего контроллера (Cart, Order, Customer).
+Во всех событиях контроллеров MiniShop3 передаётся параметр `controller`: экземпляр текущего контроллера (Cart, Order, Customer).
 :::
 
 Через контроллер доступны MiniShop3 и MODX:
@@ -96,21 +93,17 @@ switch ($modx->event->name) {
         /** @var \MiniShop3\Controllers\Cart\Cart $controller */
         $controller = $scriptProperties['controller'];
 
-        // Доступ к MiniShop3
         $ms3 = $controller->ms3;
-
-        // Доступ к MODX
         $modx = $controller->modx;
 
-        // Доступ к текущей корзине (внутренние данные)
-        // Используйте публичные методы контроллера
+        // Внутренние данные корзины: только публичные методы контроллера
         break;
 }
 ```
 
 ## Прерывание операции
 
-Событие с префиксом `Before` прерывают, вернув сообщение об ошибке:
+Прерывание работает только там, где вызывающий код читает ответ: префикс `Before` сам по себе ничего не гарантирует. `msOnBeforeSaveOrder` и `msOnBeforeRemoveOrder` ответ плагина не читают, а у `msOnBeforeValidateOrderValue` из него берётся только `value`.
 
 ### Метод $modx->event->output()
 
@@ -120,13 +113,13 @@ switch ($modx->event->name) {
     case 'msOnBeforeAddToCart':
         $product = $scriptProperties['msProduct'];
 
-        // Запретить добавление товаров с нулевой ценой
+        // Запретить товар с нулевой ценой
         if ($product->get('price') <= 0) {
             $modx->event->output('Товар недоступен для заказа');
-            return; // Важно: выйти из switch
+            return; // выйти из switch, иначе код ниже выполнится
         }
 
-        // Запретить добавление более 10 единиц
+        // Не больше 10 единиц
         if ($scriptProperties['count'] > 10) {
             $modx->event->output('Максимум 10 единиц товара');
             return;
@@ -137,9 +130,25 @@ switch ($modx->event->name) {
 
 ### Как это работает
 
-1. Метод `invokeEvent()` MiniShop3 собирает все выводы плагинов
-2. Если есть хотя бы один непустой вывод, операция прерывается
-3. Сообщение возвращается пользователю (на фронтенде или в ответе API)
+```mermaid
+flowchart LR
+  plugins["Плагины"] --> collect["Сбор output()"]
+  collect --> check{"Есть непустой вывод?"}
+  check -->|да| cancel["Операция отменена, текст покупателю"]
+  check -->|нет| go["Операция продолжается"]
+```
+
+1. Метод `invokeEvent()` MiniShop3 собирает все выводы плагинов.
+2. Если есть хотя бы один непустой вывод, операция прерывается.
+3. Сообщение возвращается пользователю: на фронтенде или в ответе API.
+
+::: warning `return` из плагина операцию не отменяет
+В результат события попадает только то, что плагин отдал через `output()`: `modX::invokeEvent()` кладёт в массив результатов `$this->event->_output`, а возвращённое плагином значение использует иначе. Строку оно запишет в `error.log` как ошибку события, а `false` — как «Plugin … failed!».
+
+То есть `return 'cancel'` не просто не сработает: он ещё и засорит журнал записью об ошибке. Отменяйте через `output()`, а `return` используйте только чтобы выйти из `switch`.
+
+И ещё одно свойство `output()`: при повторном вызове он **дописывает** текст к уже накопленному, а не заменяет его. Два вызова в одном плагине склеятся в одно сообщение.
+:::
 
 ### События, поддерживающие прерывание
 
@@ -150,11 +159,13 @@ switch ($modx->event->name) {
 - `msOnBeforeRemoveFromCart`
 - `msOnBeforeEmptyCart`
 - `msOnBeforeAddToOrder`
+- `msOnAddToOrder`
 - `msOnBeforeRemoveFromOrder`
+- `msOnBeforeEmptyOrder`
+- `msOnEmptyOrder`
 - `msOnSubmitOrder`
 - `msOnBeforeCreateOrder`
 - `msOnBeforeChangeOrderStatus`
-- И другие события с префиксом `Before`
 
 ## Модификация данных
 
@@ -166,15 +177,14 @@ switch ($modx->event->name) {
 <?php
 switch ($modx->event->name) {
     case 'msOnBeforeAddToCart':
-        // Получаем ссылку на returnedValues
         $values = &$modx->event->returnedValues;
 
-        // Изменить количество (минимум 2 штуки)
+        // Минимум 2 штуки
         if ($scriptProperties['count'] < 2) {
             $values['count'] = 2;
         }
 
-        // Добавить метку источника в опции
+        // Метка источника в опциях
         $options = $scriptProperties['options'] ?? [];
         $options['source'] = 'promo_landing';
         $values['options'] = $options;
@@ -182,56 +192,53 @@ switch ($modx->event->name) {
 }
 ```
 
+Менять `$scriptProperties` по ссылке бесполезно: `modX::invokeEvent()` собирает параметры через `array_merge()`, и ссылка до вызывающего кода не доходит. Единственный канал — `returnedValues`: после слияния вызывающий код читает `$response['data']['count']`.
+
 ### Берите returnedValues по ссылке (&)
 
 ```php
-// Правильно - изменения применятся
+// Правильно: изменения применятся
 $values = &$modx->event->returnedValues;
 $values['count'] = 5;
 
-// Неправильно - изменения потеряются
+// Неправильно: изменения потеряются
 $values = $modx->event->returnedValues;
 $values['count'] = 5;
 ```
 
 ## Utils::invokeEvent и EventGate
 
-Большинство событий корзины, заказа, стоимости и покупателя идут через `MiniShop3\Utils\Utils::invokeEvent()`, а не напрямую через `$modx->invokeEvent()`. Перед вызовом ядро очищает `returnedValues`, после — собирает ответ:
+```mermaid
+flowchart TD
+  subgraph utils [Utils invokeEvent]
+    text["output с текстом"] --> fail["success false, текст в message"]
+    values["returnedValues"] --> data["Поля попадают в data"]
+  end
+  subgraph gate [EventGate invokeRaw]
+    cancel["output cancel или false"] --> stopped["isCancelled"]
+    channel["Именованный канал"] --> apply["applyReturnedArray"]
+  end
+```
+
+Большинство событий корзины, заказа, стоимости и покупателя идут через `MiniShop3\Utils\Utils::invokeEvent()`, а не напрямую через `$modx->invokeEvent()`. Перед вызовом ядро очищает `returnedValues`, после собирает ответ:
 
 | Поле ответа | Смысл |
 | --- | --- |
 | `success` | `true`, если ни один плагин не вернул непустой `output` |
 | `message` | Тексты из `output`, склеенные через `<br/>` |
-| `data` | Исходные `$scriptProperties`, поверх них — ключи из `returnedValues` (поверхностное слияние) |
+| `data` | Исходные `$scriptProperties`, поверх них ключи из `returnedValues` (поверхностное слияние) |
 | `values` | Сырой массив `returnedValues` всех плагинов |
 
-Слияние поверхностное: если два плагина вернули `returnedValues['count']`, победит значение плагина с **большим** priority (MODX вызывает плагины по возрастанию priority, каждый следующий перезаписывает ключ).
-
-### Два способа изменить данные
-
-1. **По ссылке** в `$scriptProperties` (прежний способ из MS2, по-прежнему работает там, где параметры переданы с `&`).
-2. **`returnedValues`** — предпочтительный контракт с 1.11+.
-
-```php
-<?php
-switch ($modx->event->name) {
-    case 'msOnBeforeAddToCart':
-        $values = &$modx->event->returnedValues;
-        $values['count'] = min(99, (int) $scriptProperties['count']);
-        break;
-}
-```
-
-Вызывающий код читает `$response['data']['count']` после merge.
+Слияние поверхностное: если два плагина вернули `returnedValues['count']`, победит значение плагина с **большим** priority. MODX вызывает плагины по возрастанию priority, каждый следующий перезаписывает ключ.
 
 ### Прерывание: output, false и cancel
 
 | Сигнал | Где работает | Эффект |
 | --- | --- | --- |
-| `$modx->event->output('текст')` | `Utils::invokeEvent` | `success = false`, текст в `message` |
-| `return false` или `return 'cancel'` | import, notifications, часть raw-вызовов | `EventGate::isCancelled()` → `true` |
+| `$modx->event->output('cancel')` или `output(false)` | import, notifications | `EventGate::isCancelled()` → `true` |
+| `$modx->event->output('текст')` | `Utils::invokeEvent` | `success = false`, текст в `message`. Срабатывает любой непустой вывод |
 
-Для `isCancelled()` `false` и строка `'cancel'` равнозначны. Что означает отмена, решает вызывающий код:
+`return false` и `return 'cancel'` отмены не делают — ядро читает только `output()`. Для `isCancelled()` равнозначны `false` и строка `cancel`, а что означает сама отмена, решает вызывающий код:
 
 | Событие | Что делает ядро при отмене |
 | --- | --- |
@@ -244,13 +251,13 @@ switch ($modx->event->name) {
 // Импорт: пропустить строку без ошибки
 case 'msOnImportRow':
     if (empty($scriptProperties['data']['price'])) {
-        return 'cancel';
+        $modx->event->output('cancel');
     }
     break;
 ```
 
 ::: warning After-события в админке заказов
-`msOnCreateOrderProduct`, `msOnUpdateOrderProduct`, `msOnRemoveOrderProduct` вызываются **после** `save()` / `remove()`. Ошибка плагина пишется в лог, а HTTP-ответ клиенту остаётся успешным. Прервать операцию можно только в парных `msOnBefore*`. Подробнее: [События товаров в заказе](order-product).
+`msOnCreateOrderProduct`, `msOnUpdateOrderProduct`, `msOnRemoveOrderProduct` вызываются **после** `save()` / `remove()`. В Manager API ошибка плагина пишется в лог, HTTP-ответ остаётся успешным. `OrderDraftManager::addProductFromSnapshot()` ответ after-события не читает и в лог не пишет. Прервать операцию можно только в парных `msOnBefore*`. Подробнее: [События товаров в заказе](order-product).
 :::
 
 ### Именованные каналы returnedValues (import, msProducts, notifications)
@@ -259,27 +266,27 @@ case 'msOnImportRow':
 
 | Событие | Ключ в `returnedValues` | Поведение |
 | --- | --- | --- |
-| `msOnBeforeImport` | `params` | list → замена; assoc → `array_replace` |
-| `msOnImportRow` | `data`, `tvData`, `optionData`, `gallery` | то же |
-| `msOnProductsLoad` | `rows` | то же |
-| `msOnProductPrepare` | `row` | то же |
-| `msOnBeforeSendNotification` | `recipient`, `channels` | то же; `channels` list заменяет список каналов целиком |
+| `msOnBeforeImport` | `params` | Список заменяет канал целиком, ассоциативный массив накладывается через `array_replace` |
+| `msOnImportRow` | `data`, `tvData`, `optionData`, `gallery` | То же |
+| `msOnProductsLoad` | `rows` | То же |
+| `msOnProductPrepare` | `row` | То же |
+| `msOnBeforeSendNotification` | `recipient`, `channels` | То же; список в `channels` заменяет набор каналов целиком |
 
 ```php
 <?php
 case 'msOnImportRow':
     $modx->event->returnedValues = [
-        'data' => ['vendor_id' => 1],           // patch полей ресурса
-        // 'gallery' => ['/path/a.jpg', '/path/b.jpg'], // list — полная замена галереи
+        'data' => ['vendor_id' => 1],           // правка отдельных полей ресурса
+        // 'gallery' => ['/path/a.jpg', '/path/b.jpg'], // список: полная замена галереи
     ];
     break;
 ```
 
-События import / msProducts / notifications вызываются через `EventGate::invokeRaw()`, не через `Utils::invokeEvent()`.
+Эти события вызываются через `EventGate::invokeRaw()`, а не через `Utils::invokeEvent()`.
 
 ## Передача данных между плагинами
 
-Используйте `$modx->eventData` для передачи данных между плагинами одного события или между разными событиями в рамках одного запроса.
+`$modx->eventData` передаёт данные между плагинами одного события или между разными событиями одного запроса.
 
 ### Пример: модификация цены
 
@@ -287,18 +294,15 @@ case 'msOnImportRow':
 <?php
 switch ($modx->event->name) {
     case 'msOnGetProductPrice':
-        // Получаем текущую цену (может быть уже изменена другим плагином)
         $price = $modx->eventData['msOnGetProductPrice']['price']
             ?? $scriptProperties['price'];
 
         $data = $scriptProperties['data'];
 
-        // Скидка 15% для категории 5
         if ($data['parent'] == 5) {
             $price = $price * 0.85;
         }
 
-        // Сохраняем изменённую цену для следующих плагинов
         $modx->eventData['msOnGetProductPrice']['price'] = $price;
         break;
 }
@@ -310,13 +314,11 @@ switch ($modx->event->name) {
 <?php
 switch ($modx->event->name) {
     case 'msOnBeforeAddToCart':
-        // Сохраняем информацию для использования в msOnAddToCart
         $modx->eventData['myPlugin']['original_count'] = $scriptProperties['count'];
         $modx->eventData['myPlugin']['added_at'] = time();
         break;
 
     case 'msOnAddToCart':
-        // Получаем данные, сохранённые в предыдущем событии
         $originalCount = $modx->eventData['myPlugin']['original_count'] ?? null;
         $addedAt = $modx->eventData['myPlugin']['added_at'] ?? null;
 
@@ -362,7 +364,6 @@ switch ($modx->event->name) {
         if ($page === 'product_update') {
             $controller = $scriptProperties['controller'];
 
-            // Показать уведомление
             $controller->addHtml('<script>
                 Ext.onReady(function() {
                     MODx.msg.alert("Внимание", "Не забудьте проверить цены!");
@@ -373,7 +374,7 @@ switch ($modx->event->name) {
 }
 ```
 
-### Toast-уведомления
+### Всплывающее уведомление
 
 ```php
 <?php
@@ -383,7 +384,6 @@ switch ($modx->event->name) {
         $controller = $scriptProperties['controller'];
 
         if ($page === 'orders') {
-            // Показать toast-уведомление
             $controller->addHtml('<script>
                 Ext.onReady(function() {
                     Ext.Msg.notify("MiniShop3", "Есть новые заказы!");
@@ -396,17 +396,13 @@ switch ($modx->event->name) {
 
 ## Приоритет плагинов
 
-Порядок выполнения плагинов определяется полем **priority** в настройках плагина:
-
-- Меньшее значение = раньше выполняется
-- По умолчанию: 0
-- Диапазон: любое целое число
+Порядок задаёт поле **priority** в настройках плагина: чем меньше значение, тем раньше плагин выполняется. По умолчанию 0, допустимо любое целое число.
 
 ### Когда важен приоритет
 
-1. **Модификация цены** — плагины применяют скидки последовательно
-2. **Валидация** — один плагин может зависеть от результата другого
-3. **Передача данных** — плагин-источник должен выполниться раньше плагина-получателя
+- **Модификация цены:** плагины применяют скидки последовательно.
+- **Валидация:** один плагин может зависеть от результата другого.
+- **Передача данных:** плагин-источник должен выполниться раньше плагина-получателя.
 
 ## Отладка плагинов
 
@@ -414,13 +410,11 @@ switch ($modx->event->name) {
 
 ```php
 <?php
-// Уровни логирования
 $modx->log(modX::LOG_LEVEL_ERROR, 'Ошибка');     // Всегда видно
 $modx->log(modX::LOG_LEVEL_WARN, 'Внимание');   // Важные предупреждения
 $modx->log(modX::LOG_LEVEL_INFO, 'Информация'); // Информационные сообщения
 $modx->log(modX::LOG_LEVEL_DEBUG, 'Отладка');   // Детальная отладка
 
-// Формат с контекстом
 $modx->log(modX::LOG_LEVEL_ERROR,
     '[MyPlugin::' . $modx->event->name . '] ' . $message
 );
@@ -430,24 +424,29 @@ $modx->log(modX::LOG_LEVEL_ERROR,
 
 ```php
 <?php
-// В начале плагина
 $modx->log(modX::LOG_LEVEL_ERROR, '=== PLUGIN START: ' . $modx->event->name . ' ===');
 
 switch ($modx->event->name) {
     case 'msOnBeforeAddToCart':
         $modx->log(modX::LOG_LEVEL_ERROR, 'msOnBeforeAddToCart triggered');
-        // ...
         break;
 }
 
 $modx->log(modX::LOG_LEVEL_ERROR, '=== PLUGIN END ===');
 ```
 
+В `core/cache/logs/error.log` после добавления товара:
+
+```text
+[2026-10-15 18:00:01] (ERROR) === PLUGIN START: msOnBeforeAddToCart ===
+[2026-10-15 18:00:01] (ERROR) msOnBeforeAddToCart triggered
+[2026-10-15 18:00:01] (ERROR) === PLUGIN END ===
+```
+
 ### Проверка наличия события
 
 ```php
 <?php
-// Получить все плагины, подписанные на событие
 $plugins = $modx->getCollection('modPluginEvent', [
     'event' => 'msOnBeforeAddToCart'
 ]);
@@ -465,11 +464,10 @@ foreach ($plugins as $pluginEvent) {
 ### 1. Забыли return после output()
 
 ```php
-// Неправильно — код продолжит выполняться
+// Неправильно: код продолжит выполняться
 if ($error) {
     $modx->event->output('Ошибка');
 }
-// Этот код выполнится даже при ошибке
 doSomething();
 
 // Правильно
@@ -479,116 +477,34 @@ if ($error) {
 }
 ```
 
-### 2. Не используют ссылку для returnedValues
+### 2. Проверка в after-событии вместо before
 
 ```php
-// Неправильно
-$values = $modx->event->returnedValues;
-$values['count'] = 10; // Изменения потеряются
-
-// Правильно
-$values = &$modx->event->returnedValues;
-$values['count'] = 10;
-```
-
-### 3. Неправильный тип события для прерывания
-
-```php
-// msOnAddToCart — событие ПОСЛЕ добавления
-// Прерывание здесь не остановит добавление (товар уже добавлен)
+// msOnAddToCart: событие ПОСЛЕ добавления.
+// Товар уже в корзине, и output() его оттуда не уберёт. Но ответ всё равно
+// станет ошибочным: покупатель увидит сообщение при изменившейся корзине
 case 'msOnAddToCart':
-    $modx->event->output('Ошибка'); // Бесполезно
+    $modx->event->output('Ошибка');
     break;
 
-// msOnBeforeAddToCart — событие ДО добавления
+// msOnBeforeAddToCart: событие ДО добавления
 case 'msOnBeforeAddToCart':
     $modx->event->output('Ошибка'); // Остановит добавление
     break;
 ```
 
-### 4. Забыли break в switch
+Расхождение между корзиной и ответом хуже, чем честный отказ: фронтенд покажет ошибку, а счётчик товаров уже вырос. Проверки размещайте в `msOnBefore*`.
+
+### 3. Забыли break в switch
 
 ```php
 switch ($modx->event->name) {
     case 'msOnBeforeAddToCart':
         // код
-        // Забыли break — выполнится следующий case!
+        // Забыли break: выполнится следующий case!
 
     case 'msOnAddToCart':
         // Этот код тоже выполнится для msOnBeforeAddToCart
-        break;
-}
-```
-
-## Полный пример плагина
-
-```php
-<?php
-/**
- * Плагин: Контроль добавления в корзину
- *
- * События: msOnBeforeAddToCart, msOnAddToCart
- *
- * Функционал:
- * - Запрет добавления товаров без цены
- * - Ограничение максимального количества
- * - Логирование добавлений
- */
-
-switch ($modx->event->name) {
-
-    case 'msOnBeforeAddToCart':
-        /** @var \MiniShop3\Model\msProduct $product */
-        $product = $scriptProperties['msProduct'];
-        $count = $scriptProperties['count'];
-        $options = $scriptProperties['options'] ?? [];
-
-        // Проверка: товар должен иметь цену
-        if ($product->get('price') <= 0) {
-            $modx->event->output($modx->lexicon('ms3_cart_product_not_available'));
-            return;
-        }
-
-        // Проверка: максимум 99 единиц
-        $maxCount = 99;
-        if ($count > $maxCount) {
-            $values = &$modx->event->returnedValues;
-            $values['count'] = $maxCount;
-
-            // Сохраняем для уведомления в msOnAddToCart
-            $modx->eventData['cartControl']['count_limited'] = true;
-            $modx->eventData['cartControl']['original_count'] = $count;
-        }
-
-        // Добавляем метку времени в опции
-        $values = &$modx->event->returnedValues;
-        $options['added_timestamp'] = time();
-        $values['options'] = $options;
-        break;
-
-    case 'msOnAddToCart':
-        $product = $scriptProperties['msProduct'];
-        $count = $scriptProperties['count'];
-        $productKey = $scriptProperties['product_key'];
-
-        // Логируем добавление
-        $modx->log(modX::LOG_LEVEL_INFO, sprintf(
-            '[CartControl] Товар добавлен: %s (ID: %d), количество: %d, ключ: %s',
-            $product->get('pagetitle'),
-            $product->get('id'),
-            $count,
-            $productKey
-        ));
-
-        // Проверяем, было ли ограничено количество
-        if (!empty($modx->eventData['cartControl']['count_limited'])) {
-            $original = $modx->eventData['cartControl']['original_count'];
-            $modx->log(modX::LOG_LEVEL_WARN, sprintf(
-                '[CartControl] Количество ограничено: запрошено %d, добавлено %d',
-                $original,
-                $count
-            ));
-        }
         break;
 }
 ```

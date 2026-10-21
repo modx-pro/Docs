@@ -139,7 +139,10 @@ switch ($modx->event->name) {
 - `msOnBeforeRemoveFromCart`
 - `msOnBeforeEmptyCart`
 - `msOnBeforeAddToOrder`
+- `msOnAddToOrder`
 - `msOnBeforeRemoveFromOrder`
+- `msOnBeforeEmptyOrder`
+- `msOnEmptyOrder`
 - `msOnSubmitOrder`
 - `msOnBeforeCreateOrder`
 - `msOnBeforeChangeOrderStatus`
@@ -215,7 +218,13 @@ Callers read `$response['data']['count']` after merge.
 | Signal | Where | Effect |
 | --- | --- | --- |
 | `$modx->event->output('text')` | `Utils::invokeEvent` | `success = false`, text in `message` |
-| `return false` or `return 'cancel'` | import, notifications, some raw calls | `EventGate::isCancelled()` → `true` |
+| `$modx->event->output(false)` or `output('cancel')` | import, notifications, some raw calls | `EventGate::isCancelled()` → `true` |
+
+::: warning A plugin's `return` cancels nothing
+Only what a plugin passed to `output()` reaches the event result: `modX::invokeEvent()` collects `$this->event->_output`, while the plugin's return value is used for something else — a string is written to `error.log` as an event error, `false` as "Plugin … failed!".
+
+So `return 'cancel'` not only fails to cancel, it also pollutes the log. Cancel through `output()` and use `return` only to leave the `switch`.
+:::
 
 For `isCancelled()`, `false` and the string `'cancel'` are equivalent. What the cancellation means is decided by the calling code:
 
@@ -229,7 +238,8 @@ For `isCancelled()`, `false` and the string `'cancel'` are equivalent. What the 
 <?php
 case 'msOnImportRow':
     if (empty($scriptProperties['data']['price'])) {
-        return 'cancel';
+        $modx->event->output('cancel');
+        return;
     }
     break;
 ```
@@ -457,13 +467,15 @@ $values = &$modx->event->returnedValues;
 $values['count'] = 10;
 ```
 
-### 3. Wrong event type for aborting
+### 3. Checking in an after-event instead of a before-event
 
 ```php
-// msOnAddToCart — event AFTER add
-// Aborting here does not stop the add (product already added)
+// msOnAddToCart — event AFTER add.
+// The product is already in the cart and output() will not take it back.
+// The response still turns into an error, so the shopper sees a message
+// while the cart has already changed
 case 'msOnAddToCart':
-    $modx->event->output('Error'); // Useless
+    $modx->event->output('Error');
     break;
 
 // msOnBeforeAddToCart — event BEFORE add
@@ -471,6 +483,8 @@ case 'msOnBeforeAddToCart':
     $modx->event->output('Error'); // Stops the add
     break;
 ```
+
+A cart that disagrees with the response is worse than an honest refusal: the frontend shows an error while the item counter has already gone up. Put the checks in `msOnBefore*`.
 
 ### 4. Forgot break in switch
 

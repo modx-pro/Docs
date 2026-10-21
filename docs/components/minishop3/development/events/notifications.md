@@ -7,23 +7,17 @@ title: События уведомлений
 
 ## Встроенные каналы
 
-MiniShop3 включает два канала уведомлений из коробки:
-
 | Канал | Класс | Описание |
 | --- | --- | --- |
-| `email` | `EmailChannel` | Отправка через MODX modMail |
+| `email` | `EmailChannel` | Отправка через MODX modMail. Шаблоны задаются чанками |
 | `telegram` | `TelegramChannel` | Отправка через Telegram Bot API |
-
-### Email-канал
-
-Использует стандартный MODX modMail. Шаблоны настраиваются через чанки.
 
 ### Telegram-канал
 
-Отправляет сообщения через Telegram Bot API. Требует настройки:
+Каналу нужны две системные настройки:
 
-- `ms3_telegram_bot_token` — токен бота
-- `ms3_telegram_manager` — Chat ID менеджеров (через запятую)
+- `ms3_telegram_bot_token` — токен бота;
+- `ms3_telegram_manager` — Chat ID менеджеров через запятую.
 
 ::: warning Ограничение Telegram
 Telegram-бот не может инициировать диалог. Покупатель должен сам написать боту первое сообщение. Поэтому Telegram-уведомления работают только для менеджеров, которые заранее настроили Chat ID.
@@ -31,38 +25,42 @@ Telegram-бот не может инициировать диалог. Поку�
 
 ### Уведомления покупателям через Telegram
 
-Понадобятся согласие покупателя на уведомления и его Chat ID, сохранённый в профиле магазина.
+Встроенный канал покупателей не уведомляет, этот сценарий собирают сами. Понадобятся согласие покупателя на уведомления, привязка его Telegram-аккаунта и сохранённый Chat ID.
 
-#### Шаг 1: Добавить поле для Chat ID
+#### Шаг 1: Где канал берёт Chat ID
 
-Создайте поле `telegram_chat_id` для класса `msCustomer` в утилите [«Свои поля»](/components/minishop3/interface/utilities/extra-fields).
+Канал ищет Chat ID в двух местах, по порядку:
 
-::: warning Колонка, добавленная руками, в шаблоны не попадёт
-`ALTER TABLE modx_ms3_customers ADD COLUMN telegram_chat_id …` выглядит коротким путём, но с 1.14.2-beta1 данные покупателя идут в чанки кабинета и в плейсхолдеры письма через `CustomerPublicDto`. К [публичному набору](#recipient) он добавляет только ключи активных дополнительных полей, поэтому колонки, созданной в обход утилиты, в `{$customer}` не окажется. Утилита создаёт колонку сама.
+1. **`modUserProfile.extended`** — ключ `telegram_chat_id` у пользователя MODX, чей id записан в `msOrder.user_id`. Работает, если покупатель связан с учётной записью.
+2. **Своё поле `telegram_chat_id` у `msCustomer`** — попадает в данные получателя через `CustomerPublicDto`, который добавляет к публичному набору ключи активных полей из утилиты [«Свои поля»](/components/minishop3/interface/utilities/extra-fields). Работает и для покупателя без учётной записи MODX.
+
+::: warning Колонка, добавленная руками, не сработает
+`ALTER TABLE modx_ms3_customers ADD COLUMN telegram_chat_id …` выглядит коротким путём, но в данные получателя попадают только ключи **активных полей**, зарегистрированных утилитой. Колонки, созданной в обход неё, в `{$customer}` не окажется — утилита заводит колонку сама.
+
+Есть и третий путь, но он не работает: `OrderStatusService` читает `extended` у самого `msCustomer`, а такого поля в схеме покупателя нет — [баг #900](https://github.com/modx-pro/MiniShop3/issues/900). На два источника выше он не влияет.
 :::
 
-#### Шаг 2: Создать бота с Deep Linking
+#### Шаг 2: Бот с Deep Linking
 
-Используйте [Telegram Deep Linking](https://core.telegram.org/bots/features#deep-linking) для привязки аккаунта:
+Telegram-аккаунт привязывают через [Deep Linking](https://core.telegram.org/bots/features#deep-linking):
 
 ```php
 <?php
-// Генерация уникальной ссылки для привязки
+// Ссылка привязки: id покупателя и короткий токен в параметре start
 $customerId = $msCustomer->get('id');
 $token = hash('sha256', $customerId . $modx->getOption('ms3_snippet_token_secret'));
 $linkCode = base64_encode($customerId . ':' . substr($token, 0, 16));
 
-$botUsername = 'YourShopBot'; // Имя вашего бота
+$botUsername = 'YourShopBot'; // username бота без @
 $telegramLink = "https://t.me/{$botUsername}?start={$linkCode}";
 ```
 
 #### Шаг 3: Обработка команды /start на стороне бота
 
-Бот должен обрабатывать параметр `start` и сохранять Chat ID:
+Бот обрабатывает параметр `start` и пишет Chat ID в `extended` профиля связанного пользователя:
 
 ```php
 <?php
-// Webhook обработчик бота (упрощённый пример)
 $update = json_decode(file_get_contents('php://input'), true);
 $message = $update['message'] ?? null;
 
@@ -71,17 +69,24 @@ if ($message && str_starts_with($message['text'], '/start ')) {
     $decoded = base64_decode($linkCode);
     [$customerId, $tokenPart] = explode(':', $decoded);
 
-    // Проверка токена
     $expectedToken = hash('sha256', $customerId . $modx->getOption('ms3_snippet_token_secret'));
+    // Сверяем хвост токена из ссылки
     if (substr($expectedToken, 0, 16) === $tokenPart) {
         // Сохраняем Chat ID в профиле покупателя
         $customer = $modx->getObject(\MiniShop3\Model\msCustomer::class, $customerId);
-        if ($customer) {
-            $customer->set('telegram_chat_id', $message['chat']['id']);
-            $customer->save();
-
-            // Отправляем подтверждение
-            sendTelegramMessage($message['chat']['id'], '✅ Уведомления подключены!');
+        $userId = $customer ? (int) $customer->get('user_id') : 0;
+        $profile = $userId
+            ? $modx->getObject(\MODX\Revolution\modUserProfile::class, ['internalKey' => $userId])
+            : null;
+        if ($profile) {
+            $extended = $profile->get('extended');
+            if (!is_array($extended)) {
+                $extended = [];
+            }
+            // Chat ID пишется в extended профиля, не в msCustomer
+            $extended['telegram_chat_id'] = (string) $message['chat']['id'];
+            $profile->set('extended', $extended);
+            $profile->save();
         }
     }
 }
@@ -92,36 +97,45 @@ if ($message && str_starts_with($message['text'], '/start ')) {
 ```php
 <?php
 /**
-
  * Плагин: Telegram-уведомления покупателям
  * События: msOnChangeOrderStatus
-
  */
 
 switch ($modx->event->name) {
     case 'msOnChangeOrderStatus':
-        $order = $scriptProperties['order'];
-        $newStatus = $scriptProperties['status'];
+        $order = $scriptProperties['msOrder'];
+        $statusId = (int) $scriptProperties['status'];
 
-        // Получаем покупателя
+        // Покупатель заказа
         $customer = $order->getOne('Customer');
         if (!$customer) {
             return;
         }
 
-        $chatId = $customer->get('telegram_chat_id');
-        if (empty($chatId)) {
+        // Тот же порядок, что у встроенного канала: сначала профиль
+        // связанного пользователя, затем своё поле покупателя
+        $userId = (int) $order->get('user_id');
+        $profile = $userId
+            ? $modx->getObject(\MODX\Revolution\modUserProfile::class, ['internalKey' => $userId])
+            : null;
+        $extended = $profile ? $profile->get('extended') : [];
+        $chatId = is_array($extended) ? ($extended['telegram_chat_id'] ?? '') : '';
+        if ($chatId === '') {
+            $chatId = (string) $customer->get('telegram_chat_id');
+        }
+        if ($chatId === '') {
             return; // Покупатель не привязал Telegram
         }
 
-        // Формируем сообщение
-        $statusName = $modx->lexicon($newStatus->get('name'));
+        $status = $modx->getObject(\MiniShop3\Model\msOrderStatus::class, $statusId);
+        $statusName = $status ? $status->get('name') : (string) $statusId;
         $orderNum = $order->get('num');
 
+        // Текст сообщения
         $message = "📦 Заказ #{$orderNum}\n";
         $message .= "Статус изменён на: {$statusName}";
 
-        // Отправляем через Telegram API
+        // Отправка через Bot API
         $botToken = $modx->getOption('ms3_telegram_bot_token');
         $url = "https://api.telegram.org/bot{$botToken}/sendMessage";
 
@@ -143,58 +157,61 @@ switch ($modx->event->name) {
 
 #### Шаг 5: Кнопка привязки в личном кабинете
 
+Ссылку из шага 2 выводите в кабинете, а признак «уже привязан» берите из тех же двух источников, что и канал (шаг 1).
+
 Добавьте в шаблон профиля покупателя:
 
 ```fenom
-{if $customer.telegram_chat_id}
-    <div class="alert alert-success">
-        <i class="bi bi-telegram"></i> Telegram уведомления подключены
-    </div>
+{if $telegramLinked}
+    <p>Telegram-уведомления подключены</p>
 {else}
-    <a href="{$telegramLink}" class="btn btn-primary" target="_blank">
-        <i class="bi bi-telegram"></i> Подключить Telegram уведомления
-    </a>
+    <a href="{$telegramLink}" target="_blank">Подключить Telegram-уведомления</a>
 {/if}
 ```
 
 ::: tip Альтернативный подход
-Вместо собственного бота можно интегрироваться с существующими сервисами рассылок (SendPulse, Unisender и др.), которые предоставляют API для Telegram и берут на себя работу с подписками.
+Вместо своего бота можно подключить сервис рассылок (SendPulse, Unisender и другие): у них есть API для Telegram, а работу с подписками они берут на себя.
 :::
 
 ## msOnBeforeSendNotification
 
-Вызывается **перед** отправкой уведомления. Позволяет модифицировать получателя, подменить список каналов или отменить отправку.
+```mermaid
+flowchart LR
+  address["msOrderAddress: email и phone"] --> customer["msCustomer: email и phone"]
+  customer --> profile["modUserProfile.extended: telegram_chat_id"]
+  profile --> recipient["recipient"]
+```
+
+Вызывается **перед** отправкой уведомления. Можно изменить получателя, подменить список каналов или отменить отправку.
 
 ### Параметры
 
 | Параметр | Тип | Описание |
 | --- | --- | --- |
-| `notification` | `Notification` | Объект уведомления (абстрактный класс, конкретный подкласс — например `StatusChangedNotification`) |
-| `recipient` | `array` | Данные получателя — см. структуру ниже |
+| `notification` | `Notification` | Конкретный подкласс абстрактного `Notification`, например `StatusChangedNotification` |
+| `recipient` | `array` | Данные получателя, см. структуру ниже |
 | `recipientType` | `string` | Тип получателя: `customer` или `manager` |
-| `channels` | `string[]` | Список каналов отправки (например, `['email', 'telegram']`) |
+| `channels` | `string[]` | Список каналов отправки, например `['email', 'telegram']` |
 
 ### Структура `recipient` {#recipient}
 
 Для получателя типа `customer` (начиная с 1.12.0) `recipient` собирает `OrderStatusService::getCustomerRecipient()`. Приоритет источников:
 
 1. **`msOrderAddress`** заказа — email и телефон из формы оформления **именно этого** заказа.
-2. **`msCustomer`** — запасной вариант для email и телефона, а также источник `telegram_chat_id` и массива `customer`.
-3. **`modUserProfile`** — последний запасной вариант для email, телефона и Telegram, когда первые два пусты.
-
-Итоговые `email` и `phone` дублируются в `recipient['customer']['email']` и `['phone']` — для плагинов, которые читают контакт оттуда.
+2. **`msCustomer`** — запасной вариант для email и телефона, а также источник массива `customer`: вместе с ним приходит своё поле `telegram_chat_id`, если оно заведено.
+3. **`modUserProfile`** — последний запасной вариант для email и телефона. Для `telegram_chat_id` это основной источник: ключ `extended` в профиле пользователя, чей id записан в `msOrder.user_id`.
 
 | Ключ | Тип | Источник | Описание |
 | --- | --- | --- | --- |
-| `type` | `string` | — | `customer` или `manager` (дублирует `recipientType`) |
+| `type` | `string` | — | Тип получателя: `customer` или `manager`, дублирует `recipientType` |
 | `email` | `string \| null` | адрес → покупатель → профиль | Итоговый email получателя |
 | `phone` | `string \| null` | адрес → покупатель → профиль | Итоговый телефон |
-| `telegram_chat_id` | `string \| null` | `customer.extended` → профиль | ID чата Telegram, если задан |
+| `telegram_chat_id` | `string \| null` | `modUserProfile.extended` | Chat ID пользователя, связанного с заказом. Своё поле покупателя приходит отдельно, внутри `customer` |
 | `address` | `array` | `msOrderAddress->toArray()` | Полный адрес заказа (только у получателя `customer`) |
 | `customer` | `array` | `CustomerPublicDto::fromCustomer()` | Публичные поля покупателя (только у получателя `customer`); `email` и `phone` в нём уже совпадают с итоговыми значениями |
 
 ::: warning Секретов покупателя в `customer` нет
-С 1.14.2-beta1 массив собирает `CustomerPublicDto`, а не сырой `toArray()`. В него не попадают `password`, `token`, `user_id`, `customer_group_id`, счётчики попыток входа и IP-адрес, с которого принята политика. Публичный набор: `id`, `first_name`, `last_name`, `email`, `phone`, `email_verified_at`, `is_active`, `created_at`, `updated_at`, `last_login_at`, `orders_count`, `total_spent`, `last_order_at`, `privacy_accepted_at` плюс активные дополнительные поля покупателя.
+С 1.14.2-beta1 массив собирает `CustomerPublicDto`, а не сырой `toArray()`. В него не попадают `password`, `token`, `user_id`, `customer_group_id`, счётчики попыток входа и IP-адрес, с которого принята политика. Публичный набор: `id`, `first_name`, `last_name`, `email`, `phone`, `email_verified_at`, `is_active`, `created_at`, `updated_at`, `last_login_at`, `orders_count`, `total_spent`, `last_order_at`, `privacy_accepted_at` плюс активные поля из утилиты «Свои поля».
 :::
 
 ::: tip Зачем разделять адрес и покупателя
@@ -203,7 +220,7 @@ switch ($modx->event->name) {
 
 ### Прерывание операции
 
-Отправку отменяет `return false`, `return 'cancel'` или `$modx->event->output(...)`. Событие идёт через `EventGate::invokeRaw()`, а не через `Utils::invokeEvent`.
+Отправку отменяет `$modx->event->output('cancel')` или `output(false)`. Любой другой текст и обычный `return` отмены не делают: `EventGate::isCancelled()` проверяет только то, что плагин отдал через `output()`. Событие вызывается через `EventGate::invokeRaw()`, а не через `Utils::invokeEvent()`.
 
 ```php
 <?php
@@ -211,15 +228,18 @@ switch ($modx->event->name) {
     case 'msOnBeforeSendNotification':
         $recipient = $scriptProperties['recipient'];
 
+        // Ночью не отправлять
         $hour = (int) date('G');
         if ($hour >= 23 || $hour < 8) {
-            return false;
+            $modx->event->output(false);
+            return;
         }
 
         if (!empty($recipient['email'])) {
             $domain = substr($recipient['email'], strpos($recipient['email'], '@') + 1);
             if (in_array($domain, ['tempmail.com', 'throwaway.com'], true)) {
-                return 'cancel';
+                $modx->event->output('cancel');
+                return;
             }
         }
         break;
@@ -228,7 +248,11 @@ switch ($modx->event->name) {
 
 ### Модификация через returnedValues
 
-Менять `$recipient` и `$channels` можно и по ссылке, но явный контракт — ключи в `returnedValues`:
+Получателя и список каналов меняйте ключами `recipient` и `channels` в `returnedValues`. Правка `$recipient` и `$channels` по ссылке тоже работает, но этот способ явнее:
+
+::: tip Почему здесь ссылка работает, а на других страницах нет
+`NotificationManager` передаёт эти два параметра явными ссылками (`'recipient' => &$recipient`), поэтому изменение доходит до вызывающего кода. Это исключение: события, которые идут через `Utils::invokeEvent`, собирают параметры через `array_merge()`, и там ссылка теряется — см. [руководство для плагинов](./plugins-guide).
+:::
 
 ```php
 <?php
@@ -241,7 +265,7 @@ switch ($modx->event->name) {
             ['email' => 'ops@example.com']
         );
 
-        // list заменяет список каналов целиком
+        // список заменяет набор каналов целиком
         $values['channels'] = ['email'];
         break;
 }
@@ -251,19 +275,19 @@ switch ($modx->event->name) {
 
 ## msOnAfterSendNotification
 
-Вызывается **после** обработки уведомления — суммарно по всем выбранным каналам.
+Вызывается **после** обработки уведомления, суммарно по всем выбранным каналам.
 
 ### Параметры
 
 | Параметр | Тип | Описание |
 | --- | --- | --- |
-| `notification` | `Notification` | Объект уведомления (абстрактный класс, конкретный подкласс — например `StatusChangedNotification`) |
-| `recipient` | `array` | Данные получателя — см. [структуру `recipient`](#recipient) выше |
+| `notification` | `Notification` | Конкретный подкласс абстрактного `Notification`, например `StatusChangedNotification` |
+| `recipient` | `array` | Данные получателя, см. [структуру `recipient`](#recipient) выше |
 | `recipientType` | `string` | Тип получателя: `customer` или `manager` |
 | `results` | `array<string,bool>` | Результат отправки по каналам, например `['email' => true, 'telegram' => false]` |
 
 ::: warning Событие приходит не всегда
-`msOnAfterSendNotification` вызывается только тогда, когда дошло до перебора каналов. Если отправку отменил `msOnBeforeSendNotification` или список каналов оказался пуст, `NotificationManager::send()` выходит раньше, и события не будет вовсе. Для аналитики это разные случаи: «события не было» и «все каналы вернули `false`».
+`msOnAfterSendNotification` вызывается только тогда, когда дело дошло до перебора каналов. Если отправку отменил `msOnBeforeSendNotification` или список каналов оказался пуст, `NotificationManager::send()` выходит раньше, и события не будет вовсе. Для аналитики это разные случаи: «события не было» и «все каналы вернули `false`».
 :::
 
 ::: warning `false` в `results` — не обязательно неудачная отправка
@@ -304,7 +328,7 @@ switch ($modx->event->name) {
         $results = $scriptProperties['results'];
 
         if (in_array(false, $results, true)) {
-            // Ваша очередь повторов — в пакете нет msNotificationQueue
+            // Ваша очередь повторов: в пакете нет msNotificationQueue
             $modx->log(modX::LOG_LEVEL_WARN, '[Notification] Partial failure: ' . json_encode($results));
         }
         break;
@@ -315,20 +339,20 @@ switch ($modx->event->name) {
 
 ## msOnRegisterNotificationChannels
 
-Вызывается при регистрации каналов уведомлений. Позволяет добавить свои каналы.
+Вызывается при регистрации каналов уведомлений.
 
 ### Параметры
 
 | Параметр | Тип | Описание |
 | --- | --- | --- |
-| `manager` | `NotificationManager` | Менеджер уведомлений |
+| `manager` | `NotificationManager` | Объект, через который регистрируются каналы |
 
 ### Регистрация своего канала
 
-`NotificationManager::registerChannel()` принимает объект `ChannelInterface`, не callback.
+`NotificationManager::registerChannel()` принимает объект, реализующий `ChannelInterface`, а не функцию.
 
 ::: tip Для SMS есть готовая основа
-В поставке лежит абстрактный `MiniShop3\Notifications\Channels\SmsChannel`: он уже отдаёт имя канала `sms`, достаёт телефон из получателя, покупателя или адреса и нормализует его. По умолчанию канал не зарегистрирован — наследуйте его и реализуйте один метод `sendSms(string $phone, SmsMessage $message): bool` под своего оператора, вместо того чтобы писать канал с нуля. Из коробки зарегистрированы только `EmailChannel` и `TelegramChannel`.
+В поставке есть абстрактный `MiniShop3\Notifications\Channels\SmsChannel`: он уже отдаёт имя канала `sms`, достаёт телефон из получателя, покупателя или адреса и нормализует его. По умолчанию канал не зарегистрирован — унаследуйте его и реализуйте под своего оператора один метод `sendSms(string $phone, SmsMessage $message): bool`.
 :::
 
 ```php
@@ -383,52 +407,5 @@ class SmsChannel implements ChannelInterface
         // Вызов вашего SMS API
         return true;
     }
-}
-```
-
----
-
-## Полный пример: аналитика уведомлений
-
-```php
-<?php
-/**
-
- * Плагин: Аналитика уведомлений
- * События: msOnBeforeSendNotification, msOnAfterSendNotification
-
- */
-
-switch ($modx->event->name) {
-
-    case 'msOnBeforeSendNotification':
-        $notification = $scriptProperties['notification'];
-
-        // Сохраняем время начала для расчёта длительности
-        $modx->eventData['notification_start'] = microtime(true);
-        break;
-
-    case 'msOnAfterSendNotification':
-        $notification = $scriptProperties['notification'];
-        $recipient = $scriptProperties['recipient'];
-        $results = $scriptProperties['results'];
-
-        $startTime = $modx->eventData['notification_start'] ?? microtime(true);
-        $duration = round((microtime(true) - $startTime) * 1000, 2);
-
-        foreach ($results as $channelName => $success) {
-            $modx->log(
-                $success ? modX::LOG_LEVEL_INFO : modX::LOG_LEVEL_ERROR,
-                sprintf(
-                    '[Notification] %s → %s (%s): %s in %sms',
-                    $notification::class,
-                    $recipient['email'] ?? $recipient['phone'] ?? 'unknown',
-                    $channelName,
-                    $success ? 'ok' : 'fail',
-                    $duration
-                )
-            );
-        }
-        break;
 }
 ```
