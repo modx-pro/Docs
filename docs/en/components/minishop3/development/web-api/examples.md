@@ -76,17 +76,17 @@ curl -c jar.txt -b jar.txt -sS \
 curl -c jar.txt -b jar.txt -sS -X POST \
   "${API}?route=/api/v1/cart/change" \
   -H 'Content-Type: application/json' \
-  -d '{"product_key":"123_a1b2c3d4","count":3}'
+  -d '{"product_key":"msfed12817960fa4b48dca19facff2b61b","count":3}'
 
 curl -c jar.txt -b jar.txt -sS -X POST \
   "${API}?route=/api/v1/cart/change-option" \
   -H 'Content-Type: application/json' \
-  -d '{"product_key":"123_a1b2c3d4","options":{"color":"blue"}}'
+  -d '{"product_key":"msfed12817960fa4b48dca19facff2b61b","options":{"color":"blue"}}'
 
 curl -c jar.txt -b jar.txt -sS -X POST \
   "${API}?route=/api/v1/cart/remove" \
   -H 'Content-Type: application/json' \
-  -d '{"product_key":"123_a1b2c3d4"}'
+  -d '{"product_key":"msfed12817960fa4b48dca19facff2b61b"}'
 
 curl -c jar.txt -b jar.txt -sS -X POST \
   "${API}?route=/api/v1/cart/clean"

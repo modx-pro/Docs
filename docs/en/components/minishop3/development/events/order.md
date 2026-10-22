@@ -23,11 +23,9 @@ Since 1.14.2-beta1 `OrderFieldManager` rejects the internal draft columns before
 
 ### Parameters
 
-<!-- FACT? every parameter table on this page lists `controller`; the RU page lists `draft` (`msOrder` or `null`) instead and has no controller -->
-
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
+| `draft` | `msOrder` \| `null` | Order draft |
 | `key` | `string` | Field key |
 | `value` | `mixed` | Field value |
 
@@ -80,7 +78,7 @@ Fired **after** adding a field to the order (after successful validation).
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
+| `draft` | `msOrder` \| `null` | Order draft |
 | `key` | `string` | Field key |
 | `value` | `mixed` | Validated value |
 
@@ -113,7 +111,6 @@ Fired **before** validating a field value.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
 | `key` | `string` | Field key |
 | `value` | `mixed` | Value to validate |
 
@@ -145,7 +142,6 @@ Fired **after** successful field validation.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
 | `key` | `string` | Field key |
 | `value` | `mixed` | Validated value |
 
@@ -177,7 +173,6 @@ Fired on validation **error**.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
 | `key` | `string` | Field key |
 | `value` | `mixed` | Invalid value |
 | `error` | `array` | Errors array `['field' => 'message']` |
@@ -229,7 +224,7 @@ Fired **before** removing a field from the order.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
+| `draft` | `msOrder` \| `null` | Order draft |
 | `key` | `string` | Field key to remove |
 
 ### Aborting the operation
@@ -259,7 +254,7 @@ Fired **after** removing a field from the order.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
+| `draft` | `msOrder` \| `null` | Order draft |
 | `key` | `string` | Removed field key |
 
 ### Example
@@ -329,11 +324,11 @@ Fired on order **submission** (Submit button).
 
 ### Parameters
 
-<!-- FACT? RU page lists `handler`, `draft`, `orderData`, `data` here and has no `controller`; the example below also still uses `$controller->getCost()` -->
-
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
+| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Submit handler |
+| `draft` | `msOrder` | Order draft |
+| `orderData` | `array` | Draft fields as an array |
 | `data` | `array` | Extra form data |
 
 ### Aborting the operation
@@ -398,7 +393,7 @@ Fired **before** final order creation (assigning "New" status). Three scenarios:
 | `msOrder` | `msOrder` | Order object (always) |
 | `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Storefront submit only |
 | `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Finalize paths only (admin / integration) |
-| `origin` | `string` | Finalize paths only: `manager` \| `integration` (`OrderOrigin` constants) |
+| `origin` | `string` | Finalize paths only: `manager` from the admin, `integration` from programmatic creation. The `OrderOrigin::STOREFRONT` constant exists but no path sets it — a storefront submit carries no `origin` key at all |
 | `from_manager` | `bool` | Present on both finalize paths (`true` with `origin=manager`, `false` with `origin=integration`); missing only on the storefront submit |
 | `customFields` | `array` | Storefront only — fields from `properties._validated` |
 
@@ -466,7 +461,7 @@ switch ($modx->event->name) {
 
 ## msOnCreateOrder
 
-Fired **after** successful order creation. Pair to `msOnBeforeCreateOrder` — same three scenarios and the same parameter set (storefront has no `origin`).
+Fired right after `msOnBeforeCreateOrder`, while the order is still a draft. Pair to `msOnBeforeCreateOrder` — same three scenarios and the same parameter set (storefront has no `origin`). `msOnMgrCreateOrder` runs later, after the status change.
 
 ### Parameters
 

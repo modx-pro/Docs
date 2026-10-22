@@ -617,7 +617,7 @@ $result = $finalizeService->finalize($orderId, [
 
 Параметр `origin` (`OrderOrigin`): `manager` (по умолчанию), `storefront`, `integration`. При `manager` дополнительно вызываются `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder`. Ключ `from_manager` в событиях равен `true` только при `origin=manager`.
 
-## Программное создание заказа (ProgrammaticOrderService)
+## Программное создание заказа (ProgrammaticOrderService) {#programmatic-order}
 
 API без HTTP-сессии: для дополнений, cron и интеграций. Это **не** Web API. В `routes/web.php` отдельного эндпоинта нет.
 

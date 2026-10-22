@@ -22,6 +22,18 @@ Only active methods are listed. The delivery↔payment link is checked at checko
 
 Provider webhooks are authenticated by the handler's own signature, not by a customer token. API prefix: `/api/v1`.
 
+```mermaid
+flowchart TD
+  post["POST webhook without a customer token"] --> kind{"Method"}
+  kind -->|delivery, ms3_shipment_enabled=0| d404["404"]
+  kind -->|delivery| dapply["verify, parse, apply"]
+  dapply --> dok["shipment_id, status, order_id, tracking_number"]
+  kind -->|payment without the interface| p400["400"]
+  kind -->|payment is inactive| p404["404"]
+  kind -->|payment| papply["verifyWebhook, parseWebhook, applyWebhook"]
+  papply --> pok["attempt_id, status, order_id"]
+```
+
 | Method | Path | Condition |
 | --- | --- | --- |
 | `POST` | `/delivery/webhook/{delivery_id}` | Requires a delivery handler; returns 404 when `ms3_shipment_enabled=0` |
@@ -78,11 +90,20 @@ What happens on a closed key:
 
 ## Submit
 
-After a successful `submit` the response may include a redirect (thank-you page or payment). Read the `data` and the redirect fields and headers from the controller `Response`.
+A successful `submit` puts the URL in the JSON body, under `data.redirect`. There is no `Location` header on submit — `Response::redirect` is only used by email confirmation with `html=1`.
 
 Online payment is handled by a payment extra. A base method without `class` only records the choice.
 
 ## Typical sequence
+
+```mermaid
+flowchart LR
+  lists["delivery/list and payment/list"] --> setOrder["order/set with fields"]
+  setOrder --> required["required-fields, if needed"]
+  required --> cost["order/cost"]
+  cost --> submit["order/submit"]
+  submit --> redirect["data.redirect"]
+```
 
 1. `GET /delivery/list`, `GET /payment/list`
 2. `POST /order/set` with `delivery_id` / `payment_id` and address

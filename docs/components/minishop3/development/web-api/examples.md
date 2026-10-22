@@ -11,9 +11,9 @@ description: "curl и TypeScript/$fetch: каталог, токен, корзи�
 https://shop.example/assets/components/minishop3/api.php
 ```
 
-Путь уходит в `?route=/api/v1/...`. Cookie-jar (`-c` / `-b`) или `credentials: 'include'` / `Authorization: Bearer`. Query `ms3_token` не используйте.
+Путь передаётся в `?route=/api/v1/...`. Токен уходит в cookie-jar (`-c` / `-b`), с `credentials: 'include'` или в заголовке `Authorization: Bearer`. Query-параметр `ms3_token` не используйте.
 
-Читайте ответы через `data`. Корзина: в новых клиентах `data.items` (массив), legacy `data.cart` (map).
+Данные читайте из `data`. Для корзины новые клиенты берут `data.items` (массив), устаревшие — `data.cart` (map).
 
 ## Каталог (публичный, без токена)
 
@@ -53,16 +53,16 @@ const product = await $fetch(`${api}?route=/api/v1/product/get/123`, {
 })
 ```
 
-Параметры list: [Каталог](catalog).
+Полный список параметров `list` — на странице [Каталог](catalog).
 
-## Guest token + корзина (curl)
+## Гостевой токен и корзина (curl)
 
 ```bash
 API='https://shop.example/assets/components/minishop3/api.php'
 
 curl -c jar.txt -b jar.txt -sS \
   "${API}?route=/api/v1/customer/token/get"
-# data.token + data.lifetime (мс); cookie ms3_token
+# data.token, data.lifetime (мс), cookie ms3_token
 
 curl -c jar.txt -b jar.txt -sS -X POST \
   "${API}?route=/api/v1/cart/add" \
@@ -76,17 +76,17 @@ curl -c jar.txt -b jar.txt -sS \
 curl -c jar.txt -b jar.txt -sS -X POST \
   "${API}?route=/api/v1/cart/change" \
   -H 'Content-Type: application/json' \
-  -d '{"product_key":"123_a1b2c3d4","count":3}'
+  -d '{"product_key":"msfed12817960fa4b48dca19facff2b61b","count":3}'
 
 curl -c jar.txt -b jar.txt -sS -X POST \
   "${API}?route=/api/v1/cart/change-option" \
   -H 'Content-Type: application/json' \
-  -d '{"product_key":"123_a1b2c3d4","options":{"color":"blue"}}'
+  -d '{"product_key":"msfed12817960fa4b48dca19facff2b61b","options":{"color":"blue"}}'
 
 curl -c jar.txt -b jar.txt -sS -X POST \
   "${API}?route=/api/v1/cart/remove" \
   -H 'Content-Type: application/json' \
-  -d '{"product_key":"123_a1b2c3d4"}'
+  -d '{"product_key":"msfed12817960fa4b48dca19facff2b61b"}'
 
 curl -c jar.txt -b jar.txt -sS -X POST \
   "${API}?route=/api/v1/cart/clean"
@@ -145,7 +145,7 @@ await $fetch(`${api}?route=/api/v1/cart/add`, {
 const cart = await $fetch(`${api}?route=/api/v1/cart/get`, { headers })
 ```
 
-Для cookie с другого origin нужны явные CORS origins: [CORS](cors).
+Чтобы cookie работали с другого origin, перечислите его в настройках CORS: [CORS](cors).
 
 ## Login, me, refresh
 
@@ -210,7 +210,7 @@ curl -c jar.txt -b jar.txt -sS -X POST \
   "${API}?route=/api/v1/order/submit"
 ```
 
-Поля адреса зависят от правил доставки. Черновик: `GET /order/get`.
+Поля адреса зависят от правил доставки. Текущий черновик покажет `GET /order/get`.
 
 ## Checkout (TypeScript)
 
@@ -259,7 +259,7 @@ async function checkout(api: string, token: string) {
 curl -c jar.txt -b jar.txt -sS -X POST \
   "${API}?route=/api/v1/customer/addresses" \
   -H 'Content-Type: application/json' \
-  -d '{"city":"Москва","street":"Тверская","building":"1"}'
+  -d '{"name":"Дом","city":"Москва","street":"Тверская","building":"1"}'
 
 curl -c jar.txt -b jar.txt -sS \
   "${API}?route=/api/v1/customer/addresses"
@@ -277,14 +277,27 @@ curl -c jar.txt -b jar.txt -sS -X POST \
 curl -sS "${API}?route=/api/v1/health"
 ```
 
+```json
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "status": "ok",
+    "version": "1.14.3-beta1",
+    "timestamp": 1760544000,
+    "api": "web"
+  }
+}
+```
+
 ```ts
-type Ms3Success<T> = { success: true, message: string, data: T }
+type Ms3Success<T> = { success: true, message: string | null, data: T }
 type Ms3Error = {
   success: false
   message: string
   code: number
   errors: Record<string, string> | null
-  error_code?: string
+  error_code: string
   data?: unknown
 }
 type Ms3Response<T> = Ms3Success<T> | Ms3Error
@@ -305,7 +318,7 @@ async function ms3Fetch<T>(
 }
 ```
 
-Подробнее про формат ответа: [Ошибки](errors).
+Разбор формата ответа — [Ошибки](errors).
 
 ## См. также
 
