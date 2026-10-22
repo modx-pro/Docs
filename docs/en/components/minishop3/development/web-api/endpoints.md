@@ -111,4 +111,4 @@ Account endpoints with auto-mint need a customer on the token: otherwise the con
 | --- | --- | --- | --- |
 | `GET` | `/health` | none | API status |
 
-Programmatic order creation from PHP (cron/extra) is not Web HTTP: [ProgrammaticOrderService](/en/components/minishop3/development/backend-api/order#programmatic-order-creation-programmaticorderservice).
+Programmatic order creation from PHP (cron/extra) is not Web HTTP: [ProgrammaticOrderService](/en/components/minishop3/development/backend-api/order#programmatic-order).

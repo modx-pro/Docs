@@ -24,7 +24,7 @@ Main query parameters for `list`:
 | Parameter | Meaning |
 | --- | --- |
 | `parent` / `category` | Category ID (kept for backward compatibility; ignored if `parents` is set) |
-| `parents` | CSV / array of category IDs (OR + members) |
+| `parents` | CSV or array of category IDs. OR condition, and a product matches both by its primary category and by additional links (`msCategoryMember`) |
 | `nested` | 0\|1 — expand the tree when using `parents` |
 | `price_min`, `price_max` | Price range |
 | `in_stock`, `stock_min` | Stock |
@@ -77,6 +77,19 @@ The TV map is the `ms3_public_seo_tv_map` system setting: JSON that maps an SEO 
 Product and category responses carry `searchable` (the "Searchable" flag of the MODX resource). When it is off, `robots` in the SEO block becomes `noindex,nofollow`. Nothing else depends on it: the entry itself stays in the API output.
 
 ## Resource group ACL
+
+```mermaid
+flowchart TD
+  both{"access_resource_group_enabled and ms3_web_catalog_respect_resource_groups"}
+  both -->|no| open["Filter is off"]
+  both -->|yes| who{"Who is looking?"}
+  who -->|guest| anon["Permission check without a user"]
+  who -->|customer| groups["Groups from msCustomerGroup"]
+  anon --> any{"At least one group open?"}
+  groups --> any
+  any -->|yes| visible["Document is listed"]
+  any -->|no| hidden["Document is hidden"]
+```
 
 Setting `ms3_web_catalog_respect_resource_groups` (on by default): the public catalog hides products and categories that sit in MODX resource groups closed by ACL for the request context.
 

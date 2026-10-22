@@ -564,7 +564,7 @@ Finalize accepts the `skip_*` keys and works with an existing draft. It never ca
 
 The `origin` parameter (`OrderOrigin`): `manager` (default), `storefront`, `integration`. With `manager`, `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder` also fire. The `from_manager` key in events is `true` only for `origin=manager`.
 
-## Programmatic order creation (ProgrammaticOrderService)
+## Programmatic order creation (ProgrammaticOrderService) {#programmatic-order}
 
 An API without an HTTP session — for extras, cron and integrations. This is **not** the Web API: `routes/web.php` has no dedicated endpoint.
 
