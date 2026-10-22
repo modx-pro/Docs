@@ -5,13 +5,13 @@ description: Системные настройки и права ms3YandexMarket
 
 # Настройки и права
 
-<!-- MEDIA: screenshot-admin | must | Системные настройки MODX: фильтр namespace ms3yandexmarket, ключи enabled, chunk_size, files_path, scheduler_enabled | Тестовый стенд после установки пакета, синтетические значения -->
+## Системные настройки
 
 Системные настройки лежат в области `ms3yandexmarket`.
 
 | Ключ | По умолчанию | Эффект |
 | --- | --- | --- |
-| `ms3yandexmarket_enabled` | `1` | `0` останавливает файл задачи и cron: они пишут, что компонент выключен |
+| `ms3yandexmarket_enabled` | `1` | `0` останавливает cron, файл задачи, кнопку **Сгенерировать** и плагин. Предпросмотр не останавливается |
 | `ms3yandexmarket_chunk_size` | `500` | Сколько товаров читается за одну порцию |
 | `ms3yandexmarket_log_entry_cap` | `200` | Сколько сообщений журнала хранится на один запуск |
 | `ms3yandexmarket_scheduler_enabled` | `1` | `0` не создаёт и не обновляет задачу Scheduler |
@@ -19,9 +19,15 @@ description: Системные настройки и права ms3YandexMarket
 | `ms3yandexmarket_files_path` | `assets/components/ms3yandexmarket/files/` | Каталог файлов от корня сайта |
 | `ms3yandexmarket_after_save_sync` | `0` | `1` пишет файл прайсов режима `after_save` прямо при сохранении товара |
 
-## Права в поставке
+При `0` у `ms3yandexmarket_enabled`:
 
-<!-- MEDIA: screenshot-admin | must | Шаблон политики ms3yandexmarketPolicyTemplate и политика ms3yandexmarketPolicy с правами view, manage, generate, edit_raw_xml, edit_fenom у группы Administrator | На тестовом стенде: «Безопасность» → «Политики доступа», найти шаблон и политику компонента после установки пакета -->
+- cron и файл задачи печатают `ms3YandexMarket: component disabled by ms3yandexmarket_enabled` и завершаются без ошибки
+- кнопка **Сгенерировать** и запуск ожидающих отвечают 422, код `domain_error`, с тем же текстом
+- строки журнала нет
+- плагин молча выходит: отметки нет и файл `after_save` не пишется
+- предпросмотр этот выключатель не смотрит
+
+## Права в поставке
 
 Установщик создаёт шаблон `ms3yandexmarketPolicyTemplate` и политику `ms3yandexmarketPolicy` с пятью правами. Группа Administrator получает политику в `mgr`. При обновлении ключ `ms3yandexmarket_settings` из шаблона и из политики убирается.
 
@@ -31,17 +37,25 @@ description: Системные настройки и права ms3YandexMarket
 | `ms3yandexmarket_manage` | Запись прайса, чтение и запись тегов, атрибутов и условий |
 | `ms3yandexmarket_generate` | Запускает запись файла |
 | `ms3yandexmarket_edit_raw_xml` | Тип тега `19` (`RAW_XML`) |
-| `ms3yandexmarket_edit_fenom` | Непустой обработчик Fenom у тега или атрибута |
+| `ms3yandexmarket_edit_fenom` | Непустой `handler` или значение тега и атрибута с префиксом `fenom:` |
 
-Страницу компонента открывают `ms3yandexmarket_view`, `ms3yandexmarket_manage` или право MODX `settings`. Пункт меню требует только `ms3yandexmarket_view`. С одним правом `settings` процессоры отвечают 403. Системные настройки MODX открывает право `settings` ядра.
+- Страницу компонента открывают `ms3yandexmarket_view`, `ms3yandexmarket_manage` или право MODX `settings`.
+- Пункт меню требует только `ms3yandexmarket_view`.
+- С одним правом `settings` процессоры отвечают 403.
+- Право `settings` ядра открывает системные настройки MODX.
 
 ## Свой XML и Fenom
 
-Фрагмент своего XML перед записью проверяется как XML. Пустой фрагмент допустим. PHP в Fenom не выполняется. Нужен pdoTools. Без права из таблицы сохранение отвечает 403.
+Фрагмент своего XML перед записью проверяется как XML. Пустой фрагмент допустим. PHP в Fenom не выполняется. Нужен pdoTools.
+
+- Без права `ms3yandexmarket_edit_raw_xml` сохранение типа `19` отвечает 403.
+- Без права `ms3yandexmarket_edit_fenom` непустой `handler` или значение с префиксом `fenom:` отвечает 403.
+
+В карточке тега поля обработчика нет.
 
 ## Настройки вне поставки
 
-Этих ключей нет в поставке. Создайте запись вручную, если ключ из таблицы нужен.
+Создайте запись вручную, если ключ из таблицы нужен.
 
 | Ключ | Если записи нет | Эффект |
 | --- | --- | --- |
@@ -54,11 +68,11 @@ description: Системные настройки и права ms3YandexMarket
 
 ## Каталог файлов без настройки
 
-Пока `ms3yandexmarket_files_path` в базе, запись и диагностика используют этот каталог. Без настройки оба смотрят `assets/components/ms3yandexmarket/files/`.
+Без настройки запись и диагностика смотрят `assets/components/ms3yandexmarket/files/`. Если `ms3yandexmarket_files_path` есть в базе, оба берут этот каталог.
 
 ## Назначение файла и площадка
 
-Пустой код площадки сохраняется как `yandex.market`. Неизвестное назначение сохраняется как `catalog`.
+Пустой код площадки компонент сохраняет как `yandex.market`. Неизвестное назначение сохраняет как `catalog`.
 
 | Назначение | Площадка | Файл |
 | --- | --- | --- |

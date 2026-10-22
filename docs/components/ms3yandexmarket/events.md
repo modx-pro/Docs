@@ -9,6 +9,8 @@ description: Входящие и исходящие события ms3YandexMark
 
 ## Входящие
 
+Отметка не ставится прайсу `manual`, прайсу, в чьи категории товар не входит, и никому, если `ms3yandexmarket_enabled` равен `0`. Пустой выбор категорий означает «все категории». Категориями для отметки и для выборки файла считаются родитель ресурса и строки связей.
+
 ```mermaid
 flowchart TD
   Ev[OnDocFormSave OnDocPublished OnDocUnPublished ms3remainsOnAfterRemainChange] --> Mode{Режим manual?}
@@ -25,19 +27,23 @@ flowchart TD
 | `OnDocUnPublished` | То же |
 | `ms3remainsOnAfterRemainChange` | То же. Идентификатор товара берётся из `product_id`. Если его нет, отмечаются все активные прайсы не в режиме `manual` |
 
-Пустой выбор категорий означает «все категории». Отметка не ставится прайсу `manual` и прайсу, в чьи категории товар не входит. Для отметки и для выборки файла категориями считаются родитель ресурса и строки связей.
-
 ## Исходящие
 
 Все вызовы идут через `$modx->invokeEvent`. В параметрах есть объект прайса и `pricelist_id`, если не сказано иное.
 
-Порядок вызовов на пути `tree_v2`. Событие `OnMs3YandexMarketBeforeWrite` на этом пути не вызывается.
+На пути `tree_v2` событие `OnMs3YandexMarketBeforeWrite` не вызывается.
+
+`CategoriesQuery` есть только у назначения `catalog`, когда корни категорий выбраны. Тогда оно идёт сразу после `BeforeGenerate` и до `BeforeQuery`. `AfterOffer` на этом пути вызывается после порога остатка и до записи предложения.
 
 ```mermaid
 flowchart LR
-  BG[BeforeGenerate] --> BQ[BeforeQuery]
+  BG[BeforeGenerate] --> Roots{catalog и корни?}
+  Roots -->|да| CQ[CategoriesQuery]
+  Roots -->|нет| BQ[BeforeQuery]
+  CQ --> BQ
   BQ --> BO[BeforeOffer]
-  BO --> BWO[BeforeWritingOffer]
+  BO --> AO[AfterOffer]
+  AO --> BWO[BeforeWritingOffer]
   BO --> BWC[BeforeWritingCategory]
   BWO --> AG[AfterGenerate]
   BWC --> AG
