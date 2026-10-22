@@ -51,7 +51,7 @@ Vue OrderView (корневой компонент)
 
 | Параметр | Тип | Описание |
 | --- | --- | --- |
-| `orderId` | number | ID заказа (0 при создании) |
+| `orderId` | number \| string | ID заказа. На странице создания приходит строка `'new'` |
 | `order` | object \| null | Данные заказа. `null` при создании и пока не пришёл ответ API — отсюда `order?.num` в примерах |
 | `config` | object | Конфигурация ms3 (`ms3.config`) |
 | `isCreateMode` | boolean | Режим создания нового заказа |
@@ -171,7 +171,7 @@ $controller->addHtml('
 import { ref, onMounted } from 'vue'
 
 const props = defineProps({
-  orderId: { type: Number, required: true },
+  orderId: { type: [Number, String], required: true },  // На создании это 'new'
   order: { type: Object, default: null },
   config: { type: Object, default: () => ({}) },
   isCreateMode: { type: Boolean, default: false }

@@ -236,7 +236,7 @@ whenRegistryReady(function(registry) {
 // Плагин MODX — событие: msOnManagerCustomCssJs
 
 $page = $scriptProperties['page'] ?? '';
-if ($page !== 'product_update' && $page !== 'product_create') {
+if ($page !== 'product_update') {
     return;
 }
 

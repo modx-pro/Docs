@@ -116,17 +116,18 @@ await ms3.customerAPI.updateProfile({ email: 'new@example.com' })
 
 ### Методы
 
-#### get()
+#### get(params)
 
-Получить содержимое корзины.
+Получить содержимое корзины. Единственный параметр — `include_thumbs`: с ним в каждой позиции появляется поле `thumb`.
 
 ```javascript
 const response = await ms3.cartAPI.get()
+const withThumbs = await ms3.cartAPI.get({ include_thumbs: 1 })
 
 // response:
 {
   success: true,
-  message: "ms3_cart_get_success",
+  message: "Данные корзины получены",
   data: {
     cart: {
       // Объект, где ключ — product_key
@@ -148,6 +149,22 @@ const response = await ms3.cartAPI.get()
         }
       }
     },
+    items: [
+      // Тот же состав массивом, с плоскими old_price, discount_price и discount_cost
+      {
+        product_key: "ms43ce202fd27c84c28230cc771328e37f",
+        product_id: 152248,
+        name: "Название товара",
+        count: 2,
+        price: 148343,
+        cost: 296686,
+        weight: 2.508,
+        options: {},
+        old_price: 0,
+        discount_price: 0,
+        discount_cost: 0
+      }
+    ],
     status: {
       total_count: 9,
       total_cost: 1094850,
@@ -158,6 +175,8 @@ const response = await ms3.cartAPI.get()
   }
 }
 ```
+
+Новый код читает `items`: это массив, порядок позиций в нём предсказуем, а пустые `options` приходят объектом. Ключ `cart` остался для совместимости со старыми скриптами.
 
 #### add(id, count, options, render)
 
@@ -190,7 +209,7 @@ await ms3.cartAPI.add(123, 1, { color: 'red', size: 'L' })
 ```javascript
 {
   success: true,
-  message: "Товар добавлен в корзину",
+  message: "Товар успешно добавлен в корзину: 2",
   data: {
     cart: {...},           // Позиции корзины, ключ — product_key
     status: {...},         // Итоги
@@ -212,19 +231,27 @@ await ms3.cartAPI.add(123, 1, { color: 'red', size: 'L' })
 | `render` | array | Токены для рендеринга |
 
 ```javascript
-await ms3.cartAPI.change('ms5d41d8cd98f00b204e9800998ecf8427e', 5)
+await ms3.cartAPI.change('ms43ce202fd27c84c28230cc771328e37f', 5)
 ```
 
 :::tip product_key
 У каждой позиции в корзине свой `product_key`. Один товар с разными опциями даёт разные ключи.
 :::
 
+#### changeOption(productKey, options, render)
+
+Изменить опции позиции. Новый набор опций меняет ключ позиции: сервер возвращает его в `data.product_key`, а старый — в `data.old_product_key`.
+
+```javascript
+await ms3.cartAPI.changeOption('ms43ce202fd27c84c28230cc771328e37f', { color: 'Розовый' })
+```
+
 #### remove(productKey, render)
 
 Удалить товар из корзины.
 
 ```javascript
-await ms3.cartAPI.remove('ms5d41d8cd98f00b204e9800998ecf8427e')
+await ms3.cartAPI.remove('ms43ce202fd27c84c28230cc771328e37f')
 ```
 
 #### clean(render)
@@ -489,7 +516,7 @@ ms3Hooks.addHook('hookName', async (context) => {
 | `beforeChangeOptionCart` | `{ productKey, options }` | Перед сменой опции позиции |
 | `afterChangeOptionCart` | `{ productKey, options, response }` | После смены опции |
 | `beforeQuantityChange` | `{ productKey, count, form }` | Перед изменением количества кнопками «+» и «−» |
-| `afterQuantityChange` | `{ productKey, count, response }` | После изменения количества |
+| `afterQuantityChange` | `{ productKey, count, response, form }` | После изменения количества |
 
 #### Заказ
 
