@@ -5,19 +5,19 @@ description: "Обзор Web API MiniShop3: api.php, формат ответа �
 
 # Web API
 
-Точка входа фронтенда и headless:
+Фронтенд и headless-клиенты работают через одну точку входа:
 
 ```text
 /assets/components/minishop3/api.php?route=/api/v1/{path}
 ```
 
-Параметр `route` обязателен. Группа `/api/v1` всегда проходит три middleware: CORS → RateLimit → ServiceCheck. `TokenMiddleware` стоит только на cart, order и части customer.
+Параметр `route` обязателен. Запросы группы `/api/v1` всегда проходят три middleware: CORS → RateLimit → ServiceCheck. `TokenMiddleware` добавляется только к cart, order и части customer.
 
 Manager API (`connector.php`) на этой странице не описан.
 
 ## Формат ответа
 
-Пустой `route` отвечает 400 до роутера:
+Если `route` пустой, сервер отвечает 400 ещё до роутера:
 
 ```json
 {
@@ -27,9 +27,9 @@ Manager API (`connector.php`) на этой странице не описан.
 }
 ```
 
-Ответ роутера: `success`, `message` и `data`. У ошибки ещё `code`, `errors` и `error_code`.
+В ответе роутера есть `success`, `message` и `data`. У ошибки добавляются `code`, `errors` и `error_code`.
 
-**Успех.** `message` чаще `null`. Пустая строка бывает, когда вызывающий код передал `''`.
+**Успех.** Поле `message` чаще всего `null`: контроллеры каталога и кабинета его не передают. Пустая строка приходит там, где вызывающий код передал `''` — например у `GET /customer/token/get`. Корзина и заказ отдают строку лексикона операции: `GET /cart/get` отвечает `Данные корзины получены`.
 
 ```json
 {
@@ -51,7 +51,7 @@ Manager API (`connector.php`) на этой странице не описан.
 }
 ```
 
-В ответе роутера ключи `errors` и `error_code` есть всегда (`errors` часто `null`). До роутера при пустом `route` этих ключей нет. Подробнее: [Ошибки](errors).
+Ключи `errors` и `error_code` в ответе роутера есть всегда, хотя `errors` часто `null`. У ответа до роутера их нет. Подробнее: [Ошибки](errors).
 
 ## Middleware
 
@@ -70,10 +70,10 @@ flowchart TD
 
 | Порядок | Middleware | Назначение |
 | --- | --- | --- |
-| 1 | `CorsMiddleware` | Origins из `ms3_cors_allowed_origins` |
-| 2 | `RateLimitMiddleware` | `ms3_rate_limit_*` |
-| 3 | `ServiceCheckMiddleware` | Сервисы MS3 доступны |
-| (по роуту) | `TokenMiddleware` | Resolve / auto-mint токена |
+| 1 | `CorsMiddleware` | Сверяет Origin со списком `ms3_cors_allowed_origins` |
+| 2 | `RateLimitMiddleware` | Считает квоту запросов по `ms3_rate_limit_*` |
+| 3 | `ServiceCheckMiddleware` | Проверяет доступность сервисов MS3 |
+| (по роуту) | `TokenMiddleware` | Находит токен или выдаёт гостевой (auto-mint) |
 
 Настройки CORS и rate limit: [CORS](cors), [Системные настройки](/components/minishop3/settings#api).
 

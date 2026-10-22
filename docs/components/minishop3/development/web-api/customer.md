@@ -5,11 +5,11 @@ description: "Профиль, адреса, заказы ЛК, email verify, me 
 
 # Клиент
 
-ЛК и профиль покупателя. Вход и регистрация: [Авторизация](auth).
+Личный кабинет (ЛК) и профиль покупателя. Вход и регистрация — в [Авторизации](auth).
 
 ## Сессия
 
-Гость:
+Ответ `GET /customer/me` для гостя:
 
 ```json
 {
@@ -26,15 +26,15 @@ description: "Профиль, адреса, заказы ЛК, email verify, me 
 }
 ```
 
-После login в `customer` приходят публичные поля: `id`, `first_name`, `last_name`, `email`, `phone`, `email_verified_at`, `is_active`, `created_at`, `updated_at`. `authenticated` тогда `true`.
+После входа `authenticated` становится `true`, а в `customer` приходят публичные поля: `id`, `first_name`, `last_name`, `email`, `phone`, `email_verified_at`, `is_active`, `created_at`, `updated_at`.
 
 | Метод | Путь | Заметки |
 | --- | --- | --- |
-| `GET` | `/customer/me` | Гость: `authenticated: false`, `customer: null` |
+| `GET` | `/customer/me` | Для гостя: `authenticated: false`, `customer: null` |
 | `POST` | `/customer/token/refresh` | Ротирует и гостевой токен |
-| `POST` | `/customer/logout` | токен необязателен |
-| `POST` | `/customer/login` | без middleware |
-| `POST` | `/customer/register` | без middleware |
+| `POST` | `/customer/logout` | Токен необязателен |
+| `POST` | `/customer/login` | Без `TokenMiddleware` |
+| `POST` | `/customer/register` | Без `TokenMiddleware` |
 | `POST` | `/customer/forgot-password` | |
 | `POST` | `/customer/reset-password` | |
 
@@ -43,12 +43,12 @@ description: "Профиль, адреса, заказы ЛК, email verify, me 
 | Метод | Путь | Заметки |
 | --- | --- | --- |
 | `PUT` | `/customer/profile` | |
-| `POST` | `/customer/add` | Быстрое одно поле |
+| `POST` | `/customer/add` | Одно поле профиля |
 | `POST` | `/customer/changeAddress` | Адрес в черновик заказа |
 
-Сервер режет поля профиля по allowlist. Гостевой токен на `profile`, `add` и `changeAddress` получает ошибку авторизации. `me` и `token/refresh` для гостя успешны.
+Сервер принимает только поля профиля из своего списка разрешённых. С гостевым токеном `profile`, `add` и `changeAddress` отвечают ошибкой авторизации; для гостя успешны лишь `me` и `token/refresh`.
 
-`POST /customer/add`: тело `key` и `value`. `POST /customer/changeAddress`: `address_hash` или `value`.
+В теле `POST /customer/add` — `key` и `value`, в теле `POST /customer/changeAddress` — `address_hash` или `value`.
 
 ## Адреса
 
@@ -61,7 +61,7 @@ description: "Профиль, адреса, заказы ЛК, email verify, me 
 | `DELETE` | `/customer/addresses/{id}` |
 | `PUT` | `/customer/addresses/{id}/set-default` |
 
-`POST` отвечает 201. Обязательны `name`, `city`, `street`. Без них 422 `validation_failed`.
+`POST` отвечает 201. Поля `name`, `city` и `street` обязательны: без них сервер вернёт 422 с `validation_failed`.
 
 ## Заказы ЛК
 
@@ -71,11 +71,11 @@ description: "Профиль, адреса, заказы ЛК, email verify, me 
 | `GET` | `/customer/orders/{id}` |
 | `POST` | `/customer/orders/{id}/cancel` |
 
-Оформленные заказы покупателя. Черновик `/order/get` в список не входит.
+В списке только оформленные заказы покупателя; черновик из `/order/get` в него не входит.
 
-Параметры списка: `limit` (по умолчанию 20, максимум 100), `offset`, `status`. В ответе есть и `orders`, и алиас `items`.
+Параметры списка: `limit` (по умолчанию 20, максимум 100), `offset` и `status`. Сам список приходит дважды: под ключом `orders` и под ключом `items`.
 
-Отмена разрешена для статусов из `ms3_customer_cancel_allowed_statuses`. Если настройка пустая, разрешены статусы new и paid. Успех: `order_id`, `status_id`. Статус вне списка даёт 400.
+Отменить заказ можно в статусах из `ms3_customer_cancel_allowed_statuses`. Если настройка пустая, это статусы new и paid. В успешном ответе приходят `order_id` и `status_id`, а заказ в другом статусе получает 400.
 
 ## Email
 
@@ -91,12 +91,12 @@ flowchart TD
 
 | Метод | Путь | Заметки |
 | --- | --- | --- |
-| `GET` | `/customer/email/verify` | Публичный. Query `token`. `format=json` всегда JSON. `html=1` отвечает 302 |
+| `GET` | `/customer/email/verify` | Публичный. Query-параметр `token`. С `format=json` всегда JSON, с `html=1` — 302 |
 | `POST` | `/customer/email/resend-verification` | Нужен авторизованный токен |
 
-`html=1` ведёт на `ms3_email_verification_success_url` или на `site_url` с `ms3_email_verified=1`. Ошибка ведёт на `site_url?ms3_email_verified=0`.
+С `html=1` успех ведёт на `ms3_email_verification_success_url` или на `site_url` с `ms3_email_verified=1`, а ошибка — на `site_url?ms3_email_verified=0`.
 
-Свой URL письма: `ms3_email_verification_url`. В шаблоне принимаются `[[+token]]` и `{token}`. Если настройка пустая, ссылка уже содержит `html=1` и ведёт на `api.php?route=…/email/verify`.
+Свой адрес ссылки в письме задаёт `ms3_email_verification_url`; в шаблоне работают и `[[+token]]`, и `{token}`. Если настройка пустая, ссылка ведёт на `api.php?route=…/email/verify` и уже содержит `html=1`.
 
 ## Связанные страницы
 

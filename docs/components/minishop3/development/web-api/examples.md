@@ -11,9 +11,9 @@ description: "curl и TypeScript/$fetch: каталог, токен, корзи�
 https://shop.example/assets/components/minishop3/api.php
 ```
 
-Путь уходит в `?route=/api/v1/...`. Токен: cookie-jar (`-c` / `-b`), `credentials: 'include'` или `Authorization: Bearer`. Query `ms3_token` не используйте.
+Путь передаётся в `?route=/api/v1/...`. Токен уходит в cookie-jar (`-c` / `-b`), с `credentials: 'include'` или в заголовке `Authorization: Bearer`. Query-параметр `ms3_token` не используйте.
 
-Читайте ответы через `data`. Корзина: в новых клиентах `data.items` (массив), в устаревших `data.cart` (map).
+Данные читайте из `data`. Для корзины новые клиенты берут `data.items` (массив), устаревшие — `data.cart` (map).
 
 ## Каталог (публичный, без токена)
 
@@ -53,7 +53,7 @@ const product = await $fetch(`${api}?route=/api/v1/product/get/123`, {
 })
 ```
 
-Параметры list: [Каталог](catalog).
+Полный список параметров `list` — на странице [Каталог](catalog).
 
 ## Гостевой токен и корзина (curl)
 
@@ -76,17 +76,17 @@ curl -c jar.txt -b jar.txt -sS \
 curl -c jar.txt -b jar.txt -sS -X POST \
   "${API}?route=/api/v1/cart/change" \
   -H 'Content-Type: application/json' \
-  -d '{"product_key":"ms3d41d8cd98f00b204e9800998ecf8427e","count":3}'
+  -d '{"product_key":"msfed12817960fa4b48dca19facff2b61b","count":3}'
 
 curl -c jar.txt -b jar.txt -sS -X POST \
   "${API}?route=/api/v1/cart/change-option" \
   -H 'Content-Type: application/json' \
-  -d '{"product_key":"ms3d41d8cd98f00b204e9800998ecf8427e","options":{"color":"blue"}}'
+  -d '{"product_key":"msfed12817960fa4b48dca19facff2b61b","options":{"color":"blue"}}'
 
 curl -c jar.txt -b jar.txt -sS -X POST \
   "${API}?route=/api/v1/cart/remove" \
   -H 'Content-Type: application/json' \
-  -d '{"product_key":"ms3d41d8cd98f00b204e9800998ecf8427e"}'
+  -d '{"product_key":"msfed12817960fa4b48dca19facff2b61b"}'
 
 curl -c jar.txt -b jar.txt -sS -X POST \
   "${API}?route=/api/v1/cart/clean"
@@ -145,7 +145,7 @@ await $fetch(`${api}?route=/api/v1/cart/add`, {
 const cart = await $fetch(`${api}?route=/api/v1/cart/get`, { headers })
 ```
 
-Для cookie с другого origin нужны явные CORS origins: [CORS](cors).
+Чтобы cookie работали с другого origin, перечислите его в настройках CORS: [CORS](cors).
 
 ## Login, me, refresh
 
@@ -210,7 +210,7 @@ curl -c jar.txt -b jar.txt -sS -X POST \
   "${API}?route=/api/v1/order/submit"
 ```
 
-Поля адреса зависят от правил доставки. Черновик: `GET /order/get`.
+Поля адреса зависят от правил доставки. Текущий черновик покажет `GET /order/get`.
 
 ## Checkout (TypeScript)
 
@@ -283,7 +283,7 @@ curl -sS "${API}?route=/api/v1/health"
   "message": null,
   "data": {
     "status": "ok",
-    "version": "1.14.1",
+    "version": "1.14.3-beta1",
     "timestamp": 1760544000,
     "api": "web"
   }
@@ -318,7 +318,7 @@ async function ms3Fetch<T>(
 }
 ```
 
-Формат ответа: [Ошибки](errors).
+Разбор формата ответа — [Ошибки](errors).
 
 ## См. также
 

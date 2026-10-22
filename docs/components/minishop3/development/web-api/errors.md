@@ -20,11 +20,13 @@ description: "Формат ошибок MiniShop3: code, errors, error_code, HTT
 | Поле | Смысл |
 | --- | --- |
 | `code` | HTTP-статус |
-| `errors` | Карта полей или `null` (ключ есть всегда) |
+| `errors` | Карта полей или `null` |
 | `error_code` | Машинный код |
-| `data` | Есть только тогда, когда его передали |
+| `data` | Приходит только там, где его передали |
 
-В ответе роутера ключи `errors` и `error_code` есть всегда (`errors` часто `null`). До роутера при пустом `route` этих ключей нет. Карта полей валидации приходит в `errors` со статусом 422 и кодом `validation_failed`. Пустой `fields` у `order/set` и пустой ключ корзины остаются 400.
+В ответе роутера ключи `errors` и `error_code` есть всегда, хотя `errors` часто `null`. До роутера — например, при пустом `route` — этих ключей нет.
+
+В TypeScript описывайте ответ роутера как union: успех или ошибка с обязательным `error_code`.
 
 ## Значения error_code
 
@@ -58,18 +60,14 @@ description: "Формат ошибок MiniShop3: code, errors, error_code, HTT
 | 500 | Внутренняя ошибка |
 | 503 | Сервис `ms3` не поднят. `error_code` при этом `internal_error` |
 
-На маршрутах Web API контроллеры не возвращают 403. Этот статус есть у middleware прав менеджерского API.
+Статус 403 ставит только middleware прав Manager API.
 
 ## Закрытое поле черновика
 
-С 1.14.2-beta1 служебные колонки черновика заказа недоступны для записи с фронтенда. Попытка отдаёт лексикон `ms3_err_field_protected`: `POST /order/add` — 400 с `business_rule`, `POST /order/set` — 422 с `validation_failed` и ключом в `errors`. `POST /order/remove` на таком ключе отвечает 404 `ms3_err_field_nf`, а `POST /order/submit` отбрасывает его молча.
+С 1.14.2-beta1 служебные колонки черновика заказа недоступны для записи с фронтенда. Запись в такую колонку возвращает лексикон `ms3_err_field_protected`: `POST /order/add` — 400 с `business_rule`, `POST /order/set` — 422 с `validation_failed` и ключом в `errors`. `POST /order/remove` на таком ключе отвечает 404 `ms3_err_field_nf`, а `POST /order/submit` отбрасывает его молча.
 
 Перечень закрытых колонок и способ расширить его — в [оформлении заказа](checkout#protected-fields).
 
-В TypeScript описывайте ответ роутера как union: success | error с обязательным `error_code`. У ответа до роутера `error_code` и `errors` нет.
-
 ## Rate limit
 
-`RateLimitMiddleware`: настройки `ms3_rate_limit_max_attempts`, `ms3_rate_limit_decay_seconds`. Превышение даёт 429 и `rate_limited`.
-
-См. [CORS и rate limit](cors).
+Превышение квоты даёт 429 и `error_code: rate_limited`. Настройки, заголовки и хранилище счётчиков — [CORS и rate limit](cors).

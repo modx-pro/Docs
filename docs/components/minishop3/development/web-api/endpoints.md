@@ -5,17 +5,17 @@ description: "Полная таблица Web API MiniShop3 = config/routes/web.
 
 # Карта эндпоинтов
 
-Полная таблица путей. Источник: `core/components/minishop3/config/routes/web.php`. Префикс путей: `/api/v1`. Вызов: `api.php?route=/api/v1/...`.
+Источник таблиц: `core/components/minishop3/config/routes/web.php`. Все пути идут с префиксом `/api/v1`, вызов — `api.php?route=/api/v1/...`.
 
-Колонка «Токен»:
+Значения колонки «Токен»:
 
 | Значение | Смысл |
 | --- | --- |
 | нет | `TokenMiddleware` на роуте нет |
-| auto-mint | Middleware есть: без валидного токена сервер создаёт гостевой |
-| optional | Middleware есть, путь в `publicRoutes`: без токена сервер не создаёт гостевой токен и не отвечает 401 |
+| auto-mint | `TokenMiddleware` есть: без валидного токена сервер создаёт гостевой |
+| optional | `TokenMiddleware` есть, путь в `publicRoutes`: без токена сервер не создаёт гостевой токен и не отвечает 401 |
 
-Тела запросов и ответы: [auth](auth), [catalog](catalog), [cart](cart), [checkout](checkout), [customer](customer).
+Тела запросов и форматы ответов разобраны на тематических страницах: [Авторизация](auth), [Каталог](catalog), [Корзина](cart), [Checkout](checkout), [Клиент](customer).
 
 ## Cart
 
@@ -74,9 +74,9 @@ description: "Полная таблица Web API MiniShop3 = config/routes/web.
 | `GET` | `/customer/orders/{id}` | auto-mint | Карточка заказа |
 | `POST` | `/customer/orders/{id}/cancel` | auto-mint | Отмена |
 
-ЛК с auto-mint требует покупателя в токене у адресов, профиля, `customer/add`, повторной отправки письма и заказов ЛК.
+У адресов, профиля, `customer/add`, повторной отправки письма и заказов личного кабинета auto-mint работает, но сам запрос требует покупателя в токене.
 
-`GET /customer/me` и `POST /customer/token/refresh` для гостя успешны. У `me` будет `authenticated: false` и `customer: null`. См. [Клиент](customer).
+Для гостя `GET /customer/me` и `POST /customer/token/refresh` отвечают успехом: у `me` будет `authenticated: false` и `customer: null`. Подробнее — [Клиент](customer).
 
 ## Product (публичный)
 
@@ -84,7 +84,7 @@ description: "Полная таблица Web API MiniShop3 = config/routes/web.
 | --- | --- | --- | --- |
 | `GET` | `/product/get` | нет | Resolve по `alias` / `uri` |
 | `GET` | `/product/get/{id}` | нет | Товар по ID |
-| `GET` | `/product/list` | нет | Список / PLP |
+| `GET` | `/product/list` | нет | Список товаров (PLP) |
 | `GET` | `/product/filters` | нет | Фасеты |
 | `GET` | `/product/{id}/images` | нет | Галерея |
 
@@ -103,15 +103,15 @@ description: "Полная таблица Web API MiniShop3 = config/routes/web.
 | --- | --- | --- | --- |
 | `GET` | `/delivery/get/{id}` | нет | Способ доставки |
 | `GET` | `/delivery/list` | нет | Активные доставки |
-| `POST` | `/delivery/webhook/{delivery_id}` | нет | Webhook доставки (подпись `handler`, при `ms3_shipment_enabled=0` → 404) |
+| `POST` | `/delivery/webhook/{delivery_id}` | нет | Вебхук доставки (подпись `handler`, при `ms3_shipment_enabled=0` — 404) |
 | `GET` | `/payment/get/{id}` | нет | Способ оплаты |
 | `GET` | `/payment/list` | нет | Активные оплаты |
-| `POST` | `/payment/webhook/{payment_method_id}` | нет | Webhook оплаты (`PaymentWebhookHandlerInterface`) |
+| `POST` | `/payment/webhook/{payment_method_id}` | нет | Вебхук оплаты (`PaymentWebhookHandlerInterface`) |
 
 ## Health
 
 | Метод | Путь | Токен | Назначение |
 | --- | --- | --- | --- |
-| `GET` | `/health` | нет | `status`, `version` (`ms3_version`, иначе `1.0.0`), `timestamp`, `api: web` |
+| `GET` | `/health` | нет | Проверка доступности: `status`, `version` (`ms3_version`, иначе `1.0.0`), `timestamp`, `api: web` |
 
-Программное создание заказа из PHP (cron, дополнение) это не Web HTTP: [ProgrammaticOrderService](/components/minishop3/development/backend-api/order#programmnoe-sozdanie-zakazaprogrammaticorderservice).
+Программное создание заказа из PHP (cron, дополнение) к Web API не относится: [ProgrammaticOrderService](/components/minishop3/development/backend-api/order#programmnoe-sozdanie-zakazaprogrammaticorderservice).

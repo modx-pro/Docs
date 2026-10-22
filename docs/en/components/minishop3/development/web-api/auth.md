@@ -9,6 +9,15 @@ Web API does not use the MODX manager session. The client sends a customer token
 
 ## Where the server looks for the token
 
+```mermaid
+flowchart TD
+  bearer["Authorization Bearer"] --> header["MS3TOKEN header"]
+  header --> cookie["Cookie ms3_token"]
+  cookie --> request["REQUEST ms3_token after middleware"]
+  request --> session["SESSION ms3 customer_token"]
+  query["Query ms3_token"] --> drop["Not a credential, the parameter is stripped"]
+```
+
 Source order in `TokenService::resolveTokenFromRequest()`:
 
 1. `Authorization: Bearer {token}`
@@ -17,7 +26,7 @@ Source order in `TokenService::resolveTokenFromRequest()`:
 4. `$_REQUEST['ms3_token']` (after the middleware that injects the cookie into the request)
 5. `$_SESSION['ms3']['customer_token']`
 
-The server strips the `token` and `ms3_token` query parameters: they are no longer accepted as credentials. Do not copy old examples with `?ms3_token=` in the URL.
+The server does not accept the `ms3_token` query parameter as a way to authorize and removes it from the request. The `token` query parameter does not authorize either, but it is kept: `GET /customer/email/verify` uses it. Do not copy old examples with `?ms3_token=` in the URL.
 
 ## Cookie vs Bearer
 
@@ -26,13 +35,28 @@ The server strips the `token` and `ms3_token` query parameters: they are no long
 | Same-site storefront | cookie `ms3_token` + `credentials: 'include'` | Browser on the same site |
 | Nuxt BFF / mobile | `Authorization: Bearer` | Different origin or server proxy |
 
-Do not store the customer token in `localStorage`: since 1.6 the main browser approach is an httpOnly cookie. Storefront JS on the same origin: [Frontend JavaScript](/en/components/minishop3/development/frontend-js).
+Do not store the API token in `localStorage`: for a browser on the same origin the main way is the httpOnly `ms3_token` cookie. Storefront scripts: [Frontend JavaScript](/en/components/minishop3/development/frontend-js).
 
 The cookie inherits MODX session parameters: `session_cookie_domain`, `session_cookie_path`, `session_cookie_secure`, `session_cookie_samesite`.
 
 ## Auto-mint
 
-On routes with `TokenMiddleware` (cart, order, part of customer) the server creates a guest token and sets a cookie whenever no valid token arrives. The catalog routes and `/health` do not use the middleware at all.
+```mermaid
+flowchart TD
+  route{"Route group"}
+  route -->|catalog, health, login| none["No middleware"]
+  route -->|cart, order, part of customer| tok{"Token in the request"}
+  tok -->|none| guest["Guest token and cookie"]
+  tok -->|valid| handler["Handler"]
+  tok -->|expired| expired["401 token_expired"]
+  tok -->|missing or corrupted| invalid["401 token_invalid"]
+  guest --> handler
+  route -->|token/get and logout| optional["publicRoutes: no mint, no 401"]
+```
+
+On routes with `TokenMiddleware` (cart, order, part of customer) the server creates a guest token and sets a cookie when the request carries no token at all. The catalog routes and `/health` do not use the middleware at all.
+
+A guest token is minted only when no token arrives. An expired token gets 401 `token_expired`, one that is missing from the database or corrupted gets 401 `token_invalid`: in both cases the server clears the cookie and the session keys instead of issuing a new token. When there is no token and minting fails, the response is 500 `internal_error`.
 
 `GET /customer/token/get` and `POST /customer/logout` do use the middleware, but their paths are listed in `publicRoutes` — the `optional` mode. Without a token the server neither mints a guest token nor returns 401.
 
