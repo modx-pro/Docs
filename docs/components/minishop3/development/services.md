@@ -9,6 +9,20 @@ title: Сервисный слой
 
 ### Принцип разделения
 
+В MiniShop3 часть логики уходит в сервисы. Дублирование товара остаётся методом модели.
+
+```php
+class msProduct extends modResource
+{
+    public function duplicate(array $options = []) { /* копия товара */ }
+}
+
+class ProductService
+{
+    public function processForDisplay(\MiniShop3\Model\msProduct $product): void { /* подготовка к выводу */ }
+}
+```
+
 В miniShop2 логика лежала в моделях:
 
 ```php
@@ -18,22 +32,6 @@ class msProduct extends modResource
     public function duplicate($options = []) { /* 200+ строк логики */ }
     public function getPrice() { /* логика расчёта цены */ }
     public function updateImages() { /* работа с изображениями */ }
-}
-```
-
-В MiniShop3 модели работают с БД. Логика уходит в сервисы:
-
-```php
-// MiniShop3 - "тонкие" модели + сервисы
-class msProduct extends modResource
-{
-    // Только xPDO связи и базовые операции с БД
-}
-
-class ProductService
-{
-    public function duplicate($product, $options) { /* логика */ }
-    public function processForDisplay($product) { /* логика */ }
 }
 ```
 
@@ -60,10 +58,10 @@ class ProductService
 
 Регистрация идёт в два шага:
 
-1. `bootstrap.php` компонента добавляет в контейнер единственный ключ — `ms3`.
+1. `bootstrap.php` компонента добавляет в контейнер единственный ключ: `ms3`.
 2. Конструктор `MiniShop3` вызывает `ServiceRegistry::register()`, и тогда появляются остальные ключи.
 
-Второй шаг происходит сам: плагин компонента на событии `OnMODXInit` получает `ms3` в начале каждого запроса. Поэтому к моменту работы сниппета, плагина или контроллера ключи уже на месте, и получать `ms3` ради них не нужно.
+Второй шаг происходит сам: плагин компонента на событии `OnMODXInit` получает `ms3` в начале каждого запроса. К моменту работы сниппета, плагина или контроллера ключи уже на месте. Получать `ms3` ради них не нужно.
 
 ```php
 // bootstrap.php — только точка входа
@@ -146,7 +144,7 @@ $customer = $ms3->customer->getFields();
 
 | Ключ | Класс | Назначение |
 | --- | --- | --- |
-| `ms3_product_service` | `Services\Product\ProductService` | Конвертация ресурса в товар, дубликаты, `OnDocFormSave` |
+| `ms3_product_service` | `Services\Product\ProductService` | Конвертация ресурса в товар, соседние товары, подготовка к выводу |
 | `ms3_product_data_service` | `Services\Product\ProductDataService` | Работа с данными товара |
 | `ms3_product_image` | `Services\Product\ProductImageService` | Изображения, превью (`preview_file_id`) |
 | `ms3_product_catalog` | `Services\Product\ProductCatalogService` | Каталог Web API (список разрешённых полей) |
@@ -188,14 +186,43 @@ $customer = $authManager->authenticate([
 // Создание токена
 $token = $authManager->createToken($customer, 'api', 86400);
 
-// Регистрация провайдера аутентификации
-$authManager->registerProvider(new SmsAuthProvider($modx));
+// Регистрация своего провайдера. Готового класса для SMS в пакете нет.
+$authManager->registerProvider(new CodeAuthProvider($modx));
+```
+
+```php
+use MiniShop3\Controllers\Auth\AuthProviderInterface;
+use MiniShop3\Model\msCustomer;
+use MODX\Revolution\modX;
+
+class CodeAuthProvider implements AuthProviderInterface
+{
+    public function __construct(private modX $modx)
+    {
+    }
+
+    public function authenticate(array $credentials): ?msCustomer
+    {
+        // Здесь своя проверка кода. Класса SMS в пакете нет.
+        return null;
+    }
+
+    public function getName(): string
+    {
+        return 'code';
+    }
+
+    public function supports(array $credentials): bool
+    {
+        return isset($credentials['phone'], $credentials['code']);
+    }
+}
 ```
 
 ### Сервисы заказа (Order)
 
 ::: info Архитектура фасада
-Контроллер `Order.php` является **фасадом**. Он сохраняет все публичные методы для обратной совместимости, но делегирует логику в специализированные сервисы. Отдельную часть логики можно заменить, не трогая весь контроллер.
+Контроллер `Order.php` служит **фасадом**. Он сохраняет все публичные методы для обратной совместимости и делегирует логику в специализированные сервисы. Отдельную часть логики можно заменить, не трогая весь контроллер.
 :::
 
 | Ключ | Класс | Назначение |
@@ -246,7 +273,7 @@ $logService->addEntry(
 ### Сервисы корзины (Cart)
 
 ::: info Архитектура фасада
-Контроллер `Cart.php` также является **фасадом**. Он использует `OrderDraftManager` для общих операций с черновиками (корзина и заказ используют одну модель `msOrder`).
+Контроллер `Cart.php` тоже служит **фасадом**. Он использует `OrderDraftManager` для общих операций с черновиками. Корзина и заказ используют одну модель `msOrder`.
 :::
 
 | Ключ | Класс | Назначение |
@@ -521,7 +548,7 @@ ServiceRegistry автоматически проверяет:
 - **Наследование**: `is_subclass_of($className, $baseClass)`
 - **Интерфейсы**: `class_implements()` (если указано)
 
-При ошибке валидации подставляется стандартный класс, в лог пишется запись:
+При ошибке валидации реестр подставляет стандартный класс и пишет в лог:
 
 ```
 [MiniShop3 ServiceRegistry] Class 'MyProject\Cart' must extend MiniShop3\Controllers\Cart\Cart, using fallback

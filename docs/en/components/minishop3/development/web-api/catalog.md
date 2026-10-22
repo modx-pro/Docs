@@ -50,9 +50,13 @@ Product fields are returned according to an allowlist in `ProductCatalogService`
 | `GET` | `/category/list` | List |
 | `GET` | `/category/tree` | Tree |
 
-Query parameters for `get` and resolve: `context`, `include_children`, `include_hidden`, `include_content`, `include_seo` (default **1**). On `list` and `tree` the default for `include_seo` is **0**.
+`get` parameters: `context`, `include_hidden`, `include_content`, `include_breadcrumbs`, `include_children`, `include_seo` (default 1).
 
-With `include_children=1` the entries in `children` also get `seo`, unless `include_seo` is switched off.
+`list` parameters: `parent`, `limit`, `offset` or `page`, `sort`, `dir`, `context`, `include_hidden`, `include_content`, `include_seo` (default 0).
+
+`tree` parameters: `parent`, `depth`, `context`, `include_hidden`, `sort`, `dir`, `include_seo` (default 0).
+
+With `include_children=1` the nested categories in `children` also receive `seo`, unless `include_seo` is off.
 
 ## SEO block {#seo}
 
@@ -91,11 +95,13 @@ flowchart TD
   any -->|no| hidden["Document is hidden"]
 ```
 
-Setting `ms3_web_catalog_respect_resource_groups` (on by default): the public catalog hides products and categories that sit in MODX resource groups closed by ACL for the request context.
+The filter is on only when both settings are true: MODX `access_resource_group_enabled` (on by default) and `ms3_web_catalog_respect_resource_groups` (the installer writes `true`).
 
-The check covers both anonymous visitors and authenticated customers: a guest is matched against grants issued to no particular user, while a customer also gets the groups resolved from `msCustomerGroup` through MODX user-group ACL. Membership is evaluated as "any of them": a document stays visible when any of its groups grants access, even if another one is restricted.
+A guest is matched against a permission that is not tied to a user. A customer also receives groups from `msCustomerGroup` through MODX user-group ACL.
 
-Disable the setting to let the catalog serve products regardless of resource groups.
+Membership is "at least one": the document stays visible when any of its groups grants access, even if another group is closed.
+
+Turn off `ms3_web_catalog_respect_resource_groups` to serve products without resource-group checks.
 
 ## Example
 

@@ -7,7 +7,7 @@ Adding, validating and removing order fields, and submitting the order.
 
 ## Which events can abort the operation
 
-Unlike the [cart events](cart), the core reads the plugin response almost everywhere here — after-events included. `$modx->event->output(...)` returns an error from every event on this page **except** `msOnMgrCreateOrder`, which is called without reading the response.
+Unlike the [cart events](cart), the core reads the plugin response almost everywhere here, including after-events. You can return an error with `$modx->event->output(...)` from any event on this page except `msOnMgrCreateOrder` and the three validation events.
 
 So `msOnRemoveFromOrder`, `msOnEmptyOrder` and `msOnCreateOrder` can fail an operation that already happened: the field is removed or the order is created, yet the client gets an error.
 
@@ -380,7 +380,18 @@ switch ($modx->event->name) {
 
 ## msOnBeforeCreateOrder
 
-Fired **before** final order creation (assigning "New" status). Three scenarios:
+```mermaid
+flowchart TD
+  store["Storefront submit: handler, no origin"] --> event["msOnBeforeCreateOrder"]
+  admin["Finalize from the manager: origin manager"] --> event
+  api["ProgrammaticOrderService: origin integration"] --> event
+  event --> draft["Status is still draft, number is already assigned"]
+  draft --> statusNew["Next status is New"]
+```
+
+Fired when the order number is already assigned and the status is still draft. The New status is set later. If the event returns an error, the number is cleared only when inventory tracking is on.
+
+The event arrives in three scenarios, and the parameter set differs:
 
 1. Storefront submit — `OrderSubmitHandler` (params have **no** `origin` / `from_manager`; has `handler`, `customFields`)
 2. Finalization in the admin — `OrderFinalizeService` (`origin=manager`, `from_manager=true`, `service`)
@@ -476,8 +487,7 @@ Fired right after `msOnBeforeCreateOrder`, while the order is still a draft. Pai
 
 ### Example
 
-<!-- EXAMPLE? 30+ lines and four unrelated scenarios in one snippet: log, CRM, stock, bonuses -->
-<!-- FACT? the example decrements `stock` by hand although MS3 ships an inventory service -->
+Do not change stock here. With `ms3_inventory_enabled=1`, `ms3_inventory` moves it: reserve on `ms3_status_new`, commit on `ms3_status_paid`, release on `ms3_status_canceled`. The customer has no `bonus` field.
 
 ```php
 <?php
@@ -491,64 +501,6 @@ switch ($modx->event->name) {
             $order->get('num'),
             $order->get('cost')
         ));
-
-        // $crm->createOrder($order->toArray());
-
-        foreach ($order->getMany('Products') as $product) {
-            $msProduct = $product->getOne('Product');
-            if (!$msProduct) {
-                continue;
-            }
-            $stock = (float) ($msProduct->get('stock') ?? 0);
-            $msProduct->set('stock', max(0, $stock - $product->get('count')));
-            $msProduct->save();
-        }
-
-        if ($customer = $order->getOne('Customer')) {
-            $bonus = floor($order->get('cost') / 100);
-            $currentBonus = $customer->get('bonus') ?? 0;
-            $customer->set('bonus', $currentBonus + $bonus);
-            $customer->save();
-        }
-        break;
-}
-```
-
-### External service integration
-
-<!-- EXAMPLE? 30+ lines; builds a delivery-service request body rather than showing the event mechanism -->
-
-```php
-<?php
-switch ($modx->event->name) {
-    case 'msOnCreateOrder':
-        $order = $scriptProperties['msOrder'];
-        $address = $order->getOne('Address');
-
-        $deliveryData = [
-            'order_id' => $order->get('num'),
-            'recipient' => [
-                'name' => $address->get('first_name') . ' ' . $address->get('last_name'),
-                'phone' => $address->get('phone'),
-                'email' => $address->get('email'),
-            ],
-            'address' => [
-                'city' => $address->get('city'),
-                'street' => $address->get('street'),
-                'building' => $address->get('building'),
-            ],
-            'items' => [],
-        ];
-
-        foreach ($order->getMany('Products') as $product) {
-            $deliveryData['items'][] = [
-                'name' => $product->get('name'),
-                'count' => $product->get('count'),
-                'price' => $product->get('price'),
-            ];
-        }
-
-        // $deliveryApi->createShipment($deliveryData);
         break;
 }
 ```
