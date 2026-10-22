@@ -15,7 +15,7 @@ MiniShop3 маршрутизирует API через библиотеку [Fast
 | **Назначение** | Административная панель MODX | Фронтенд магазина |
 | **Точка входа** | `connector.php` | `assets/.../api.php` |
 | **Авторизация** | MODX сессии + HTTP_MODAUTH | Токены MS3TOKEN |
-| **Middleware** | AuthMiddleware, PermissionMiddleware | TokenMiddleware, CorsMiddleware, RateLimitMiddleware |
+| **Middleware** | AuthMiddleware, PermissionMiddleware, AnyPermissionMiddleware | ServiceCheckMiddleware, TokenMiddleware, CorsMiddleware, RateLimitMiddleware |
 | **Файл роутов** | `config/routes/manager.php` | `config/routes/web.php` |
 
 ### Структура файлов
@@ -32,8 +32,8 @@ core/components/minishop3/
 │   └── routes_manager.custom.example.php  # Пример кастомных роутов
 
 core/config/
-├── ms3_routes_manager.custom.php          # Кастомные Manager роуты
-├── ms3_routes_web.custom.php              # Кастомные Web роуты
+├── ms3_routes_manager.custom.php          # Кастомные Manager роуты, создаёт установка
+├── ms3_routes_web.custom.php              # Кастомные Web роуты, создаёте сами
 └── ms3.routes.d/                          # Модульные роуты аддонов
     ├── manager/                           # Manager API фрагменты
     └── web/                               # Web API фрагменты
@@ -182,24 +182,32 @@ Response::error($message, $statusCode, $errors);
 {
   "success": false,
   "message": "Validation failed",
+  "code": 422,
   "errors": {
     "name": "Field is required"
-  }
+  },
+  "error_code": "validation_failed"
 }
 ```
+
+Ключи `code` и `error_code` есть в любом ответе об ошибке, даже когда `errors` пустой. `data` добавляется только там, где его передали.
 
 ### HTTP коды ответов
 
 | Код | Описание | Использование |
 | --- | --- | --- |
 | 200 | OK | Успешный запрос |
-| 400 | Bad Request | Ошибка валидации |
+| 201 | Created | Объект создан: адреса покупателя |
+| 400 | Bad Request | Битый запрос без карты полей |
 | 401 | Unauthorized | Не авторизован |
 | 403 | Forbidden | Нет прав доступа |
 | 404 | Not Found | Роут или ресурс не найден |
-| 405 | Method Not Allowed | Метод не разрешён |
+| 405 | Method Not Allowed | Метод не разрешён. Сюда же попадает preflight `OPTIONS`, если в стеке роута нет `CorsMiddleware` |
+| 409 | Conflict | Конфликт состояния: нехватка остатка при правке состава заказа |
+| 422 | Unprocessable Entity | Ошибка валидации с картой полей в `errors` |
 | 429 | Too Many Requests | Превышен лимит запросов |
 | 500 | Internal Server Error | Внутренняя ошибка |
+| 503 | Service Unavailable | Сервис `ms3` не поднялся |
 
 ## Middleware
 
@@ -268,7 +276,7 @@ $router->post('/api/mgr/products', function($params) use ($modx) {
 - `msorder_inventory_override` — правка состава заказа в обход нехватки остатка (с 1.14.3-beta1)
 
 ::: warning Право на правку в минус выдаётся отдельно
-При включённом учёте остатков (`ms3_inventory_enabled`) правка состава заказа сверяет резерв с итоговым количеством и отказывает, если остатка не хватает: ответ `422` и ключ `ms3_err_inventory_short`.
+При включённом учёте остатков (`ms3_inventory_enabled`) правка состава заказа сверяет резерв с итоговым количеством и отказывает, если остатка не хватает: ответ `409` с ключом `ms3_err_inventory_short`. Если в запросе пришёл `force`, а права на это нет, ответ `403`. В обоих случаях в `data` приходят `product_id`, `available`, `required` и `can_override` — последний показывает, поможет ли повтор с `force`.
 
 `msorder_inventory_override` позволяет провести такую правку всё равно — остаток уходит в минус. Право есть в шаблоне политики, но **в самой политике по умолчанию не выдано**, поэтому после обновления его нужно назначить явно. Пользователь с `sudo` получает его автоматически, как и любое другое право MODX.
 :::
@@ -279,11 +287,27 @@ $router->post('/api/mgr/products', function($params) use ($modx) {
 Группа, созданная после установки, политику не получит: резолвер работает только в момент установки или обновления. Подробности — в [быстром старте](/components/minishop3/quick-start#install-creates).
 :::
 
+#### AnyPermissionMiddleware
+
+Пускает запрос, если у пользователя есть **хотя бы одно** право из списка. Нужен там, где точную проверку делает контроллер: пакетные действия над товарами категории проверяют право на каждое действие отдельно.
+
+```php
+use MiniShop3\Router\Middleware\AnyPermissionMiddleware;
+
+$router->post('/multiple', $handler, [
+    new AnyPermissionMiddleware($modx, ['msproduct_save', 'msproduct_publish', 'msproduct_delete'])
+]);
+```
+
+#### ServiceCheckMiddleware
+
+Проверяет, что сервис `ms3` поднялся. Если нет — отвечает `503` с `error_code: internal_error`, не доходя до обработчика. Стоит в стеке Web API перед остальными.
+
 #### TokenMiddleware
 
 Проверяет токен покупателя для Web API и при необходимости создаёт гостевой токен.
 
-Порядок определения токена: `Authorization: Bearer` → заголовок `MS3TOKEN` (устаревший) → httpOnly cookie `ms3_token` → `$_REQUEST` → session. Query `token` / `ms3_token` снимаются и не принимаются.
+Порядок определения токена: `Authorization: Bearer` → заголовок `MS3TOKEN` (устаревший) → httpOnly cookie `ms3_token` → `$_REQUEST` → session. Query-параметр `ms3_token` middleware удаляет из запроса; `token` в query остаётся, но и не авторизует — им пользуется подтверждение e-mail.
 
 ```php
 use MiniShop3\Middleware\TokenMiddleware;
@@ -295,7 +319,9 @@ $router->group('/api/v1/cart', function($router) use ($modx) {
 }, [$tokenMiddleware]);
 ```
 
-Исключение: маршруты из `publicRoutes` (logout и `token/get`). На них гостевой токен не создаётся. Каталог и health в `web.php` работают без этого middleware. Для `token/get` он подключён в режиме optional.
+В самом middleware есть список `publicRoutes` — пятнадцать префиксов (каталог, доставки, оплаты, вебхуки, health) и шаблон галереи товара. Путь из списка проходит без гостевого токена и без 401. Отдельного режима `optional` в коде нет: поведение определяет попадание пути в этот список.
+
+На практике из списка работают два пункта: каталог, health и вебхуки в `web.php` этот middleware вообще не подключают, а `publicRoutes` реально срабатывает на `GET /customer/token/get` и `POST /customer/logout` — единственных публичных путях, где middleware стоит.
 
 Подробнее: [Авторизация Web API](/components/minishop3/development/web-api/auth).
 
@@ -402,10 +428,10 @@ Middleware выполняются в порядке указания:
 
 ```php
 $router->get('/api/mgr/endpoint', $handler, [
-    new CorsMiddleware(),        // 1. Сначала CORS
-    new RateLimitMiddleware(),   // 2. Проверка лимита
-    new AuthMiddleware($modx),   // 3. Авторизация
-    new PermissionMiddleware(),  // 4. Права доступа
+    new CorsMiddleware(),                               // 1. Сначала CORS
+    new RateLimitMiddleware(),                          // 2. Проверка лимита
+    new AuthMiddleware($modx),                          // 3. Авторизация
+    new PermissionMiddleware($modx, 'msproduct_save'),  // 4. Право доступа
 ]);
 ```
 
@@ -424,7 +450,7 @@ $router->get('/api/mgr/endpoint', $handler, [
 
 #### Справочники (`/references`) {#references}
 
-CRUD справочников (право `view_document`). Обеспечивает автодополнение и выбор значений в формах админки.
+Чтение справочников (право `view_document`): все восемь роутов группы — `GET`. Обеспечивает автодополнение и выбор значений в формах админки.
 
 | Метод | Роут | Описание |
 | --- | --- | --- |
@@ -502,7 +528,7 @@ CRUD опций настроек магазина. Право `mssetting_save`.
 
 #### Опции категории (`/categories/{category_id}/options`)
 
-Опции конкретной категории.
+Опции конкретной категории. Право на всю группу — `mscategory_save`.
 
 | Метод | Роут | Описание |
 | --- | --- | --- |
@@ -549,7 +575,7 @@ CRUD колонок административных гридов. Чтение:
 | PUT | `/{grid_key}/field/{field_name}` | Обновить колонку |
 | DELETE | `/{grid_key}/{field_name}` | Удалить колонку |
 
-**Известные `grid_key` в MS3 1.14.x:** `orders`, `order_products`, `customers`, `vendors`, `category-products`, `deliveries`, `payments`.
+**Конфигурация в базе есть у шести гридов:** `orders`, `order_products`, `customers`, `vendors`, `category-products`, `deliveries` — их колонки заводят сид-миграции. Грид платежей запрашивает ключ `payments`, но сида для него нет: ответ приходит пустым, и грид рисует встроенные колонки. В списке гридов в настройках доступны пять ключей, без `deliveries` и `payments`.
 
 ##### Ответ `GET /grid-config/{grid_key}`
 
@@ -587,6 +613,8 @@ function addFilterParam(params, key, value) {
 ```
 
 Поэтому при добавлении прямого фильтра на сервере **обязательно** дописывайте его ключ в константу `DIRECT_FILTER_KEYS` соответствующего контроллера. Иначе клиент отправит фильтр с префиксом и фильтрация не сработает.
+
+Для нового грида одной константы мало: `GridConfigController` отдаёт `direct_filter_keys` только тем ключам, что перечислены в его реестре провайдеров — сейчас там заказы и покупатели. У заказов сама константа лежит в `ManagerOrderListService`, а контроллер на неё ссылается.
 
 #### Заказы (`/orders`)
 
@@ -1076,7 +1104,7 @@ copy(
 | **Файлов** | Один на тип API | По файлу на аддон |
 | **Конфликты** | Возможны при нескольких аддонах | Нет |
 | **Установка/удаление** | Править вручную | Атомарно: создать или удалить файл |
-| **Создаётся** | При установке MiniShop3 (файл-пример) | Аддон через resolver |
+| **Создаётся** | Manager-файл — установка MiniShop3 из примера. Web-файл установка не создаёт: заготовки под него в пакете нет, сделайте файл сами | Аддон через resolver |
 
 ## Системные настройки
 

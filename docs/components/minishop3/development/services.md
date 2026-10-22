@@ -232,7 +232,9 @@ $draftManager->attachCustomer($draft, $customerId);
 // Расчёт стоимости (нужны orderData из toArray и token)
 $orderData = $draftManager->toArray($draft);
 $total = $costCalculator->getTotalCost($draft, $orderData, $token);
-// ['cost' => …, 'cart_cost' => …, 'delivery_cost' => …, 'payment_cost' => …]
+// ['success' => true, 'message' => …, 'data' => ['cost' => …, 'cart_cost' => …,
+//   'delivery_cost' => …, 'payment_cost' => … и итоги корзины]]
+$cost = $total['data']['cost'];
 
 // Логирование
 $logService = $modx->services->get('ms3_order_log');
@@ -288,7 +290,7 @@ OrderFieldManager    — поля заказа (Order-specific)
 | `ms3_delivery_catalog` | `Services\Delivery\DeliveryCatalogService` | Публичный каталог доставок (Web API) |
 | `ms3_payment_service` | `Services\Payment\PaymentService` | Способы оплаты |
 | `ms3_payment_catalog` | `Services\Payment\PaymentCatalogService` | Публичный каталог оплат (Web API) |
-| `ms3_payment_link_resolver` | `Services\Payment\PaymentLinkResolver` | URL оплаты: в письмах по `ms3_payment_link_statuses`, в `msGetOrder` по параметру `payStatus` |
+| `ms3_payment_link_resolver` | `Services\Payment\PaymentLinkResolver` | URL оплаты: в письмах по `ms3_payment_link_statuses` (настройки в поставке нет, создаёте сами), в `msGetOrder` по параметру `payStatus` |
 | `ms3_payment_lifecycle` | `Services\Payment\PaymentLifecycleService` | Жизненный цикл оплаты → статусы заказа |
 | `ms3_shipment_lifecycle` | `Services\Shipment\ShipmentLifecycleService` | Отгрузки и трекинг (`ms3_shipments` через `PdoShipmentStore`) |
 
@@ -482,7 +484,13 @@ if (!$result['success']) {
 Пользовательский класс **должен**:
 
 1. **Существовать** и быть доступным через автозагрузчик
-2. **Наследовать** базовый класс MiniShop3
+2. **Наследовать** базовый класс MiniShop3 — но только у сервисов без объявленного интерфейса
+
+У сервисов, для которых в конфигурации указан `interface` (`ms3_inventory`, `ms3_order_lifecycle_ports`, `ms3_webhook_dispatcher`), наследование не нужно: достаточно реализовать интерфейс с нуля. Проверка идёт по `is_a()`, и ветка с наследованием в этом случае не выполняется. Своя реализация склада от `ProductStockInventory` не наследуется — так и сделано в примере поставки.
+
+::: warning Указывайте `interface` в своём конфиге
+Слияние конфигураций заменяет значение целиком. Если в `ms3.services.php` оставить у такого сервиса `'interface' => null`, валидатор потребует наследовать стандартный класс и отвергнет честную реализацию интерфейса. Переносите строку `interface` в свой конфиг вместе с `class`.
+:::
 
 ```php
 <?php
@@ -518,8 +526,8 @@ class PromoCart extends Cart
 ServiceRegistry автоматически проверяет:
 
 - **Существование класса**: `class_exists()`
-- **Наследование**: `is_subclass_of($className, $baseClass)`
-- **Интерфейсы**: `class_implements()` (если указано)
+- **Интерфейс**, если он объявлен у сервиса: `is_a($className, $interface, true)`
+- **Наследование** — только когда интерфейса нет: `is_subclass_of($className, $baseClass)`
 
 При ошибке валидации подставляется стандартный класс, в лог пишется запись:
 
@@ -666,7 +674,8 @@ class TelegramAuthProvider implements AuthProviderInterface
             return null;
         }
 
-        // Поиск или создание покупателя
+        // Поиск покупателя по своему полю. Колонки telegram_id у msCustomer нет:
+        // добавьте её через «Свои поля» покупателя или миграцию своего аддона
         return $this->modx->getObject(msCustomer::class, [
             'telegram_id' => $credentials['telegram_id']
         ]);
@@ -704,8 +713,10 @@ $authManager->registerProvider(new TelegramAuthProvider($modx));
 
 ### Сервис не найден
 
+Контейнер MODX бросает исключение `MODX\Revolution\Services\NotFoundException`:
+
 ```
-Service 'ms3_my_service' not found
+Dependency not found with key ms3_my_service.
 ```
 
 **Решения:**
@@ -713,6 +724,11 @@ Service 'ms3_my_service' not found
 1. Убедитесь, что `ServiceRegistry::register()` вызывается при инициализации
 2. Проверьте правильность ключа сервиса (с префиксом `ms3_`)
 3. Проверьте, что класс существует и доступен автозагрузчику
+4. Посмотрите в журнал MODX: если там строка `No factory registered for service`, ключ не из списка встроенных — такой сервис не регистрируется вовсе
+
+::: warning Новый ключ через конфигурацию не добавить
+Регистратор заводит только те ключи, для которых в коде есть фабрика, — те же 83, что перечислены выше. Конфигурацией подменяется **класс существующего** сервиса; незнакомый ключ в `ms3.services.php` или `ms3.services.d/*.php` будет пропущен с записью в журнал. Свой сервис аддон кладёт прямо в контейнер MODX: `$modx->services->add('mypackage_service', …)`.
+:::
 
 ### Пользовательский класс не применяется
 

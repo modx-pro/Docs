@@ -15,7 +15,7 @@ Web API MiniShop3 (`api.php`) обслуживает фронтенд и headles
 | --- | --- |
 | `core/components/minishop3/config/routes/web.php` | Роуты Web API |
 | `core/config/ms3_routes_web.custom.php` | Свои роуты. В поставке нет, создаёте сами |
-| `core/config/ms3.routes.d/web/*.php` | Фрагменты роутов аддонов. Каталога в поставке нет |
+| `core/config/ms3.routes.d/web/*.php` | Фрагменты роутов аддонов. Каталог создаёт установка, файлы кладут аддоны |
 
 ## Документация
 

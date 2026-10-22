@@ -38,7 +38,7 @@ $customer = $modx->getObject(msCustomer::class, ['email' => $email]);
 | `msProductData` | `Files` | 1:N | файлы галереи |
 | `msOrder` | `Address` | 1:1 | адрес заказа (`msOrderAddress`) |
 | `msOrder` | `Products` | 1:N | товары в заказе |
-| `msOrder` | `msCustomer` | N:1 | покупателя. Алиас именно такой, не `Customer` |
+| `msOrder` | `Customer` | N:1 | покупателя (`msCustomer`) |
 | `msCustomer` | `Tokens` | 1:N | токены авторизации |
 | `msCustomerAddress` | `Customer` | N:1 | покупателя — обратная связь от адреса |
 | `msCustomerToken` | `Customer` | N:1 | покупателя — обратная связь от токена |
@@ -47,7 +47,7 @@ $customer = $modx->getObject(msCustomer::class, ['email' => $email]);
 
 ## Файл схемы
 
-Схема базы данных задана в XML:
+XML-схема описывает модели для генератора xPDO:
 
 ```
 core/components/minishop3/schema/minishop3.mysql.schema.xml
@@ -59,6 +59,10 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | `baseClass` | `xPDO\Om\xPDOObject` |
 | `platform` | `mysql` |
 | `version` | `3.0` |
+
+::: warning Таблицы создаёт не XML
+Структуру таблиц задают метакарты в `src/Model/mysql/` и миграции Phinx. XML нужен только генератору моделей, в установке он не участвует и местами уже разошёлся с метакартой — например по уникальности индекса на фамилию покупателя. Сверяйте поля по метакарте.
+:::
 
 ## Таблицы базы данных
 
@@ -163,7 +167,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | `id` | int | ID покупателя |
 | `user_id` | int | ID связанного modUser (опционально) |
 | `first_name` | varchar(191) | Имя |
-| `last_name` | varchar(191) | Фамилия. В схеме индекс помечен уникальным, см. [#905](https://github.com/modx-pro/MiniShop3/issues/905) |
+| `last_name` | varchar(191) | Фамилия. В XML-схеме индекс по этому полю помечен уникальным, но таблицу создаёт миграция из метакарты, где уникальности нет, — в базе индекс обычный ([разбор](https://github.com/modx-pro/MiniShop3/issues/905)) |
 | `phone` | varchar(50) | Телефон |
 | `email` | varchar(191) | Email |
 | `password` | varchar(255) | Хеш пароля |
@@ -214,7 +218,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | `meta` | text | JSON-метаданные |
 | `createdon` / `updatedon` | int unsigned | Unix-время |
 
-При `ms3_shipment_enabled=1` статус отгрузки переносит в заказ `OrderStatusService`: `shipped` → `ms3_status_sent`, `cancelled`/`failed` → `ms3_status_canceled`. Для `delivered` / `in_transit` смотрите настройки `ms3_shipment_on_*_status`.
+При `ms3_shipment_enabled=1` статус отгрузки переносит в заказ `ShipmentLifecycleService`: `shipped` → `ms3_status_sent`, `cancelled`/`failed` → `ms3_status_canceled`. Для `delivered` / `in_transit` смотрите настройки `ms3_shipment_on_*_status`. Сам статус заказа применяет `OrderStatusService`, но соответствие статусов живёт в сервисе отгрузок — свою таблицу переходов подставляют подменой `ms3_shipment_lifecycle`.
 
 ### Производители
 
@@ -235,9 +239,9 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | --- | --- | --- |
 | `msModelField` | `ms3_model_fields` | Настройки полей моделей |
 | `msModelFieldSection` | `ms3_model_field_sections` | Секции полей |
-| `msGridField` | `ms3_grid_fields` | Конфигурация колонок гридов (customers, orders, products) |
-| `msProductField` | `ms3_product_fields` | Поля товара (устаревшие) |
-| `msPageSection` | `ms3_page_sections` | Секции страниц (устаревшие) |
+| `msGridField` | `ms3_grid_fields` | Конфигурация колонок гридов: `customers`, `orders`, `order_products`, `vendors`, `category-products`, `deliveries` |
+| `msProductField` | `ms3_product_fields` | Поля товара. Строку создаёт `ExtraFieldsService` вместе со своим полем, читают `ConfigService` и `FieldConfigManager` |
+| `msPageSection` | `ms3_page_sections` | Секции страниц. Обслуживает `/api/mgr/config/page-fields/{page_key}` |
 | `msExtraField` | `ms3_extra_fields` | Дополнительные поля |
 
 ### Уведомления
@@ -259,7 +263,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 $result = $modx->services->get('ms3_programmatic_order')->create([
     'idempotency_key' => 'crm-order-15', // обязателен
     'products' => [
-        ['id' => $productId, 'count' => 2],
+        ['product_id' => $productId, 'count' => 2],
     ],
     'delivery_id' => $deliveryId,
     'payment_id' => $paymentId,
@@ -420,11 +424,12 @@ use MODX\Revolution\modResource;
 
 class msProduct extends modResource
 {
-    // Свои методы модели
-    public function getPrice(): float
+    // Свои методы модели. Не переопределяйте getPrice(): он уже есть
+    // у msProduct с другой подписью и прогоняет цену через модификаторы
+    public function getRawPrice(): float
     {
         $data = $this->getOne('Data');
-        return $data ? (float)$data->get('price') : 0.0;
+        return $data ? (float) $data->get('price') : 0.0;
     }
 }
 ```
@@ -438,7 +443,7 @@ namespace MiniShop3\Model\mysql;
 class msProduct extends \MiniShop3\Model\msProduct
 {
     public static $metaMap = [
-        'package' => 'MiniShop3\\Model\\',
+        'package' => 'MiniShop3\\Model',
         'version' => '3.0',
         'extends' => 'MODX\\Revolution\\modResource',
         'fields' => [
