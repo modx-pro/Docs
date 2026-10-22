@@ -14,7 +14,7 @@ title: Интерфейс админки
 | Уведомления | `mgr/notifications` | [Центр уведомлений](notifications) |
 | Настройки | `mgr/settings` | Вкладки магазина, см. [Настройки](settings) |
 | Системные настройки | `system/settings` + `&ns=minishop3` | Namespace MODX `minishop3`, не вкладки `mgr/settings` |
-| Помощь | `mgr/help` | Справка по менеджеру MS3 |
+| Помощь | `mgr/help` | Справка по админке MS3 |
 | Утилиты | `mgr/utilities` | [Утилиты](utilities) |
 
 ## Страницы ресурсов
@@ -53,7 +53,7 @@ title: Интерфейс админки
 | [Конфигурация гридов](utilities/grid-columns) | Настройка таблиц |
 | [Поля форм (админка)](utilities/model-fields) | Поля моделей БД |
 
-Пошаговые сценарии полей и гридов: [Cookbook менеджера](/components/minishop3/manager/).
+Пошаговые сценарии полей и гридов: [Cookbook админки](/components/minishop3/manager/).
 
 Подробнее: [Утилиты](utilities)
 

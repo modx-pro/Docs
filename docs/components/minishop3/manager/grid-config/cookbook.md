@@ -81,7 +81,7 @@ POST /api/mgr/grid-config/orders/field
 
 ## Кейс: inline-edit + select (category-products)
 
-1. Грид **category-products** → выберите колонку (например `price` или extra-поле товара).
+1. Грид **category-products** → выберите колонку (например `price` или своё поле товара).
 2. Включите **Редактируемое поле**.
 3. **Тип редактора**: `select`.
 4. **editor_options** — массив пар `[value, label]`:
@@ -186,4 +186,4 @@ PUT ожидает **полный** список колонок грида. Лю
 | Ошибка combo-редактора | `editor_references` работает только для `category-products` |
 | Колонка не в списке заказов | `visible: true`, перезагрузите грид |
 
-См. [routing: grid-config](/components/minishop3/development/routing), [Cookbook менеджера](/components/minishop3/manager/).
+См. [routing: grid-config](/components/minishop3/development/routing), [Cookbook админки](/components/minishop3/manager/).

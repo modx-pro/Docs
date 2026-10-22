@@ -17,11 +17,15 @@ The validation events use the response differently — not to abort the operatio
 
 Fired **before** adding or changing an order field.
 
+::: warning No event arrives for internal fields
+Since 1.14.2-beta1 `OrderFieldManager` rejects the internal draft columns before the event is fired. A plugin that used to intercept writes to `customer_id`, `status_id`, `cost` or `properties` no longer runs. The same check covers all four field events: `msOnBeforeAddToOrder`, `msOnAddToOrder`, `msOnBeforeRemoveFromOrder`, `msOnRemoveFromOrder`. The list of closed columns is in [fields the storefront may not change](/en/components/minishop3/development/web-api/checkout#protected-fields).
+:::
+
 ### Parameters
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
+| `draft` | `msOrder` \| `null` | Order draft |
 | `key` | `string` | Field key |
 | `value` | `mixed` | Field value |
 
@@ -74,7 +78,7 @@ Fired **after** adding a field to the order (after successful validation).
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
+| `draft` | `msOrder` \| `null` | Order draft |
 | `key` | `string` | Field key |
 | `value` | `mixed` | Validated value |
 
@@ -107,7 +111,6 @@ Fired **before** validating a field value.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
 | `key` | `string` | Field key |
 | `value` | `mixed` | Value to validate |
 
@@ -139,7 +142,6 @@ Fired **after** successful field validation.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
 | `key` | `string` | Field key |
 | `value` | `mixed` | Validated value |
 
@@ -165,13 +167,12 @@ switch ($modx->event->name) {
 
 ## msOnErrorValidateOrderValue
 
-Fired on validation **error**. Lets you change the error message or clear the error.
+Fired on validation **error**.
 
 ### Parameters
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
 | `key` | `string` | Field key |
 | `value` | `mixed` | Invalid value |
 | `error` | `array` | Errors array `['field' => 'message']` |
@@ -223,7 +224,7 @@ Fired **before** removing a field from the order.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
+| `draft` | `msOrder` \| `null` | Order draft |
 | `key` | `string` | Field key to remove |
 
 ### Aborting the operation
@@ -253,7 +254,7 @@ Fired **after** removing a field from the order.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
+| `draft` | `msOrder` \| `null` | Order draft |
 | `key` | `string` | Removed field key |
 
 ### Example
@@ -307,7 +308,7 @@ switch ($modx->event->name) {
 
 ## msOnEmptyOrder
 
-Fired **after** the draft fields are cleared. A plugin `output` makes the caller treat the operation as failed.
+Fired **after** the draft fields are cleared — address and order fields are already nulled and saved. A plugin `output` makes the caller treat the operation as failed but does **not** roll the save back: the draft stays cleared.
 
 ### Parameters
 
@@ -319,13 +320,15 @@ Fired **after** the draft fields are cleared. A plugin `output` makes the caller
 
 ## msOnSubmitOrder
 
-Fired on order **submission** (Submit button). Lets you validate data and add extra info.
+Fired on order **submission** (Submit button).
 
 ### Parameters
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
+| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Submit handler |
+| `draft` | `msOrder` | Order draft |
+| `orderData` | `array` | Draft fields as an array |
 | `data` | `array` | Extra form data |
 
 ### Aborting the operation
@@ -380,7 +383,7 @@ switch ($modx->event->name) {
 Fired **before** final order creation (assigning "New" status). Three scenarios:
 
 1. Storefront submit — `OrderSubmitHandler` (params have **no** `origin` / `from_manager`; has `handler`, `customFields`)
-2. Manager finalization — `OrderFinalizeService` (`origin=manager`, `from_manager=true`, `service`)
+2. Finalization in the admin — `OrderFinalizeService` (`origin=manager`, `from_manager=true`, `service`)
 3. Programmatic creation — `ProgrammaticOrderService` → `finalize` (`origin=integration`, `from_manager=false`, `service`)
 
 ### Parameters
@@ -389,8 +392,8 @@ Fired **before** final order creation (assigning "New" status). Three scenarios:
 | --- | --- | --- |
 | `msOrder` | `msOrder` | Order object (always) |
 | `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Storefront submit only |
-| `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Manager or integration |
-| `origin` | `string` | Finalize paths only: `manager` \| `integration` (`OrderOrigin` constants) |
+| `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Finalize paths only (admin / integration) |
+| `origin` | `string` | Finalize paths only: `manager` from the admin, `integration` from programmatic creation. The `OrderOrigin::STOREFRONT` constant exists but no path sets it — a storefront submit carries no `origin` key at all |
 | `from_manager` | `bool` | Present on both finalize paths (`true` with `origin=manager`, `false` with `origin=integration`); missing only on the storefront submit |
 | `customFields` | `array` | Storefront only — fields from `properties._validated` |
 
@@ -401,7 +404,7 @@ $origin = $scriptProperties['origin'] ?? null;
 $fromManager = !empty($scriptProperties['from_manager']);
 
 if ($fromManager) {
-    // order card in mgr
+    // order card in the admin
 } elseif ($origin === \MiniShop3\Services\Order\OrderOrigin::INTEGRATION) {
     // ProgrammaticOrderService / cron
 } elseif (!empty($scriptProperties['handler'])) {
@@ -458,7 +461,7 @@ switch ($modx->event->name) {
 
 ## msOnCreateOrder
 
-Fired **after** successful order creation. Pair to `msOnBeforeCreateOrder` — same three scenarios and the same parameter set (storefront has no `origin`).
+Fired right after `msOnBeforeCreateOrder`, while the order is still a draft. Pair to `msOnBeforeCreateOrder` — same three scenarios and the same parameter set (storefront has no `origin`). `msOnMgrCreateOrder` runs later, after the status change.
 
 ### Parameters
 
@@ -466,12 +469,15 @@ Fired **after** successful order creation. Pair to `msOnBeforeCreateOrder` — s
 | --- | --- | --- |
 | `msOrder` | `msOrder` | Created order (always) |
 | `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Storefront only |
-| `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Manager or integration |
+| `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Admin or integration |
 | `origin` | `string` | Finalize paths only |
 | `from_manager` | `bool` | Present on both finalize paths (`true`/`false`); missing only on the storefront submit |
 | `customFields` | `array` | Storefront only |
 
 ### Example
+
+<!-- EXAMPLE? 30+ lines and four unrelated scenarios in one snippet: log, CRM, stock, bonuses -->
+<!-- FACT? the example decrements `stock` by hand although MS3 ships an inventory service -->
 
 ```php
 <?php
@@ -509,6 +515,8 @@ switch ($modx->event->name) {
 ```
 
 ### External service integration
+
+<!-- EXAMPLE? 30+ lines; builds a delivery-service request body rather than showing the event mechanism -->
 
 ```php
 <?php
@@ -549,10 +557,10 @@ switch ($modx->event->name) {
 
 ## msOnBeforeMgrCreateOrder
 
-Fired **before** finalizing an order in the manager — when a manager turns a draft into a full order with the "Submit" button on the order page. This is the manager counterpart of `msOnSubmitOrder`.
+Fired **before** finalizing an order in the admin — when a manager turns a draft into a full order with the "Submit" button on the order page. This is the admin counterpart of `msOnSubmitOrder`.
 
 ::: tip Relation to msOnBeforeCreateOrder
-After `msOnBeforeMgrCreateOrder`, the universal `msOnBeforeCreateOrder` still runs with the same three parameters. Take `msOnBeforeMgrCreateOrder` for manager-only logic, and `msOnBeforeCreateOrder` when the same logic is needed on both the frontend and the manager.
+After `msOnBeforeMgrCreateOrder`, the universal `msOnBeforeCreateOrder` still runs with the same four parameters (`service`, `msOrder`, `origin`, `from_manager`). Take `msOnBeforeMgrCreateOrder` for admin-only logic, and `msOnBeforeCreateOrder` when the same logic is needed both on the storefront and in the admin.
 :::
 
 ### Parameters
@@ -568,7 +576,7 @@ After `msOnBeforeMgrCreateOrder`, the universal `msOnBeforeCreateOrder` still ru
 
 ## msOnMgrCreateOrder
 
-Fired **after** an order has been finalized in the manager. Pair to `msOnBeforeMgrCreateOrder`.
+Fired **after** an order has been finalized in the admin. Pair to `msOnBeforeMgrCreateOrder`.
 
 ### Parameters
 

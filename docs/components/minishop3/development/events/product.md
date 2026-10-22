@@ -17,7 +17,7 @@ title: События товаров (каталог)
 
 | Параметр | Тип | Описание |
 | --- | --- | --- |
-| `data` | `array` | Данные товара — по умолчанию `toArray()` объекта `msProductData` (core-поля: `price`, `article`, `weight`, `stock`, `vendor_id`, `tags`, `color`, `size` и т.д.), либо расширенный row, если вызывающий код передал свой `$data` (например, `ms3_products.php` передаёт весь row листинга, включая extra fields) |
+| `data` | `array` | Данные товара — по умолчанию `toArray()` объекта `msProductData` (core-поля: `price`, `article`, `weight`, `stock`, `vendor_id`, `tags`, `color`, `size` и т.д.), либо расширенный row, если вызывающий код передал свой `$data` (например, `ms3_products.php` передаёт весь row листинга, включая свои поля) |
 | `price` | `float` | Текущая цена |
 
 ### Модификация данных (с поддержкой цепочки)

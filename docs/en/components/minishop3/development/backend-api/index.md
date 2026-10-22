@@ -15,7 +15,13 @@ Processors live in `core/components/minishop3/src/Processors/` and use the names
 $modx->runProcessor('MiniShop3\\Processors\\Gallery\\Upload', ['id' => $productId, 'file' => $path]);
 ```
 
-A short path like `Gallery\Upload` with a `processors_path` option does not work: given a short name, MODX looks for a file with the `.class.php` suffix, and MiniShop3 processors have none.
+A short path like `Gallery\Upload` with a `processors_path` option does not work: given a short name, MODX looks for a file with the `.class.php` suffix, and MiniShop3 processors have none. The call then answers "Requested processor not found", and the expected path goes to the MODX error log.
+
+::: warning A processor checks its permission wherever you call it from
+Almost every MS3 processor declares a `$permission` (`msproductfile_save` for `Gallery\Upload`), and `ModelProcessor::checkPermissions()` boils down to `$modx->hasPermission($this->permission)`. The check runs inside `run()`, **before** `process()` — a PHP call is no exception.
+
+So a storefront snippet, where no manager permissions are in play, gets a refusal rather than a result: `isError()` is true and the message is `permission_denied_processor` with the permission name. When the operation has to run on behalf of a visitor, call a service (`$ms3->product`, `ProductImageService` and the rest) instead of a processor — services check no permissions, which makes the check your responsibility.
+:::
 
 ## Manager API vs processors
 

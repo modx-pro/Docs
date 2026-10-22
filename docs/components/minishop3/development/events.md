@@ -42,7 +42,7 @@ MiniShop3 работает на системе событий MODX. Плагин
 | [msOnRemoveFromOrder](events/order#msonremovefromorder) | После удаления поля |
 | [msOnBeforeEmptyOrder](events/order#msonbeforeemptyorder) | Перед очисткой черновика заказа |
 | [msOnEmptyOrder](events/order#msonemptyorder) | После очистки черновика |
-| [msOnSubmitOrder](events/order#msonsubmitorder) | Отправка заказа (витрина) |
+| [msOnSubmitOrder](events/order#msonsubmitorder) | Отправка заказа (фронтенд) |
 | [msOnBeforeMgrCreateOrder](events/order#msonbeforemgrcreateorder) | Перед финализацией из админки |
 | [msOnMgrCreateOrder](events/order#msonmgrcreateorder) | После финализации из админки |
 | [msOnBeforeCreateOrder](events/order#msonbeforecreateorder) | Перед созданием заказа |
@@ -74,7 +74,7 @@ MiniShop3 работает на системе событий MODX. Плагин
 | --- | --- |
 | [msOnBeforeGetOrderCustomer](events/customer#msonbeforegetordercustomer) | Перед получением покупателя |
 | [msOnGetOrderCustomer](events/customer#msongetordercustomer) | После получения покупателя |
-| [msOnBeforeGetOrderUser](events/customer#msonbeforegetorderuser) | Перед разрешением `modUser` при сабмите |
+| [msOnBeforeGetOrderUser](events/customer#msonbeforegetorderuser) | Перед разрешением `modUser` при оформлении заказа |
 | [msOnGetOrderUser](events/customer#msongetorderuser) | После разрешения `modUser` |
 | [msOnBeforeAddToCustomer](events/customer#msonbeforeaddtocustomer) | Перед добавлением поля |
 | [msOnAddToCustomer](events/customer#msonaddtocustomer) | После добавления поля |
@@ -167,7 +167,7 @@ MiniShop3 работает на системе событий MODX. Плагин
 | --- | --- |
 | [msOnManagerCustomCssJs](events/manager#msonmanagercustomcssjs) | Загрузка скриптов и стилей |
 
-### Отгрузки (shipment)
+### Отгрузки
 
 Логика — `ShipmentLifecycleService` (`ms3_shipment_lifecycle`), таблицы — `ms3_shipments` и `ms3_shipment_events`. Создание отгрузки и `setTracking` работают и при `ms3_shipment_enabled=0`, а вебхук доставки в этом случае отвечает 404. Before-события прерываются через `success=false` в ответе `invokeEvent`.
 
@@ -201,6 +201,19 @@ flowchart TB
 | `msOnBeforeInventoryReserve` / `msOnInventoryReserve` | Резерв на `ms3_status_new` (и перед commit, если заказ сразу переходит в paid) |
 | `msOnBeforeInventoryCommit` / `msOnInventoryCommit` | Commit на `ms3_status_paid` (повторно остаток не уменьшает) |
 | `msOnBeforeInventoryRelease` / `msOnInventoryRelease` | Release на `ms3_status_canceled` до commit. Также при сбое `payment send()` |
+| `msOnBeforeInventoryAdjust` / `msOnInventoryAdjust` | Правка состава заказа в админке: резерв приводится к новому количеству строки (с 1.14.3-beta1) |
+
+У пары `Adjust` набор параметров свой, не такой, как у reserve, commit и release:
+
+| Параметр | Тип | Значение |
+| --- | --- | --- |
+| `product_id` | `int` | Товар, резерв по которому меняется |
+| `order_id` | `int` | Заказ |
+| `old_qty` | `float` | Сколько заказ держал до правки |
+| `new_qty` | `float` | Сколько будет держать после |
+| `forced` | `bool` | Правка проведена в обход нехватки остатка, по праву `msorder_inventory_override` |
+
+Событие приходит на каждый товар, количество которого изменилось, в том числе при удалении строки — тогда `new_qty` равно нулю. `msOnBeforeInventoryAdjust` с `success=false` отменяет правку: строка заказа не сохраняется, остаток и резерв остаются прежними.
 
 ```mermaid
 flowchart TB
@@ -222,7 +235,7 @@ flowchart TB
 | — | `controller` | Параметр во многих событиях контроллеров |
 | — | `msOnBeforeEmptyOrder` / `msOnEmptyOrder` | Очистка черновика |
 | — | `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder` | Финализация из админки |
-| — | `msOnBeforeGetOrderUser` / `msOnGetOrderUser` | `modUser` при сабмите |
+| — | `msOnBeforeGetOrderUser` / `msOnGetOrderUser` | `modUser` при оформлении заказа |
 | — | `msOnBeforeValidateCustomerValue` | Новое событие |
 | — | `msOnCreateCustomer` | Новое событие |
 | — | `msOnAddCustomerAddress` | Новое событие |
@@ -251,8 +264,8 @@ flowchart TB
 | Действие | События по порядку |
 | --- | --- |
 | Очистка черновика (`order/clean`) | `msOnBeforeEmptyOrder` → reset полей → `msOnEmptyOrder` |
-| Итог на витрине | cart/delivery/payment cost → `msOnBeforeGetOrderCost` → compose → `msOnGetOrderCost` (можно вернуть все 4 суммы) |
-| Отправка заказа на витрине | `msOnSubmitOrder` → … → `msOnBeforeCreateOrder` → `msOnCreateOrder` |
+| Итог на фронтенде | cart/delivery/payment cost → `msOnBeforeGetOrderCost` → compose → `msOnGetOrderCost` (можно вернуть все 4 суммы) |
+| Отправка заказа на фронтенде | `msOnSubmitOrder` → … → `msOnBeforeCreateOrder` → `msOnCreateOrder` |
 | Финализация в админке | `msOnBeforeMgrCreateOrder` → `msOnBeforeCreateOrder` → `msOnCreateOrder` → `msOnMgrCreateOrder` |
 
 Все имена выше зарегистрированы в MODX; список регистрации — `_build/elements/events.php`.
