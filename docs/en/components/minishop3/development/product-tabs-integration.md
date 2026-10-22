@@ -262,4 +262,3 @@ console.log(window.MS3ProductTabsRegistry.pendingTabs);
 ```
 
 A queue that is not empty after the page has loaded means the tabs never reached Vue.
-

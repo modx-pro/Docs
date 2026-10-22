@@ -348,4 +348,3 @@ console.log(window.MS3OrderTabsRegistry)
 // Queue before Vue mounts — must be empty once the page has loaded
 console.log(window.MS3OrderTabsRegistry.pendingTabs)
 ```
-
