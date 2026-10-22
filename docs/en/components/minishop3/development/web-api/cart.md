@@ -64,7 +64,7 @@ After the normalizer (`CartResponseNormalizer`):
 | `cart` | map by `product_key` | Legacy. Empty cart → `{}`, not `[]` |
 | `status` | totals | Products only. Delivery / payment / total: `GET /order/cost` |
 
-The line key is `ms` followed by 32 md5 hex characters. Which fields go into the key is set by `ms3_cart_product_key_fields` (`id,options` by default). Money comes back with two decimals, weight with three, and empty `options` arrive as `{}`.
+The line key is `ms` followed by 32 md5 hex characters. Which fields go into the key is set by `ms3_cart_product_key_fields` (`id,options` by default). Money and weight arrive as JSON numbers rounded to two and three decimals, so a round price reads `7451`, not `7451.00`. Empty `options` arrive as `{}`.
 
 ## Example
 
