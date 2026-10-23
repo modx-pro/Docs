@@ -239,8 +239,12 @@ Passed from the server via snippets:
 
 ```javascript
 window.ms3Config = {
-  apiUrl: '/assets/components/minishop3/api.php',
+  actionUrl: '/assets/components/minishop3/api.php',
+  connectorUrl: '/assets/components/minishop3/connector.php',
+  ctx: 'web',                 // Page context key
   tokenName: 'ms3_token',
+  currencySymbol: '$ ',          // From the shop settings
+  currencyPosition: 'after',  // before or after, ms3_currency_position
 
   // Selector overrides
   selectors: {
@@ -256,6 +260,8 @@ window.ms3Config = {
   }
 }
 ```
+
+The component prints the first six keys itself when `ms3_register_global_config` is on. `currencySymbol` and `currencyPosition` are read by `OrderUI.formatPrice()` — storefront sums rely on them. `render.cart` and `selectors` are printed empty: snippets and your own code fill them.
 
 ### Ready event
 
@@ -585,6 +591,10 @@ class CartUI {
   }
 }
 ```
+
+The `+`/`−` buttons and the quantity inputs belong to a separate class, `QuantityUI` (`initButtons()`, `initInputs()`): `CartUI.init()` does not touch them. Handlers are not re-bound after a redraw — `initOptionSelects()` listens for `change` on the document, and `QuantityUI` re-binds on the `ms3:cart:updated` event.
+
+When a token in `ms3Config.render.cart` has no selector, or the element is not found, `renderCart()` tries the fallbacks: `#ms3oc-cart-live`, `#msb-test-cart`, `#msCart`, `[data-ms-cart]`, `.msCart`. The substitution happens only when exactly one such node exists in the document — otherwise one cart markup would land inside another.
 
 ### OrderUI
 
