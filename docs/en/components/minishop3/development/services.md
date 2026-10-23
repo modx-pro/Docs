@@ -393,6 +393,13 @@ OrderFieldManager   — order fields (Order-specific)
 
 ## Replacing services
 
+```mermaid
+flowchart BT
+  core[Built-in classes] --> main["ms3.services.php"]
+  main --> addons["ms3.services.d in alphabetical order"]
+  addons --> win["The last ms3_* key wins"]
+```
+
 MiniShop3 lets you replace default services with your own via config files.
 
 ### Load order

@@ -8,6 +8,20 @@ MiniShop3 uses [FastRoute](https://github.com/nikic/FastRoute) for API request r
 
 ## Architecture
 
+```mermaid
+flowchart TB
+  subgraph web [Web API]
+    w1[web.php] --> w2[ms3_routes_web.custom.php]
+    w2 --> w3["ms3.routes.d/web"]
+    w3 --> wb[build]
+  end
+  subgraph mgr [Manager API]
+    m1[manager.php] --> m2[ms3_routes_manager.custom.php]
+    m2 --> m3["ms3.routes.d/manager"]
+    m3 --> mb[build]
+  end
+```
+
 ### Two API types
 
 | Parameter | Manager API | Web API |

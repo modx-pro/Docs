@@ -19,6 +19,12 @@ MiniShop3 Web API (`api.php`) handles the storefront and headless clients: cart,
 
 ## Documentation
 
+```mermaid
+flowchart LR
+  store[Storefront and headless] --> web["api.php /api/v1"]
+  mgr[Vue manager] --> man["connector.php /api/mgr"]
+```
+
 | Section | Contents |
 | --- | --- |
 | [Overview](web-api/) | Envelope, middleware, base URL |

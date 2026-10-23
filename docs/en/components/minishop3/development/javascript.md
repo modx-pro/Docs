@@ -8,6 +8,29 @@ Headless API for programmatic interaction with MiniShop3 without DOM binding.
 
 ## Architecture
 
+```mermaid
+flowchart TB
+  ms3["ms3.js — entry point, auto-initialisation"]
+
+  subgraph ui ["UI Layer — DOM bindings for SSR"]
+    CartUI[CartUI.js]
+    OrderUI[OrderUI.js]
+    CustomerUI[CustomerUI.js]
+  end
+
+  subgraph core ["API Core — headless core"]
+    ApiClient[ApiClient.js]
+    TokenManager[TokenManager.js]
+    Hooks[hooks.js]
+    CartAPI[CartAPI.js]
+    OrderAPI[OrderAPI.js]
+    CustomerAPI[CustomerAPI.js]
+  end
+
+  ms3 --> ui
+  ui --> core
+```
+
 MiniShop3 uses a two-layer architecture:
 
 ```mermaid

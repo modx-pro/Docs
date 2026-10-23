@@ -60,6 +60,14 @@ These four values are applied **last**, so keys of the same name coming from `pr
 
 ## Connecting via MODX plugin
 
+```mermaid
+flowchart LR
+  plug["msOnManagerCustomCssJs"] --> early["Script before order.min.js"]
+  early --> stub["Stub, register writes into pendingTabs"]
+  stub --> vue["order.min.js picks up the queue"]
+  vue --> done["Queue empty, tabs accepted"]
+```
+
 The plugin loads the registration script on the `msOnManagerCustomCssJs` event, after checking `page === 'order'`:
 
 ```php

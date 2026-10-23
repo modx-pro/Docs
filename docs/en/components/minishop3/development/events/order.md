@@ -7,6 +7,15 @@ Adding, validating and removing order fields, and submitting the order.
 
 ## Which events can abort the operation
 
+```mermaid
+flowchart TD
+  plugin["A plugin called output()"] --> validate{"A validation event?"}
+  validate -->|yes| swap["value or error is replaced, the request goes on"]
+  validate -->|no| mgr{"msOnMgrCreateOrder?"}
+  mgr -->|yes| skip["The response is not read"]
+  mgr -->|no| fail["The customer gets an error"]
+```
+
 Unlike the [cart events](cart), the core reads the plugin response almost everywhere here, including after-events. You can return an error with `$modx->event->output(...)` from any event on this page except `msOnMgrCreateOrder` and the three validation events.
 
 So `msOnRemoveFromOrder`, `msOnEmptyOrder` and `msOnCreateOrder` can fail an operation that already happened: the field is removed or the order is created, yet the client gets an error.

@@ -72,6 +72,21 @@ For ExtJS tabs the core injects `record` into `extConfig` itself — you do not 
 
 ## Load order
 
+```mermaid
+flowchart TB
+  start["Plugin script before product-tabs.min.js"]
+  start --> missing["MS3ProductTabsRegistry does not exist yet"]
+  missing --> stub[Stub in place of the object]
+  missing --> wait[whenRegistryReady]
+  stub --> keep["The registry is not created: the object is already there"]
+  keep --> mount["_onMounted"]
+  mount --> err["TypeError, queued tabs never appear"]
+  wait --> poll{Object present}
+  poll -->|no| again["Retry in 100 ms"]
+  again --> poll
+  poll -->|yes| reg[register]
+```
+
 `product-tabs.min.js` is included as an ES module, and modules run after the page has been parsed. A plain plugin script therefore always runs earlier, and at that moment `window.MS3ProductTabsRegistry` does not exist yet.
 
 ::: warning Do not create a stub

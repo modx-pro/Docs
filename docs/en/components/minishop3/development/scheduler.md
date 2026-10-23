@@ -117,6 +117,18 @@ $manager->registerChannel(new \MyPackage\Notifications\SmsChannel($modx));
 
 ## Monitoring tasks
 
+```mermaid
+flowchart TB
+  q["schedule or Schedule a run"] --> s0["0 waiting"]
+  s0 --> cron[Cron pass]
+  cron --> s1["1 running"]
+  s1 --> s2["2 success"]
+  s1 --> s3["3 failure"]
+  s2 --> rec{Recurring}
+  rec -->|yes| nxt["New run after interval"]
+  rec -->|no| stop[End]
+```
+
 ### Via manager
 
 **Extras → Scheduler** — three tabs: Tasks (the registered ones), Scheduled Runs and Historic Runs.
