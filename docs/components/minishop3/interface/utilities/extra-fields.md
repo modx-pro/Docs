@@ -1,12 +1,12 @@
 ---
-title: Дополнительные поля
+title: Свои поля
 ---
-# Утилиты: Дополнительные поля
+# Утилиты: Свои поля
 
-Свои колонки к моделям MiniShop3 без правки ядра. Поле пишется в БД и появляется в формах менеджера.
+Свои колонки к моделям MiniShop3 без правки ядра. Поле пишется в БД и появляется в формах админки.
 
 ::: tip Cookbook
-Пошаговые кейсы (заказ, repeater, key-value): [Cookbook дополнительных полей](/components/minishop3/manager/extra-fields/cookbook). Примеры: [поле в заказе](/components/minishop3/manager/examples/order-custom-field), [оптовая цена у товара](/components/minishop3/manager/examples/product-extra-field).
+Пошаговые кейсы (заказ, repeater, key-value): [Cookbook своих полей](/components/minishop3/manager/extra-fields/cookbook). Примеры: [поле в заказе](/components/minishop3/manager/examples/order-custom-field), [оптовая цена у товара](/components/minishop3/manager/examples/product-extra-field).
 :::
 
 ## Назначение

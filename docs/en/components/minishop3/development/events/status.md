@@ -60,22 +60,38 @@ switch ($modx->event->name) {
 }
 ```
 
-### Checking products before shipping
+### Checking whether the transition is allowed
 
 ```php
 <?php
 switch ($modx->event->name) {
     case 'msOnBeforeChangeOrderStatus':
         $order = $scriptProperties['msOrder'];
+        $oldStatus = $scriptProperties['old_status'];
         $newStatus = $scriptProperties['status'];
 
-        // Status "Shipped" = 3
-        if ($newStatus == 3) {
-            $properties = $order->get('properties') ?? [];
-            if (empty($properties['tracking_number'])) {
-                $modx->event->output('Enter tracking number before shipping');
-                return;
-            }
+        switch ($newStatus) {
+            case 3: // Shipped
+                $properties = $order->get('properties') ?? [];
+                if (empty($properties['tracking_number'])) {
+                    $modx->event->output('Enter a tracking number');
+                    return;
+                }
+                break;
+
+            case 4: // Completed
+                if ($oldStatus != 3) {
+                    $modx->event->output('The order must be shipped first');
+                    return;
+                }
+                break;
+
+            case 6: // Cancelled
+                if ($oldStatus == 4) {
+                    $modx->event->output('A completed order cannot be cancelled');
+                    return;
+                }
+                break;
         }
         break;
 }
@@ -124,26 +140,6 @@ switch ($modx->event->name) {
 }
 ```
 
-### CRM integration
-
-```php
-<?php
-switch ($modx->event->name) {
-    case 'msOnChangeOrderStatus':
-        $order = $scriptProperties['msOrder'];
-        $newStatus = $scriptProperties['status'];
-
-        $crmData = [
-            'order_id' => $order->get('num'),
-            'status' => $newStatus,
-            'updated_at' => date('c'),
-        ];
-
-        // $crm->updateOrder($crmData);
-        break;
-}
-```
-
 ### Bonus points on order completion
 
 ```php
@@ -174,35 +170,6 @@ switch ($modx->event->name) {
 }
 ```
 
-### Return products to stock on cancel
-
-```php
-<?php
-switch ($modx->event->name) {
-    case 'msOnChangeOrderStatus':
-        $order = $scriptProperties['msOrder'];
-        $newStatus = $scriptProperties['status'];
-
-        // Status "Cancelled" = 6
-        if ($newStatus == 6) {
-            foreach ($order->getMany('Products') as $product) {
-                $msProduct = $product->getOne('Product');
-                if ($msProduct) {
-                    $stock = $msProduct->get('stock') ?? 0;
-                    $msProduct->set('stock', $stock + $product->get('count'));
-                    $msProduct->save();
-                }
-            }
-
-            $modx->log(modX::LOG_LEVEL_INFO, sprintf(
-                '[Stock] Products returned to stock for order #%s',
-                $order->get('num')
-            ));
-        }
-        break;
-}
-```
-
 ### Send SMS when order ships
 
 ```php
@@ -227,107 +194,6 @@ switch ($modx->event->name) {
                 // $smsService->send($phone, $message);
             }
         }
-        break;
-}
-```
-
----
-
-## Full example: status business logic
-
-```php
-<?php
-/**
- * Plugin: Status business logic
- * Events: msOnBeforeChangeOrderStatus, msOnChangeOrderStatus
- *
- * Statuses:
- * 1 - New
- * 2 - Processing
- * 3 - Shipped
- * 4 - Completed
- * 5 - Awaiting payment
- * 6 - Cancelled
- */
-
-switch ($modx->event->name) {
-
-    case 'msOnBeforeChangeOrderStatus':
-        $order = $scriptProperties['msOrder'];
-        $oldStatus = $scriptProperties['old_status'];
-        $newStatus = $scriptProperties['status'];
-
-        switch ($newStatus) {
-            case 3:
-                $properties = $order->get('properties') ?? [];
-                if (empty($properties['tracking_number'])) {
-                    $modx->event->output('Enter tracking number');
-                    return;
-                }
-                break;
-
-            case 4:
-                if ($oldStatus != 3) {
-                    $modx->event->output('Order must be shipped first');
-                    return;
-                }
-                break;
-
-            case 6:
-                if ($oldStatus == 4) {
-                    $modx->event->output('Cannot cancel a completed order');
-                    return;
-                }
-                break;
-        }
-        break;
-
-    case 'msOnChangeOrderStatus':
-        $order = $scriptProperties['msOrder'];
-        $oldStatus = $scriptProperties['old_status'];
-        $newStatus = $scriptProperties['status'];
-
-        switch ($newStatus) {
-            case 2:
-                foreach ($order->getMany('Products') as $product) {
-                    $msProduct = $product->getOne('Product');
-                    if ($msProduct) {
-                        $stock = $msProduct->get('stock') ?? 0;
-                        $msProduct->set('stock', max(0, $stock - $product->get('count')));
-                        $msProduct->save();
-                    }
-                }
-                break;
-
-            case 4:
-                $customer = $order->getOne('Customer');
-                if ($customer) {
-                    $bonus = floor($order->get('cost') * 0.05);
-                    $currentBonus = $customer->get('bonus') ?? 0;
-                    $customer->set('bonus', $currentBonus + $bonus);
-                    $customer->save();
-                }
-                break;
-
-            case 6:
-                foreach ($order->getMany('Products') as $product) {
-                    $msProduct = $product->getOne('Product');
-                    if ($msProduct) {
-                        $stock = $msProduct->get('stock') ?? 0;
-                        $msProduct->set('stock', $stock + $product->get('count'));
-                        $msProduct->save();
-                    }
-                }
-                break;
-        }
-
-        $modx->log(modX::LOG_LEVEL_INFO, sprintf(
-            '[OrderStatus] Order #%s: %d → %d (manager: %s)',
-            $order->get('num'),
-            $oldStatus,
-            $newStatus,
-            $modx->user->get('username') ?? 'system'
-        ));
         break;
 }
 ```

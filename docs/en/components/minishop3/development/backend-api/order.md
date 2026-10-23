@@ -47,7 +47,7 @@ $result = $ms3->order->set([
 
 // Submit order
 $result = $ms3->order->submit();
-// ['success' => true, 'data' => ['order_id' => 15, 'order_num' => '26/02-15', ...]]
+// The payment response. With DefaultPayment data holds order_id, order_num, payment_link.
 
 // Clear draft
 $ms3->order->clean();
@@ -114,6 +114,10 @@ $data = $draftManager->toArray($draft);
 
 // Update one field
 $draftManager->updateField($draft, 'order_comment', 'Call before delivery');
+// Since 1.14.2-beta1 a key is written to one table only: the order wins over
+// the address. For the shared columns (id, createdon, updatedon, properties)
+// the address is no longer touched — set address properties directly:
+// $draft->Address->set('properties', [...]); $draft->Address->save();
 
 // Attach customer to draft
 $draftManager->attachCustomer($draft, $customerId);
@@ -140,6 +144,12 @@ $draftManager->deleteDraft($draft);
 ## Fields and validation (OrderFieldManager)
 
 The service manages order fields and their validation, and fires events on every change.
+
+::: warning `add()` will not write internal fields
+Since 1.14.2-beta1 `add()` and `remove()` reject the internal draft columns — the same ones closed for the Web API (see [checkout](/en/components/minishop3/development/web-api/checkout#protected-fields)). The rule is static: it does not care whether the call arrived over HTTP or from an add-on, and it runs before the `msOnBeforeAddToOrder` event, so a plugin that used to intercept writes to `status_id` or `customer_id` never sees them.
+
+From PHP the internal fields are written directly: `OrderDraftManager::updateField()`, `attachCustomer()`, `setDeliveryCost()` skip the filter.
+:::
 
 ```php
 $fieldManager = $modx->services->get('ms3_order_field_manager');
@@ -280,42 +290,49 @@ See also [API Router](/en/components/minishop3/development/routing).
 $submitHandler = $modx->services->get('ms3_order_submit_handler');
 
 $result = $submitHandler->submit($draft, $orderData, $token);
-// Success:
-// [
-//     'success' => true,
-//     'data' => [
-//         'order_id' => 15,
-//         'order_num' => '26/02-15',
-//         'redirect_url' => '/thank-you?msorder=15',
-//     ],
-//     'message' => 'Order submitted successfully'
-// ]
+// On success the handler returns whatever $msPayment->send() returned,
+// so the exact payload depends on the payment provider.
+// DefaultPayment answers with message = ms3_payment_link_created and data:
+// payment_link (success page URL, msorder = order number), order_id, order_num.
+// When data holds no 'redirect' key, the handler appends one itself:
+// the ms3_order_redirect_thanks_id page with msorder = order uuid.
 
 ```
 
 ### Submit steps
 
-1. Event `msOnSubmitOrder`
-2. Check: cart not empty
-3. Validate `delivery_id`, `payment_id` and required delivery fields
-4. Find/create customer (`msCustomer`)
-5. Optionally: create MODX user (setting `ms3_order_register_user_on_submit`)
-6. Calculate cost (cart + delivery + payment)
-7. Generate order number
-8. Save customer address
-9. Events `msOnBeforeCreateOrder` / `msOnCreateOrder`
-10. Set status to `ms3_status_new` (default: 2)
-11. Call `$msPayment->send()` — redirect to payment
-12. Return thank-you page URL
+1. Event `msOnSubmitOrder`. Fields a plugin returned in `data['data']` are written to the order through `OrderFieldManager::add()` — so protected columns are dropped here as well, see [Fields the storefront may not change](/en/components/minishop3/development/web-api/checkout#protected-fields)
+2. Check: cart not empty (`ms3_order_err_empty`)
+3. Both `delivery_id` and `payment_id` are set
+4. The payment method exists and is active (`ms3_order_err_payment_not_found`)
+5. The chosen delivery + payment pair is allowed (`DeliveryService::getDeliveryPaymentPairError()`)
+6. Required fields of the chosen delivery are filled. A field counts as filled when the value itself arrives, the value arrives with an `address_` prefix, or the key is already in `properties['_validated']`
+7. Find or create the customer (`msCustomer`) — an optional step: without an email and a phone no customer is created, and the order proceeds with the data in `msOrderAddress` only
+8. Optionally: create a MODX user (setting `ms3_order_register_user_on_submit`). Unlike the previous step, failure here aborts the submit with `ms3_err_user_nf`
+9. Calculate cost (cart + delivery + payment)
+10. Check stock with `inventory()->assertOrderAvailable()` before allocating a number
+11. `OrderNumberGenerator::runWithNextNumber()` writes the number and the totals — allocation and save share one lock
+12. The address goes to the customer's address book only if `properties` holds `save_address` and the order has a `customer_id`
+13. Events `msOnBeforeCreateOrder` / `msOnCreateOrder`
+14. Set status to `ms3_status_new` (default: 2)
+15. Call `$msPayment->send()`
+16. If the payment response holds no `data.redirect`, the handler appends the thank-you page URL with the order uuid
+
+After step 11 the order already holds a number, and errors are handled differently from there on. A failure at steps 13–14 (or the repeated stock check before the status change) releases the number through `revertAllocatedNumber()` — but only when inventory tracking is on. At steps 15–16 the number stays with the order: the handler only drops the stock hold (`abortInventoryHold()`) and returns an error. A failed payment, in other words, does not free the number.
 
 ### Order number generation
+
+::: warning `getNewOrderNum()` is deprecated
+The method is marked `@deprecated` and writes a warning to the MODX error log on every call. It reads the next number but **does not reserve it**: between the read and the save the same number can go to another order. Allocate numbers through `OrderNumberGenerator::runWithNextNumber()` — there the allocation and the save share one lock.
+
+It stays for backward compatibility with older plugins: use it to show "the number the next order will get", not to assign one.
+:::
 
 ```php
 $num = $submitHandler->getNewOrderNum();
 // "26/02-15" — format is configurable:
 // ms3_order_format_num — date format (default 'ym')
 // ms3_order_format_num_separator — separator (default '/')
-
 ```
 
 ## Status management (OrderStatusService)
@@ -547,7 +564,7 @@ Finalize accepts the `skip_*` keys and works with an existing draft. It never ca
 
 The `origin` parameter (`OrderOrigin`): `manager` (default), `storefront`, `integration`. With `manager`, `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder` also fire. The `from_manager` key in events is `true` only for `origin=manager`.
 
-## Programmatic order creation (ProgrammaticOrderService)
+## Programmatic order creation (ProgrammaticOrderService) {#programmatic-order}
 
 An API without an HTTP session — for extras, cron and integrations. This is **not** the Web API: `routes/web.php` has no dedicated endpoint.
 
@@ -665,7 +682,7 @@ The `ms3_order_user_groups` setting defines the groups for new users. The format
 | `Address` | msOrderAddress | composite (one) | Order address |
 | `Products` | msOrderProduct | composite (many) | Order products |
 | `Log` | msOrderLog | composite (many) | Change log |
-| `Customer` | msCustomer | aggregate | Customer |
+| `msCustomer` | msCustomer | aggregate | Customer. That is the actual alias — `getOne('Customer')` returns `null` |
 | `Status` | msOrderStatus | aggregate | Status |
 | `Delivery` | msDelivery | aggregate | Delivery method |
 | `Payment` | msPayment | aggregate | Payment method |

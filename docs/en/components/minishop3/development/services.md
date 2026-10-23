@@ -59,12 +59,18 @@ MiniShop3 uses MODX’s built-in DI container (`$modx->services`) to register an
 
 ### Registering services
 
-All services are registered via `ServiceRegistry` when the component initializes:
+Registration happens in two steps:
+
+1. The component's `bootstrap.php` adds a single key to the container — `ms3`.
+2. The `MiniShop3` constructor calls `ServiceRegistry::register()`, and that is when the rest of the keys appear.
+
+The second step happens on its own: the component's plugin gets `ms3` on the `OnMODXInit` event at the start of every request. So by the time a snippet, a plugin or a controller runs, the keys are already there and you do not need to fetch `ms3` just to reach them.
 
 ```php
-// bootstrap.php
-$serviceRegistry = new \MiniShop3\ServiceRegistry($modx);
-$serviceRegistry->register();
+// bootstrap.php — the entry point only
+$modx->services->add('ms3', function ($c) use ($modx) {
+    return new MiniShop3\MiniShop3($modx);
+});
 ```
 
 ### Resolving services
@@ -647,7 +653,9 @@ $authManager->registerProvider(new TelegramAuthProvider($modx));
 
 ## System settings
 
-| Setting | Default | Description |
+The service config paths are hardcoded, and neither setting ships with the package — create one yourself, and only if a path has to change:
+
+| Setting | Path when the setting is absent | Description |
 | --- | --- | --- |
 | `ms3_services_config` | `core/config/ms3.services.php` | Main config path |
 | `ms3_services_addons_dir` | `core/config/ms3.services.d/` | Addon config directory |

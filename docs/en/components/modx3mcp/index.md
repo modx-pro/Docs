@@ -10,72 +10,77 @@ compatibility:
 
 # MODX3MCP
 
-**MODX3MCP** is a component for connecting external AI agents to **MODX Revolution 3.x** through the **Model Context Protocol (MCP)**.
+**MODX3MCP** connects external AI agents to **MODX Revolution 3.x** using the Model Context Protocol (MCP).
 
-It provides agents with a specialized interface for working with resources, templates, chunks, snippets, TVs, system settings, and other MODX entities.
+The PHP component provides the site's HTTP API, while a separate local Node.js client exposes the available tools to MCP-compatible applications over `stdio`.
 
 > [!WARNING]
-> **MODX3MCP is not a ready-made AI agent and does not add artificial intelligence to MODX by itself.**
->
-> Installing the component does not add a chat interface to the MODX manager for assigning tasks. The AI agent and user interface are configured separately.
-
-General workflow:
+> **MODX3MCP is not a ready-to-use AI agent or an embedded MODX chat.** The component connects the website to an external agent; the agent and its user interface must be configured separately.
 
 ```text
-User → AI agent → MODX3MCP → MODX
+User → AI agent / MCP client → MODX3MCP → MODX
 ```
 
-## Features
+## Features in version 1.2.4
 
-Version **1.2.0** provides **192 operations**: 81 read operations and 111 write operations.
+The component offers **192 public MCP tools**: 81 read-only operations and 111 mutations. The server contract includes **193 actions** when the internal `get_capabilities` action is counted.
 
 Supported areas include:
 
-- resources and site structure;
-- templates, chunks, and snippets;
-- plugins;
-- TVs;
-- system settings;
-- users and groups;
-- access policies and policy templates;
-- resource groups and their members;
-- media sources;
-- packages and extras;
-- ClientConfig settings;
-- MIGX;
-- miniShop2;
-- VersionX;
-- VirtualPage.
+- resources, templates, chunks, snippets, plugins, TVs and categories;
+- system settings, media sources, packages and namespaces;
+- users, groups, roles, access policies and contexts;
+- integration with ClientConfig, MIGX, miniShop2, VersionX and VirtualPage when installed;
+- a dependency graph to inspect references, broken links and potentially unused code;
+- stale-state protection (CAS, `STALE_STATE`) for supported write operations;
+- a manager dashboard for endpoint details, token handling, settings and capability groups.
 
-MODX3MCP can also analyze relationships between site elements using a dependency graph.
-
-Version 1.2.0 adds protection against writes based on stale site state. An agent can read the current project revision, and before a change MODX3MCP verifies that the state has not changed. If another agent or process has already modified the site, the operation is rejected with `STALE_STATE` instead of overwriting newer changes.
-
-Potentially dangerous capabilities can be restricted or disabled through the component settings.
+**Nine manager UI languages:** Russian (`ru`), English (`en`), Spanish (`es`), German (`de`), French (`fr`), Ukrainian (`uk`), Kazakh Cyrillic (`kk`), Dutch (`nl`) and Polish (`pl`). The manager dashboard and dependency graph are translated. See the [nine-language documentation index](https://github.com/rumata-estor/modx3-mcp/blob/main/docs/LANGUAGES.md).
 
 ## Installation
 
-The recommended method is to install **MODX3MCP** as a regular MODX extra through the package manager from the **modstore.pro** repository.
+Install **modx3mcp-1.2.4-pl.transport.zip**, matching your MODX version:
 
-The transport package can also be downloaded manually from the [project releases on GitHub](https://github.com/rumata-estor/modx3-mcp/releases).
+- [modstore.pro — MODX3MCP](https://modstore.pro/packages/ai/modx3mcp) — install using the MODX package manager;
+- [GitHub release 1.2.4](https://github.com/rumata-estor/modx3-mcp/releases/tag/v1.2.4) — download the transport archive for manual installation.
 
-For MODX Revolution 3.x, use:
+On a **fresh installation**, the component is disabled by default. Open **Extras / Components → MODX MCP**, review its security settings and enable `modxmcp.enabled`. The API token (`modxmcp.api_token`) is generated during installation; only appropriately authorized administrators can reveal it.
 
-```text
-modx3mcp-1.2.0-pl.transport.zip
+### Connect an MCP client
+
+The machine running the AI application needs **Node.js 18+**. Example stdio MCP configuration (the exact format depends on the client application):
+
+```json
+{
+  "mcpServers": {
+    "modx": {
+      "command": "npx",
+      "args": ["-y", "github:rumata-estor/modx3-mcp#v1.2.4"],
+      "env": {
+        "MODX_MCP_SITE_URL": "https://example.com/assets/components/modxmcp/api.php",
+        "MODX_MCP_TOKEN": "YOUR_SITE_PRIVATE_TOKEN"
+      }
+    }
+  }
+}
 ```
 
-On first installation, the component automatically creates the `modxmcp.api_token` API token required to access MODX3MCP.
+Use HTTPS and keep the token secret. Start with authenticated read-only operations after connecting.
+
+## Upgrading
+
+A regular upgrade of an existing `modx3mcp` package preserves configuration and the API token.
+
+[Complete installation guide](https://github.com/rumata-estor/modx3-mcp/blob/main/docs/INSTALL.md) · [Security](https://github.com/rumata-estor/modx3-mcp/blob/main/docs/SECURITY.md) · [Tool catalog](https://github.com/rumata-estor/modx3-mcp/blob/main/docs/CAPABILITIES.md) · [Changelog](https://github.com/rumata-estor/modx3-mcp/blob/main/CHANGELOG.md).
 
 ## Compatibility
 
-- MODX Revolution 3.2 or later;
-- PHP 8.1 or later.
+- MODX Revolution 3.x (verified on 3.2.4-pl);
+- PHP 8.1 or later;
+- Node.js 18+ for the local MCP client.
 
-## Source code
+## Source code and license
 
-The project is distributed free of charge under the **MIT License**.
+Free and open source under the **MIT License**. Author: Alexander Palochkin.
 
-Source code and releases:
-
-[github.com/rumata-estor/modx3-mcp](https://github.com/rumata-estor/modx3-mcp)
+[GitHub: rumata-estor/modx3-mcp](https://github.com/rumata-estor/modx3-mcp) · [Releases](https://github.com/rumata-estor/modx3-mcp/releases/tag/v1.2.4) · [Documentation](https://github.com/rumata-estor/modx3-mcp/blob/main/docs/LANGUAGES.md)

@@ -3,11 +3,11 @@ title: Подключение на сайте
 ---
 # Подключение на сайте
 
-CSS, JS и inline `ms3fLexicon` / `ms3fConfig` по умолчанию подключает плагин **ms3fFrontend**. См. [Системные настройки](settings) (`frontend_assets`, `register_global_config`). Ручное подключение — в [Быстром старте](quick-start).
+CSS, JS и inline `ms3fLexicon` / `ms3fConfig` по умолчанию подключает плагин **ms3fFrontend**. См. [Системные настройки](settings) (`frontend_assets`, `register_global_config`). Ручное подключение: [Быстрый старт](quick-start).
 
 ## Проверка интеграции
 
-Для гостей при пустой БД данные берутся из `localStorage/cookie`. Для авторизованных и гостей (при `guest_db_enabled`) — из БД по `user_id` или `session_id`.
+Для гостей при пустой БД данные берутся из `localStorage/cookie`. Для авторизованных и гостей (при `guest_db_enabled`): из БД по `user_id` или `session_id`.
 
 **Чек-лист перед проверкой**
 
@@ -20,25 +20,23 @@ CSS, JS и inline `ms3fLexicon` / `ms3fConfig` по умолчанию подк�
 
 **URL:** `assets/components/ms3favorites/connector.php`
 
-**Метод:** POST. Любое действие принимает `cultureKey` — язык лексикона ответа. Имя списка передаётся как `list` или `list_name`.
+**Метод:** POST. Любое действие принимает `cultureKey` (язык лексикона ответа). Имя списка передаётся как `list` или `list_name`.
 
 ::: warning Обязательный заголовок для изменяющих действий
 Действия `sync`, `create_share`, `copy_share`, `update_comment`, `add_to_cart`, `clear` принимаются только с заголовком `X-Requested-With: XMLHttpRequest`. Без него коннектор отвечает `{ "success": false, "error": "Invalid request" }`. Ограничение не касается `get_share`, `get_popularity` и HTML-отрисовки списка.
 :::
 
-Действия:
-
-- **Вывод списка избранного** — параметры `ids` (обязательно), опционально `limit`, `tpl`, `emptyTpl`, `list`, `resource_type`
-- **sync** — синхронизация списков в БД (JSON). POST `lists` (JSON) или `ids`
-- **create_share** — создание публичной ссылки (JSON). POST `list`. Только авторизованные
-- **get_share** — получение данных по токену (JSON). POST `token` → `{ success, ids, list_name, resource_type }`
-- **`copy_share`** — копирование чужого списка в свой (JSON). POST **`token=xxx`**, **`target_list=default`** → **`{ success, ids }`**. **Гости** получают **`ids`** для **localStorage**.
-- **update_comment** — обновление заметки к элементу (JSON). POST `product_id`, `list`, `comment`. При `comments_enabled`
-- **add_to_cart** — добавление товаров в корзину (JSON). POST `ids` или `product_id`. Ответ `{ success, added, message }`: `message` — `cart_success` при `added > 0`, иначе `cart_error`
-- **get_popularity** — маппинг id→count (JSON). POST `ids`, `resource_type`
-- **clear** — очистка списка (JSON). POST `list`, `resource_type`
-
-**Ответ:** HTML списка. При отсутствии товаров — emptyTpl. Для действий (actions) — JSON.
+| Действие | Ответ | POST | Примечание |
+|----------|-------|------|------------|
+| Вывод списка | HTML | `ids` (обязательно), опционально `limit`, `tpl`, `emptyTpl`, `list`, `resource_type` | Нет товаров: emptyTpl |
+| `sync` | JSON | `lists` (JSON) или `ids` | Синхронизация списков в БД |
+| `create_share` | JSON | `list` | По умолчанию только авторизованный. Гость получает токен при `share_guests_enabled`, `guest_db_enabled` и `session_id` |
+| `get_share` | JSON | `token` | `{ success, ids, list_name, resource_type }` |
+| `copy_share` | JSON | `token=xxx`, `target_list=default` | `{ success, ids }`. Гости получают `ids` для localStorage |
+| `update_comment` | JSON | `product_id`, `list`, `comment` | При `comments_enabled` |
+| `add_to_cart` | JSON | `ids` или `product_id` | `{ success, added, message }`. В `message` фраза лексикона: при `added > 0` это `ms3favorites_cart_success`, иначе `ms3favorites_cart_error`. Из `ids` берутся первые 50. Один `product_id` этот потолок не режет |
+| `get_popularity` | JSON | `ids`, `resource_type` | Маппинг id→count |
+| `clear` | JSON | `list`, `resource_type` | Очистка списка |
 
 Сниппет **ms3fLexiconScript** (или плагин **ms3fFrontend** при `register_global_config = Да`) передаёт в `window.ms3fConfig` готовые `connectorUrl` и `siteUrl`. Учитывается поддиректория MODX. Без них JS может собрать URL из `window.MODX_ASSETS_URL`, `window.MODX_BASE_URL` или `MODX.config.base_url`.
 
@@ -48,7 +46,7 @@ CSS, JS и inline `ms3fLexicon` / `ms3fConfig` по умолчанию подк�
 |------|------------|
 | `tplFavoritesItem` | Карточка товара в списке «Избранное» |
 | `tplFavoritesEmpty` | Пустое состояние (при отсутствии товаров) |
-| `tplFavoritesPage` | Страница `/wishlist/` (табы, панель). При `resource_type=products` и `serverList=1` — SSR **pdoPage** + **msProducts** в чанке. При `serverList=0` или другом типе — карточки через `favorites.js` |
+| `tplFavoritesPage` | Страница `/wishlist/` (табы, панель). При `resource_type=products` и `serverList=1`: серверный вывод **pdoPage** + **msProducts** в чанке. При `serverList=0` или другом типе: карточки через `favorites.js` |
 | `tplFavoritesPageItem` | Элемент для страницы `/wishlist/` (checkbox, заметка, кнопка удаления) |
 | `tplFavoritesPageDemo` | Тот же файл, что и `tplFavoritesPage`: при `&tpl=tplFavoritesPageDemo` или `&extendedToolbar=1` включается панель «Каталог / Очистить / Поделиться» |
 | `tplFavoritesListSelector` | Выпадающий список (`default`, `gifts`, `plans`) |
@@ -73,23 +71,25 @@ CSS, JS и inline `ms3fLexicon` / `ms3fConfig` по умолчанию подк�
 | `data-favorites-list-selector` | select | Выбор списка (чанк tplFavoritesListSelector) |
 | `data-favorites-comment` | textarea | Заметка к элементу (при comments_enabled) |
 | `data-favorites-toggle` | button | Кнопка добавления/удаления (атрибут `data-id`) |
-| `data-favorites-count` | span | Счётчик количества элементов |
+| `data-favorites-count` | span | Счётчик. `data-resource-type` и `data-list` задают, что считать. Без типа или `all`: сумма всех типов |
 | `data-favorites-share` | button | Кнопка «Поделиться списком» (атрибут `data-list`) |
 | `data-favorites-page-container` | div | Контейнер страницы wishlist |
 | `data-favorites-page-tabs` | ul | Табы списков на `/wishlist/` |
-| `data-favorites-tab-count` | span | Счётчик элементов на табе (значение атрибута — имя списка) |
+| `data-favorites-tab-count` | span | Счётчик элементов на табе (значение атрибута: имя списка) |
 | `data-current-list` | div | Активный список на контейнере `#ms3f-page` |
-| `data-server-empty` | div | `1` — список на сервере пуст (cookie/sync). Выставляет **ms3FavoritesPage** |
-| `data-ms3f-ssr-products` | div | `1` — SSR-список товаров в **tplFavoritesPage**. При «Очистить» и при удалении последней карточки возможна перезагрузка страницы |
+| `data-server-empty` | div | `1`: список на сервере пуст (cookie/sync). Выставляет **ms3FavoritesPage** |
+| `data-ms3f-ssr-products` | div | `1`: серверный список товаров в **tplFavoritesPage**. При «Очистить» и при удалении последней карточки возможна перезагрузка страницы |
 | `data-favorites-mode="list"` | div | Режим удаления карточки при клике «Удалить» |
 
 Чанки можно заменить своими (Fenom или MODX). Параметры `tpl` и `emptyTpl` задаются в сниппете и при вызове `render()` в JS.
 
 ## Стили и BEM
 
-Классы с префиксом **ms3f** (BEM): `ms3f__list`, `ms3f__item` и др. Файлы стилей: `assets/components/ms3favorites/css/favorites.min.css` (по умолчанию) или `favorites.css`. Чанки пакета (`tplFavoritesItem`, `tplFavoritesPageItem`) используют классы `ms3f__item`, `ms3f__image` и не требуют Bootstrap. Селектор `.ms3-product-card` встречается в JS только как запасной — при удалении карточки каталога на `/wishlist/`.
+Классы с префиксом **ms3f** (BEM): `ms3f__list`, `ms3f__item` и др. Файлы: `assets/components/ms3favorites/css/favorites.min.css` или `favorites.css`. Чанки `tplFavoritesItem` и `tplFavoritesPageItem` используют `ms3f__item`, `ms3f__image` и не требуют Bootstrap.
 
-На мобильных — горизонтальный скролл списка (`.ms3f__list`).
+На `/wishlist/` клик снимает `.swiper-slide`, иначе узел с `data-product-id`. Родитель `.ms3-product-card` снимается, только когда `data-product-id` стоит внутри карточки, а не на ней.
+
+На мобильных: горизонтальный скролл списка (`.ms3f__list`).
 
 ## CSS-переменные {#css-variables}
 
@@ -123,13 +123,13 @@ CSS, JS и inline `ms3fLexicon` / `ms3fConfig` по умолчанию подк�
 
 Вместо встроенного DOM-toast используется цепочка:
 
-1. **`ms3fConfig.notify(variant, text)`** — если функция задана и возвращает `true`, стандартный вывод не выполняется (полностью своё UI).
-2. **`window.ms3Message.show`** (MiniShop3) — если доступен.
-3. **iziToast** — если на странице уже есть глобальный `iziToast`. Иначе скрипт и стили один раз подгружаются из `ms3fConfig.iziToastBaseUrl` (по умолчанию задаётся в `ms3fLexiconScript`).
+1. **`ms3fConfig.notify(variant, text)`:** если функция задана и возвращает `true`, стандартный вывод не выполняется (полностью своё UI).
+2. **`window.ms3Message.show`** (MiniShop3): если доступен.
+3. **iziToast:** если на странице уже есть глобальный `iziToast`. Иначе скрипт и стили один раз подгружаются из `ms3fConfig.iziToastBaseUrl` (по умолчанию задаётся в `ms3fLexiconScript`).
 
 Отключить стандартные уведомления: `window.ms3fConfig.showToast = false` (до загрузки `favorites.js`).
 
-Внешний вид iziToast — через API библиотеки после загрузки или через свой `notify`.
+Внешний вид iziToast: через API библиотеки после загрузки или через свой `notify`.
 
 ## JavaScript API
 
@@ -153,7 +153,7 @@ window.ms3Favorites = {
   sync(options?), // для каждого типа: POST action=sync с локальными списками, ответ пишется в storage. authoritative: true — «локальное состояние — источник правды» (см. flushToServer)
   flushToServer(), // обёртка: sync({ authoritative: true }) и событие ms3f:synced
 
-  createShare(list?, resourceType?), // Promise → token | null (только авторизованные)
+  createShare(list?, resourceType?), // Promise → token | null. Гость: нужны share_guests_enabled, guest_db_enabled и session_id
   copyFromShare(token), // Promise → массив ID. Список назначения — текущий активный (перед вызовом при необходимости switchList)
 
   addToCart(ids), // Promise → число добавленных в корзину MiniShop3
@@ -179,7 +179,7 @@ window.ms3Favorites = {
 
 **mxQuickView:** ms3Favorites подписывается на `mxqv:loaded` и `mxqv:open` и вызывает `refresh()` автоматически.
 
-**mFilter:** по умолчанию подписка на `mfilter:contentLoaded`. Дополнительные события — через `ms3fConfig.refreshEvents` (массив строк).
+**mFilter:** по умолчанию подписка на `mfilter:contentLoaded`. Дополнительные события: через `ms3fConfig.refreshEvents` (массив строк).
 
 Пример для каталога с MiniShop3 и mFilter (при необходимости синхронизировать и MiniShop3):
 

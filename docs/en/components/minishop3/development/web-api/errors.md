@@ -24,26 +24,49 @@ description: "MiniShop3 error envelope: code, errors, error_code, HTTP"
 | `error_code` | Machine code |
 | `data` | Present only when it is passed |
 
-Error bodies always include an `errors` key (often `null`) and usually `error_code`. Validation fields arrive either in `errors` or in `data`, depending on the scenario.
+Router responses always carry `errors` and `error_code` (`errors` is often `null`). Before the router runs — on an empty `route` — neither key is present. A validation field map arrives in `errors` with status 422 and code `validation_failed`; an empty `fields` on `order/set` and an empty cart key stay 400.
 
 ## error_code values
 
-The complete list from `ApiErrorCode` — twelve values: `validation_failed`, `unauthorized`, `token_required`, `token_expired`, `token_invalid`, `not_found`, `conflict`, `rate_limited`, `business_rule`, `bad_request`, `forbidden`, `internal_error`. The core emits no others; an add-on can send its own code through `Response::errorWithCode()`.
+| `error_code` | When |
+| --- | --- |
+| `validation_failed` | 422, field map |
+| `unauthorized` | 401, no customer where one is required |
+| `token_required` | 401, a token is required and no guest token was minted |
+| `token_expired` | 401, the token has expired |
+| `token_invalid` | 401, the token is missing from the database or corrupted |
+| `not_found` | 404 |
+| `conflict` | 409 |
+| `rate_limited` | 429 |
+| `business_rule` | A shop rule; the status comes from the calling code |
+| `bad_request` | 400 |
+| `forbidden` | 403. Web API controllers never return this code |
+| `internal_error` | 500 and 503 |
+
+The core emits no other codes. An add-on can send its own through `Response::errorWithCode()`.
 
 ## HTTP
 
 | Status | When |
 | --- | --- |
-| 400 | Validation, bad request |
-| 401 | Token missing, expired, or invalid |
+| 400 | Malformed request with no field map: empty `route`, empty `fields`, empty line key |
+| 401 | Token expired, invalid, or required where the server minted no guest token: `token_expired`, `token_invalid`, `token_required`, `unauthorized` |
 | 404 | Entity not found |
 | 409 | Conflict |
+| 422 | Field map: address, profile, `validation_failed` |
 | 429 | Rate limit |
 | 500 | Internal error |
+| 503 | The `ms3` service did not start; `error_code` is `internal_error` |
 
-403 is less common on the storefront than 401 and 400.
+403 is set only by the Manager API permission middleware.
 
 In TypeScript, type the response as a union: success | error with `error_code` and an optional `errors`.
+
+## A closed draft field
+
+Since 1.14.2-beta1 the internal columns of the order draft are closed for storefront writes. An attempt returns the `ms3_err_field_protected` lexicon entry: `POST /order/add` answers 400 with `business_rule`, `POST /order/set` answers 422 with `validation_failed` and the key in `errors`. `POST /order/remove` answers 404 `ms3_err_field_nf` on such a key, and `POST /order/submit` drops it silently.
+
+The list of closed columns and how to extend it: see [checkout](checkout#protected-fields).
 
 ## Rate limit
 
