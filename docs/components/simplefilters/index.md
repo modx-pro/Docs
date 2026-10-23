@@ -7,7 +7,7 @@ author: Romanov Pavel
 modstore: https://modstore.pro/packages/ecommerce/simplefilters
 items: [
   { text: 'Сниппеты', link: 'snippets' },
-  { text: 'SEO-страницы', link: 'seopages' },
+  { text: 'Приложение simpleFilters', link: 'seopages' },
   { text: 'События плагинов', link: 'plugins' }
 ]
 ---
