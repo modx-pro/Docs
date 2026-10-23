@@ -262,7 +262,9 @@ $draftManager->attachCustomer($draft, $customerId);
 // Calculate cost (needs orderData from toArray and token)
 $orderData = $draftManager->toArray($draft);
 $total = $costCalculator->getTotalCost($draft, $orderData, $token);
-// ['cost' => …, 'cart_cost' => …, 'delivery_cost' => …, 'payment_cost' => …]
+// ['success' => true, 'message' => …, 'data' => ['cost' => …, 'cart_cost' => …,
+//   'delivery_cost' => …, 'payment_cost' => … plus the cart totals]]
+$cost = $total['data']['cost'];
 
 // Logging
 $logService = $modx->services->get('ms3_order_log');
@@ -505,7 +507,13 @@ if (!$result['success']) {
 A custom class **must**:
 
 1. **Exist** and be loadable via autoloader
-2. **Extend** the MiniShop3 base class
+2. **Extend** the MiniShop3 base class — but only for services without a declared interface
+
+Services that declare an `interface` (`ms3_inventory`, `ms3_order_lifecycle_ports`, `ms3_webhook_dispatcher`) need no inheritance: implementing the interface from scratch is enough. The check runs through `is_a()`, and the inheritance branch is skipped in that case. The shipped example does exactly that — its inventory implementation does not extend `ProductStockInventory`.
+
+::: warning Repeat `interface` in your own config
+Merging configs replaces the value as a whole. Leaving `'interface' => null` for such a service in `ms3.services.php` makes the validator demand inheritance from the stock class and reject an honest implementation of the interface. Carry the `interface` line over together with `class`.
+:::
 
 ```php
 <?php
@@ -540,8 +548,8 @@ class PromoCart extends Cart
 ServiceRegistry checks:
 
 - **Class exists** — `class_exists()`
-- **Inheritance** — `is_subclass_of($className, $baseClass)`
-- **Interfaces** — `class_implements()` (if specified)
+- **The interface**, when the service declares one — `is_a($className, $interface, true)`
+- **Inheritance**, only without an interface — `is_subclass_of($className, $baseClass)`
 
 On validation failure the default class is used and a log entry is written:
 
@@ -731,8 +739,10 @@ The service config paths are hardcoded, and neither setting ships with the packa
 
 ### Service not found
 
+The MODX container throws `MODX\Revolution\Services\NotFoundException`:
+
 ```
-Service 'ms3_my_service' not found
+Dependency not found with key ms3_my_service.
 ```
 
 **Fixes:**
@@ -740,6 +750,11 @@ Service 'ms3_my_service' not found
 1. Ensure `ServiceRegistry::register()` runs on init
 2. Check service key (must include `ms3_` prefix)
 3. Ensure class exists and is autoloadable
+4. Look in the MODX log: a `No factory registered for service` line means the key is not one of the built-in ones, and such a service is never registered
+
+::: warning A new key cannot be added through configuration
+The registry only creates keys that have a factory in the code — the same 83 listed above. Configuration replaces the **class of an existing** service; an unknown key in `ms3.services.php` or `ms3.services.d/*.php` is skipped with a log entry. An add-on puts its own service straight into the MODX container: `$modx->services->add('mypackage_service', …)`.
+:::
 
 ### Custom class not used
 

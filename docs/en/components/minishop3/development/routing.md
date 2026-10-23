@@ -273,11 +273,27 @@ They all live in the `miniShopManagerPolicy` access policy created by the instal
 A group created after the install does not get the policy: the resolver only runs while the package is being installed or upgraded. Details in the [quick start](/en/components/minishop3/quick-start#install-creates).
 :::
 
+#### AnyPermissionMiddleware
+
+Lets the request through when the user holds **at least one** permission from the list. Needed where the controller does the exact check itself: bulk actions on category products check a permission per action.
+
+```php
+use MiniShop3\Router\Middleware\AnyPermissionMiddleware;
+
+$router->post('/multiple', $handler, [
+    new AnyPermissionMiddleware($modx, ['msproduct_save', 'msproduct_publish', 'msproduct_delete'])
+]);
+```
+
+#### ServiceCheckMiddleware
+
+Checks that the `ms3` service started. If it did not, the answer is `503` with `error_code: internal_error` and the handler never runs. It sits first in the Web API stack.
+
 #### TokenMiddleware
 
 Validates and auto-mints the customer token for Web API when needed.
 
-Resolve order: `Authorization: Bearer` → legacy `MS3TOKEN` header → httpOnly cookie `ms3_token` → `$_REQUEST` → session. Query `token` / `ms3_token` is stripped and not accepted.
+Resolve order: `Authorization: Bearer` → legacy `MS3TOKEN` header → httpOnly cookie `ms3_token` → `$_REQUEST` → session. The middleware removes the `ms3_token` query parameter from the request; `token` in the query stays but does not authorize either — e-mail confirmation uses it.
 
 ```php
 use MiniShop3\Middleware\TokenMiddleware;
@@ -396,8 +412,8 @@ Middleware runs in the order they are listed:
 $router->get('/api/mgr/endpoint', $handler, [
     new CorsMiddleware(),        // 1. CORS first
     new RateLimitMiddleware(),   // 2. Rate limit
-    new AuthMiddleware($modx),   // 3. Auth
-    new PermissionMiddleware(),  // 4. Permissions
+    new AuthMiddleware($modx),                          // 3. Auth
+    new PermissionMiddleware($modx, 'msproduct_save'),  // 4. Permission
 ]);
 ```
 
@@ -437,7 +453,7 @@ CRUD for admin grid column configuration. Read: `view_document`, write: `mssetti
 | PUT | `/{grid_key}/field/{field_name}` | Update column |
 | DELETE | `/{grid_key}/{field_name}` | Delete column |
 
-**Known `grid_key` values in MS3 1.13:** `orders`, `order_products`, `customers`, `vendors`, `category-products`.
+**Six grids have a configuration in the database:** `orders`, `order_products`, `customers`, `vendors`, `category-products`, `deliveries` — their columns come from seed migrations. The payments grid asks for the `payments` key, but no seed exists for it: the answer comes back empty and the grid draws its built-in columns. The grid picker in the settings offers five keys, without `deliveries` and `payments`.
 
 ##### `GET /grid-config/{grid_key}` response
 
