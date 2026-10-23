@@ -25,8 +25,6 @@ description: Какие товары MiniShop3 попадают в прайс ms
 
 ## Фильтры
 
-![Форма условия фильтра ms3YandexMarket](/components/ms3yandexmarket/screenshots/filters.png)
-
 Оба списка условий сужают одни и те же товары. **Магазин** пишет условия с `target` = `resource`. **Предложения** пишет с `target` = `offer`. Компонент читает всю таблицу условий и не смотрит на `target`.
 
 Кнопки условий пишут только таблицу `ms3yandexmarket_conditions`. Генерация добавляет строки из JSON `filters.conditions` карточки и отбрасывает повтор «поле, оператор, значение». Новое условие в JSON само не копируется.
