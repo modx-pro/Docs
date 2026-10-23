@@ -1,7 +1,6 @@
-Начиная с версии 1.3.0 поддерживается настройка SEO-страниц с ЧПУ.
-После установки в меню появится приложение **sfSeoPages**.
+После установки в меню появится приложение **simpleFilters**.
 
-![](https://file.modx.pro/files/d/c/a/dca95937e01e20fdbcb71b1a8a54dd8f.png)  
+![](https://file.modx.pro/files/4/a/1/4a11e7cb12ae5b6a7cf228ff9e5b13d1.png)  
 
 Для корректной работы требуются следующие системные настройки:
 
@@ -16,12 +15,13 @@
 [[!+sf_seo_description]]
 [[!+sf_seo_h1]]
 [[!+sf_seo_breadcrumb]]
+[[!+sf_seo_content]]
 ```
 
 Для динамического изменения значений без перезагрузки страницы для H1 и хлебных крошек укажите следующие классы:  
 **sf_seo_h1** - для заголовка H1  
 **sf_seo_breadcrumb** - для текущего пункта меню
-
+**sf_seo_content** - для индивидуального контента страницы
 
 ## Пример
 На сайте есть каталог продукции, все категории которого имеют шаблон "Категория" с ID=4.  
@@ -77,7 +77,7 @@
 </li>
 ```
 
-Далее в приложении **sfSeoPages** для цвета "красный" добавляем правило вида:
+Далее в приложении **simpleFilters** для цвета "красный" добавляем правило вида:
 
 ![](https://file.modx.pro/files/2/c/5/2c5cbbf7fa48fc70a641ea45ea29ecba.png)
 
@@ -103,13 +103,23 @@
 
 ![](https://file.modx.pro/files/6/d/7/6d7505740c129058c1c90992e966379b.png)
 
-На вкладке SEO-страницы выводится список сгенерированных URL по созданным правилам.
+## SEO-страницы
+На данной  вкладке выводится список сгенерированных URL по созданным правилам.
 
-![](https://file.modx.pro/files/d/a/7/da7bcb5d2c0dafd15051ee72b843f440.png)
+![](https://file.modx.pro/files/9/1/1/911cdb13a0d33ad1b9caa241141f51f8.png)
 
 Для каждой страницы можно настроить индивидуальные параметры:
 
-![](https://file.modx.pro/files/b/d/b/bdb1009fbb439ec6fc84124bce6c6812.png)
+![](https://file.modx.pro/files/5/7/f/57f25770e810c04d9d0f28e68d7a8467.png)
+
+## Обслуживание
+На вкладе доступны три операции:
+
+![](https://file.modx.pro/files/8/0/0/800314a1262fd471e0c58608fad930f8.png)
+
+При обновлении страниц можно выбрать полную очистку таблицы перед пересозданием страниц:
+
+![](https://file.modx.pro/files/9/0/a/90a41c17fc057e95887ec40f2d4478a5.png)
 
 ## Добавление в sitemap.xml
 Для добавления SEO-страниц в sitemap.xml используйте сниппет **simpleFiltersSiteMap**.<br>
@@ -131,20 +141,16 @@
 При сохранении ресурса с шаблоном, ID которого указан в системной настройке **sf_index_templates**, система проверяет его значения для параметров, указанных в настройке **sf_seopages_aliases** и если присутствует новое, автоматически создаёт для него SEO-правило, заполняя обязательные поля **Фильтр**, **Значение** и **URI**.  
 Механизм работает только с индексной таблицей, поэтому записи для товаров там должны присутствовать.
 
-Для пакетного создания SEO-правил на основе уже существующих ресурсов можно использовать консольный скрипт:
+Для пакетного создания индексов, правил и страниц можно использовать консольные скрипты:
 
 ```php
 <?php
 $sf = $modx->getService('Simplefilters');
-$sf->updateSeoPages();
+$sf->updateIndexAll(); // Индекс
+$sf->updateSeoRules(); // SEO-правила
+$sf->updateSeoPages($mode); // SEO-страницы. $mode = 'refresh' для предварительной очистки таблицы перед обновлением
 ```
 
-Для проверки правил и пересоздания SEO-страниц можно использовать:
-
-```php
-<?php
-$sf = $modx->getService('Simplefilters');
-$sf->checkSeopages();
-```
-
-Для удобства последний скрипт представлен в виде сниппета **simpleFiltersCheckSeoPages**, который можно запускать по расписанию с помощью [CronManager](https://docs.modx.com/current/en/extras/cronmanager/index) или [Scheduler](http://ttps//docs.modx.pro/components/scheduler/).
+::: tip
+Для удобства скрипты представлены в виде отдельных сниппетов **sfUpdateIndex**, **sfUpdateSeoRules** и **sfUpdateSeoPages** которые можно запускать по расписанию с помощью [CronManager](https://docs.modx.com/current/en/extras/cronmanager/index) или [Scheduler](http://ttps//docs.modx.pro/components/scheduler/).
+:::
