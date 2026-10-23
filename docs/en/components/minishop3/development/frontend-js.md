@@ -131,6 +131,7 @@ Centralized CSS/data-* selectors for all UI components. Selectors use data-attri
   orderCancel: '.ms3-order-cancel',
   addressSetDefault: '.set-default-address',
   addressDelete: '.delete-address',
+  resendVerificationEmail: '#resend-verification-email, [data-ms3-resend-verification]',
   authLoginForm: '#ms3-login-form',
   authRegisterForm: '#ms3-register-form',
   authForgotPassword: '#forgot-password-link'
@@ -341,25 +342,46 @@ class ApiClient {
     this.tokenManager = tokenManager
   }
 
-  async request(method, route, data = null) {
-    const url = new URL(this.baseUrl, window.location.origin)
-    url.searchParams.set('route', route)
+  async request(method, route, data = null, isRetry = false) {
+    const url = this.buildUrl(route)
 
-    const options = {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      credentials: 'same-origin'  // Sends httpOnly cookie
+    const headers = {
+      Accept: 'application/json',
+      'X-Requested-With': 'XMLHttpRequest',
     }
 
-    if (data && method !== 'GET') {
-      options.body = JSON.stringify(data)
+    const options = { method, headers, credentials: 'same-origin' }
+
+    // A body only for POST, PATCH and PUT; FormData goes as is
+    if (data && ['POST', 'PATCH', 'PUT'].includes(method)) {
+      if (data instanceof FormData) {
+        options.body = data
+      } else {
+        headers['Content-Type'] = 'application/json'
+        options.body = JSON.stringify(data)
+      }
     }
 
     const response = await fetch(url.toString(), options)
-    return response.json()
+    const result = await response.json()
+
+    // A 401 with a token error: refresh the token and repeat the request once
+    if (!isRetry && response.status === 401 && this.isTokenError(result)) {
+      await this.tokenManager.fetchNewToken()
+      return this.request(method, route, data, true)
+    }
+
+    return result
+  }
+
+  isTokenError(result) {
+    if (!result || result.success) return false
+    return ['ms3_err_token', 'ms3_err_token_invalid', 'ms3_err_token_expired'].includes(result.message)
+  }
+
+  // The Web API puts the payload in data, legacy processors used object
+  static getPayload(result) {
+    return result ? (result.data ?? result.object ?? null) : null
   }
 
   get(route) { return this.request('GET', route) }
@@ -380,14 +402,17 @@ class CartAPI {
     this.api = apiClient
   }
 
-  async get() {
-    return this.api.get('/api/v1/cart/get')
+  // include_thumbs=1 adds a thumb field to every line
+  async get(params = {}) {
+    let endpoint = '/api/v1/cart/get'
+    if (params.include_thumbs) endpoint += '?include_thumbs=1'
+    return this.api.get(endpoint)
   }
 
-  async add(id, count = 1, options = {}, renderTokens = null) {
-    return this.api.post('/api/v1/cart/add', {
-      id, count, options, render: renderTokens
-    })
+  async add(id, count = 1, options = {}, render = null) {
+    const data = { id, count, options }
+    if (render) data.render = JSON.stringify(render)
+    return this.api.post('/api/v1/cart/add', data)
   }
 
   async change(key, count, renderTokens = null) {
@@ -574,6 +599,7 @@ class OrderUI {
   }
 
   initRegularInput(input) {
+    // Without a parent div the handler returns silently
     input.addEventListener('change', async () => {
       const response = await this.handleAdd(input.name, input.value)
 
@@ -618,6 +644,7 @@ class CustomerUI {
     })
     this.initOrderCancel()
     this.initAddressManagement()
+    this.initResendVerification()  // Resend the e-mail confirmation
   }
 
   // Profile update
@@ -652,7 +679,7 @@ class CustomerUI {
         const confirmMessage = btn.dataset.confirm
 
         const confirmed = await ms3Confirm(confirmMessage, {
-          confirmClass: 'danger'
+          confirmClass: 'btn-danger'
         })
         if (!confirmed) return
 
@@ -786,7 +813,7 @@ async function ms3Confirm(message, options = {}) → Promise<boolean>
 | --- | --- | --- |
 | `confirmText` | "Confirm" / "Подтвердить" | Confirm button text |
 | `cancelText` | "Cancel" / "Отмена" | Cancel button text |
-| `confirmClass` | `primary` | Button CSS class (primary, danger) |
+| `confirmClass` | `btn-primary` | The whole class of the confirm button: it is applied as `btn {confirmClass} ms3-confirm-ok` |
 
 **Example:**
 
@@ -797,7 +824,7 @@ if (!ok) return
 
 // Red button (destructive action)
 const ok = await ms3Confirm('Delete this address?', {
-  confirmClass: 'danger'
+  confirmClass: 'btn-danger'
 })
 ```
 
