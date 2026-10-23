@@ -9,6 +9,18 @@ title: Сервисный слой
 
 ### Принцип разделения
 
+В miniShop2 логика лежала в моделях:
+
+```php
+// miniShop2 — «толстые» модели
+class msProduct extends modResource
+{
+    public function duplicate($options = []) { /* 200+ строк логики */ }
+    public function getPrice() { /* логика расчёта цены */ }
+    public function updateImages() { /* работа с изображениями */ }
+}
+```
+
 В MiniShop3 часть логики уходит в сервисы. На модели остаётся то, чего MODX ждёт от `modResource`: `duplicate()`, `getPrice()`, `getWeight()`, работа с изображениями.
 
 ```php
@@ -20,18 +32,6 @@ class msProduct extends modResource
 class ProductService
 {
     public function processForDisplay(\MiniShop3\Model\msProduct $product): void { /* подготовка к выводу */ }
-}
-```
-
-В miniShop2 логика лежала в моделях:
-
-```php
-// miniShop2 - "толстые" модели
-class msProduct extends modResource
-{
-    public function duplicate($options = []) { /* 200+ строк логики */ }
-    public function getPrice() { /* логика расчёта цены */ }
-    public function updateImages() { /* работа с изображениями */ }
 }
 ```
 
