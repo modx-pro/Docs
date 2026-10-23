@@ -299,7 +299,7 @@ To create orders from code there is the `ms3_programmatic_order` service (`Progr
 $result = $modx->services->get('ms3_programmatic_order')->create([
     'idempotency_key' => 'crm-order-15', // required
     'products' => [
-        ['id' => $productId, 'count' => 2],
+        ['product_id' => $productId, 'count' => 2],
     ],
     'delivery_id' => $deliveryId,
     'payment_id' => $paymentId,

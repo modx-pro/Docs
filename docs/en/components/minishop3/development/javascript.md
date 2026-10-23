@@ -138,7 +138,7 @@ const response = await ms3.cartAPI.get()
 // response:
 {
   success: true,
-  message: "ms3_cart_get_success",
+  message: "Cart data retrieved",
   data: {
     cart: {
       // Object where key is product_key
@@ -224,19 +224,27 @@ Change product quantity.
 | `render` | array | Tokens for rendering |
 
 ```javascript
-await ms3.cartAPI.change('ms5d41d8cd98f00b204e9800998ecf8427e', 5)
+await ms3.cartAPI.change('ms43ce202fd27c84c28230cc771328e37f', 5)
 ```
 
 :::tip product_key
 Each product in the cart has a unique `product_key`. Same product with different options — different keys.
 :::
 
+#### changeOption(productKey, options, render)
+
+Change the options of a line. A new set of options changes the line key: the server returns the new one in `data.product_key` and the old one in `data.old_product_key`.
+
+```javascript
+await ms3.cartAPI.changeOption('ms43ce202fd27c84c28230cc771328e37f', { color: 'Pink' })
+```
+
 #### remove(productKey, render)
 
 Remove product from cart.
 
 ```javascript
-await ms3.cartAPI.remove('ms5d41d8cd98f00b204e9800998ecf8427e')
+await ms3.cartAPI.remove('ms43ce202fd27c84c28230cc771328e37f')
 ```
 
 #### clean(render)

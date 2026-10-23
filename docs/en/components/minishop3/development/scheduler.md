@@ -20,7 +20,7 @@ Scheduler 1.8.0 or higher. Tasks also work on older versions, but recurring ones
 
 - **notifications** go to the background only with the setting on and Scheduler installed;
 - **import** is queued by a switch in the import form, regardless of the setting;
-- **token and draft cleanup** runs on schedule from the moment MiniShop3 is installed; the setting neither enables nor disables it.
+- **token and draft cleanup** runs on schedule; the setting neither enables nor disables it. The tasks are registered by the MiniShop3 installer, and only when Scheduler is already in place: otherwise the resolver exits silently and no schedule appears. If Scheduler came second, upgrade MiniShop3 again or create the tasks by hand.
 :::
 
 <!-- MEDIA: screenshot-admin | must | Системные настройки, пространство имён `minishop3`, список отфильтрован по ключу `ms3_use_scheduler`: видна строка настройки с названием, описанием и значением «Да». | На стенде открыть системные настройки, выбрать пространство имён `minishop3`, в поиске ввести `ms3_use_scheduler`, включить настройку. -->
@@ -106,9 +106,9 @@ $scriptProperties = [
 ];
 ```
 
-The task rebuilds the notification from the class name. For `StatusChangedNotification` it takes the status ids out of `notification_data` (`new_status.id`, `old_status.id`) and loads the status objects again; if the new status is missing from the database, the run ends with an error.
+The task rebuilds the notification from the class name. For `StatusChangedNotification` it takes the status ids out of `notification_data` (`new_status.id`, `old_status.id`) and loads the status objects again; if the new status is missing from the database, the task writes a line into the MODX error log and returns `false` — but the Scheduler run is still marked successful: the run status depends only on whether the task added an error through `addError()`. Look for such cases in the MODX log, not in the list of runs. Draft cleanup behaves the same way.
 
-**Channels.** Two are registered out of the box: `email` and `telegram`. The `SmsChannel` class exists in the code but does not register itself — a custom channel is registered by a plugin on the `msOnRegisterNotificationChannels` event, which receives a `manager` parameter:
+**Channels.** Two are registered out of the box: `email` and `telegram`. There is also `SmsChannel`, but it is an abstract base: it cannot be registered as is — extend it and implement `sendSms()` for your provider. A custom channel is registered by a plugin on the `msOnRegisterNotificationChannels` event, which receives a `manager` parameter:
 
 ```php
 $manager = $modx->getOption('manager', $scriptProperties);
@@ -247,6 +247,7 @@ The first argument of `addError()` is the error type; details go in the array pa
 | `ms3_use_scheduler` | `false` | Send notifications through the Scheduler queue |
 | `ms3_delete_drafts_after` | empty | Draft retention period, `strtotime()` format |
 | `ms3_import_sync_limit` | `300` | Row count past which the import form offers the background mode |
+| `ms3_status_draft` | `1` | The status the cleanup task uses to pick drafts |
 
 On the Scheduler side, task behaviour is shaped by `scheduler.tasks_per_run`, `scheduler.recurring_on_failure` and the failure email settings.
 
