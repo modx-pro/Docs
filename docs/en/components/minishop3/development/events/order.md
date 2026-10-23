@@ -389,7 +389,7 @@ flowchart TD
   draft --> statusNew["Next status is New"]
 ```
 
-Fired when the order number is already assigned and the status is still draft. The New status is set later. If the event returns an error, the number is cleared only when inventory tracking is on.
+Fired when the order number is already assigned and the status is still draft. The New status is set later. When the event returns an error, the number is cleared on the storefront path only, and only with inventory tracking on (`OrderSubmitHandler::revertAllocatedNumber()`). The manager and programmatic paths never clear it: the allocated number stays with the draft.
 
 The event arrives in three scenarios, and the parameter set differs:
 

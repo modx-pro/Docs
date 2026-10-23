@@ -9,7 +9,7 @@ title: Сервисный слой
 
 ### Принцип разделения
 
-В MiniShop3 часть логики уходит в сервисы. Дублирование товара остаётся методом модели.
+В MiniShop3 часть логики уходит в сервисы. На модели остаётся то, чего MODX ждёт от `modResource`: `duplicate()`, `getPrice()`, `getWeight()`, работа с изображениями.
 
 ```php
 class msProduct extends modResource
@@ -203,7 +203,7 @@ class CodeAuthProvider implements AuthProviderInterface
 
     public function authenticate(array $credentials): ?msCustomer
     {
-        // Здесь своя проверка кода. Класса SMS в пакете нет.
+        // Здесь своя проверка кода. Провайдера аутентификации по SMS в пакете нет.
         return null;
     }
 

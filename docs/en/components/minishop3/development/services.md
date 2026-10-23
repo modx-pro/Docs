@@ -206,7 +206,7 @@ class CodeAuthProvider implements AuthProviderInterface
 
     public function authenticate(array $credentials): ?msCustomer
     {
-        // The site's own code check. The package has no SMS class.
+        // The site's own code check. The package ships no SMS authentication provider.
         return null;
     }
 

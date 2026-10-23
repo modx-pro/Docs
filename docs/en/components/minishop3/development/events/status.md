@@ -28,9 +28,10 @@ switch ($modx->event->name) {
         $oldStatus = $scriptProperties['old_status'];
         $newStatus = $scriptProperties['status'];
 
-        // 5 is ms3_status_canceled. The order has no payment_status field.
-        if ($newStatus == 5) {
-            $modx->event->output('Cannot cancel a paid order');
+        // 5 is ms3_status_canceled, 3 is ms3_status_paid.
+        // The order has no payment_status field: judge by the current status.
+        if ($newStatus == 5 && $oldStatus == 3) {
+            $modx->event->output('Refund a paid order instead of cancelling it');
             return;
         }
 
@@ -60,7 +61,19 @@ switch ($modx->event->name) {
 }
 ```
 
+The core validates the substituted status by the same rules as the requested one. Mind that status 4 is final: an order moved there goes nowhere afterwards. When the order has to live on after the substitution, create a non-final status of your own.
+
 ### Checking whether the transition is allowed
+
+::: warning The core rejects some transitions before the event
+`OrderStatusService::validateStatusTransition()` runs **before** `msOnBeforeChangeOrderStatus`, so a transition it rejects never reaches a plugin. The rules:
+
+- a status flagged `final` cannot be left at all — the answer is `ms3_err_status_final`. Out of the box `final` is set on 4 (shipped) and 5 (cancelled);
+- from a status flagged `fixed` you cannot move to a status whose `position` is lower or equal — the answer is `ms3_err_status_fixed`;
+- when `ms3_order_status_transitions` is set, the transition has to be listed there.
+
+Do not repeat a check the core already made — it will not run. Forbidding the cancellation of a shipped order, for one: status 4 is final, so 4 → 5 is rejected earlier.
+:::
 
 ```php
 <?php
@@ -80,8 +93,8 @@ switch ($modx->event->name) {
                 break;
 
             case 5: // ms3_status_canceled
-                if ($oldStatus == 4) {
-                    $modx->event->output('A shipped order cannot be cancelled');
+                if ($oldStatus == 3) { // ms3_status_paid
+                    $modx->event->output('Refund a paid order instead of cancelling it');
                     return;
                 }
                 break;
@@ -97,8 +110,8 @@ switch ($modx->event->name) {
 ```mermaid
 flowchart TD
   save["Save status and inventory movements"] --> history["Write history"]
-  history --> notify["Notifications"]
-  notify --> event["msOnChangeOrderStatus"]
+  history --> event["msOnChangeOrderStatus"]
+  event --> notify["Notifications"]
   event --> out{"output() is not empty?"}
   out -->|yes| err["Error to the customer, status is not rolled back"]
   out -->|no| ok["Successful response"]

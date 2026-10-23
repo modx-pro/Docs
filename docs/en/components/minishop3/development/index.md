@@ -45,9 +45,10 @@ flowchart TB
 As of **1.10+**, the screens for orders, customers, settings and utilities run through the **Manager REST API** (`Controllers\Api\Manager\*` on FastRoute). The product and category forms are the exception: those are plain MODX resource screens, and Vue only lives in their tabs. The older **processors** (`MiniShop3\Processors\*`) remain only for:
 
 - the previous connector and `runProcessor()` calls from PHP;
-- utilities where the controller calls a processor explicitly: `ImportController` (product import) and `UtilitiesGalleryController` (bulk gallery operations), both through the `RunsMs3Processors` trait.
+- utilities where the controller calls a processor explicitly: `ImportController` (product import) and `UtilitiesGalleryController` (bulk gallery operations), both through the `RunsMs3Processors` trait;
+- customer authentication in the Web API: login, registration, logout, password reset request and password reset all run through `Processors\Api\Customer\*`.
 
-The other eighteen controllers call no processors. They work through the service layer.
+The remaining Manager API controllers call no processors: they work through the service layer.
 
 Events are not always lost. Orders, their statuses and lines go through services that fire the events themselves. A plugin on `msOnChangeOrderStatus` does run from the manager.
 

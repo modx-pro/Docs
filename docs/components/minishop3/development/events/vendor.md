@@ -9,7 +9,7 @@ title: События производителей
 CRUD производителей в админке (**Пакеты → MiniShop3 → Производители**) идёт через `VendorsController` (Manager API) **без** `$modx->invokeEvent`. События ниже срабатывают только при вызове устаревших процессоров `MiniShop3\Processors\Settings\Vendor\*` (`runProcessor`, старый connector). Для перехвата изменений из Vue используйте хуки после сохранения: свой REST middleware или правку контроллера в дополнении.
 :::
 
-Ключи в таблицах ниже пакет не собирает сам. Процессоры задают только `$objectType = 'msVendor'`. Массив параметров формирует процессор MODX: `CreateProcessor`, `UpdateProcessor` или `RemoveProcessor`.
+Ключи в таблицах ниже пакет не собирает сам. Процессоры MiniShop3 задают `$classKey`, `$objectType = 'msVendor'` и имена событий в свойствах `$beforeSaveEvent`, `$afterSaveEvent`, `$beforeRemoveEvent`, `$afterRemoveEvent` — без них базовый процессор событий не поднимает. Сам вызов и набор параметров делает процессор MODX: `CreateProcessor`, `UpdateProcessor` или `RemoveProcessor`.
 
 ## msOnBeforeVendorCreate
 
