@@ -312,17 +312,20 @@ class TokenManager {
   }
 
   async ensureToken() {
-    // Token is in httpOnly cookie — JS cannot read it directly.
-    // If cookie is missing, requests a new token from the server
-    return this.fetchNewToken()
+    // Token is in httpOnly cookie — JS cannot read it directly
+    if (this.tokenInitialized) return
+
+    await this.fetchNewToken()
   }
 
   async fetchNewToken() {
     const response = await fetch(
       `${this.config.apiUrl}?route=/api/v1/customer/token/get`
     )
-    const data = await response.json()
-    return data.success ? data.data?.token : null
+    const result = await response.json()
+    if (result.success) {
+      this.tokenInitialized = true  // Returns nothing: Promise<void>
+    }
   }
 }
 ```
@@ -504,9 +507,7 @@ class CartUI {
   }
 
   init() {
-    this.initQuantityButtons()  // +/- buttons
-    this.initQuantityInputs()    // Quantity inputs
-    this.initOptionSelects()    // Option selects
+    this.initOptionSelects()    // Option selects: a delegated change listener
   }
 
   async handleAdd(id, count = 1, options = {}) {
@@ -550,8 +551,6 @@ class CartUI {
       }
     }
 
-    // Re-init handlers
-    setTimeout(() => this.init(), 100)
   }
 
   dispatchCartUpdated(data) {
@@ -715,56 +714,49 @@ class AuthUI {
   }
 
   init() {
-    this.initLoginForm()
-    this.initRegisterForm()
+    const loginForm = document.querySelector(this.selectors.authLoginForm)
+    if (loginForm) {
+      loginForm.addEventListener('submit', e => this.handleLogin(e))
+    }
+
+    const registerForm = document.querySelector(this.selectors.authRegisterForm)
+    if (registerForm) {
+      registerForm.addEventListener('submit', e => this.handleRegister(e))
+    }
+
+    const forgotLink = document.querySelector(this.selectors.authForgotPassword)
+    if (forgotLink) {
+      forgotLink.addEventListener('click', e => this.handleForgotPassword(e))
+    }
+
+    this.initTabSupport()
   }
 
-  async handleLogin(formData) {
-    const hookData = { formData }
+  // The argument is the submit event, not the form
+  async handleLogin(event) {
+    event.preventDefault()
+    const data = this.serializeForm(event.target)
+
+    const hookData = { email: data.email }
     await this.hooks.runHooks('beforeLogin', hookData)
     if (hookData.cancel) return
 
-    const response = await this.customer.login({
-      email: formData.get('email'),
-      password: formData.get('password')
-    })
+    const result = await this.customer.login(data.email, data.password)
+    await this.hooks.runHooks('afterLogin', { email: data.email, response: result })
 
-    await this.hooks.runHooks('afterLogin', { response })
-
-    if (response.success) {
-      this.message.success(response.message)
-      window.location.href = response.data?.redirect_url || window.location.href
+    if (result.success) {
+      this.showMessage('login-messages', this.t('ms3_customer_login_success'), 'success')
+      setTimeout(() => this.handleRedirect(ApiClient.getPayload(result)), 1000)
     } else {
-      this.showFormErrors('login', response)
-    }
-  }
-
-  async handleRegister(formData) {
-    const hookData = { formData }
-    await this.hooks.runHooks('beforeRegister', hookData)
-    if (hookData.cancel) return
-
-    const response = await this.customer.register({
-      email: formData.get('email'),
-      password: formData.get('password'),
-      password_confirm: formData.get('password_confirm'),
-      first_name: formData.get('first_name'),
-      last_name: formData.get('last_name'),
-      phone: formData.get('phone'),
-      privacy_accepted: formData.get('privacy_accepted') ? true : false
-    })
-
-    await this.hooks.runHooks('afterRegister', { response })
-
-    if (response.success) {
-      this.message.success(response.message)
-      window.location.href = response.data?.redirect_url || window.location.href
-    } else {
-      this.showFormErrors('register', response)
+      this.showMessage('login-messages', result.message || this.t('ms3_err_unknown'), 'danger')
     }
   }
 }
 ```
+
+`handleRegister(event)` works the same way but writes into the `register-messages` block and validates the form on the client before the request: `email` and `password` filled in, `password` equal to `password_confirm`, `privacy_accepted` ticked. After a successful registration the redirect through `handleRedirect()` happens only when the payload carries a `token` (after 1500 ms); otherwise the script switches to the login tab and resets the form after 2000 ms.
+
+Login and registration errors go into the block next to the form (`showMessage()`), not into a popup. A toast is raised only on a network failure.
 
 **Auth chunk:** `tpl.msCustomer.unauthorized` contains login and registration forms with tabs (Bootstrap). An inline script exports lexicon keys into `window.ms3Lexicon`:
 
@@ -1232,7 +1224,7 @@ The module fills the form fields when an address is selected. Details: [Checkout
 
 ### Built-in afterSendRequest hook
 
-`hooks.js` registers `afterSendRequest`: after any API request, ~100 ms later `cartUI.init()` runs to re-bind handlers on the updated DOM. Keep this in mind for custom partial cart updates.
+`hooks.js` registers a handler for `afterSendRequest` that calls `cartUI.init()` 100 ms later. Nothing ever runs it: there is no `runHooks('afterSendRequest')` call anywhere in the code. A handler of your own on that name will not run either — there is no working replacement, so call `ms3.refresh()` after a partial cart update of your own.
 
 ### change-option
 

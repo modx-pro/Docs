@@ -61,7 +61,7 @@ switch ($modx->event->name) {
 }
 ```
 
-The core validates the substituted status by the same rules as the requested one. Mind that status 4 is final: an order moved there goes nowhere afterwards. When the order has to live on after the substitution, create a non-final status of your own.
+The core validates the substituted status by the same rules as the requested one. Mind that status 4 is final: an order moved there goes nowhere afterwards. When the order has to live on after the substitution, create a status of your own without the `final` flag.
 
 ### Checking whether the transition is allowed
 
