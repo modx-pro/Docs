@@ -39,20 +39,26 @@ flowchart TD
 | `POST` | `/delivery/webhook/{delivery_id}` | Requires a delivery handler; returns 404 when `ms3_shipment_enabled=0` |
 | `POST` | `/payment/webhook/{payment_method_id}` | Requires a payment class that implements `PaymentWebhookHandlerInterface`; otherwise 400 |
 
-Payment webhook chain: JSON body → `verifyWebhook` → `parseWebhook` → `PaymentLifecycleService::applyWebhook`. On success the response returns `attempt_id`, `status`, and `order_id`. The classic `webhook.php` / `callback.php` entry points in payment extras keep working as long as the payment class does not implement the Web API interface.
+Payment: the server reads JSON from the body, then calls `verifyWebhook`, `parseWebhook`, and `PaymentLifecycleService::applyWebhook`. A successful response returns `attempt_id`, `status`, and `order_id`. An inactive payment method answers the webhook with 404.
+
+A successful delivery webhook returns `shipment_id`, `status`, `order_id`, and `tracking_number`. The delivery webhook does not filter on `active`.
+
+The classic `webhook.php` and `callback.php` entry points in payment extras keep working when the class does not implement the Web API interface.
+
+These routes do not pass `TokenMiddleware`. The public payment prefix in the middleware ends with a slash, so it does not match a path with `{id}`. Until the middleware is attached to the group, webhooks are unaffected ([bug #903](https://github.com/modx-pro/MiniShop3/issues/903)).
 
 ## Order draft
 
-All `/order/*` routes use token auto-mint.
+Every `/order/*` path goes through `TokenMiddleware` with token auto-mint.
 
 | Method | Path | Purpose |
 | --- | --- | --- |
 | `GET` | `/order/get` | Draft |
-| `POST` | `/order/add` | One field |
-| `POST` | `/order/set` | Multiple fields |
-| `POST` | `/order/remove` | Remove field |
+| `POST` | `/order/add` | One field: body `key` and `value` |
+| `POST` | `/order/set` | Several fields: a `fields` object. Flat JSON without `fields` returns 400 |
+| `POST` | `/order/remove` | Remove a field: body `key` |
 | `POST` | `/order/clean` | Clear draft |
-| `POST` | `/order/address/set` | Apply saved address |
+| `POST` | `/order/address/set` | Saved address: `address_hash` |
 | `POST` | `/order/address/clean` | Clear address |
 | `GET` | `/order/delivery/validation-rules` | Field rules by delivery |
 | `GET` | `/order/delivery/required-fields` | Required fields |
@@ -60,9 +66,9 @@ All `/order/*` routes use token auto-mint.
 | `GET` | `/order/cost/cart` | Cart only |
 | `GET` | `/order/cost/delivery` | Delivery |
 | `GET` | `/order/cost/payment` | Payment fee |
-| `POST` | `/order/submit` | Submit |
+| `POST` | `/order/submit` | Submit. Optional `data` object. An empty body is sent as an empty array |
 
-Typical draft fields: `delivery_id`, `payment_id`, `address_*`, and contact fields. The exact set depends on delivery rules.
+A draft usually holds `delivery_id`, `payment_id`, `address_*`, and contact fields. The exact set depends on the delivery rules. The storefront script calls `order/add` for a single field, not `order/set`.
 
 ### Fields the storefront may not change {#protected-fields}
 

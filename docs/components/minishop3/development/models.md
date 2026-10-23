@@ -43,7 +43,7 @@ $customer = $modx->getObject(msCustomer::class, ['email' => $email]);
 | `msCustomerAddress` | `Customer` | N:1 | покупателя — обратная связь от адреса |
 | `msCustomerToken` | `Customer` | N:1 | покупателя — обратная связь от токена |
 
-Связи `Addresses` у `msCustomer` нет: адреса читают прямым запросом к `msCustomerAddress` по `customer_id` — см. [Работа с покупателем](#customer-example).
+Связи `Addresses` у `msCustomer` нет. Адреса читают прямым запросом к `msCustomerAddress` по `customer_id`. См. [Работа с покупателем](#customer-example).
 
 ## Файл схемы
 
@@ -220,6 +220,47 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 
 При `ms3_shipment_enabled=1` статус отгрузки переносит в заказ `ShipmentLifecycleService`: `shipped` → `ms3_status_sent`, `cancelled`/`failed` → `ms3_status_canceled`. Для `delivered` / `in_transit` смотрите настройки `ms3_shipment_on_*_status`. Сам статус заказа применяет `OrderStatusService`, но соответствие статусов живёт в сервисе отгрузок — свою таблицу переходов подставляют подменой `ms3_shipment_lifecycle`.
 
+### Попытки оплаты
+
+Таблицы без xPDO-моделей. Доступ через `PdoPaymentAttemptStore` и DI-ключ `ms3_payment_lifecycle` (`PaymentLifecycleService`). Миграция Phinx: `create_payment_attempts`.
+
+| Таблица | Описание |
+| --- | --- |
+| `ms3_payment_attempts` | Попытка оплаты заказа |
+| `ms3_payment_attempt_events` | Идемпотентность webhook: `provider_event_id` на попытку и тип события |
+
+#### ms3_payment_attempts — поля
+
+| Поле | Тип | Описание |
+| --- | --- | --- |
+| `id` | int | ID попытки |
+| `order_id` | int unsigned | ID заказа |
+| `payment_method_id` | int unsigned | ID способа оплаты |
+| `provider` | varchar(191) | Класс или имя провайдера |
+| `external_id` | varchar(191) | ID у провайдера |
+| `status` | varchar(32) | `pending`, `authorized`, `paid`, `failed`, `cancelled`, `refunded`, `partially_refunded`. По умолчанию `pending` |
+| `amount` | decimal(13,3) | Сумма |
+| `currency` | varchar(8) | Валюта, по умолчанию `RUB` |
+| `payload` | text | Данные провайдера |
+| `refunded_amount` | decimal(13,3) | Сумма возврата |
+| `refund_external_id` | varchar(191) | ID возврата у провайдера |
+| `refundedon` | int unsigned | Unix-время возврата |
+| `createdon` / `updatedon` | int unsigned | Unix-время |
+
+Уникальный ключ: `payment_method_id`, `provider`, `external_id`.
+
+#### ms3_payment_attempt_events — поля
+
+| Поле | Тип | Описание |
+| --- | --- | --- |
+| `id` | int | ID события |
+| `attempt_id` | int unsigned | ID попытки |
+| `event_type` | varchar(32) | Тип события |
+| `provider_event_id` | varchar(191) | ID события у провайдера |
+| `createdon` | int unsigned | Unix-время |
+
+Уникальный ключ: `attempt_id`, `event_type`, `provider_event_id`.
+
 ### Производители
 
 | Модель | Таблица | Описание |
@@ -257,7 +298,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 ::: warning Так заказ создавать не стоит
 Пример ниже показывает, как устроены записи заказа в базе, и только. Собранный так заказ не прошёл валидацию, не получил расчёт стоимости и доставки, не поднял события и не отправил уведомления.
 
-Для создания заказов из кода есть сервис `ms3_programmatic_order` (`ProgrammaticOrderService`): он строит черновик и проводит его через обычное оформление, а по `idempotency_key` не создаёт дубль при повторном вызове.
+Для создания заказов из кода есть сервис `ms3_programmatic_order` (`ProgrammaticOrderService`). Он строит черновик и проводит его через обычное оформление. По `idempotency_key` не создаёт дубль при повторном вызове.
 
 ```php
 $result = $modx->services->get('ms3_programmatic_order')->create([
@@ -339,7 +380,7 @@ $addresses = $modx->getIterator(msCustomerAddress::class, [
 
 ### Итерация по записям
 
-`getIterator()` достаёт записи по одной и не держит всю выборку в памяти — на больших наборах это предпочтительнее `getCollection()`:
+`getIterator()` достаёт записи по одной и не держит всю выборку в памяти. На больших наборах это предпочтительнее `getCollection()`:
 
 ```php
 use MiniShop3\Model\msOrder;
@@ -350,9 +391,9 @@ foreach ($modx->getIterator(msOrder::class, ['status_id' => 2]) as $order) {
 ```
 
 ::: danger getIterator() и классы без своей таблицы
-`getCollection()` и `getObject()` сами добавляют в условие фильтр по `class_key` — это делает `addDerivativeCriteria()`. Более того, `msProduct` и `msCategory` дублируют эту защиту в своих `loadCollection()` и `load()`. **А `getIterator()` не проходит ни через один из этих методов: он создаёт итератор напрямую, и фильтра не будет.**
+`getCollection()` и `getObject()` сами добавляют в условие фильтр по `class_key`. Это делает `addDerivativeCriteria()`. Более того, `msProduct` и `msCategory` дублируют эту защиту в своих `loadCollection()` и `load()`. **`getIterator()` не проходит ни через один из этих методов: он создаёт итератор напрямую, и фильтра не будет.**
 
-Для `msProduct` и `msCategory` это критично: своей таблицы у них нет, они живут в `site_content` вместе со всеми ресурсами MODX. Без фильтра выборка захватит чужие записи, и первая же из них даст ошибку вида «Instantiated a derived class msProduct that is not a subclass of the requested class msCategory».
+Для `msProduct` и `msCategory` это критично: своей таблицы у них нет, они живут в `site_content` вместе со всеми ресурсами MODX. Без фильтра выборка захватит чужие записи. Первая же из них даст ошибку вида «Instantiated a derived class msProduct that is not a subclass of the requested class msCategory».
 
 Поэтому при `getIterator()` для таких классов `class_key` задавайте вручную:
 
@@ -367,12 +408,12 @@ foreach ($modx->getIterator(msProduct::class, $criteria) as $product) {
 }
 ```
 
-Моделей со своей таблицей — `msOrder`, `msCustomer`, `msProductData` и остальных из таблиц выше — это не касается.
+Это не касается моделей со своей таблицей: `msOrder`, `msCustomer`, `msProductData` и остальных из таблиц выше.
 :::
 
 ## Архитектура моделей
 
-Модель отвечает за таблицу и связи, бизнес-логика живёт в сервисах — см. [Сервисный слой](/components/minishop3/development/services).
+Модель отвечает за таблицу и связи. Бизнес-логика живёт в сервисах. См. [Сервисный слой](/components/minishop3/development/services).
 
 Полностью «тонкими» модели не стали: `msProduct` и `msCategory` расширяют `modResource`, а MODX держит бизнес-логику в моделях. Поэтому модель вправе вызвать сервис:
 
@@ -469,7 +510,7 @@ core/components/minishop3/migrations/
 
 ### Запуск миграций
 
-Руками запускать их обычно не нужно: при установке и обновлении пакета миграции применяет резолвер `resolver_02_migrations`, а при работе с дополнительными полями — `ExtraFieldsService`. Оба используют окружение `production`, оно же стоит в `phinx.php` по умолчанию.
+Руками запускать их обычно не нужно. При установке и обновлении пакета миграции применяет резолвер `resolver_02_migrations`. При работе с дополнительными полями их применяет `ExtraFieldsService`. Оба используют окружение `production`. Оно же стоит в `phinx.php` по умолчанию.
 
 Для разработки миграции прогоняют из CLI:
 
@@ -530,4 +571,4 @@ erDiagram
 
 `ms3_shipments` / `ms3_shipment_events` — PDO-таблицы (не классы `MiniShop3\Model\*`).
 
-Линия `msCustomer → msCustomerAddress` показывает связь в базе: адреса ссылаются на покупателя через `customer_id`. Алиаса для обхода от покупателя к адресам в схеме нет, пройти можно только в обратную сторону — `$address->getOne('Customer')`.
+Линия `msCustomer → msCustomerAddress` показывает связь в базе: адреса ссылаются на покупателя через `customer_id`. Алиаса для обхода от покупателя к адресам в схеме нет. Пройти можно только в обратную сторону: `$address->getOne('Customer')`.

@@ -14,7 +14,7 @@ Fired **before** changing order status. Lets you validate or abort the change.
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `msOrder` | `msOrder` | Order object |
-| `old_status` | `int` | Current status ID |
+| `old_status` | `int` \| `null` | Current status ID. `null` when the order has an empty `status_id` |
 | `status` | `int` | New status ID |
 
 ### Aborting the operation
@@ -28,7 +28,8 @@ switch ($modx->event->name) {
         $oldStatus = $scriptProperties['old_status'];
         $newStatus = $scriptProperties['status'];
 
-        if ($newStatus == 6 && $order->get('payment_status') == 'paid') {
+        // 5 is ms3_status_canceled. The order has no payment_status field.
+        if ($newStatus == 5) {
             $modx->event->output('Cannot cancel a paid order');
             return;
         }
@@ -52,9 +53,8 @@ switch ($modx->event->name) {
     case 'msOnBeforeChangeOrderStatus':
         $newStatus = $scriptProperties['status'];
 
-        // Orders without prepayment go to "needs confirmation" instead of "paid"
-        if ($newStatus === 3) { // 3 = "paid"
-            $modx->event->returnedValues = ['status' => 7]; // 7 = "needs confirmation"
+        if ($newStatus === 3) { // ms3_status_paid
+            $modx->event->returnedValues = ['status' => 4]; // ms3_status_sent
         }
         break;
 }
@@ -71,7 +71,7 @@ switch ($modx->event->name) {
         $newStatus = $scriptProperties['status'];
 
         switch ($newStatus) {
-            case 3: // Shipped
+            case 4: // ms3_status_sent
                 $properties = $order->get('properties') ?? [];
                 if (empty($properties['tracking_number'])) {
                     $modx->event->output('Enter a tracking number');
@@ -79,16 +79,9 @@ switch ($modx->event->name) {
                 }
                 break;
 
-            case 4: // Completed
-                if ($oldStatus != 3) {
-                    $modx->event->output('The order must be shipped first');
-                    return;
-                }
-                break;
-
-            case 6: // Cancelled
+            case 5: // ms3_status_canceled
                 if ($oldStatus == 4) {
-                    $modx->event->output('A completed order cannot be cancelled');
+                    $modx->event->output('A shipped order cannot be cancelled');
                     return;
                 }
                 break;
@@ -100,6 +93,16 @@ switch ($modx->event->name) {
 ---
 
 ## msOnChangeOrderStatus
+
+```mermaid
+flowchart TD
+  save["Save status and inventory movements"] --> history["Write history"]
+  history --> notify["Notifications"]
+  notify --> event["msOnChangeOrderStatus"]
+  event --> out{"output() is not empty?"}
+  out -->|yes| err["Error to the customer, status is not rolled back"]
+  out -->|no| ok["Successful response"]
+```
 
 Fired **after** successful order status change.
 
@@ -116,7 +119,7 @@ Put any check that should abort the transition into `msOnBeforeChangeOrderStatus
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `msOrder` | `msOrder` | Order object |
-| `old_status` | `int` | Previous status ID |
+| `old_status` | `int` \| `null` | Previous status ID. `null` when the order has an empty `status_id` |
 | `status` | `int` | New status ID |
 
 ### Example
@@ -140,7 +143,7 @@ switch ($modx->event->name) {
 }
 ```
 
-### Bonus points on order completion
+### After payment
 
 ```php
 <?php
@@ -149,22 +152,12 @@ switch ($modx->event->name) {
         $order = $scriptProperties['msOrder'];
         $newStatus = $scriptProperties['status'];
 
-        // Status "Completed" = 4
-        if ($newStatus == 4) {
-            $customer = $order->getOne('Customer');
-            if ($customer) {
-                $bonus = floor($order->get('cost') * 0.05);
-                $currentBonus = $customer->get('bonus') ?? 0;
-                $customer->set('bonus', $currentBonus + $bonus);
-                $customer->save();
-
-                $modx->log(modX::LOG_LEVEL_INFO, sprintf(
-                    '[Bonus] %d bonus points to customer #%d for order #%s',
-                    $bonus,
-                    $customer->get('id'),
-                    $order->get('num')
-                ));
-            }
+        if ($newStatus == 3) { // ms3_status_paid
+            $modx->log(modX::LOG_LEVEL_INFO, sprintf(
+                '[Status] Order #%s is paid, total %s',
+                $order->get('num'),
+                $order->get('cost')
+            ));
         }
         break;
 }
@@ -179,7 +172,7 @@ switch ($modx->event->name) {
         $order = $scriptProperties['msOrder'];
         $newStatus = $scriptProperties['status'];
 
-        if ($newStatus == 3) {
+        if ($newStatus == 4) { // ms3_status_sent
             $address = $order->getOne('Address');
             $phone = $address->get('phone');
             $trackingNumber = $order->get('properties')['tracking_number'] ?? '';
