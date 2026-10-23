@@ -23,6 +23,7 @@ Scheduler 1.8.0 or higher. Tasks also work on older versions, but recurring ones
 - **token and draft cleanup** runs on schedule from the moment MiniShop3 is installed; the setting neither enables nor disables it.
 :::
 
+<!-- MEDIA: screenshot-admin | must | Системные настройки, пространство имён `minishop3`, список отфильтрован по ключу `ms3_use_scheduler`: видна строка настройки с названием, описанием и значением «Да». | На стенде открыть системные настройки, выбрать пространство имён `minishop3`, в поиске ввести `ms3_use_scheduler`, включить настройку. -->
 In code the setting is changed through the `modSystemSetting` object:
 
 ```php
@@ -152,6 +153,7 @@ if ($lastRun) {
 
 The status numbers match the `sTaskRun::STATUS_SCHEDULED`, `STATUS_EXECUTING`, `STATUS_SUCCESS` and `STATUS_FAILURE` constants.
 
+<!-- MEDIA: diagram | must | Жизненный цикл запуска задачи. Запуск ставится в очередь вызовом `schedule()` или пунктом «Запланировать запуск» → статус 0 `STATUS_SCHEDULED` «ждёт» → проход cron берёт запуск → статус 1 `STATUS_EXECUTING` «выполняется» → статус 2 `STATUS_SUCCESS` «успех» либо статус 3 `STATUS_FAILURE` «ошибка». От успеха стрелка: у повторяющейся задачи ставится новый запуск через `interval`, у одноразовой цепочка заканчивается. | По тексту разделов «Monitoring tasks», «Running tasks manually» и «Troubleshooting». Перед рисованием сверить по коду Scheduler (`sTaskRun`, cron-скрипт): условие перехода в статус 3 (возврат `false`, вызов `addError()` или исключение); есть ли повторные попытки после ошибки (`max_retries`); ставится ли новый запуск повторяющейся задачи после ошибки (настройка `scheduler.recurring_on_failure`); сколько запусков берёт один проход cron (`scheduler.tasks_per_run`). Ветки, которых нет в тексте страницы, на схему не переносить — сначала дописать их в текст. -->
 ## Running tasks manually
 
 ### Via manager
@@ -162,6 +164,7 @@ The status numbers match the `sTaskRun::STATUS_SCHEDULED`, `STATUS_EXECUTING`, `
 
 The run goes into the queue. A single cron pass takes as many runs as the Scheduler setting `scheduler.tasks_per_run` allows — one by default, so with a non-empty queue a run may wait for several passes.
 
+<!-- MEDIA: screenshot-admin | nice | Scheduler: список задач с отфильтрованным пространством имён `minishop3`, на экране видны все вкладки интерфейса; у одной из задач открыто контекстное меню с пунктом «Запланировать запуск». Вторым кадром — окно, которое открывается после выбора пункта. | На стенде открыть Scheduler через меню «Дополнения», вызвать контекстное меню на `ms3_cleanup_tokens`. Окно снять, не сохраняя запуск. -->
 ### Via PHP
 
 ```php
