@@ -21,7 +21,7 @@ Web API MiniShop3 (`api.php`) обслуживает фронтенд и headles
 
 ```mermaid
 flowchart LR
-  store[Витрина и headless] --> web["api.php /api/v1"]
+  store[Фронтенд и headless] --> web["api.php /api/v1"]
   mgr[Vue-админка] --> man["connector.php /api/mgr"]
 ```
 

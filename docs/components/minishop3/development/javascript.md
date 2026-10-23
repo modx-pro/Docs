@@ -200,8 +200,8 @@ await ms3.cartAPI.add(123, 3)
 await ms3.cartAPI.add(123, 1, { color: 'red', size: 'L' })
 ```
 
-:::tip SSR (Server-Side Rendering)
-Параметр `render` возвращает готовый HTML с сервера. Токены должны быть зарегистрированы через `TokenService`. Если токены настроены, HTML приходит в `response.data.render`. Для большинства витрин это не нужно.
+:::tip Готовая разметка с сервера (SSR)
+Параметр `render` возвращает готовый HTML. Токены для него регистрируют через `TokenService`; если они настроены, разметка приходит в `response.data.render`. Большинству магазинов это не нужно.
 :::
 
 **Формат ответа:**
@@ -386,7 +386,7 @@ const response = await ms3.orderAPI.getCost()
 Методы авторизованного покупателя.
 
 :::warning Требуется авторизация
-Большинство методов CustomerAPI требует авторизации. Исключения в этом классе: `login` и `register`. Сброса пароля на витрине в `CustomerAPI` нет: `AuthUI` показывает, что действие недоступно. Серверные маршруты при этом есть: `POST /api/v1/customer/forgot-password` и `POST /api/v1/customer/reset-password`. Данные заказа гостя сохраняются через `OrderAPI.add()`.
+Большинство методов CustomerAPI требует авторизации. Исключения в этом классе: `login` и `register`. Сброса пароля в `CustomerAPI` нет: `AuthUI` показывает, что на сайте это действие недоступно. Серверные маршруты при этом есть: `POST /api/v1/customer/forgot-password` и `POST /api/v1/customer/reset-password`. Данные заказа гостя сохраняются через `OrderAPI.add()`.
 :::
 
 ### Методы
@@ -646,7 +646,7 @@ document.addEventListener('ms3:cart:updated', (e) => {
 ```
 
 ::: warning Событие приходит и без данных
-Очистка формы заказа шлёт его пустым: `detail` будет `null`. Форма очистки есть в поставляемом чанке `ms3_order.tpl`, путь живой. Обработчик, который сразу читает поля, упадёт с `TypeError` ([#802](https://github.com/modx-pro/MiniShop3/issues/802)).
+Очистка формы заказа шлёт его пустым: `detail` будет `null`. Форма очистки есть в поставляемом чанке `ms3_order.tpl`, так что случай не теоретический. Обработчик, который сразу читает поля, упадёт с `TypeError` ([разбор](https://github.com/modx-pro/MiniShop3/issues/802)).
 
 Проверяйте `detail` перед обращением к полям. Во всех примерах ниже это сделано.
 :::
@@ -654,6 +654,8 @@ document.addEventListener('ms3:cart:updated', (e) => {
 ## Использование в SPA
 
 ### Vue 3
+
+<!-- EXAMPLE? пять функций с одинаковым телом (запрос → `cart.value` → `status.value`): механизм виден по двум. То же тело повторяют примеры для React и Vanilla JS ниже -->
 
 ```javascript
 // composables/useCart.js
@@ -933,10 +935,10 @@ flowchart LR
 
 ### Как работает
 
-1. При первом запросе клиент получает токен (`GET /api/v1/customer/token/get`, либо он выдаётся сам при первом обращении к корзине).
-2. С 1.6 для браузера основной способ: httpOnly cookie `ms3_token`, не `localStorage`.
-3. Клиент шлёт запросы с `credentials: 'same-origin'`, cookie уходит сама. Для обращений с другого домена есть `Authorization: Bearer`.
-4. Ротация на login / `token/refresh`.
+1. При первом запросе клиент получает токен: `GET /api/v1/customer/token/get` либо первое обращение к корзине.
+2. С 1.6 в браузере токен живёт в httpOnly cookie `ms3_token`, а не в `localStorage`.
+3. Клиент шлёт запросы с `credentials: 'same-origin'`, и cookie уходит сама. Для обращений с другого домена есть `Authorization: Bearer`.
+4. При входе и на `token/refresh` токен меняется.
 
 Подробнее: [Авторизация Web API](/components/minishop3/development/web-api/auth), [Frontend JavaScript](/components/minishop3/development/frontend-js).
 
@@ -961,5 +963,5 @@ await ms3.tokenManager.fetchNewToken()
 ## Связанные страницы
 
 - [Frontend JavaScript](frontend-js) — UI-слой
-- [REST API](api) — серверные endpoints
+- [REST API](api) — серверные адреса и форматы ответов
 - [События](events) — PHP события компонента

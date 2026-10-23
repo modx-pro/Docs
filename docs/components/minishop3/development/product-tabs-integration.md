@@ -98,7 +98,7 @@ flowchart TB
 
 ### Ожидание реестра {#waiting-for-registry}
 
-Регистрацию откладывает эта функция — она годится и для Vue-, и для ExtJS-вкладок:
+Эта функция откладывает регистрацию до появления реестра. Годится и для Vue-, и для ExtJS-вкладок:
 
 ```javascript
 function whenRegistryReady(callback, attemptsLeft) {

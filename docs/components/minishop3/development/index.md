@@ -6,13 +6,13 @@ title: Разработка
 ```mermaid
 flowchart TB
   need[Задача]
-  need -->|Плагин на процесс| events[События]
-  need -->|Headless / SPA| webapi[Web API /api/v1]
-  need -->|Маршруты и middleware| router[API Router]
-  need -->|Фон| scheduler[Scheduler]
-  need -->|PHP CRUD сущностей| backend[Backend API]
+  need -->|Вмешаться в процесс| events[События]
+  need -->|Headless или SPA| webapi[Web API /api/v1]
+  need -->|Свои роуты и middleware| router[API Router]
+  need -->|Фоновые задачи| scheduler[Scheduler]
+  need -->|CRUD сущностей из PHP| backend[Backend API]
   need -->|Замена классов| services[ServiceRegistry]
-  need -->|Вкладки mgr| tabs[product / order tabs]
+  need -->|Свои вкладки в админке| tabs["Вкладки товара и заказа"]
   webapi --> router
 ```
 
@@ -34,9 +34,9 @@ flowchart TB
 
 ```mermaid
 flowchart TB
-  vue[Vue-экраны mgr] --> mgrapi[Manager REST API]
-  shop[Витрина] --> webapi["Web API /api/v1"]
-  php["runProcessor и импорт, галерея"] --> proc[Процессоры]
+  vue[Vue-экраны админки] --> mgrapi[Manager REST API]
+  shop[Фронтенд] --> webapi["Web API /api/v1"]
+  php["runProcessor, импорт, галерея"] --> proc[Процессоры]
   mgrapi --> svc[Сервисный слой]
   svc --> ev[События MODX]
   vuecrud[Vue-CRUD производителя] --> db[(База)]
@@ -52,8 +52,8 @@ flowchart TB
 
 Остальные контроллеры Manager API процессоры не вызывают — они работают через сервисный слой.
 
-События теряются не всегда. Заказы, их статусы и позиции идут через сервисы, которые поднимают события сами. Плагин на `msOnChangeOrderStatus` из админки сработает.
+События при этом теряются не везде. Заказы, их статусы и позиции идут через сервисы, которые поднимают события сами: плагин на `msOnChangeOrderStatus` из админки сработает.
 
-Vue-CRUD справочников пишет в базу напрямую, минуя `Processors/Settings/Vendor/*`. Плагины на CRUD-события производителя из админки не сработают. У доставок и оплат в `events.php` зарегистрированы события стоимости, не CRUD. У типов связей CRUD-событий нет. См. [События производителей](events/vendor).
+Vue-CRUD справочников пишет в базу напрямую, минуя `Processors/Settings/Vendor/*`, поэтому плагины на CRUD-события производителя из админки не сработают. У доставок и оплат в `events.php` зарегистрированы события стоимости, не CRUD. У типов связей CRUD-событий нет. См. [События производителей](events/vendor).
 
 Headless-фронтенд работает через Web API (`/api/v1/*`). Процессоры там остались только в авторизации покупателя — плагины на её события из headless-клиента сработают.

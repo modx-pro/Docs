@@ -9,10 +9,10 @@ MiniShop3 маршрутизирует API через библиотеку [Fast
 
 ### Два типа API
 
-| Параметр | Manager API | Web API |
+| Свойство | Manager API | Web API |
 | --- | --- | --- |
 | **Префикс** | `/api/mgr/*` | `/api/v1/*` |
-| **Назначение** | Административная панель MODX | Фронтенд магазина |
+| **Назначение** | Админка MODX | Фронтенд магазина |
 | **Точка входа** | `connector.php` | `assets/.../api.php` |
 | **Авторизация** | MODX сессии + HTTP_MODAUTH | Токены MS3TOKEN |
 | **Middleware** | AuthMiddleware, PermissionMiddleware, AnyPermissionMiddleware | ServiceCheckMiddleware, TokenMiddleware, CorsMiddleware, RateLimitMiddleware |
@@ -29,11 +29,11 @@ core/components/minishop3/
 │   ├── ms3.routes.d/
 │   │   ├── manager/example-addon.php.dist # Пример для аддонов (Manager)
 │   │   └── web/example-addon.php.dist     # Пример для аддонов (Web)
-│   └── routes_manager.custom.example.php  # Пример кастомных роутов
+│   └── routes_manager.custom.example.php  # Пример файла со своими роутами
 
 core/config/
-├── ms3_routes_manager.custom.php          # Кастомные Manager роуты, создаёт установка
-├── ms3_routes_web.custom.php              # Кастомные Web роуты, создаёте сами
+├── ms3_routes_manager.custom.php          # Свои Manager-роуты, создаёт установка
+├── ms3_routes_web.custom.php              # Свои Web-роуты, создаёте сами
 └── ms3.routes.d/                          # Модульные роуты аддонов
     ├── manager/                           # Manager API фрагменты
     └── web/                               # Web API фрагменты
@@ -149,7 +149,7 @@ $router->group('/api/mgr/orders', function($router) use ($modx) {
 
 ## Response
 
-Эндпоинты возвращают JSON через класс `MiniShop3\Router\Response`:
+Обработчики роутов возвращают JSON через класс `MiniShop3\Router\Response`:
 
 ```php
 use MiniShop3\Router\Response;
@@ -211,7 +211,7 @@ Response::error($message, $statusCode, $errors);
 
 ## Middleware
 
-Middleware выполняются по очереди до обработчика роута. Если middleware возвращает `Response`, цепочка обрывается.
+Middleware выполняются до обработчика роута, в том порядке, в котором перечислены. Если middleware возвращает `Response`, цепочка обрывается: остальные middleware и обработчик не выполняются.
 
 ### Интерфейс
 
@@ -245,11 +245,6 @@ $router->get('/api/mgr/secure', function($params) use ($modx) {
 ]);
 ```
 
-**Проверки:**
-
-- Наличие авторизованного пользователя `$modx->user`
-- Для `mgr`: валидность токена `HTTP_MODAUTH`
-
 #### PermissionMiddleware
 
 Проверяет права доступа пользователя через `$modx->hasPermission()`.
@@ -282,7 +277,7 @@ $router->post('/api/mgr/products', function($params) use ($modx) {
 :::
 
 ::: tip Откуда эти права берутся у пользователя
-Все они лежат в политике доступа `miniShopManagerPolicy`, которую создаёт установка. Сама политика ничего не даёт, пока не выдана группе пользователей: с 1.14.2-beta1 установка и обновление выдают её всем группам, у которых уже есть доступ к контексту `mgr`, добавочной записью с `authority 9999` — собственные права группы остаются главнее.
+Все они лежат в политике доступа `miniShopManagerPolicy`, которую создаёт установка. Сама политика ничего не даёт, пока не выдана группе пользователей. С 1.14.2-beta1 установка и обновление выдают её всем группам, у которых уже есть доступ к контексту `mgr`, — добавочной записью с `authority 9999`, так что собственные права группы остаются главнее.
 
 Группа, созданная после установки, политику не получит: резолвер работает только в момент установки или обновления. Подробности — в [быстром старте](/components/minishop3/quick-start#install-creates).
 :::
@@ -321,7 +316,7 @@ $router->group('/api/v1/cart', function($router) use ($modx) {
 
 В самом middleware есть список `publicRoutes` — пятнадцать префиксов (каталог, доставки, оплаты, вебхуки, health) и шаблон галереи товара. Путь из списка проходит без гостевого токена и без 401. Отдельного режима `optional` в коде нет: поведение определяет попадание пути в этот список.
 
-На практике из списка работают два пункта: каталог, health и вебхуки в `web.php` этот middleware вообще не подключают, а `publicRoutes` реально срабатывает на `GET /customer/token/get` и `POST /customer/logout` — единственных публичных путях, где middleware стоит.
+На практике список работает на двух путях: `GET /customer/token/get` и `POST /customer/logout` — только на этих публичных путях middleware и стоит. Каталог, health и вебхуки в `web.php` его вообще не подключают.
 
 Подробнее: [Авторизация Web API](/components/minishop3/development/web-api/auth).
 
@@ -424,7 +419,7 @@ $router->get('/api/mgr/logged-endpoint', function($params) use ($modx) {
 
 ### Порядок выполнения middleware
 
-Middleware выполняются в порядке указания:
+Порядок в массиве — он же порядок выполнения:
 
 ```php
 $router->get('/api/mgr/endpoint', $handler, [
@@ -434,8 +429,6 @@ $router->get('/api/mgr/endpoint', $handler, [
     new PermissionMiddleware($modx, 'msproduct_save'),  // 4. Право доступа
 ]);
 ```
-
-Если middleware вернул `Response`, остальные middleware и обработчик **не выполняются**.
 
 ## Карта роутов
 
@@ -450,7 +443,7 @@ $router->get('/api/mgr/endpoint', $handler, [
 
 #### Справочники (`/references`) {#references}
 
-Чтение справочников (право `view_document`): все восемь роутов группы — `GET`. Обеспечивает автодополнение и выбор значений в формах админки.
+Чтение справочников, право `view_document`. Все восемь роутов группы — `GET`: они обслуживают автодополнение и выбор значений в формах админки.
 
 | Метод | Роут | Описание |
 | --- | --- | --- |
@@ -465,7 +458,7 @@ $router->get('/api/mgr/endpoint', $handler, [
 
 #### Поля модели (`/models/{alias}/fields`)
 
-Поля модели по `alias`. Формы товара и заказа берут отсюда конфигурацию полей.
+Формы товара и заказа берут отсюда конфигурацию полей.
 
 | Метод | Роут | Описание |
 | --- | --- | --- |
@@ -614,7 +607,7 @@ function addFilterParam(params, key, value) {
 
 Поэтому при добавлении прямого фильтра на сервере **обязательно** дописывайте его ключ в константу `DIRECT_FILTER_KEYS` соответствующего контроллера. Иначе клиент отправит фильтр с префиксом и фильтрация не сработает.
 
-Для нового грида одной константы мало: `GridConfigController` отдаёт `direct_filter_keys` только тем ключам, что перечислены в его реестре провайдеров — сейчас там заказы и покупатели. У заказов сама константа лежит в `ManagerOrderListService`, а контроллер на неё ссылается.
+Для нового грида одной константы мало: `GridConfigController` отдаёт `direct_filter_keys` только тем ключам, что перечислены в его списке провайдеров — сейчас там заказы и покупатели. У заказов сама константа лежит в `ManagerOrderListService`, а контроллер на неё ссылается.
 
 #### Заказы (`/orders`)
 
@@ -882,7 +875,7 @@ $router->group('/api/mgr/my-module', function($router) use ($modx) {
 
 ### Переопределение системных роутов
 
-Пользовательские роуты загружаются **после** системных и перекрывают их:
+Свои роуты загружаются **после** системных и перекрывают их:
 
 ```php
 <?php
@@ -902,7 +895,9 @@ $router->get('/api/mgr/health', function() use ($modx) {
 
 ### Интеграция со сторонними компонентами
 
-Сторонний компонент добавляет роуты тем же файлом конфигурации:
+Сторонний компонент добавляет роуты тем же файлом — но так делают только при ручной правке сайта. Распространяемый аддон кладёт свой файл в `ms3.routes.d/`, см. раздел ниже.
+
+<!-- EXAMPLE? три CRUD-обработчика на 35 строк повторяют пример из «Добавления своих роутов»; механизм показывает уже первый из них -->
 
 ```php
 <?php
@@ -955,23 +950,21 @@ flowchart TB
   subgraph web [Web API]
     w1[web.php] --> w2[ms3_routes_web.custom.php]
     w2 --> w3["ms3.routes.d/web"]
-    w3 --> wb[build]
+    w3 --> wb["build() диспетчера"]
   end
   subgraph mgr [Manager API]
     m1[manager.php] --> m2[ms3_routes_manager.custom.php]
     m2 --> m3["ms3.routes.d/manager"]
-    m3 --> mb[build]
+    m3 --> mb["build() диспетчера"]
   end
 ```
-
-Следующий уровень перекрывает совпавший `METHOD:PATTERN`.
 
 Файлы `ms3_routes_*.custom.php` подходят для ручной правки сайта, но **не для аддонов**. Если два компонента пишут в один файл, при установке и удалении возникают конфликты.
 
 Для сторонних компонентов есть директория `core/config/ms3.routes.d/`. Каждый аддон создаёт свой файл, конфликтов нет.
 
-::: tip Аналогия
-Паттерн повторяет `ms3.services.d/` для [сервисов](/components/minishop3/development/services).
+::: tip Тот же приём есть у сервисов
+Каталог `ms3.services.d/` для [сервисов](/components/minishop3/development/services) устроен так же.
 :::
 
 ### Структура
@@ -1061,7 +1054,7 @@ $router->group('/api/mgr/mydelivery', function ($router) use ($modx) {
 
 ### Установка и удаление
 
-В resolver аддона:
+В резолвере аддона:
 
 ```php
 <?php
@@ -1086,11 +1079,11 @@ copy(
 @unlink(MODX_CORE_PATH . 'config/ms3.routes.d/manager/50-mydelivery.php');
 ```
 
-Каждый аддон удаляет только свой файл. Другие аддоны не затрагиваются.
+Каждый аддон удаляет только свой файл, чужие не трогает.
 
 ### Обработка ошибок
 
-Если файл роутов содержит синтаксическую ошибку или выбрасывает исключение, он логируется и пропускается. **Остальные файлы загружаются как обычно:**
+Файл с синтаксической ошибкой или исключением пропускается, причина уходит в журнал. **Остальные файлы загружаются как обычно:**
 
 ```
 [MiniShop3 Router] Failed to load routes file /path/to/50-broken.php: syntax error...
@@ -1104,7 +1097,7 @@ copy(
 | **Файлов** | Один на тип API | По файлу на аддон |
 | **Конфликты** | Возможны при нескольких аддонах | Нет |
 | **Установка/удаление** | Править вручную | Атомарно: создать или удалить файл |
-| **Создаётся** | Manager-файл — установка MiniShop3 из примера. Web-файл установка не создаёт: заготовки под него в пакете нет, сделайте файл сами | Аддон через resolver |
+| **Создаётся** | Manager-файл создаёт установка MiniShop3 из примера. Web-файл она не создаёт: заготовки в пакете нет, сделайте файл сами | Аддон, через резолвер |
 
 ## Системные настройки
 
@@ -1153,7 +1146,7 @@ $router->get('/api/mgr/debug', function($params) use ($modx) {
 
 **405 Method Not Allowed:**
 
-- Используется неправильный HTTP метод (GET вместо POST и т.д.)
+- Выбран не тот HTTP-метод: GET вместо POST и так далее
 
 **429 Too Many Requests:**
 

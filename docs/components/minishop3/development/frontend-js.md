@@ -74,8 +74,8 @@ assets/components/minishop3/js/web/
 
 **Куда попадает файл:**
 
-- CSS файлы подключаются в `<head>`
-- JS файлы подключаются в конце HTML с атрибутом `defer`
+- CSS уходит в `<head>`;
+- JS — в конец HTML, с атрибутом `defer`.
 
 ### Изменение порядка
 
@@ -130,7 +130,7 @@ assets/components/minishop3/js/web/
 
 ### Переопределение селекторов
 
-Через `ms3Config.selectors` можно подменить часть селекторов. Они сливаются со стандартными:
+`ms3Config.selectors` подменяет отдельные селекторы — ваши значения сливаются со стандартными:
 
 ```javascript
 window.ms3Config = {
@@ -158,6 +158,8 @@ const cancelBtns = document.querySelectorAll(this.selectors.orderCancel)
 ### Инициализация
 
 Объект `ms3` создаётся сам при загрузке `ms3.js`. Селекторы собираются из `getSelectors()` и `ms3Config.selectors`.
+
+<!-- EXAMPLE? 55 строк исходника ms3.js: список полей объекта и шесть однотипных `new ...UI(...)` + шесть `init()` -->
 
 ```javascript
 // assets/components/minishop3/js/web/ms3.js
@@ -248,7 +250,7 @@ window.ms3Config = {
 
 ```
 
-Шесть первых ключей печатает сам компонент, если включена настройка `ms3_register_global_config`. `currencySymbol` и `currencyPosition` читает `OrderUI.formatPrice()` — на них опирается вывод сумм на витрине. `render.cart` и `selectors` компонент печатает пустыми, наполняют их сниппеты и ваш код.
+Шесть первых ключей печатает сам компонент, если включена настройка `ms3_register_global_config`. `currencySymbol` и `currencyPosition` читает `OrderUI.formatPrice()` — от них зависит вывод сумм на страницах сайта. `render.cart` и `selectors` компонент печатает пустыми, наполняют их сниппеты и ваш код.
 
 ### Событие готовности
 
@@ -265,10 +267,10 @@ document.addEventListener('ms3:ready', () => {
 `window.ms3.refresh()` заново привязывает UI MiniShop3 к разметке каталога. Вызовите его после того, как сторонний AJAX (mFilter, mSearch2, свой код, бесконечный скролл) заменил DOM. Метод вызывает `ProductCardUI.updateAllCards()` и `QuantityUI.reinit()`.
 
 ```javascript
-// Универсальный паттерн для любого AJAX-компонента:
+// Общий приём для любого AJAX-компонента:
 fetch('/catalog/page/2')
   .then(/* ... заменить DOM каталога ... */)
-  .then(() => window.ms3?.refresh?.())  // optional chaining safe на странице без MS3
+  .then(() => window.ms3?.refresh?.())  // на странице без MiniShop3 ошибки не будет
 
 // mFilter:
 document.addEventListener('mfilter:contentLoaded', () => {
@@ -284,15 +286,15 @@ document.addEventListener('mse2_load.response', () => {
 
 Тот же вызов через DOM: `document.dispatchEvent(new CustomEvent('ms3:refresh'))`. Слушатель зарегистрирован один раз на уровне модуля. Повторные `init()` его не дублируют.
 
-MS3 **не** слушает события сторонних компонентов (`mfilter:contentLoaded`, `mse2_load.response` и подобные). Связь односторонняя: сторонний компонент вызывает MS3. Так MiniShop3 не зависит от каждого совместимого компонента.
+Сам MiniShop3 **не** слушает события сторонних компонентов (`mfilter:contentLoaded`, `mse2_load.response` и подобные). Связь односторонняя: вызывает всегда сторонний компонент. Так MiniShop3 не зависит от каждого совместимого дополнения.
 
-Аргумент `detail` зарезервирован для будущего scoped-refresh (`ms3.refresh({ scope: container })`). Сейчас не используется, но уже есть в сигнатуре, чтобы не ломать API позже.
+Аргумент `detail` у метода и события сейчас не используется, он оставлен в сигнатуре на будущее.
 
 ## Ядро (Core)
 
 ### TokenManager
 
-Токен лежит в httpOnly cookie `ms3_token`. Сервер ставит её сам.
+Токен лежит в cookie `ms3_token`, её ставит сервер.
 
 ::: info httpOnly cookie
 С версии 1.6 токен хранится в httpOnly cookie, а не в localStorage. JavaScript его не видит, XSS до cookie не достаёт.
@@ -300,7 +302,7 @@ MS3 **не** слушает события сторонних компонент
 Браузер передаёт cookie сам при каждом запросе.
 :::
 
-`ensureToken()` не читает cookie: JavaScript её не видит. Метод запрашивает `GET /api/v1/customer/token/get` с `credentials: 'same-origin'`, и сервер ставит cookie сам. Перед вызовом `init()` передаёт клиент через `setApiClient()`.
+Поэтому `ensureToken()` cookie не читает, а запрашивает `GET /api/v1/customer/token/get` с `credentials: 'same-origin'`. Сам `ApiClient` метод получает от `init()` через `setApiClient()`.
 
 Запрос уходит один раз за жизненный цикл страницы: после удачного ответа поднимается флаг `tokenInitialized`, и повторный `ensureToken()` сразу возвращает управление. Принудительно обновить токен можно только через `fetchNewToken()`.
 
@@ -579,6 +581,8 @@ class CustomerAPI {
 
 Обработчик интерфейса корзины:
 
+<!-- EXAMPLE? 85 строк исходника: `handleClean()` повторяет `handleAdd()` почти целиком -->
+
 ```javascript
 class CartUI {
   constructor(cartAPI, hooks, message, config) {
@@ -667,7 +671,7 @@ class CartUI {
 
 ```
 
-Кнопки `+`/`−` и поля количества ведёт отдельный класс `QuantityUI` (`initButtons()`, `initInputs()`): `CartUI.init()` их не касается. Обработчики после перерисовки не навешиваются заново — `initOptionSelects()` слушает `change` на документе, а `QuantityUI` навешивает их заново по событию `ms3:cart:updated`.
+Кнопки `+`/`−` и поля количества ведёт отдельный класс `QuantityUI` (`initButtons()`, `initInputs()`): `CartUI.init()` их не касается. Перерисовку корзины обработчики переживают сами: `initOptionSelects()` слушает `change` на документе, а `QuantityUI` навешивает свои заново по событию `ms3:cart:updated`.
 
 Если у токена в `ms3Config.render.cart` не задан селектор или элемент по нему не найден, `renderCart()` пробует запасные: `#ms3oc-cart-live`, `#msb-test-cart`, `#msCart`, `[data-ms-cart]`, `.msCart`. Подстановка срабатывает, только когда во всём документе нашёлся ровно один такой узел, — иначе разметка одной корзины уехала бы в другую.
 
@@ -762,6 +766,8 @@ class OrderUI {
 ### CustomerUI
 
 Обработчик интерфейса покупателя. Управляет профилем, адресами, отменой заказов и повторной отправкой письма подтверждения:
+
+<!-- EXAMPLE? 90 строк исходника: `initOrderCancel()` и два обработчика в `initAddressManagement()` показывают один и тот же приём -->
 
 ```javascript
 class CustomerUI {
@@ -910,9 +916,9 @@ class AuthUI {
 
 `handleRegister(event)` устроен так же, но пишет в блок `register-messages` и до запроса проверяет форму на клиенте: заполнены `email` и `password`, `password` совпадает с `password_confirm`, отмечен `privacy_accepted`. После успешной регистрации переход по `handleRedirect()` происходит только если в payload есть `token` (через 1500 мс); иначе через 2000 мс скрипт переключает вкладку на вход и сбрасывает форму.
 
-Сообщения об ошибках входа и регистрации выводятся в блок рядом с формой (`showMessage()`), а не всплывающим уведомлением. Toast поднимается только при сетевом сбое.
+Ошибки входа и регистрации `showMessage()` выводит в блок рядом с формой. Всплывающее уведомление появляется только при сетевом сбое.
 
-**Чанк авторизации:** `tpl.msCustomer.unauthorized` — содержит формы входа и регистрации с табами (Bootstrap). Инлайн-скрипт экспортирует лексиконы в `window.ms3Lexicon`:
+**Чанк авторизации:** `tpl.msCustomer.unauthorized` — формы входа и регистрации, разложенные по вкладкам Bootstrap. Встроенный в чанк скрипт отдаёт лексиконы в `window.ms3Lexicon`:
 
 ```fenom
 <script>
@@ -928,7 +934,7 @@ window.ms3Lexicon.ms3_customer_login_success = '{'ms3_customer_login_success' | 
 
 ### Модуль confirm.js
 
-Promise-based диалог подтверждения с Bootstrap Modal и fallback на `window.confirm()`:
+Диалог подтверждения возвращает Promise. Рисуется через Bootstrap Modal, а без него — через `window.confirm()`:
 
 ```javascript
 // Глобальная функция
@@ -960,7 +966,7 @@ const ok = await ms3Confirm('Удалить адрес?', {
 
 ### Автоматическая привязка
 
-i18n кнопок определяется по атрибуту `<html lang>`:
+Язык кнопок модуль берёт из атрибута `<html lang>`:
 
 - `lang="ru"` → «Подтвердить» / «Отмена»
 - Другие → «Confirm» / «Cancel»
@@ -1308,7 +1314,7 @@ document.addEventListener('ms3:ready', () => {
 
 ### Глобальный объект ms3Lexicon
 
-Скрипты витрины читают переводы из `window.ms3Lexicon`. В поставке его заполняет один чанк — `tpl.msCustomer.unauthorized`, и только восемью ключами авторизации:
+Скрипты фронтенда читают переводы из `window.ms3Lexicon`. В поставке его заполняет один чанк — `tpl.msCustomer.unauthorized`, и только восемью ключами авторизации:
 
 ```javascript
 window.ms3Lexicon = {
@@ -1324,7 +1330,7 @@ window.ms3Lexicon = {
 
 ```
 
-Остальные ключи, которые ищет код, — `ms3_confirm_ok`, `ms3_confirm_cancel` и подписи витрины — в поставке никто не экспортирует. Пока вы не положите их в `window.ms3Lexicon` сами, работают значения по умолчанию, зашитые в скрипты.
+Остальные ключи, которые ищет код, — `ms3_confirm_ok`, `ms3_confirm_cancel` и подписи на страницах сайта — в поставке никто не отдаёт. Пока вы не положите их в `window.ms3Lexicon` сами, работают значения по умолчанию, зашитые в скрипты.
 
 ### Дополнительные модули
 
@@ -1342,11 +1348,11 @@ window.ms3Lexicon = {
 
 ```
 
-Модуль автоматически заполняет поля формы при выборе адреса. Подробнее: [Оформление заказа](/components/minishop3/frontend/order).
+При выборе адреса модуль сам заполняет поля формы. Подробнее: [Оформление заказа](/components/minishop3/frontend/order).
 
 ### Хук afterSendRequest не работает
 
-В `hooks.js` зарегистрирован обработчик `afterSendRequest`, который через 100 мс вызывает `cartUI.init()`. Запускать его никто не запускает: вызова `runHooks('afterSendRequest')` в коде нет ни одного. Свой обработчик на это имя тоже не выполнится — рабочей замены нет, после частичного обновления корзины вызывайте `ms3.refresh()`.
+В `hooks.js` зарегистрирован обработчик `afterSendRequest`, который через 100 мс вызывает `cartUI.init()`. Но запустить его некому: вызова `runHooks('afterSendRequest')` в коде нет ни одного. Свой обработчик на это имя тоже не выполнится. Замены у хука нет — после частичного обновления корзины вызывайте `ms3.refresh()`.
 
 ### change-option
 
@@ -1358,6 +1364,6 @@ window.ms3Lexicon = {
 
 ## Связанные страницы
 
-- [REST API](api) — описание API endpoints
+- [REST API](api) — адреса и форматы ответов
 - [События](events) — PHP события компонента
 - [Сниппеты](../snippets/) — вывод данных на сайте

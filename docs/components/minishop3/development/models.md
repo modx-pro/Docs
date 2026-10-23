@@ -218,7 +218,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | `meta` | text | JSON-метаданные |
 | `createdon` / `updatedon` | int unsigned | Unix-время |
 
-При `ms3_shipment_enabled=1` статус отгрузки переносит в заказ `ShipmentLifecycleService`: `shipped` → `ms3_status_sent`, `cancelled`/`failed` → `ms3_status_canceled`. Для `delivered` / `in_transit` смотрите настройки `ms3_shipment_on_*_status`. Сам статус заказа применяет `OrderStatusService`, но соответствие статусов живёт в сервисе отгрузок — свою таблицу переходов подставляют подменой `ms3_shipment_lifecycle`.
+При `ms3_shipment_enabled=1` статус отгрузки переносит в заказ `ShipmentLifecycleService`: `shipped` → `ms3_status_sent`, `cancelled`/`failed` → `ms3_status_canceled`. Для `delivered` / `in_transit` смотрите настройки `ms3_shipment_on_*_status`. Сам статус заказа применяет `OrderStatusService`, но соответствие статусов живёт в сервисе отгрузок: чтобы задать своё, подмените `ms3_shipment_lifecycle`.
 
 ### Попытки оплаты
 
@@ -510,7 +510,7 @@ core/components/minishop3/migrations/
 
 ### Запуск миграций
 
-Руками запускать их обычно не нужно. При установке и обновлении пакета миграции применяет резолвер `resolver_02_migrations`. При работе с дополнительными полями их применяет `ExtraFieldsService`. Оба используют окружение `production`. Оно же стоит в `phinx.php` по умолчанию.
+Руками запускать их обычно не нужно. При установке и обновлении пакета миграции применяет резолвер `resolver_02_migrations`. При работе с дополнительными полями их применяет `ExtraFieldsService`. Оба используют окружение `production` — оно же стоит в `phinx.php` по умолчанию.
 
 Для разработки миграции прогоняют из CLI:
 
@@ -571,4 +571,4 @@ erDiagram
 
 `ms3_shipments` / `ms3_shipment_events` — PDO-таблицы (не классы `MiniShop3\Model\*`).
 
-Линия `msCustomer → msCustomerAddress` показывает связь в базе: адреса ссылаются на покупателя через `customer_id`. Алиаса для обхода от покупателя к адресам в схеме нет. Пройти можно только в обратную сторону: `$address->getOne('Customer')`.
+Линия `msCustomer → msCustomerAddress` — это связь в базе через `customer_id`, а не алиас схемы: пройти её можно только в обратную сторону, `$address->getOne('Customer')`.
