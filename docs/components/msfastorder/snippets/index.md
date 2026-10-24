@@ -9,8 +9,8 @@ description: Обзор сниппетов msFastOrder для витрины
 
 | Сниппет | Назначение |
 |---------|------------|
-| [msFastOrder](msFastOrder) | Кнопка быстрого заказа + `msfo.min.css` / `msfo.min.js` (CSRF — плагин `msfastorder_web`) |
-| [msFastOrderClientConfig](msFastOrderClientConfig) | Только вывод `window.msfoConfig` (без кнопки) |
+| [msFastOrder](/components/msfastorder/snippets/msFastOrder) | Кнопка + assets + inline `msfoConfig`/CSRF; плагин `msfastorder_web` обновляет конфиг в кэше |
+| [msFastOrderClientConfig](/components/msfastorder/snippets/msFastOrderClientConfig) | Только вывод `window.msfoConfig` (без кнопки) |
 
 ## Где выводить
 
@@ -24,4 +24,4 @@ description: Обзор сниппетов msFastOrder для витрины
 
 ## Чанки
 
-Кнопка рендерится из чанка (по умолчанию `msfo_button`). Форма и success в стандартном потоке собираются в **JavaScript** — см. [Чанки](../chunks) и [Подключение на сайте](../frontend#форма-в-модалке-важно).
+Кнопка собирается из чанка (по умолчанию `msfo_button`). Форма и success в стандартном потоке собираются в **JavaScript** — см. [Чанки](/components/msfastorder/chunks) и [Подключение на сайте](/components/msfastorder/frontend#форма-в-модалке-важно).

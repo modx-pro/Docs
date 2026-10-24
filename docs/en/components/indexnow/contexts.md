@@ -1,29 +1,42 @@
 ---
-title: Контексты и домены
-description: Несколько контекстов MODX, разные host и key file
+title: Contexts and domains
+description: Multiple MODX contexts, hosts, and key files
 ---
 
-# Контексты и домены
+# Contexts and domains
 
-IndexNow работает с несколькими контекстами MODX. В очередь пишутся `context_key`, абсолютный URL и `host`.
+IndexNow supports multiple MODX contexts. Enqueued rows store `context_key`, absolute URL, and `host`.
 
-## Один host на несколько контекстов
+```mermaid
+flowchart TB
+  R[Resource or manual URL] --> U[Absolute URL and host]
+  U --> V{Allowed host}
+  V -->|no| X[Not enqueued]
+  V -->|yes| Q[(modx_indexnow_queue)]
+  Q --> G[Group by host]
+  G --> B[POST batch to endpoint]
+  B --> K[Key file on that host]
+```
 
-Частый случай: `web`, `ru`, `en` на одном домене. Worker шлёт batch на один host. Key file нужен в одном web root.
+An absolute URL is not enqueued when the host is `localhost`, `metadata.google.internal`, or a private/reserved IP. This applies to resource URLs and manual enqueue.
 
-URL строится с учётом контекста ресурса (prepare context + fallback на `site_url` и `uri`). Сохранение из менеджера (`mgr`) не должно ломать URL фронтового контекста.
+## One host, several contexts
 
-## Разные host у контекстов
+Typical case: `web`, `ru`, `en` on one domain. The worker sends batches to one host. One key file in the web root is enough.
 
-Если у контекстов разные `http_host` / `site_url`, worker группирует отправку по host. Для каждого публичного корня, куда заходит краулер, нужен `{key}.txt`.
+URLs are built for the resource context (prepare context, fallback: `site_url` and `uri`). Saves from the manager context (`mgr`) should not break front-end context URLs.
 
-## Ручная отправка
+## Different hosts per context
 
-На вкладке **Отправка URL** принимаются только host из известных контекстов сайта. Чужой домен отклоняется.
+When contexts use different `http_host` / `site_url`, the worker groups sends by host. Each public document root crawlers use needs `{key}.txt`.
 
-## Что проверить при смене домена
+## Manual send
 
-1. Настройки контекста: `site_url`, `http_host`, `base_url`.
-2. Key file на новом host.
-3. `indexnow_endpoint` (если меняли).
-4. Тестовое сохранение ресурса и строка в **Очереди**.
+The **Send URL** tab accepts only hosts from known site contexts. Foreign domains are rejected. Action is always `update`.
+
+## After a domain change
+
+1. Context settings: `site_url`, `http_host`, `base_url`.
+2. Key file on the new host.
+3. `indexnow_endpoint` if you changed it.
+4. Test resource save and a row in **Queue**.

@@ -3,7 +3,7 @@ title: ms3ProductSets
 ---
 # Сниппет ms3ProductSets
 
-Выводит подборки товаров для MiniShop3. Логика: сначала пытается получить ручные связи из таблицы `ms3_product_sets`, при пустом результате применяет авто-логику по типу.
+Выводит подборки товаров для MiniShop3. Сначала читает ручные связи из `ms3_product_sets` и отбрасывает неопубликованные и удалённые ID. Если после фильтра список пуст, включает авто-логику по типу.
 
 ## Поддерживаемые типы
 
@@ -14,8 +14,8 @@ title: ms3ProductSets
 - `auto_sales`
 - `vip`
 - `auto`
-- `also-bought`, `cross-sell` — как `buy_together` (co-purchase → авто по категории)
-- `custom` — как `auto`
+- `also-bought`, `cross-sell`: как `buy_together` (co-purchase → авто по категории)
+- `custom`: как `auto`
 
 Если передан неизвестный `type`, используется `buy_together`.
 
@@ -28,8 +28,11 @@ title: ms3ProductSets
 | `category_id` | ID категории для авто-режима | `0` |
 | `set_id` | Номер VIP-набора (`vip_set_{set_id}`) | `0` |
 | `max_items` | Лимит товаров (1–100) | `ms3productsets.max_items` |
-| `tpl` | Чанк карточки | `tplSetItem` |
-| `tplWrapper` | Чанк-обёртка блока (`output`, `type`, `count`) | `''` (без обёртки; задайте имя чанка, например `tplSetWrapper`) |
+| `tpl` | Чанк карточки (`tplSetVIP` / `tplPopcorn` используют `itemTpl` для строки) | `tplSetItem` |
+| `itemTpl` | Чанк строки, если `tpl` это обёртка VIP/popcorn | `''` |
+| `set_title` / `discount_percent` | Плейсхолдеры обёртки VIP | `''` |
+| `showLog` | Проброс в `msProducts` | `false` |
+| `tplWrapper` | Чанк-обёртка блока (`output`, `type`, `count`) | `''` (без обёртки. Задайте имя чанка, например `tplSetWrapper`) |
 | `emptyTpl` | Чанк пустого результата | `tplSetEmpty` |
 | `hideIfEmpty` | `true`: вернуть пустую строку, `false`: вернуть `emptyTpl` | `true` |
 | `exclude_ids` | ID товаров для исключения | `''` |

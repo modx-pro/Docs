@@ -60,7 +60,7 @@ You can build a flexible SEO blog by tags with SeoFilter. Here is a [guide](/en/
 
 3. **Create a rule**: add the needed fields (you’ll see the variable name alias), set the link template (used in the menu) and texts. If you use counts, set the extra condition in JSON format.
 
-4. **Adjust layout** in chunks and templates: add classes required for Ajax replacement (sf_h1, sf_content, …) for titles and texts, and placeholders that will replace the original page content. Example: `<h1 class="sf_h1">[[!+sf.h1:default=`[[*pagetitle]]`]]</h1>`
+4. **Adjust layout** in chunks and templates: add classes required for Ajax replacement (sf_h1, sf_content, …) for titles and texts, and placeholders that will replace the original page content. Example: `` <h1 class="sf_h1">[[!+sf.h1:default=`[[*pagetitle]]`]]</h1> ``
 
 5. **Verify** that everything works: words collected correctly, pages generated and open with updated content. (In component system settings there is an option to disable "empty" pages — 404 where there are no results.)
 

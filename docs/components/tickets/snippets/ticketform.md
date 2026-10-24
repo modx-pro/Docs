@@ -4,17 +4,18 @@
 
 **Вызывайте некэшированным:** `[[!TicketForm]]`.
 
-Редактирование: параметр `&tid=` или `?tid=` в URL. Удаление и восстановление обрабатывает `Tickets::deleteTicket()` с редиректами `&redirectDeleted` / `&redirectUnDeleted`.
+Редактирование: параметр `&tid=` или `?tid=` в URL. На странице создания `?parent=<id или alias>` предвыбирает секцию в списке. Удаление и восстановление обрабатывает `Tickets::deleteTicket()`, редирект задают `&redirectDeleted` и `&redirectUnDeleted`.
 
 ## Параметры
 
 | Название | По умолчанию | Описание |
 | --- | --- | --- |
-| **&allowedFields** | `parent,pagetitle,content` | Поля, которые пользователь может менять; можно указать TV |
+| **&allowedFields** | `parent,pagetitle,content` | Поля, которые пользователь может менять, в том числе TV |
 | **&requiredFields** | `parent,pagetitle,content` | Обязательные поля |
 | **&bypassFields** | | Поля без санитизации при сохранении |
-| **&parents** | | ID родителей секций через запятую; `-id` исключает |
-| **&resources** | | ID секций через запятую; `-id` исключает |
+| **&parents** | | ID родителей секций через запятую, `-id` исключает |
+| **&depth** | `0` | Глубина обхода дерева секций при выборке списка |
+| **&resources** | | ID секций через запятую, `-id` исключает |
 | **&context** | | Контексты поиска секций |
 | **&sortby** | `pagetitle` | Сортировка списка секций |
 | **&sortdir** | `ASC` | Направление сортировки секций |
@@ -22,9 +23,9 @@
 | **&redirectUnpublished** | `0` | ID ресурса после сохранения неопубликованного тикета |
 | **&redirectDeleted** | `0` | Редирект после удаления |
 | **&redirectUnDeleted** | `0` | Редирект после восстановления |
-| **&allowDelete** | | Разрешить кнопку удаления в форме обновления |
+| **&allowDelete** | | Разрешить кнопку удаления в форме редактирования |
 | **&allowFiles** | `1` | Загрузка файлов к тикету |
-| **&source** | `0` | Источник медиа; иначе `tickets_source_default` |
+| **&source** | `0` | ID источника медиа, иначе `tickets.source_default` |
 | **&tplFormCreate** | `tpl.Tickets.form.create` | Чанк создания |
 | **&tplFormUpdate** | `tpl.Tickets.form.update` | Чанк редактирования |
 | **&tplPreview** | `tpl.Tickets.form.preview` | Предпросмотр |
@@ -34,7 +35,7 @@
 | **&tplFiles** | `tpl.Tickets.form.files` | Блок файлов |
 | **&tplFile** | `tpl.Tickets.form.file` | Строка файла |
 | **&tplImage** | `tpl.Tickets.form.image` | Строка изображения |
-| **&validate** | | Правила FormIt; см. [TicketFormit](/components/tickets/ticketformit) |
+| **&validate** | | Правила FormIt. См. [TicketFormit](/components/tickets/ticketformit) |
 | **&customValidators** | | Имена сниппетов-валидаторов FormIt через запятую |
 
 Список секций в форме фильтруется политикой `section_add_children` на ресурсе. Параметра для смены этой проверки в сниппете нет.

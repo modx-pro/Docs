@@ -51,8 +51,10 @@ function table(
 ) {
   const { isSpace } = state.md.utils
   var ch, lineText, pos, i, l, nextLine, headers, columns, columnCount, token,
-      aligns, t, tableLines, tbodyLines, oldParentType, terminate,
+      aligns, t, oldParentType, terminate,
       terminatorRules, firstCh, secondCh;
+  let tableLines: [number, number];
+  let tbodyLines: [number, number] | undefined;
 
   // should have at least two lines
   if (startLine + 2 > endLine) { return false; }
@@ -203,7 +205,7 @@ function table(
 
     for (i = 0; i < columnCount; i++) {
       token          = state.push('td_open', 'td', 1);
-      const attrs = [];
+      const attrs: [string, string][] = [];
       if (aligns[i]) {
         attrs.push([ 'style', 'text-align:' + aligns[i] ]);
       }

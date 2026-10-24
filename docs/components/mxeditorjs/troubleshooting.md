@@ -3,7 +3,7 @@ title: Решение проблем
 ---
 # Решение проблем
 
-Типовые сбои в manager и при разработке пакета. FAQ для редакторов: [FAQ](faq).
+Сбои в менеджере и при разработке пакета. FAQ для редакторов: [FAQ](/components/mxeditorjs/faq).
 
 ## Редактор не загружается
 
@@ -12,9 +12,9 @@ title: Решение проблем
 3. Консоль (F12): ошибки JS, загрузка `mxeditorjs.js?v=...`
 4. Плагин **mxEditorJs** включён
 
-При ошибке инициализации Editor.js показывается fallback на textarea.
+При ошибке инициализации Editor.js показывается запасной вариант: textarea.
 
-Console:
+Консоль:
 
 ```javascript
 console.log(window.mxEditorJsConfig);
@@ -26,7 +26,7 @@ console.log(window.mxEditorJsConfig);
 
 | Симптом | Проверка |
 | --- | --- |
-| 403 / Permission denied | Права `save_document`, сессия manager |
+| 403 / Permission denied | Права `save_document`, сессия менеджера |
 | Файл слишком большой | `mxeditorjs.max_upload_size`, `upload_max_filesize` в PHP |
 | Неверный тип | `mxeditorjs.allowed_image_types`, MIME через `finfo_file` |
 | Папка недоступна | Media Source ID, запись в `image_upload_path` / `file_upload_path` |
@@ -44,21 +44,21 @@ npm run build
 
 ## Connector возвращает ошибку
 
-URL: `assets/components/mxeditorjs/connector.php`. В Network смотрите `action`, тело `{ success, message }`. HTTP-код при ошибке auth — **200**, не 403.
+URL: `assets/components/mxeditorjs/connector.php`. Во вкладке Network смотрите `action` и тело `{ success, message }`. HTTP-код при ошибке auth: **200**, не 403.
 
-Типовые `message`: validation errors от `ContentValidator`.
+Типовые `message`: ошибки проверки от `ContentValidator`.
 
 ## HTML на сайте ≠ Source Preview
 
-Два рендерера: клиент `renderPreviewHtml` (форма) и сервер `HtmlRenderer` (`content/save`). Сверьте логику блока в обоих. См. [Архитектура](architecture).
+Два сборщика HTML: клиент `renderPreviewHtml` (форма) и сервер `HtmlRenderer` (`content/save` и `content/migrate`). Сверьте логику блока в обоих. См. [Архитектура](/components/mxeditorjs/architecture).
 
-## Gallery нет в toolbar после upgrade
+## Gallery нет в toolbar после обновления
 
-Resolver добавляет `gallery` в `available_tools` и профили. Проверьте JSON `mxeditorjs.profiles`, если редактировали вручную. Очистите кэш.
+Resolver добавляет `gallery` в `available_tools` и профили. Если правили JSON `mxeditorjs.profiles` вручную, сверьте его и очистите кэш.
 
 ## Две копии файлов при разработке
 
-MODX читает не `Extras/`, а:
+MODX читает не каталог `Extras/`, а:
 
 - `core/components/mxeditorjs/`
 - `assets/components/mxeditorjs/`
@@ -83,7 +83,7 @@ rsync -av --delete --exclude='node_modules' Extras/mxEditorJs/assets/components/
 SELECT id, name, static, static_file FROM modx_site_plugins WHERE name = 'mxEditorJs';
 ```
 
-При `static = 1` правьте `Extras/.../mxeditorjs.plugin.php` без пересохранения элемента в manager.
+При `static = 1` правьте `Extras/.../mxeditorjs.plugin.php` без пересохранения элемента в менеджере.
 
 ## Очистка кэша (CLI)
 
@@ -95,9 +95,9 @@ rm -rf core/cache/mgr/ core/cache/includes/ core/cache/scripts/
 
 ## Отладка save flow
 
-1. **Network** — POST формы ресурса: поля `mxeditorjs_json`, `mxeditorjs_tv_{id}_json`
-2. **Console** — `[mxEditorJs]` ошибки `syncToTextarea` / `renderPreviewHtml`
-3. БД — строка в `mxeditorjs_content`, поле `content_hash`
+1. **Network**: POST формы ресурса, поля `mxeditorjs_json`, `mxeditorjs_tv_{id}_json`
+2. **Консоль**: ошибки `[mxEditorJs]` в `syncToTextarea` / `renderPreviewHtml`
+3. БД: строка в `mxeditorjs_content`, поле `content_hash`
 
 ## PHP-лог
 

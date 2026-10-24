@@ -185,7 +185,7 @@
 должен соответствовать значениям data-атрибутов **data-pn-result**, **data-pn-pagination**
 * `resultBlockSelector` - CSS-селектор блока для вставки результатов работы сниппета.
 * `resultShowMethod` - метод вывода результатов; **insert** - вставляет контент взамен имеющемуся, **append** - добавляет контент к существующему.
-* `hashParams` - список ключей параметров вызова сниппета, которые попадут в хэш.
+* `hashParams` - список ключей параметров вызова сниппета, которые попадут в хеш.
 * `totalVar` - ключ плейсхолдера для сохранения общего количества результатов.
 * `limit` - количество результатов на одной странице.
 
@@ -215,4 +215,147 @@
   'includeContent' => 1,
   'setTotal' => 1,
 ]}
+```
+
+## siUserOrders
+
+### Назначение
+
+С версии 2.9.0. Выводит заказы miniShop2 текущего авторизованного пользователя с составом и флагами доступных действий. Подходит как `render` сниппета [Pagination](#pagination). Подробнее — в разделе [Кабинет покупателя](/components/sendit/cabinet#orders).
+
+### Параметры
+
+* `tpl` - чанк заказа, по умолчанию *siUserOrderTpl*.
+* `tplProduct` - чанк позиции заказа, по умолчанию *siUserOrderProductTpl*. Пустое значение отключает рендер позиций.
+* `tplEmpty` - чанк для пустого результата.
+* `limit` - количество заказов, по умолчанию *10*.
+* `offset` - смещение, по умолчанию *0*.
+* `sortby` - поле `msOrder` для сортировки, по умолчанию *createdon*.
+* `sortdir` - направление сортировки, по умолчанию *DESC*.
+* `totalVar` - ключ плейсхолдера с общим количеством заказов, по умолчанию *total*.
+* `context` - контекст заказов, по умолчанию текущий. Пустое значение выводит заказы всех контекстов.
+* `outputSeparator` - разделитель результатов, по умолчанию перенос строки.
+
+### Результат работы
+
+Возвращает HTML списка заказов. Плейсхолдеры чанков описаны в разделах [siUserOrderTpl](/components/sendit/cabinet#tpl-order) и [siUserOrderProductTpl](/components/sendit/cabinet#tpl-order-product).
+
+### Пример использования
+
+```fenom
+{'!siUserOrders' | snippet: [
+  'tpl' => 'siUserOrderTpl',
+  'tplProduct' => 'siUserOrderProductTpl',
+  'limit' => 5,
+]}
+```
+
+## siUserAddresses
+
+### Назначение
+
+С версии 2.9.0. Выводит сохранённые адреса доставки текущего пользователя: список в кабинете и быстрый выбор на странице оформления. Ничего не выводит гостю и при выключенном действии `addresses`. Подробнее — в разделе [Адреса доставки](/components/sendit/cabinet#addresses).
+
+### Параметры
+
+* `tpl` - чанк адреса, по умолчанию *siUserAddressTpl*.
+* `tplEmpty` - чанк для пустого результата.
+* `tplWrapper` - чанк-обёртка, получает результат в плейсхолдере `{$output}`.
+* `outputSeparator` - разделитель результатов, по умолчанию перенос строки.
+
+### Результат работы
+
+Возвращает HTML списка адресов. Плейсхолдеры чанка описаны в разделе [siUserAddressTpl](/components/sendit/cabinet#tpl-address).
+
+### Пример использования
+
+```fenom
+{'!siUserAddresses' | snippet: [
+  'tpl' => 'siUserAddressTpl',
+  'tplEmpty' => '@INLINE <p>Адресов пока нет.</p>',
+]}
+```
+
+## siCabinetAction
+
+### Назначение
+
+С версии 2.9.0. Выполняет действие кабинета покупателя. Указывается в параметре `snippet` пресета, действие задаёт параметр `method`. Подробнее — в разделе [Кабинет покупателя](/components/sendit/cabinet#order-actions).
+
+### Параметры
+
+* `method` - действие: *toCart*, *repeat*, *pay*, *cancel* (заказы), *requestReturn* (возврат), *save*, *remove*, *setDefault*, *apply* (адреса).
+* `cleanCart` - очистить корзину перед добавлением товаров (*toCart*, *repeat*).
+* `redirectTo` - ID ресурса или URL для перехода после действия.
+* `reloadPage` - перезагрузить страницу после успешного действия, если переход не задан.
+* `successMessage` - сообщение вместо стандартного.
+
+### Пример использования
+
+```php
+'order_cancel' => [
+  'snippet' => 'siCabinetAction',
+  'method' => 'cancel',
+  'reloadPage' => 1,
+],
+```
+
+## siSendCode
+
+### Назначение
+
+С версии 2.10.0. Генерирует одноразовый код входа и передаёт его классу отправки проекта (интерфейс `siCodeSender`). Указывается в параметре `snippet` пресета. Подробнее — в разделе [Вход по коду](/components/sendit/codeauth).
+
+### Параметры
+
+* `codeField` - поле с получателем кода, по умолчанию *phone*.
+* `codeMode` - *login* — отправлять только существующему пользователю, *register* — только новому, пусто — без проверки.
+* `codeSender`, `codeSenderPath` - класс отправки кода и путь к его файлу, важнее системных настроек `si_code_sender` и `si_code_sender_path`.
+* `codeLength`, `codeTtl`, `codeResendDelay`, `codeHourlyLimit` - [лимиты](/components/sendit/codeauth#limits).
+
+### Результат работы
+
+Успешный ответ содержит `data.codeSent = 1`.
+
+### Пример использования
+
+```php
+'code_send' => [
+  'snippet' => 'siSendCode',
+  'codeField' => 'phone',
+  'codeMode' => 'login',
+  'validate' => 'phone:required',
+],
+```
+
+## siCheckCode
+
+### Назначение
+
+С версии 2.10.0. Валидатор: проверяет одноразовый код, не расходуя его. Поле получателя задаётся параметром валидатора, иначе берётся `codeField` пресета (по умолчанию *phone*).
+
+### Пример использования
+
+```php
+'validate' => 'phone:required,code:required:siCheckCode',
+// получатель в поле email
+'validate' => 'email:required,code:required:siCheckCode=^email^',
+```
+
+## siCodeIdentification
+
+### Назначение
+
+С версии 2.10.0. Хук: находит пользователя по полю `codeField`, проверяет и расходует код, затем авторизует пользователя (`method` = *login*) или регистрирует нового (`method` = *register*, параметры регистрации — как у хука **Identification**). После успеха генерирует событие [siOnCodeLogin](/components/sendit/codeauth#events).
+
+### Пример использования
+
+```php
+'code_auth' => [
+  'hooks' => 'siCodeIdentification',
+  'method' => 'login',
+  'codeField' => 'phone',
+  'validate' => 'phone:required,code:required:siCheckCode',
+  'redirectTo' => 'cabinet',
+],
 ```

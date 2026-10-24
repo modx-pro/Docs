@@ -1,6 +1,6 @@
 ---
 title: WebDAV
-description: WebDAVMediaSource — сетевой медиаисточник для MODX Revolution
+description: WebDAVMediaSource — сетевой медиа-источник для MODX Revolution
 categories: media
 logo: https://modstore.pro/assets/extras/webdav/logo-lg.jpg
 author: 13hakta

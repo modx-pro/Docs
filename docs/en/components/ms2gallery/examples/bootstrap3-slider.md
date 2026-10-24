@@ -53,7 +53,7 @@ Ready-to-use call with standard styling from the Bootstrap3 example site:
 </div>
 ```
 
-By default the snippet outputs images of the current resource at **360x270** resolution; you can set your own criteria in **&where=``**:
+By default the snippet outputs images of the current resource at **360x270** resolution; you can set your own criteria in ` &where=`` `:
 
 ```modx
 &where=`{"msResourceFile.resource_id:IN":[1,2,3,4,5]", "msResourceFile.parent":0}`

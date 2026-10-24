@@ -1,10 +1,15 @@
+---
+title: VueTools Integration
+description: Vite external, controller, PHP service, and Import Map check
+---
+
 # Integration
 
-How to add Vue 3 + PrimeVue to a MODX 3 component through VueTools: build setup, module loading, entry point.
+Build the widget as an ES module: keep runtime (`vue`, `pinia`, `primevue`, `@vuetools/*`) outside the bundle and load the script via `regClientStartupHTMLBlock`.
 
 ## Vite setup
 
-In `vite.config.js` list the external dependencies — VueTools serves them through the Import Map, so they stay out of the component bundle:
+In `vite.config.js` list external dependencies. VueTools serves them through the Import Map:
 
 ```javascript
 import { defineConfig } from 'vite'
@@ -19,6 +24,8 @@ export default defineConfig({
         'vue',
         'pinia',
         'primevue',
+        'vuetools',
+        'vuetools/theme',
         '@vuetools/useTheme',
         '@vuetools/useApi',
         '@vuetools/useLexicon',
@@ -37,11 +44,31 @@ export default defineConfig({
 })
 ```
 
-Import PrimeVue only through `primevue` (barrel), never through paths like `primevue/button`: a subpath import pulls a second PrimeVue copy into the bundle, and the theme stops applying to its components.
+Import PrimeVue only from `primevue`; presets from `vuetools` or `vuetools/theme`. No subpath in the Import Map: `primevue/button` does not resolve in the manager. If Vite inlines a subpath into the Extra bundle, you get a second PrimeVue instance without the VueTools theme.
 
 ## Module loading in the controller
 
-Register ES modules with `regClientStartupHTMLBlock` so they load after the Import Map. One script per call.
+```mermaid
+flowchart TB
+  subgraph viteBuild [Vite build]
+    Src[Vue sources]
+    Ext["external: vue, pinia, primevue, @vuetools/*"]
+    Out[my-widget.min.js]
+    Src --> Ext --> Out
+  end
+  subgraph mgr [Manager page]
+    Map[VueTools Import Map]
+    Php[regClientStartupHTMLBlock]
+    Out --> Php --> Tag["script type=module"]
+    Map --> Resolve[import resolution]
+    Tag --> Widget[my-widget.min.js]
+    Widget --> Resolve
+    Resolve --> Mount[createApp and mount]
+  end
+  Css[addCss my-widget.min.css] --> Mount
+```
+
+Load ES modules via `regClientStartupHTMLBlock` (after the Import Map). One call per `<script>` tag.
 
 ```php
 class MyComponentManagerController extends modExtraManagerController
@@ -59,14 +86,12 @@ class MyComponentManagerController extends modExtraManagerController
 ```
 
 ::: danger
-`addJavascript()` and `addLastJavascript()` don't add `type="module"` — they can't load ES modules. Several tags in one multiline string get split incorrectly by MODX: register each with its own call.
+`addJavascript()` and `addLastJavascript()` do not set `type="module"`. Several tags in one multiline string are split incorrectly by MODX: register each with its own call.
 :::
 
 ## VueTools presence check {#vuetools-check}
 
-Without VueTools the modules won't resolve: the console shows `Failed to resolve module specifier "vue"` and the widget container stays empty. The check finds the Import Map and shows a clear message.
-
-An `addVueModule()` method registers the module and, once per page, the check script:
+Without VueTools the console shows `Failed to resolve module specifier "vue"` and the container stays empty.
 
 ```php
 protected static $vueCoreCheckRegistered = false;
@@ -110,23 +135,57 @@ JS;
 }
 ```
 
-The `data-vue-module` attribute lets the check remove exactly the modules when VueTools is absent, instead of flooding the console. If the component uses the theme through `getActiveTheme()`, also check the `vuetools/theme` key — see [Theme](theme#version).
-
-Load modules through `addVueModule()`:
+Attribute `data-vue-module` removes modules from the page when VueTools is missing. For theme via `getActiveTheme()` also check `vuetools/theme`. See [Theme](theme#version).
 
 ```php
 $this->addVueModule($assetsUrl . 'js/mgr/vue-dist/my-widget.min.js');
 ```
 
-Message lexicon:
-
 ```php
 $_lang['mycomponent_vuetools_required'] = 'VueTools package is required. Install it from Package Manager.';
 ```
 
-## Using in a component
+## PHP service {#php-service}
 
-Vue, composables and PrimeVue components are imported from the Import Map:
+Do not `new \VueTools\Service` in an Extra. Get the service from the MODX container:
+
+```php
+/** @var \VueTools\Service $vueTools */
+$vueTools = $modx->services->get('vuetools');
+// alias for the same object:
+// $modx->services->get('vueTools');
+```
+
+Container keys `vuetools` and `vueTools` point to **one** instance (otherwise Import Map and styles register twice).
+
+Methods (`VueTools\VueCore` / `Service`):
+
+| Method | Purpose |
+|-------|------------|
+| `include()` | Import Map + CSS + theme setting combo (`includeManagerCombos`) |
+| `registerImportMap()` | Import Map and `window.VueTools.theme` only |
+| `includeStyles()` | `vuetools.css` |
+| `includeManagerCombos()` | ExtJS combo for `vuetools.theme` setting |
+| `isRegistered()` | Instance flag: Import Map already registered. Does not inspect DOM |
+| `isStylesIncluded()` | Instance flag: styles already included. Does not inspect DOM |
+| `getVersion()` | Package version, e.g. `1.2.1-pl` |
+| `getVersions()` | Library versions array (`vue`, `pinia`, `primevue`, `primeicons`) |
+| `getAssetsUrl()` | VueTools assets URL |
+
+Transport dependency signature: **`vuetools`** (not the old name `modxpro-vue-core`).
+
+### Public contract
+
+| Public | Not contract |
+|----------|-------------|
+| Import Map keys: `vue`, `pinia`, `primevue`, `vuetools`, `vuetools/theme`, `@vuetools/*` | VueTools package `src/` |
+| Six `@vuetools/*` composables, presets `Modx`, `ModxManagerTheme`, `ModxTheme` | Internal PHP flags outside the method table |
+| `$modx->services->get('vuetools')`, methods in the table above | Theme registry in `useTheme.js` (not extensible from outside) |
+| `window.VueTools.theme`, `vuetools.theme` setting, `vuetools.assets_url` option | Default export from `primevue` / `pinia` (named import only) |
+
+Option `vuetools.assets_url` is read via `getOption` when set manually. It is not in transport as a system setting. Usually `MODX_ASSETS_URL` is enough.
+
+## Using in a component
 
 ```vue
 <script setup>
@@ -154,8 +213,6 @@ const canEdit = computed(() => can('my_component_edit'))
 
 ## Entry point
 
-The entry point creates the app, sets the theme through `getActiveTheme()` and mounts the widget:
-
 ```javascript
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -181,11 +238,11 @@ export function init(selector = '#my-vue-widget') {
 window.MyComponentWidget = { init }
 ```
 
-`dataset.vApp` guards against a second mount when the ExtJS tab is re-activated.
+`dataset.vApp` prevents remount when the tab activates again.
 
 ## ExtJS tab
 
-The container must have the `vueApp` class; init on tab activation:
+Container with `vueApp` class; init on tab activation:
 
 ```javascript
 {
@@ -202,12 +259,12 @@ The container must have the `vueApp` class; init on tab activation:
 ```
 
 ::: warning
-Without the `vueApp` class on the container PrimeVue styles won't apply.
+Without `vueApp`, PrimeIcons (`.pi`) will not apply. PrimeVue component styles do not depend on this class.
 :::
 
 ## Custom API client {#own-api-client}
 
-`useApi` targets the standard MODX connector. If your component has its own router, add a local `request.js` — it builds the URL for your router processor and adds the `HTTP_MODAUTH` token:
+`useApi` works with the standard connector. Custom router: local `request.js`:
 
 ```javascript
 class Request {
@@ -240,17 +297,20 @@ class Request {
 export default new Request()
 ```
 
+Unpacking `object || data` exists only in **this** sample, not in `useApi`.
+
 ## Checklist
 
-- [ ] `external` in `vite.config.js`: `vue`, `pinia`, `primevue`, the `@vuetools/*` you use.
-- [ ] PrimeVue imported only through `primevue`, no subpath.
-- [ ] Theme via `getActiveTheme()`, not a hardcoded preset.
-- [ ] `addVueModule()` with the dependency check instead of a bare `regClientStartupHTMLBlock()`.
-- [ ] Error message lexicons in both languages.
-- [ ] `class="vueApp"` on widget containers.
-- [ ] Lexicon topics loaded in the controller.
-- [ ] A local `request.js` if the component has its own router.
+- [ ] `external` in Vite: `vue`, `pinia`, `primevue`, optionally `vuetools` / `vuetools/theme`, used `@vuetools/*`.
+- [ ] PrimeVue without subpath imports.
+- [ ] Theme via `getActiveTheme()`, not a hardcoded preset (if you need the switcher).
+- [ ] `addVueModule()` with dependency check.
+- [ ] Error message lexicon in both languages.
+- [ ] `class="vueApp"` on containers (for icons).
+- [ ] Lexicon topics in the controller.
+- [ ] Local `request.js` if custom router.
+- [ ] Package dependency: signature `vuetools`.
 
 ## Example
 
-[MiniShop3](https://github.com/modx-pro/MiniShop3) — integration with a custom router.
+[MiniShop3](https://github.com/modx-pro/MiniShop3): integration with a custom router.

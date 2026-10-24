@@ -1,11 +1,11 @@
 ---
 title: Контексты MODX
-description: 'Multi-context в YandexMapsLocator: параметр context, allowlist'
+description: 'Несколько контекстов в YandexMapsLocator: параметр context, белый список'
 ---
 
 # Контексты MODX
 
-Локатор умеет multi-context: фильтрует по `context_key`, строит URL ресурса в его контексте и поднимает нужный контекст на endpoints.
+Локатор фильтрует точки по `context_key`, строит URL ресурса в его контексте и подключает этот контекст в `search.php` и REST.
 
 ## Сниппет
 
@@ -27,11 +27,13 @@ description: 'Multi-context в YandexMapsLocator: параметр context, allo
 
 :::
 
-| Значение `context` | Поведение |
+| Значение `context` / `contexts` | Поведение |
 |--------------------|-----------|
 | *(пусто)* | Текущий контекст страницы |
 | `en` | Один контекст |
 | `en,de` | Поиск по нескольким |
+
+Алиас сниппета `contexts` читается так же, как `context`.
 
 Разрешённый контекст уходит в `map_config.context` и в AJAX `search.php`.
 
@@ -39,10 +41,10 @@ description: 'Multi-context в YandexMapsLocator: параметр context, allo
 
 | Ключ | Назначение |
 |------|------------|
-| `yandexmapslocator_default_context` | Fallback, если активный контекст недоступен (по умолчанию `web`). Также контекст CSV-экспорта Pro |
-| `yandexmapslocator_allowed_contexts` | Allowlist. Пусто: любой существующий context key |
+| `yandexmapslocator_default_context` | Запасной вариант, если активный контекст недоступен (по умолчанию `web`). Также контекст CSV-экспорта Pro |
+| `yandexmapslocator_allowed_contexts` | Белый список. Пусто: любой существующий context key |
 
-## Endpoints
+## Запросы
 
 `search.php` и Pro `api.php` принимают `context` или `ctx`:
 
@@ -50,7 +52,7 @@ description: 'Multi-context в YandexMapsLocator: параметр context, allo
 /assets/components/yandexmapslocator/search.php?parents=2080&context=en
 ```
 
-Успешный ответ (`data` — массив Store, как `Store::toArray`):
+Успешный ответ (`data`: массив Store, как `Store::toArray`):
 
 ```json
 {
@@ -109,15 +111,7 @@ description: 'Multi-context в YandexMapsLocator: параметр context, allo
 
 Поле `context_key` только если перечислено в `fields`. `url` строится в контексте ресурса.
 
-Неизвестный или запрещённый `context` (как у `search.php`):
-
-```json
-{
-  "success": false,
-  "error": "Invalid or disallowed context",
-  "code": "invalid_context"
-}
-```
+Неизвестный или запрещённый `context`: тот же код `invalid_context`, что у `search.php`.
 
 Деталь точки с тем же фильтром:
 

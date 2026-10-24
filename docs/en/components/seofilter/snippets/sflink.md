@@ -30,7 +30,7 @@ You must pass at least 2 required parameters to sfLink. Below we describe how th
 | *&brand* | Example-only param; must match a field synonym. Pass all field synonyms used in the rules you listed. | `$vendor.id` |
 | *&category* | Second example param; matches the "Category" field synonym. | `$parent` |
 
-With the same call `[[!sfLink?&brand=`[[+vendor]]` &category=`[[+parent]]`]]` you can get very different URLs and link names:
+With the same call `` [[!sfLink?&brand=`[[+vendor]]` &category=`[[+parent]]`]] `` you can get very different URLs and link names:
 
 * Product 1: brand='1' (Apple), category='3' (Phones) → e.g. `<a href="/catalog/apple/telephony">Apple Phones</a>`
 * Product 2: brand='2' (Epson), category='4' (Printers) → e.g. `<a href="/catalog/printery/epson">Epson Printers</a>`

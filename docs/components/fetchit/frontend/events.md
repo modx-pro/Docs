@@ -1,25 +1,27 @@
 ---
 title: События
-description: "fetchit:before, after, success, error, reset: cancelable и порядок"
+description: "fetchit:before, after, success, error, reset: detail, отмена и порядок"
 ---
 
 # События
 
-События вешаются на `document`. В `detail` почти всегда есть `form` и `fetchit`. При ответе сервера добавляются `response` и `formData`.
+События приходят на `document` и не всплывают: слушайте их на `document`, а не на форме или `window`.
 
-Примеры в разделах [форм](/components/fetchit/examples/form/), [уведомлений](/components/fetchit/examples/notifications/), [модальных окон](/components/fetchit/examples/modals/), [валидации](/components/fetchit/examples/validation/).
+В `event.detail` лежат форма (`form`), её данные (`formData`) и экземпляр FetchIt (`fetchit`), а начиная с `fetchit:after` — ещё и ответ сервера (`response`). У `fetchit:reset` только `form` и `fetchit`.
 
-| Событие | Cancelable | Когда |
+Типы `detail` для TypeScript: [`fetchit.d.ts`](/components/fetchit/frontend/typescript). Примеры в разделах [форм](/components/fetchit/examples/form/), [уведомлений](/components/fetchit/examples/notifications/), [модальных окон](/components/fetchit/examples/modals/), [валидации](/components/fetchit/examples/validation/).
+
+| Событие | Когда | Отмена (`event.preventDefault()`) |
 | --- | --- | --- |
-| `fetchit:before` | да | до `fetch`, после сборки FormData |
-| `fetchit:after` | да | сразу после JSON-ответа, до разбора success/error |
-| `fetchit:success` | нет | `response.success === true` |
-| `fetchit:error` | да | `response.success === false`, до/во время показа полевых ошибок |
-| `fetchit:reset` | нет | нативный `reset` формы |
+| `fetchit:before` | перед отправкой, в `formData` можно дописать поля | форма не отправляется |
+| `fetchit:after` | пришёл ответ FetchIt | ответ не обрабатывается: ни ошибок полей, ни сообщения, ни `fetchit:success` и `fetchit:error`, ни очистки |
+| `fetchit:success` | форма принята; сообщение формы и уведомление уже показаны | поля не очищаются |
+| `fetchit:error` | форма отклонена или не отправилась | ошибки полей и сообщение формы не выводятся |
+| `fetchit:reset` | форму сбрасывают: кнопкой, `form.reset()` или после успеха; значения полей ещё прежние | нельзя |
 
-Порядок на submit: `Message.before` → `fetchit:before` → запрос → `Message.after` → `fetchit:after` → при ошибке `Message.error` + `fetchit:error` + `setError` / `setFormMessage('validation')` → при успехе `setFormMessage('success')` + `Message.success` + `fetchit:success` → `grecaptcha.reset()` если есть → опционально `form.reset()`.
+Порядок на submit: `Message.before` → `fetchit:before` → запрос → `Message.after` → `fetchit:after` → при ошибке `Message.error` + `fetchit:error` + `setError` / `setFormMessage('validation')` → при успехе `setFormMessage('success')` + `Message.success` + `fetchit:success` → `grecaptcha.reset()`, если виджет на странице есть → при `clearFieldsOnSuccess` сброс формы.
 
-`preventDefault` на `fetchit:after` останавливает разбор success/error и полевые сообщения. У `fetchit:success` флаг `cancelable` не стоит. `preventDefault` на него не влияет.
+Хуки `FetchIt.Message` вызываются перед событием того же момента, поэтому отмена события их не отменяет.
 
 ## fetchit:before
 
@@ -40,7 +42,7 @@ document.addEventListener('fetchit:before', (e) => {
 
 ## fetchit:after
 
-Любой ответ сервера:
+Любой ответ FetchIt:
 
 ```js
 document.addEventListener('fetchit:after', (e) => {
@@ -48,6 +50,8 @@ document.addEventListener('fetchit:after', (e) => {
   console.log(response.success, response.message, response.data)
 })
 ```
+
+`message` и `data` есть всегда, даже если обрабатывающий сниппет их не прислал: пустая строка и пустой объект.
 
 ## fetchit:success
 
@@ -57,22 +61,31 @@ document.addEventListener('fetchit:after', (e) => {
 document.addEventListener('fetchit:success', (e) => {
   const { form, response } = e.detail
   if (form.id === 'callback') {
-    console.log(response.message)
+    ym(12345678, 'reachGoal', 'form_' + form.id)
   }
 })
 ```
 
+Отмена события оставляет поля заполненными.
+
 ## fetchit:error
 
-Ошибка валидации или логики сниппета. В `response.data` лежит карта поле → сообщение.
+Ошибка валидации, отказ [защиты](/components/fetchit/protection), ошибка логики сниппета — или запрос, который не дошёл. В `response.data` лежит карта «поле → сообщение».
 
 ```js
 document.addEventListener('fetchit:error', (e) => {
-  const { response } = e.detail
+  const { response, error } = e.detail
+
+  if (response === null) {
+    // Ответа FetchIt нет: сеть, чужой ответ, капча без ответа
+    console.error(error)
+    return
+  }
+
   console.warn(response.data)
 })
 ```
 
 ## fetchit:reset
 
-Сброс формы (кнопка reset или `clearFieldsOnSuccess`). Скрыть кастомный UI поверх стандартной очистки.
+Сброс формы: кнопка reset, `form.reset()` или очистка после успеха. Значения полей в этот момент ещё прежние, так что их можно прочитать. Скрыть свой UI поверх стандартной очистки — тоже здесь.

@@ -5,7 +5,7 @@ description: working_now filter, per-location TZ, and badges in YandexMapsLocato
 
 # Open now
 
-**Pro.** On the site you get "Open" / "Closed" badges, an "Open only" button, and fields `is_open_now`, `status_hint`, `closes_at`, `next_open_at`. In the snippet and REST the same behavior uses filter `working_now` (or query `working_now=1`).
+**Pro.** On the site you get "Open" / "Closed" badges, an "Open only" button, and fields `is_open_now`, `status_hint`, `closes_at`, `next_open_at`. The filter is enabled only with `filters=working_now`. Query `working_now=1` is ignored.
 
 ## Timezone
 

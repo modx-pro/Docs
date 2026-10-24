@@ -3,7 +3,7 @@ title: Quick start
 ---
 # Quick start
 
-Minimal steps to enable mxEditorJs in MODX 3 in about 5 minutes.
+How to enable mxEditorJs in MODX 3.
 
 ## Requirements
 
@@ -14,7 +14,7 @@ Minimal steps to enable mxEditorJs in MODX 3 in about 5 minutes.
 
 ## Step 1: Installation
 
-1. Install **mxEditorJs** via **Packages → Installer** (upload transport package or use repository).
+1. Install **mxEditorJs** via **Packages → Installer** (upload a transport package or use the repository).
 2. Clear MODX cache.
 3. In **Settings → System settings**, confirm settings with prefix `mxeditorjs` exist.
 
@@ -22,32 +22,32 @@ Minimal steps to enable mxEditorJs in MODX 3 in about 5 minutes.
 
 1. **Settings → System settings**
 2. Find **which_editor** (or filter by "editor").
-3. Set value to **mxEditorJs**.
+3. Set the value to **mxEditorJs**.
 4. Save.
 
 ## Step 3: Enable component
 
-1. In system settings, filter by namespace **mxeditorjs**.
-2. Ensure **mxeditorjs.enabled** = **Yes** (on by default).
+1. Filter system settings by namespace **mxeditorjs**.
+2. **mxeditorjs.enabled** = **Yes** (on by default).
 3. Optionally set **mxeditorjs.profile** (`default`, `minimal`, `blog`, `full`).
 
 ## Step 4: Verify
 
-1. Open any resource in the manager (create or edit).
+1. Open any resource in the manager.
 2. The content field should show the Editor.js block editor instead of TinyMCE/CKEditor.
-3. Add a block (heading, paragraph, image), save — content is stored in Editor.js format and rendered as HTML on the frontend.
+3. Add a block (heading, paragraph, image, or **gallery**) and save. JSON goes to the sidecar, HTML to the site.
 
 ## Step 5: Template Variables (optional)
 
-To use mxEditorJs in a TV:
-
 1. Create or edit a TV of type **Text (multiline)**.
-2. In the TV options, enable **Use visual editor** (richtext).
-3. With `which_editor` set to **mxEditorJs**, this TV will also use the block editor.
+2. Enable **Use visual editor** (richtext).
+3. With `which_editor` set to **mxEditorJs**, this TV also uses the block editor.
+
+MIGX field: Form Tabs `"inputTVtype": "richtext"`. Handler `migxmxeditorjs` (`OnTVInputRenderList`). The cell has no sidecar.
 
 ## Next steps
 
-- [Editor guide](user-guide) — blocks, gallery, embed, shortcuts
-- [System settings](settings) — tool profiles, media, CSS presets
-- [Integration](integration) — HTML → Editor.js migration, frontend output
-- [FAQ](faq) — common questions
+- [Editor guide](/en/components/mxeditorjs/user-guide): blocks, gallery, embed, shortcuts
+- [System settings](/en/components/mxeditorjs/settings): tool profiles, media, CSS presets
+- [Integration](/en/components/mxeditorjs/integration): HTML → Editor.js migration, frontend output
+- [FAQ](/en/components/mxeditorjs/faq): common questions

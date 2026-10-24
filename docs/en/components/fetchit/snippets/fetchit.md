@@ -1,12 +1,17 @@
+---
+title: FetchIt snippet
+description: FetchIt snippet properties, FormIt, files, pageId and property sets
+---
+
 # FetchIt snippet
 
-The snippet renders the form chunk, stores call parameters under an action key, and registers the front-end script. On submit, `action.php` loads those parameters and runs the snippet from `snippet` (FormIt by default).
+The snippet renders the form chunk, stores call parameters under an action key, and registers the front-end script. On submit, `action.php` loads those parameters, runs the checks of the [protection](/en/components/fetchit/protection) and calls the snippet from `snippet` (FormIt by default).
 
 ## Parameters
 
 | Parameter | Default | Description |
 | --- | --- | --- |
-| `form` | `tpl.FetchIt.example` | Chunk with the form markup |
+| `form` | `tpl.FetchIt.example` | Chunk with the form markup. With pdoTools it can be `@FILE`, `@INLINE` and Fenom |
 | `snippet` | `FormIt` | Handler. You can use `FormIt@PropertySet` |
 | `actionUrl` | `[[+assetsUrl]]action.php` | Connector URL |
 | `clearFieldsOnSuccess` | `1` | Clear fields after a successful AJAX response |
@@ -49,6 +54,10 @@ On AJAX, `successMessage` lands in the response `message` and in `[data-success]
 
 FormIt errors `recaptcha`, `recaptchav2_error`, and `recaptchav3_error` collapse into one key `data.recaptcha` in the AJAX response. In markup use `data-error="recaptcha"`. After success the client calls `grecaptcha.reset()` if the widget is on the page.
 
+::: warning
+The reCAPTCHA of FormIt 5.2 gets its answer through `formit.js`, which is disabled in FetchIt forms together with FormIt's AJAX mode. For such forms turn the captcha on with the [`fetchit.captcha`](/en/components/fetchit/protection#captcha) setting.
+:::
+
 ## FormIt and property sets
 
 ::: code-group
@@ -76,6 +85,12 @@ Property set parameters merge with the call. Explicit FetchIt parameters win whe
 The client posts `FormData` (including files) to `actionUrl` with the `X-FetchIt-Action` header. The body also gets `pageId`: the resource ID where the snippet was called. The connector can switch the MODX context from that ID.
 
 An empty POST to `action.php` without an action redirects to the site start page.
+
+## Service fields
+
+Right after the form tag the snippet adds the hidden fields of the [spam protection](/en/components/fetchit/protection): the token, a field for the solution when the proof of work is on, and the trap field. They are removed from `$_POST` before FormIt or your snippet, so they reach neither e-mails nor `fields`.
+
+The snippet also sets `method="post"` and the `data-fetchit` attribute on the form, replacing any values of its own.
 
 ## Where action parameters live
 

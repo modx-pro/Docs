@@ -3,19 +3,58 @@ title: msCustomer
 ---
 # msCustomer
 
-Сниппет для вывода личного кабинета покупателя.
+Выводит личный кабинет покупателя. Параметр `service` выбирает раздел: `profile`, `addresses` или `orders`.
 
-::: warning Кэширование
-Сниппет работает с сессией пользователя и должен вызываться **некэшированно** (`!msCustomer`).
+::: warning Страница кабинета не должна кэшироваться
+Снимите у ресурса галочку «Кэшировать» в админке. Сниппет выводит данные конкретного покупателя; на кэшируемой странице они сохранятся в кэше и достанутся следующему посетителю.
+
+Префикса `!` для этого недостаточно. В MODX `[[!msCustomer]]` откладывает исполнение до некэшируемого прохода, а в Fenom `{'!msCustomer'|snippet}` сниппет выполняется там же, где встретился. Префикс лишь отключает кэш элемента в pdoTools: ставить его стоит, но полагаться — только на настройку ресурса.
 :::
 
 ## Принцип работы
 
-Основа сниппета — параметр **`service`**. Меняя этот параметр, вы получаете совершенно разные страницы личного кабинета с разными данными и функциональностью.
+```mermaid
+flowchart TB
+  call[msCustomer]
+  auth{Покупатель авторизован?}
+  unauth[unauthorizedTpl / return data]
+  svc{service}
+  profile[profile]
+  addresses[addresses]
+  orders[orders]
+  outTpl[Чанк service]
+  outData[return=data массив]
+  call --> auth
+  auth -->|Нет| unauth
+  auth -->|Да| svc
+  svc --> profile
+  svc --> addresses
+  svc --> orders
+  profile --> outTpl
+  addresses --> outTpl
+  orders --> outTpl
+  profile --> outData
+  addresses --> outData
+  orders --> outData
+```
 
-### profile — Профиль покупателя
+## Вызов и параметры
 
-Редактирование личных данных: имя, email, телефон. Показывает статус верификации email и телефона.
+### Общие параметры
+
+| Параметр | По умолчанию | Описание |
+| --- | --- | --- |
+| **service** | `profile` | Раздел: `profile`, `addresses`, `orders` |
+| **return** | `tpl` | Формат: `tpl` (HTML), `data` (массив) |
+| **unauthorizedTpl** | `tpl.msCustomer.unauthorized` | Чанк для неавторизованных |
+
+::: tip Свойств сниппета в админке нет
+У msCustomer не объявлено ни одного свойства, поэтому в сетке свойств сниппета пусто: все параметры задаются только в вызове. Так же обстоит дело с `selector` у msCart и msOrderTotal ([#805](https://github.com/modx-pro/MiniShop3/issues/805)).
+:::
+
+### Профиль покупателя (`service=profile`)
+
+Правка личных данных: имя, email, телефон и статусы их подтверждения.
 
 ```fenom
 {'!msCustomer' | snippet : [
@@ -29,11 +68,9 @@ title: msCustomer
 
 Подробнее: [Профиль покупателя](/components/minishop3/frontend/customer-profile)
 
----
+### Адреса доставки (`service=addresses`)
 
-### addresses — Управление адресами
-
-Список сохранённых адресов доставки с возможностью создания, редактирования, удаления и выбора адреса по умолчанию.
+Сохранённые адреса доставки: создание, правка, удаление, выбор адреса по умолчанию.
 
 ```fenom
 {'!msCustomer' | snippet : [
@@ -49,11 +86,9 @@ title: msCustomer
 
 Подробнее: [Адреса доставки](/components/minishop3/frontend/customer-addresses)
 
----
+### История заказов (`service=orders`)
 
-### orders — История заказов
-
-Список всех заказов покупателя с фильтрацией по статусу и пагинацией. При клике на заказ — детальная информация.
+Заказы покупателя: фильтр по статусу, пагинация, детали заказа. Черновики (статус с id=1) не попадают ни в список, ни в фильтр статусов.
 
 ```fenom
 {'!msCustomer' | snippet : [
@@ -71,17 +106,7 @@ title: msCustomer
 
 Подробнее: [История заказов](/components/minishop3/frontend/customer-orders)
 
----
-
-## Общие параметры
-
-| Параметр | По умолчанию | Описание |
-| --- | --- | --- |
-| **service** | `profile` | Сервис: `profile`, `addresses`, `orders` |
-| **return** | `tpl` | Формат: `tpl` (HTML), `data` (массив) |
-| **unauthorizedTpl** | `tpl.msCustomer.unauthorized` | Чанк для неавторизованных |
-
-## Получение данных без рендеринга
+## Получение данных в массиве (`return=data`)
 
 ```fenom
 {set $profile = '!msCustomer' | snippet : [
@@ -98,42 +123,28 @@ title: msCustomer
 
 ## GET-параметры
 
-### Для service=orders
+| Параметр | Сервис | Описание |
+| --- | --- | --- |
+| `action=logout` | любой | Выход из кабинета |
+| `order` | `orders` | UUID заказа (36 символов) — показать детали |
+| `status` | `orders` | Фильтр по ID статуса |
+| `offset` | `orders` | Смещение для пагинации |
+| `mode` | `addresses` | Режим: `list`, `edit`, `create` |
+| `id` | `addresses` | ID адреса для `mode=edit` |
 
-| Параметр | Описание |
-| --- | --- |
-| `order_id` | ID заказа для просмотра деталей |
-| `status` | Фильтр по ID статуса |
-| `offset` | Смещение для пагинации |
-
-```
-/cabinet/?order_id=15      — детали заказа #15
-/cabinet/?status=2         — заказы со статусом 2
-/cabinet/?offset=20        — вторая страница
-```
-
-### Для service=addresses
-
-| Параметр | Описание |
-| --- | --- |
-| `mode` | Режим: `list`, `edit`, `create` |
-| `id` | ID адреса для редактирования |
-
-```
-/cabinet/addresses/              — список адресов
-/cabinet/addresses/?mode=create  — создание адреса
-/cabinet/addresses/?mode=edit&id=5  — редактирование адреса #5
-```
-
-### Выход из аккаунта
-
-```
-/cabinet/?action=logout
+```text
+/cabinet/?action=logout                               — выход из кабинета
+/cabinet/?order=0f9e8d7c-1a2b-3c4d-5e6f-7a8b9c0d1e2f  — детали заказа
+/cabinet/?status=2                                    — заказы со статусом 2
+/cabinet/?offset=20                                   — вторая страница
+/cabinet/addresses/                                   — список адресов
+/cabinet/addresses/?mode=create                       — создание адреса
+/cabinet/addresses/?mode=edit&id=5                    — правка адреса #5
 ```
 
 ## Структура данных
 
-### service=profile (return=data)
+### Профиль (`service=profile`)
 
 ```php
 [
@@ -149,14 +160,14 @@ title: msCustomer
     ],
     'email_verified' => true,
     'email_verified_at' => '15.01.2024 12:30',
-    'phone_verified' => false,
+    'phone_verified' => false,      // всегда false, см. #138
     'phone_verified_at' => null,
     'errors' => [],
     'success' => false,
 ]
 ```
 
-### service=orders (return=data) — список
+### Список заказов (`service=orders`)
 
 ```php
 [
@@ -165,7 +176,7 @@ title: msCustomer
     'orders' => [
         [
             'id' => 15,
-            'num' => 'MS-00015',
+            'num' => '2610/5',
             'createdon' => '2024-01-15 10:30:00',
             'createdon_formatted' => '15.01.2024 10:30',
             'cost' => 7500,
@@ -173,6 +184,7 @@ title: msCustomer
             'status_id' => 2,
             'status_name' => 'Оплачен',
             'status_color' => '008000',
+            'can_cancel' => false,
             // ... другие поля msOrder
         ],
         // ...
@@ -196,12 +208,13 @@ title: msCustomer
         'next_offset' => 10,
     ],
     'customer' => [...],
+    'page_url' => 'https://example.com/cabinet/',
 ]
 ```
 
-### service=orders (return=data) — детали заказа
+### Детали заказа (`service=orders`)
 
-При наличии GET-параметра `order_id`:
+При наличии GET-параметра `order`:
 
 ```php
 [
@@ -209,10 +222,11 @@ title: msCustomer
     'service' => 'orders',
     'order' => [
         'id' => 15,
-        'num' => 'MS-00015',
+        'num' => '2610/5',
         'status_name' => 'Оплачен',
         'status_color' => '008000',
         'createdon_formatted' => '15.01.2024 10:30',
+        'can_cancel' => false,
         'order_comment' => 'Позвонить перед доставкой',
         // ... другие поля msOrder
     ],
@@ -225,7 +239,8 @@ title: msCustomer
             'price' => '3 500',
             'old_price' => '4 000',
             'cost' => '7 000',
-            'weight' => '500 г',
+            'weight' => '500',
+            'weight_formatted' => '500 г',
             'options' => ['color' => 'Красный', 'size' => 'M'],
         ],
         // ...
@@ -250,8 +265,20 @@ title: msCustomer
         'cost' => '7 800',
         'cart_cost' => '7 500',
         'delivery_cost' => '300',
-        'weight' => '1 кг',
+        'weight' => '1',
+        'weight_formatted' => '1 кг',
     ],
+    'customer' => [...],
+    'api_url' => '/api/v1/',
+    'assets_url' => '/assets/components/minishop3/',
+]
+```
+
+Если заказ не найден или принадлежит другому покупателю:
+
+```php
+[
+    'error' => 'Заказ не найден',
     'customer' => [...],
 ]
 ```
@@ -261,28 +288,21 @@ title: msCustomer
 ```php
 [
     'authorized' => false,
-    'login_url' => '/login/',
-    'register_url' => '/register/',
+    'login_url' => '/login/',       // пусто, пока не задан ms3_customer_login_page_id
+    'register_url' => '/register/', // пусто, пока не задан ms3_customer_register_page_id
 ]
 ```
 
 ## Архитектура чанков
 
-Чанки личного кабинета используют **наследование** через базовый layout:
+Чанки разделов расширяют базовый чанк и заполняют в нём блок `content`:
 
-```
+```text
 tpl.msCustomer.base          — базовый layout (sidebar + content)
 ├── tpl.msCustomer.profile   — extends base, блок профиля
 ├── tpl.msCustomer.orders    — extends base, блок списка заказов
 └── tpl.msCustomer.addresses — extends base, блок адресов
 ```
-
-### Базовый layout
-
-Чанк `tpl.msCustomer.base` содержит:
-
-- Боковую панель (`tpl.msCustomer.sidebar`)
-- Область контента через `{block 'content'}`
 
 ```fenom
 {* tpl.msCustomer.base *}
@@ -300,83 +320,7 @@ tpl.msCustomer.base          — базовый layout (sidebar + content)
 </div>
 ```
 
-### Пример чанка профиля
-
-```fenom
-{* tpl.msCustomer.profile *}
-{extends 'tpl.msCustomer.base'}
-
-{block 'content'}
-<div class="ms3-customer-profile">
-    <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">{'ms3_customer_profile_title' | lexicon}</h5>
-        </div>
-        <div class="card-body">
-            {if $success?}
-            <div class="alert alert-success">
-                {'ms3_customer_profile_updated' | lexicon}
-            </div>
-            {/if}
-
-            <form class="ms3_form ms3-customer-profile-form" method="post">
-                <input type="hidden" name="ms3_action" value="customer/update-profile">
-
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="first_name" class="form-label">
-                            {'ms3_customer_first_name' | lexicon}
-                        </label>
-                        <input type="text"
-                               class="form-control {if $errors.first_name?}is-invalid{/if}"
-                               name="first_name"
-                               value="{$customer.first_name}"
-                               required>
-                        {if $errors.first_name?}
-                        <div class="invalid-feedback">{$errors.first_name}</div>
-                        {/if}
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label for="last_name" class="form-label">
-                            {'ms3_customer_last_name' | lexicon}
-                        </label>
-                        <input type="text"
-                               class="form-control"
-                               name="last_name"
-                               value="{$customer.last_name}"
-                               required>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">{'ms3_customer_email' | lexicon}</label>
-                    <div class="input-group">
-                        <input type="email" class="form-control"
-                               name="email" value="{$customer.email}" required>
-                        {if $email_verified}
-                        <span class="input-group-text bg-success text-white">
-                            {'ms3_customer_email_verified' | lexicon}
-                        </span>
-                        {/if}
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">{'ms3_customer_phone' | lexicon}</label>
-                    <input type="tel" class="form-control"
-                           name="phone" value="{$customer.phone}" required>
-                </div>
-
-                <button type="submit" class="btn btn-primary ms3_link">
-                    {'ms3_customer_profile_save' | lexicon}
-                </button>
-            </form>
-        </div>
-    </div>
-</div>
-{/block}
-```
+Штатные чанки разделов целиком — на страницах [Профиль покупателя](/components/minishop3/frontend/customer-profile), [Адреса доставки](/components/minishop3/frontend/customer-addresses) и [История заказов](/components/minishop3/frontend/customer-orders). Обязательная разметка формы — в разделе [Обработка форм](#forms).
 
 ## Плейсхолдеры в чанках
 
@@ -384,7 +328,7 @@ tpl.msCustomer.base          — базовый layout (sidebar + content)
 
 | Плейсхолдер | Описание |
 | --- | --- |
-| `{$customer}` | Данные покупателя (массив) |
+| `{$customer}` | Публичные поля покупателя и его свои поля (массив). Пароля, токена и служебных счётчиков в нём нет |
 | `{$customer.id}` | ID покупателя |
 | `{$customer.email}` | Email |
 | `{$customer.first_name}` | Имя |
@@ -392,44 +336,23 @@ tpl.msCustomer.base          — базовый layout (sidebar + content)
 | `{$customer.phone}` | Телефон |
 | `{$email_verified}` | Email подтверждён (bool) |
 | `{$email_verified_at}` | Дата подтверждения email |
-| `{$phone_verified}` | Телефон подтверждён (bool) |
-| `{$phone_verified_at}` | Дата подтверждения телефона |
+| `{$phone_verified}` | Всегда `false` — подтверждение телефона запланировано ([#138](https://github.com/modx-pro/MiniShop3/issues/138)) |
+| `{$phone_verified_at}` | Всегда пусто, по той же причине |
 | `{$errors}` | Ошибки валидации (массив) |
 | `{$success}` | Успешное сохранение (bool) |
-
-### tpl.msCustomer.orders
-
-| Плейсхолдер | Описание |
-| --- | --- |
-| `{$orders}` | Отрендеренные строки заказов (HTML) |
-| `{$orders_count}` | Количество заказов на странице |
-| `{$total}` | Общее количество заказов |
-| `{$statuses}` | Список статусов для фильтра |
-| `{$pagination}` | Данные пагинации |
-| `{$customer}` | Данные покупателя |
 
 ### tpl.msCustomer.order.row
 
 | Плейсхолдер | Описание |
 | --- | --- |
 | `{$id}` | ID заказа |
-| `{$num}` | Номер заказа (MS-00015) |
+| `{$num}` | Номер заказа. Дата по `ms3_order_format_num` плюс разделитель и счётчик — например, `2610/5` |
 | `{$createdon_formatted}` | Дата создания |
 | `{$cost_formatted}` | Сумма заказа |
 | `{$status_name}` | Название статуса |
 | `{$status_color}` | Цвет статуса |
 
-### tpl.msCustomer.order.details
-
-| Плейсхолдер | Описание |
-| --- | --- |
-| `{$order}` | Данные заказа |
-| `{$products}` | Массив товаров заказа |
-| `{$delivery}` | Способ доставки |
-| `{$payment}` | Способ оплаты |
-| `{$address}` | Адрес доставки |
-| `{$total}` | Итоги (cost, cart_cost, delivery_cost, weight) |
-| `{$customer}` | Данные покупателя |
+Плейсхолдеры остальных чанков, с типами значений: [История заказов](/components/minishop3/frontend/customer-orders) — `tpl.msCustomer.orders` и `tpl.msCustomer.order.details`; [Адреса доставки](/components/minishop3/frontend/customer-addresses) — список и форма адреса.
 
 ## Системные настройки
 
@@ -437,53 +360,74 @@ tpl.msCustomer.base          — базовый layout (sidebar + content)
 | --- | --- |
 | `ms3_customer_login_page_id` | ID страницы входа |
 | `ms3_customer_register_page_id` | ID страницы регистрации |
+| `ms3_customer_profile_page_id` | ID страницы профиля |
+| `ms3_customer_orders_page_id` | ID страницы истории заказов |
+| `ms3_customer_addresses_page_id` | ID страницы адресов |
+| `ms3_customer_cancel_allowed_statuses` | ID статусов, из которых покупатель может отменить заказ, через запятую |
 
-## Пример страницы личного кабинета
+::: warning Страницы кабинета нужно указать в настройках
+В поставке `ms3_customer_login_page_id`, `ms3_customer_register_page_id`, `ms3_customer_profile_page_id`, `ms3_customer_addresses_page_id` и `ms3_customer_orders_page_id` равны нулю. MODX на нулевой идентификатор возвращает пустую ссылку и пишет ошибку в журнал.
 
-Создайте три ресурса с одним шаблоном, но разными вызовами сниппета:
+Пока настройки не заполнены, в кабинете пустые ссылки «Войти» и «Зарегистрироваться». Выход ведёт в никуда, не работают переходы между разделами и ссылка на детали заказа.
+:::
 
-### Профиль (/cabinet/profile/)
+::: tip Чем управляет `ms3_customer_cancel_allowed_statuses`
+От неё зависит `{$can_cancel}` в строке заказа. В поставке стоит `2,3`.
 
-```fenom
-{'!msCustomer' | snippet : ['service' => 'profile']}
-```
+Очистка настройки отмену не запрещает: код подставит статусы из `ms3_status_new` и `ms3_status_paid`. Чтобы запретить отмену совсем, поставьте `0`.
+:::
 
-### Заказы (/cabinet/orders/)
+## Обработка форм {#forms}
 
-```fenom
-{'!msCustomer' | snippet : ['service' => 'orders']}
-```
+Формы профиля и адресов отправляются POST-запросом, действие задаёт скрытое поле `ms3_action`:
 
-### Адреса (/cabinet/addresses/)
-
-```fenom
-{'!msCustomer' | snippet : ['service' => 'addresses']}
-```
-
-## Обработка форм
-
-Формы профиля и адресов отправляются через POST с `ms3_action`:
+| `ms3_action` | Действие |
+| --- | --- |
+| `customer/update-profile` | Обновление профиля |
+| `customer/address-create` | Создание адреса |
+| `customer/address-update` | Обновление адреса |
 
 ```html
-<form method="post">
+<form method="post" data-ms3-form="customer">
     <input type="hidden" name="ms3_action" value="customer/update-profile">
-    <!-- поля формы -->
+    <div>
+        <input type="text" name="first_name" value="{$customer.first_name}">
+        <div class="invalid-feedback"></div>
+    </div>
 </form>
 ```
 
-Доступные действия:
+::: warning Две пометки, и обе обязательные
+`data-ms3-form="customer"` (или класс `ms3_customer_form`) включает автосохранение: значение каждого поля уходит на сервер сразу после изменения. Без этой пометки форма молча ведёт себя как обычная HTML-форма — перезагружает страницу, и ничего не сохраняется.
 
-| Действие | Описание |
+Обёртка `<div>` вокруг поля тоже обязательна: обработчик ищет ближайший родительский `div` и без него прекращает работу, не дойдя до сохранения. В тот же `div` кладите `.invalid-feedback` — туда подставляется текст ошибки поля.
+:::
+
+### Действия без `ms3_action`
+
+JS перехватывает клик по селектору:
+
+| Селектор | Действие |
 | --- | --- |
-| `customer/update-profile` | Обновление профиля |
-| `customer/create-address` | Создание адреса |
-| `customer/update-address` | Обновление адреса |
-| `customer/delete-address` | Удаление адреса |
-| `customer/set-default-address` | Установка адреса по умолчанию |
+| `.delete-address` | Удаление адреса |
+| `.set-default-address` | Выбор адреса по умолчанию |
+| `.ms3-order-cancel` | Отмена заказа |
+| `#resend-verification-email` | Повторная отправка письма с подтверждением |
+
+Первые два стоят в штатном чанке строки адреса — `tpl.msCustomer.address.row`, файл `ms3_customer_address_row.tpl`.
+
+### Форма адреса: действие зависит от режима
+
+Поле `ms3_action` одно, значение меняется по режиму — штатный чанк подставляет его сам:
+
+```fenom
+<input type="hidden" name="ms3_action"
+       value="customer/{if $mode == 'edit'}address-update{else}address-create{/if}">
+```
+
+Свой чанк должен делать то же: с `address-create` в режиме редактирования появится второй адрес вместо правки существующего.
 
 ## CSS-классы
-
-Основные классы для стилизации:
 
 | Класс | Элемент |
 | --- | --- |

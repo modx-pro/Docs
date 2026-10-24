@@ -19,7 +19,7 @@ msFastOrder.on('order:success', function (data) {
 });
 ```
 
-Полный контекст фронтенда: [frontend](frontend).
+Полный контекст фронтенда: [Подключение на сайте](/components/msfastorder/frontend).
 
 ## Порядок при успешном заказе
 
@@ -33,23 +33,13 @@ flowchart TB
   F -->|success| G[order:success]
   F -->|error| H[order:error]
   G --> I[renderSuccess]
-  I --> J{payment_link?}
-  J -->|да| K[редирект ~2 с]
-  J -->|нет| L[successRedirect]
-  G --> M[ms3:cart:updated]
+  I --> J{successRedirect?}
+  J -->|да + payment_link| K[редирект на оплату ~2 с]
+  J -->|да, без payment_link| L[редирект successRedirect]
+  J -->|нет| M[остаться на экране успеха]
+  G --> O[ms3:cart:updated]
   C --> N[modal:close]
 ```
-
-Краткий список:
-
-1. `modal:beforeLoad` — клик по кнопке
-2. `modal:beforeOpen` → `modal:open` — показ модалки с формой
-3. `modal:loaded` — форма инициализирована (`FormHandler`)
-4. *(пользователь отправляет форму)*
-5. `form:submit` — перед AJAX
-6. `order:success` или `order:error` — ответ connector
-7. При успехе — разметка success в модалке и опциональный редирект
-8. `modal:beforeClose` → `modal:close` — при закрытии
 
 После `order:success` в режиме MS вызывается `MiniShop3Integration.reinitCart()` и событие `ms3:cart:updated`.
 
@@ -95,7 +85,8 @@ flowchart TB
     price: 40461,
     thumb: '...',
     variants: []
-  }
+  },
+  form: document.querySelector('.msfo-form') // или null, если форма не нашлась за ~3 с
 }
 ```
 
@@ -135,11 +126,11 @@ document.addEventListener('msfo:form:submit', function (e) {
 });
 ```
 
-**Примечание:** изменения в `e.detail.data` после этого события уходят в `order/create`, т.к. объект передаётся в `sendRequest`.
+Изменения в `e.detail.data` после этого события уходят в `order/create`: объект передаётся в `sendRequest`.
 
 ### `order:success`
 
-Тело ответа connector (как в [api](api)):
+Тело ответа connector (как в [AJAX API](/components/msfastorder/api)):
 
 ```javascript
 {
@@ -155,15 +146,16 @@ document.addEventListener('msfo:form:submit', function (e) {
 }
 ```
 
-`payment_link` — из MS3 (`msfastorder_payment_id`). ЮKassa: [integration](integration#оплата-через-юkassa-msp3yookassa).
+`payment_link` — из MS3 (`msfastorder_payment_id`). ЮKassa: [Интеграция](/components/msfastorder/integration#оплата-через-юkassa-msp3yookassa).
 
-Редирект на оплату (встроено в `msfo.js`, если задан `successRedirect`):
+Редирект на оплату встроен в `msfo.js` только если **`successRedirect` непустой** и есть `payment_link`:
 
 ```javascript
 // Дублирует логику компонента при необходимости своего тайминга:
 document.addEventListener('msfo:order:success', function (e) {
   const link = e.detail.data && e.detail.data.payment_link;
-  if (link) {
+  const redirect = window.msfoConfig && window.msfoConfig.successRedirect;
+  if (link && redirect) {
     window.location.href = link;
   }
 });
@@ -185,12 +177,13 @@ document.addEventListener('msfo:order:success', function (e) {
 
 ## Редирект после заказа
 
-Встроенно (`msfastorder_success_redirect` + `msfoConfig.successRedirect`):
+Встроенно (`msfastorder_success_redirect` → `msfoConfig.successRedirect`):
 
-- есть `payment_link` → через ~2 с переход на оплату;
-- иначе → переход на `successRedirect`.
+- `successRedirect` **задан** и есть `payment_link` → через ~2 с переход на оплату;
+- `successRedirect` **задан**, `payment_link` пуст → переход на `successRedirect`;
+- `successRedirect` **пуст** → остаётесь на экране успеха в модалке (кнопка «Оплатить» при непустом `payment_link`).
 
-Кастомный сценарий:
+Свой сценарий:
 
 ```javascript
 document.addEventListener('msfo:order:success', function (e) {

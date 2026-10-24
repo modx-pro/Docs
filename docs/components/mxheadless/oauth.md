@@ -64,6 +64,19 @@ curl -s https://example.com/api/v1/resources \
 
 Поддерживаются `application/json` и `application/x-www-form-urlencoded`. Для client credentials допускается HTTP Basic с `client_id`/`client_secret`.
 
+Поле `scope` в запросе разделяется пробелами, как в OAuth2:
+
+```json
+{
+  "grant_type": "client_credentials",
+  "client_id": "next-preview",
+  "client_secret": "YOUR_CLIENT_SECRET",
+  "scope": "resources.read preview"
+}
+```
+
+Пустой `scope` или его отсутствие даёт все scopes клиента. Запрос scope, которого нет в scopes клиента, даёт `400` `invalid_grant`. Если у клиента scopes не заданы вовсе, токен получает `*`.
+
 ## Grants
 
 | Grant | Когда |

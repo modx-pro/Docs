@@ -3,23 +3,21 @@ title: Integration
 ---
 # Integration
 
-How to enable mxEditorJs in MODX, use it in TVs, and output content on the site.
-
 ## Enabling in the manager
 
-1. **Settings → System settings** → find **which_editor** → select **mxEditorJs**.
-2. Ensure **mxeditorjs.enabled** = **Yes** (namespace `mxeditorjs`).
-3. Open a resource — the content field shows the block editor.
+1. **Settings → System settings** → **which_editor** → **mxEditorJs**.
+2. **mxeditorjs.enabled** = **Yes** (namespace `mxeditorjs`).
+3. Open a resource: the content field shows the block editor.
 
-The plugin hooks `OnDocFormPrerender` and initializes when the content field (or richtext TV) appears.
+The plugin on `OnDocFormPrerender` starts the editor when the content field or a richtext TV appears.
 
 **Save via resource form** (primary path):
 
-1. Editor.js sends JSON and HTML (client `renderPreviewHtml`) to textarea and hidden fields
+1. Editor.js sends JSON and HTML (client `renderPreviewHtml`) to the textarea and hidden fields
 2. MODX saves HTML to `modResource.content` / TV
 3. Plugin on `OnBeforeDocFormSave` writes JSON to sidecar
 
-The form does **not** call connector `content/save`. Use that for AJAX and custom integrations. Details: [Flows](flows).
+The form does **not** call connector `content/save`. Use that for AJAX and custom integrations. Details: [Flows](/en/components/mxeditorjs/flows).
 
 ## Using in Template Variables
 
@@ -27,14 +25,14 @@ The form does **not** call connector `content/save`. Use that for AJAX and custo
 2. In the TV settings, enable **Use visual editor** (richtext).
 3. With `which_editor` = **mxEditorJs**, this TV uses the same block editor.
 
-TV content is stored in `mxeditorjs_tv_content` as Editor.js JSON. Frontend output uses generated HTML (same as main content).
+TV JSON is stored in `mxeditorjs_tv_content`. HTML lands in the TV textarea on save.
 
 ## Output on the site
 
-After saving, main resource content exists in two forms:
+After save, main resource content exists in two forms:
 
-- **JSON** — sidecar for the editor (loaded on next form open)
-- **HTML** — `modResource.content` for the frontend
+- **JSON**: sidecar for the editor (loaded on next form open)
+- **HTML**: `modResource.content` for the site
 
 In the template:
 
@@ -50,38 +48,42 @@ In the template:
 
 :::
 
-Editor.js TVs use TV placeholders (e.g. `[[*my_richtext_tv]]` or Fenom). HTML lands in the TV textarea on save. Frontend always receives ready HTML.
+Editor.js TVs use TV placeholders (`[[*my_richtext_tv]]` or Fenom). The site always receives ready HTML.
 
 ## HTML → Editor.js migration
 
 Convert existing HTML in the content field to Editor.js:
 
 1. Connector action **content/migrate** with `resource_id`, optionally `dry_run=1` (preview), then `confirmed=1` to overwrite
-2. With `dry_run` the response includes `preview` (blocks) and `blocks_count`. On success — `migrated`, `blocks_count`, `overwritten`
+2. With `dry_run` the response includes `preview` (blocks) and `blocks_count`. On success: `migrated`, `blocks_count`, `overwritten`, `html`
 
-After migration the manager shows the block editor. The site still outputs HTML from `modResource.content`, updated during migration.
+After `confirmed`, migration writes the sidecar **and** an HTML snapshot to `modResource.content` (`HtmlRenderer`, same as `content/save`). `[[*content]]` on the site updates without saving the form again.
+
+## MIGX
+
+Form Tabs column: `"inputTVtype": "richtext"`. MIGX maps the type to `migx` + `which_editor` → `migxmxeditorjs`. The value is HTML inside the row JSON. No sidecar. Call `MxEditorJsFlush` before the window submits.
 
 ## Profiles and tools
 
-Block set (paragraph, header, list, image, etc.) is defined by **mxeditorjs.profile** or **mxeditorjs.enabled_tools**. See [System settings](settings).
+The block set is defined by **mxeditorjs.profile** or **mxeditorjs.enabled_tools**. See [System settings](/en/components/mxeditorjs/settings).
 
 ## Media and presets
 
-- **Images** and **Gallery** — **mxeditorjs.image_mediasource**, path **mxeditorjs.image_upload_path** (template with `{resource_id}`)
-- **Attaches** — **mxeditorjs.file_mediasource**, path **mxeditorjs.file_upload_path**
-- Gallery image limit — **mxeditorjs.gallery_max_count** (`0` = no limit)
-- CSS presets (**mxeditorjs.image_class_presets**, **mxeditorjs.link_class_presets**, etc.). Image presets in the editor UI **do not** add a class to `<img>` in the HTML snapshot — see [System settings](settings)
+- **Images** and **Gallery**: **mxeditorjs.image_mediasource**, path **mxeditorjs.image_upload_path** (template with `{resource_id}`)
+- **Attaches**: **mxeditorjs.file_mediasource**, path **mxeditorjs.file_upload_path**
+- Gallery image limit: **mxeditorjs.gallery_max_count** (`0` = no limit)
+- CSS presets (**mxeditorjs.image_class_presets**, **mxeditorjs.link_class_presets**, and others). Image presets in the editor **do not** add a class to `<img>` in the HTML snapshot. See [System settings](/en/components/mxeditorjs/settings)
 
-## Gallery on the frontend
+## Gallery on the site
 
-Gallery HTML is generated on save (client `renderPreviewHtml` or server `HtmlRenderer` on `content/save`). Markup:
+Gallery HTML is built on save: client `renderPreviewHtml` or server `HtmlRenderer` on `content/save` and `content/migrate`. Markup:
 
-- `<figure class="mxeditorjs-gallery mxeditorjs-gallery--fit">` — grid (**Fit**)
-- `<figure class="mxeditorjs-gallery mxeditorjs-gallery--slider">` — horizontal scroll (**Slider**)
+- `<figure class="mxeditorjs-gallery mxeditorjs-gallery--fit">`: grid (**Fit**)
+- `<figure class="mxeditorjs-gallery mxeditorjs-gallery--slider">`: horizontal scroll (**Slider**)
 
-`gallery-front.css` loads **only in the manager** (form preview). The frontend does **not** load it automatically.
+`gallery-front.css` loads only in the manager (form preview). The site does **not** load it automatically.
 
-Add styles in template or theme:
+Add styles in the template or theme:
 
 ```html
 <link rel="stylesheet" href="/assets/components/mxeditorjs/css/gallery-front.css">
@@ -89,14 +91,14 @@ Add styles in template or theme:
 
 Or copy rules from `assets/components/mxeditorjs/css/gallery-front.css` into theme CSS.
 
-## Embed on the frontend
+## Embed on the site
 
-Embed blocks output `<div class="mxeditorjs-embed"><iframe ...></iframe></div>`. RuTube and other `@editorjs/embed` services are configured in `mxeditorjs.ts` (`services` section), not via system settings. Custom services are added in source — see [Architecture](architecture).
+Embed blocks output `<div class="mxeditorjs-embed"><iframe ...></iframe></div>`. `@editorjs/embed` services are set in `mxeditorjs.ts` (`services` section), not via system settings. Add a service in source. See [Architecture](/en/components/mxeditorjs/architecture).
 
 ## Next steps
 
-- [Editor guide](user-guide) — blocks, embed, TVs
-- [Flows](flows) — save flow, sidecar, connector
-- [API](api) — connector endpoints, PHP classes
-- [System settings](settings) — profiles, media, presets
-- [FAQ](faq) — common questions
+- [Editor guide](/en/components/mxeditorjs/user-guide): blocks, embed, TVs
+- [Flows](/en/components/mxeditorjs/flows): save, sidecar, connector
+- [API](/en/components/mxeditorjs/api): connector actions, PHP classes
+- [System settings](/en/components/mxeditorjs/settings): profiles, media, presets
+- [FAQ](/en/components/mxeditorjs/faq): common questions

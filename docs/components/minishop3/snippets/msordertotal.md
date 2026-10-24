@@ -3,7 +3,7 @@ title: msOrderTotal
 ---
 # msOrderTotal
 
-Сниппет для получения итоговой информации о текущей корзине и заказе. Используется для мини-корзины в шапке сайта с поддержкой автоматического обновления при изменениях в корзине.
+Итоги текущей корзины и заказа для мини-корзины в шапке. Виджет перерисовывается при изменениях в корзине, если задан `selector`.
 
 ::: warning Кэширование
 Сниппет работает с сессией пользователя и должен вызываться **некэшированно** (`!msOrderTotal`).
@@ -14,38 +14,29 @@ title: msOrderTotal
 | Параметр | По умолчанию | Описание |
 | --- | --- | --- |
 | **tpl** | `tpl.msOrderTotal` | Чанк оформления |
-| **return** | `tpl` | Формат: `data` (массив), `tpl` (рендеринг чанка) |
-| **selector** | (авто) | CSS-селектор контейнера для автообновления |
+| **return** | `tpl` | Формат: `data` (массив), `tpl` (отрисовка чанка) |
+| **selector** | — | CSS-селектор контейнера. Обязателен для автообновления. В свойствах сниппета не объявлен ([#805](https://github.com/modx-pro/MiniShop3/issues/805)) |
+
+::: warning Свойства formatPrices / withCurrency
+В админке у сниппета могут отображаться `formatPrices` и `withCurrency`. Код их не читает: `*_formatted` всегда с валютой/единицей веса ([#825](https://github.com/modx-pro/MiniShop3/issues/825)).
+:::
 
 ## Чанк по умолчанию
 
-Компонент поставляется с готовым чанком `tpl.msOrderTotal`:
+Компонент поставляет чанк `tpl.msOrderTotal`:
 
 ```fenom
 <span class="ms3-order-total">
     <span class="ms3-order-total__count">{$total_count}</span>
     {if $total_count > 0}
-        <span class="ms3-order-total__cost">{$total_cost} {'ms3_frontend_currency' | lexicon}</span>
+        <span class="ms3-order-total__cost">{$total_cost_formatted}</span>
     {/if}
 </span>
 ```
 
-Для чанка предоставляются готовые CSS-стили в `default.css`.
-
 ## Автообновление виджетов
 
-Сниппет автоматически регистрируется для обновления при изменениях в корзине. При добавлении, удалении или изменении товаров виджет **перерендеривается** с актуальными данными.
-
-### Как это работает
-
-1. При вызове сниппет регистрирует себя в `ms3Config.render.cart`
-2. При изменении корзины JavaScript отправляет запрос на сервер
-3. Сервер перевызывает сниппет с теми же параметрами
-4. Новый HTML заменяет содержимое виджета
-
-### Параметр selector
-
-По умолчанию виджет обновляется внутри контейнера, определённого автоматически. Для указания конкретного контейнера используйте параметр `selector`:
+Задавайте `selector` при каждом вызове — без него виджет не обновится:
 
 ```fenom
 <div id="header-cart">
@@ -55,11 +46,22 @@ title: msOrderTotal
 </div>
 ```
 
-При обновлении весь HTML внутри `#header-cart` будет заменён новым содержимым.
+::: warning Без `selector` виджет не обновляется
+Автоопределения контейнера для msOrderTotal нет. Когда селектор не задан, скрипт перебирает запасной список — `#ms3oc-cart-live`, `#msb-test-cart`, `#msCart`, `[data-ms-cart]`, `.msCart`. Это корни **корзины**, селектора виджета среди них нет.
+
+Два исхода, оба молчаливые: совпадений несколько — не обновляется ничего; совпадение одно (на странице есть корзина) — HTML виджета запишется **внутрь корзины** и затрёт её.
+
+Кнопки «+» и «−» без `selector` не обновляют виджет никогда: у обработчика количества запасного списка нет вовсе.
+:::
+
+### Как это работает
+
+1. При вызове сниппет регистрирует себя в `ms3Config.render.cart`
+2. При изменении корзины JavaScript отправляет запрос на сервер
+3. Сервер перевызывает сниппет с теми же параметрами
+4. Новый HTML заменяет всё содержимое контейнера из `selector`
 
 ### Несколько виджетов на странице
-
-Можно разместить несколько виджетов с разными чанками:
 
 ```fenom
 {* Мини-корзина в шапке *}
@@ -79,54 +81,69 @@ title: msOrderTotal
 </div>
 ```
 
-Каждый виджет будет обновляться независимо со своим чанком.
+::: warning Вызовы должны отличаться параметрами
+Токен перерисовки — это хеш от набора параметров вызова. Два вызова с полностью одинаковыми параметрами получают один и тот же токен, а клиент берёт по нему первый найденный контейнер. Обновится только он, второй останется со старыми числами.
+
+Разный `selector` эту проблему снимает — он входит в набор параметров. Именно поэтому в примере выше у виджетов разные `selector` и разные `tpl`.
+:::
+
+### Когда виджет не обновляется
+
+Перерисовку запускают только операции с корзиной: добавление, удаление, смена количества, смена опции, очистка.
+
+| Действие покупателя | Что с виджетом |
+| --- | --- |
+| Выбрал способ доставки или оплаты | Не обновится. Пересчёт идёт мимо виджета — текст пишется в три фиксированных элемента страницы заказа: `#ms3_order_cart_cost`, `#ms3_order_delivery_cost`, `#ms3_order_cost` |
+| Очистил форму заказа | Не обновится |
+
+Поэтому поля `cost`, `delivery_cost` и `payment_cost` верны только на момент отрисовки страницы: после выбора доставки они устареют. В мини-корзине показывайте стоимость товаров (`cart_cost`), а не итог к оплате.
+
+::: warning Параметры вызова живут в кеше
+Сервер хранит их столько секунд, сколько задано в `ms3_snippet_cache_ttl` — по умолчанию час. Если страница открыта дольше или кеш сбросили, сервер не находит параметры и просто не отдаёт HTML — виджет перестаёт обновляться без признаков на странице. Диагностика одна: запись `Snippet parameters not found for token: …` в журнале ошибок MODX.
+:::
+
+::: warning Нужна настройка `ms3_register_global_config`
+При её выключении объект `ms3Config` на страницу не выводится, а регистрация виджета выводится всегда. В консоли будет `ms3Config is not defined`, и перерисовка не заработает ни для виджета, ни для корзины. По умолчанию настройка включена.
+:::
 
 ## Примеры
 
-### Базовый вызов с дефолтным чанком
+### Базовый вызов
 
 ```fenom
 {'!msOrderTotal' | snippet}
 ```
 
-Выведет счётчик с количеством товаров и суммой в стилизованном виджете.
-
-### Получение данных без рендеринга
+### Получение данных без отрисовки
 
 ```fenom
 {set $total = '!msOrderTotal' | snippet : ['return' => 'data']}
 
 {if $total.total_count > 0}
-    В корзине: {$total.total_count} товаров на {$total.cart_cost} руб.
+    В корзине: {$total.total_count} товаров на {$total.cart_cost_formatted}
 {/if}
 ```
 
-::: warning Без автообновления
-При `return=data` автообновление не работает — данные получаются однократно при загрузке страницы.
+::: warning При `return=data` не задавайте `selector`
+Данные для вывода берутся однократно — перерисовка для этого режима не предусмотрена. Но регистрация на обновление происходит раньше, чем сниппет смотрит на `return`, поэтому вызов с `selector` всё равно попадёт в список перерисовки. Сервер вернёт массив вместо HTML, и в контейнер запишется его текстовое представление.
 :::
 
-### Кастомный чанк
+### Чанк прямо в вызове
+
+Для короткой разметки отдельный чанк можно не заводить — передайте её в `tpl` через `@INLINE`:
 
 ```fenom
-{'!msOrderTotal' | snippet : [
-    'tpl' => 'tpl.myMiniCart'
-]}
-```
-
-### Мини-корзина в шапке
-
-```fenom
-<a href="/cart/" class="header-cart-link">
+<div id="header-cart">
     {'!msOrderTotal' | snippet : [
-        'tpl' => '@INLINE <span class="cart-count">{$total_count}</span>
-                  <span class="cart-sum">{$cart_cost} ₽</span>'
+        'selector' => '#header-cart',
+        'tpl' => '@INLINE {$total_count} шт. на {$cart_cost_formatted}'
     ]}
-</a>
+</div>
 ```
 
-## Структура данных
+## Структура данных и плейсхолдеры
 
-Сниппет возвращает массив с итогами корзины и заказа:
+При `return=data` сниппет возвращает массив с этими полями, при `return=tpl` — передаёт их в чанк как плейсхолдеры (`{$total_count}`, `{$cost_formatted}`). Суммы и вес на сайте выводите через `*_formatted`.
 
 | Поле | Описание |
 | --- | --- |
@@ -139,7 +156,7 @@ title: msOrderTotal
 | `payment_cost` | Комиссия за способ оплаты |
 | `payment_cost_formatted` | Комиссия с валютой |
 | `total_count` | Общее количество товаров |
-| `total_cost` | Стоимость товаров (дубль `cart_cost`) |
+| `total_cost` | Стоимость товаров по корзине. Совпадает с `cart_cost`, пока плагины не меняют её через `msOnGetCartCost` |
 | `total_cost_formatted` | Стоимость товаров с валютой |
 | `total_weight` | Общий вес |
 | `total_weight_formatted` | Общий вес с единицей измерения |
@@ -147,50 +164,9 @@ title: msOrderTotal
 | `total_discount_formatted` | Скидка с валютой |
 | `total_positions` | Количество позиций (уникальных товаров) |
 
-```php
-[
-    'cost' => 8100,            // Итого к оплате
-    'cart_cost' => 7500,       // Стоимость товаров
-    'delivery_cost' => 300,    // Стоимость доставки
-    'payment_cost' => 300,     // Комиссия оплаты (например, 4%)
-    'total_count' => 5,        // Общее количество товаров
-    'total_cost' => 7500,      // Стоимость товаров
-    'total_weight' => 2500,    // Общий вес (граммы)
-    'total_discount' => 500,   // Сумма скидки
-    'total_positions' => 3,    // Количество позиций
-]
-```
-
-::: tip Разница между cost и cart_cost
-
-- `cart_cost` — стоимость только товаров в корзине
-- `cost` — итоговая сумма к оплате: товары + доставка + комиссия оплаты
-:::
-
-## Плейсхолдеры в чанке
-
-При использовании `return=tpl` в чанк передаются все поля как плейсхолдеры. Для вывода сумм на сайте используйте `*_formatted`:
-
-- `{$cost_formatted}`, `{$cart_cost_formatted}`, `{$delivery_cost_formatted}`, `{$payment_cost_formatted}`
-- `{$total_cost_formatted}`, `{$total_discount_formatted}`, `{$total_weight_formatted}`
-
-```fenom
-{* tpl.myMiniCart *}
-<div class="mini-cart">
-    {if $total_count > 0}
-        <a href="/cart/" class="mini-cart-link">
-            <span class="mini-cart-count">{$total_count}</span>
-            <span class="mini-cart-cost">{$cost_formatted}</span>
-        </a>
-    {else}
-        <span class="mini-cart-empty">Корзина пуста</span>
-    {/if}
-</div>
-```
-
 ## CSS-классы
 
-Дефолтный чанк использует BEM-именование:
+Стили стандартного чанка лежат в `assets/components/minishop3/css/web/default.css`.
 
 | Класс | Описание |
 | --- | --- |
@@ -198,99 +174,41 @@ title: msOrderTotal
 | `.ms3-order-total__count` | Счётчик количества товаров |
 | `.ms3-order-total__cost` | Сумма заказа |
 
-### Готовые стили
+::: tip Файл не подключается сам
+`default.css` не входит в системную настройку `ms3_frontend_assets` — там только стили уведомлений и скрипты. Его подключает лишь демо-шаблон `base.tpl`. На своей вёрстке добавьте файл в шаблон или в `ms3_frontend_assets`, иначе виджет останется без оформления.
+:::
 
-Стили из `default.css`:
+## Счётчик без перерисовки
 
-```css
-.ms3-order-total {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: #f8f9fa;
-    border-radius: 2rem;
-    font-size: 0.9rem;
-    transition: all 0.2s ease;
-}
+Сниппет обновляет виджет целиком: сервер заново отрисовывает чанк и возвращает готовый HTML. Ради пары чисел в шапке это тяжело — если нужен только счётчик, обновляйте его сами по событию `ms3:cart:updated`. Вызов сниппета тогда не нужен: данные приходят с ответом сервера на любое действие с корзиной.
 
-.ms3-order-total:hover {
-    background: #e9ecef;
-}
-
-.ms3-order-total__count {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 1.5rem;
-    height: 1.5rem;
-    padding: 0 0.4rem;
-    background: var(--bs-primary, #0d6efd);
-    color: #fff;
-    border-radius: 1rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-
-.ms3-order-total__count:empty,
-.ms3-order-total__count[data-count="0"] {
-    background: #6c757d;
-}
-
-.ms3-order-total__cost {
-    font-weight: 500;
-    color: #212529;
-}
+```html
+<span class="cart-count">0</span>
+<span class="cart-cost">0</span>
 ```
 
-## Полный пример мини-корзины
-
-```fenom
-<header class="site-header">
-    <nav class="main-nav">
-        {* ... меню ... *}
-    </nav>
-
-    <div id="header-cart" class="header-cart">
-        {'!msOrderTotal' | snippet : [
-            'selector' => '#header-cart',
-            'tpl' => '@INLINE
-                <a href="/cart/" class="header-cart__link">
-                    <svg class="header-cart__icon" width="24" height="24">
-                        <use xlink:href="#icon-cart"/>
-                    </svg>
-                    {if $total_count > 0}
-                        <span class="header-cart__badge">{$total_count}</span>
-                        <span class="header-cart__sum">{$cart_cost} ₽</span>
-                    {/if}
-                </a>
-            '
-        ]}
-    </div>
-</header>
+```javascript
+document.addEventListener('ms3:cart:updated', function (e) {
+    // detail приходит не всегда — проверяйте перед обращением
+    const status = e.detail && e.detail.status;
+    if (!status) {
+        return;
+    }
+    document.querySelector('.cart-count').textContent = status.total_count;
+    document.querySelector('.cart-cost').textContent = status.total_cost;
+});
 ```
+
+::: tip Числа здесь без оформления
+В `status` лежат сырые значения, без символа валюты и разделителей разрядов. Готовые строки вида `1 500 ₽` отдаёт только чанк — в полях `*_formatted`.
+:::
+
+Состав `detail` и остальные события фронтенда — на странице [Корзина](/components/minishop3/frontend/cart).
 
 ## Отличие от msCart
 
-| msOrderTotal | msCart |
+| msOrderTotal | [msCart](mscart) |
 | --- | --- |
-| Только итоговые данные | Полная корзина с товарами |
-| Лёгкий, быстрый | Загружает данные всех товаров |
+| Только итоги: суммы, количество, вес | Все поля товаров, опции, превью |
 | Для мини-корзины в шапке | Для страницы корзины |
-| Минимум данных | Все поля товаров, опции, превью |
 | Автообновление виджета | Автообновление корзины |
-
-## Устаревшие data-атрибуты
-
-::: warning Устаревший способ
-Атрибуты `data-ms-cart-count`, `data-ms-cart-cost` по-прежнему поддерживаются для обратной совместимости, но рекомендуется использовать автообновление через параметр `selector`.
-:::
-
-Для совместимости со старым кодом можно использовать:
-
-```html
-<span data-ms-cart-count>0</span>
-<span data-ms-cart-cost>0</span>
-```
-
-JavaScript MiniShop3 обновит эти элементы при изменениях в корзине, но без полного перерендеринга чанка.

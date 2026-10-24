@@ -26,9 +26,23 @@ title: Оформление заказа
 Сниппет msOrder должен вызываться **некэшированно** (`!msOrder`), так как работает с сессией пользователя.
 :::
 
-## Форма заказа
+Форма не отправляется целиком. Каждое поле уходит на сервер отдельным запросом сразу после изменения и наполняет черновик заказа; кнопка «Оформить» отправляет пустой запрос, а заказ собирается из накопленного черновика.
 
-Форма содержит следующие секции:
+```mermaid
+flowchart TB
+  change[Покупатель изменил поле] --> add["orderAPI.add(поле, значение)"]
+  add --> valid{"Проверка по правилам выбранной доставки"}
+  valid -->|Ошибка| feedback["Текст в .invalid-feedback, поле не сохранено"]
+  valid -->|Успех| draft[(Черновик заказа)]
+  feedback --> change
+  draft --> change
+  draft --> submit["orderAPI.submit() — без тела формы"]
+  submit --> redirect["Редирект ?msorder=uuid"]
+```
+
+Две частые ошибки: форма без `data-ms3-form="order"` и поле без обёртки `<div>` не доводят значения до черновика. При отправке покупатель видит ошибку о незаполненных полях, хотя заполнил всё.
+
+## Форма заказа
 
 | Секция | Описание |
 | --- | --- |
@@ -42,7 +56,7 @@ title: Оформление заказа
 
 ### Плейсхолдеры
 
-В чанке формы доступны следующие данные:
+Доступны в чанке формы:
 
 | Плейсхолдер | Тип | Описание |
 | --- | --- | --- |
@@ -56,9 +70,9 @@ title: Оформление заказа
 
 ### Связь доставки и оплаты
 
-У каждой доставки в данных есть массив `payments` с ID допустимых оплат. JS на смене доставки прячет чужие способы оплаты. Связки задают в админке в карточке доставки (`msDeliveryMember`).
+У каждой доставки в данных есть массив `payments` с ID допустимых оплат. Связки задают в админке в карточке доставки (`msDeliveryMember`).
 
-Если пара недопустима, submit или финализация в менеджере вернут ошибку.
+Фильтрацию оплат при смене доставки на фронтенде реализуйте сами: пакет проверяет пару только на сервере. Недопустимая пара вернёт ошибку при submit и при финализации в админке.
 
 ## Гость и авторизованный покупатель
 
@@ -86,14 +100,16 @@ title: Оформление заказа
 
 Обязательные поля и правила задают **для каждого способа доставки** в админке. Курьеру нужен адрес, самовывозу часто хватает телефона и email.
 
-Настройка правил: [Доставки → Валидация](/components/minishop3/interface/settings/deliveries#валидация-полей-заказа).
+Настройка правил: [Доставки → Валидация](/components/minishop3/interface/settings/deliveries#validaciya-poley-zakaza).
 
 ### Процесс валидации
 
-1. При смене доставки `OrderUI` запрашивает `GET /api/v1/order/delivery/validation-rules` и `GET /api/v1/order/delivery/required-fields`, скрывает лишние поля и обновляет `required`.
+1. При смене доставки `OrderUI` сохраняет значение в черновик и пересчитывает стоимость.
 2. При `ms3.orderAPI.add(key, value)` сервер проверяет поле по правилам текущей доставки.
 3. При submit сервер проверяет все обязательные поля.
-4. При ошибке JS вешает `is-invalid` и текст в `.invalid-feedback`.
+4. При ошибке submit `OrderUI` ставит атрибут `data-ms3-error` и класс `ms3_field_error` на поле. При ошибке автосохранения отдельного поля он же добавляет `is-invalid` и пишет текст в `.invalid-feedback`.
+
+Пакет не скрывает поля при смене доставки. Методы `GET /api/v1/order/delivery/validation-rules` и `GET /api/v1/order/delivery/required-fields` в Web API есть, но фронтенд их не вызывает. Поведение формы при смене доставки настройте сами.
 
 ### Сохранённые адреса
 
@@ -101,22 +117,26 @@ title: Оформление заказа
 
 Два API-пути:
 
-| Сценарий | Эндпоинт |
+| Сценарий | Метод API |
 | --- | --- |
 | Checkout: применить адрес к черновику | `POST /api/v1/order/address/set` |
-| Выбор адреса из списка (AuthUI / msCustomer) | `POST /api/v1/customer/changeAddress` |
+| Выбор адреса из списка (`CustomerUI` / msCustomer) | `POST /api/v1/customer/changeAddress` |
 
 Сброс адресных полей: `POST /api/v1/order/address/clean`.
 
-### Кастомные поля (`_validated`)
+### Свои поля формы (`_validated`)
 
-Поля вне модели заказа (например чекбокс согласия `agreement`) уходят в черновик и хранятся в `msOrder.properties['_validated']`. На событиях создания заказа они доступны как `customFields`.
+Поле, которого нет ни у заказа, ни у адреса (например чекбокс согласия `agreement`), уходит в черновик и хранится в `msOrder.properties['_validated']`. На событиях создания заказа такие поля доступны как `customFields`.
 
-На витрине чекбокс должен слать `input.checked` (`1` / `0`), не статичный `value`. Для согласия используйте правило `accepted` в доставке.
+На фронтенде чекбокс должен слать `input.checked` (`1` / `0`), не статичный `value`. Для согласия используйте правило `accepted` в доставке.
+
+::: tip Своё поле с именем колонки заказа не пройдёт
+Служебные колонки закрыты с 1.14.2-beta1: на такой ключ сервер ответит ошибкой, в свойства он не попадёт. Перечень — в разделе [какие поля фронтенд менять не вправе](/components/minishop3/development/web-api/checkout#protected-fields).
+:::
 
 ## JavaScript API
 
-Публичный фасад — `ms3.orderAPI` (не `ms3.order`). UI-форма дергает его через `OrderUI`.
+Публичный фасад — `ms3.orderAPI` (не `ms3.order`). Форма вызывает его через `OrderUI`.
 
 ```javascript
 // Оформить заказ
@@ -141,7 +161,9 @@ DOM-событий `ms3:order:*` нет. Используйте hooks:
 
 ```javascript
 ms3Hooks.addHook('beforeSubmitOrder', async (data) => {
-  // можно изменить data.formData
+  // Данных о заказе здесь нет — объект пустой.
+  // Поля формы доступны в хуке beforeFormSubmit, здесь можно только отменить отправку
+  data.cancel = true
 })
 
 ms3Hooks.addHook('afterSubmitOrder', async ({ response }) => {
@@ -156,6 +178,13 @@ ms3Hooks.addHook('afterAddOrder', async ({ key, value, response }) => {
   }
 })
 ```
+
+| Хук | Когда |
+| --- | --- |
+| `beforeAddOrder` / `afterAddOrder` | Поле черновика через `orderAPI.add` |
+| `afterUpdateOrderCosts` | После пересчёта сумм (только `after`) |
+| `beforeSubmitOrder` / `afterSubmitOrder` | Оформление заказа |
+| `beforeCleanOrder` / `afterCleanOrder` | Очистка черновика |
 
 См. [Frontend JS — хуки](/components/minishop3/development/frontend-js).
 
@@ -186,6 +215,8 @@ ms3Hooks.addHook('afterAddOrder', async ({ key, value, response }) => {
 | `msOnBeforeCreateOrder` | Перед созданием заказа | `handler`, `msOrder` |
 | `msOnCreateOrder` | После создания заказа | `handler`, `msOrder` |
 
+Полные списки параметров и примеры плагинов: [События заказа](/components/minishop3/development/events/order).
+
 ## Кастомизация
 
 ### Изменение формы заказа
@@ -194,11 +225,11 @@ ms3Hooks.addHook('afterAddOrder', async ({ key, value, response }) => {
 2. Укажите его в вызове: `'tpl' => 'tpl.myOrder'`
 3. Используйте доступные плейсхолдеры из [документации msOrder](/components/minishop3/snippets/msorder)
 
-### Добавление кастомных полей
+### Добавление своих полей
 
-Поля вне модели заказа проходят два шага.
+Поле, которого нет ни у заказа, ни у адреса, проходит два шага.
 
-**1. Валидация.** Добавьте правила в [настройках доставки](/components/minishop3/interface/settings/deliveries#валидация-полей-заказа):
+**1. Валидация.** Добавьте правила в [настройках доставки](/components/minishop3/interface/settings/deliveries#validaciya-poley-zakaza):
 
 ```json
 {
@@ -209,6 +240,8 @@ ms3Hooks.addHook('afterAddOrder', async ({ key, value, response }) => {
 ```
 
 **2. Сохранение.** Стандартные поля (`first_name`, `email`, `city` и т.д.) пишутся сами. Чужие ключи (не из `msOrder` / `msOrderAddress`) кладите в `properties` заказа плагином, если они нужны после оформления:
+
+<!-- FACT? выше сказано, что такие ключи сами уходят в `properties['_validated']`, а пример читает их из `properties` адреса -->
 
 ```php
 switch ($modx->event->name) {
@@ -223,10 +256,6 @@ switch ($modx->event->name) {
         break;
 }
 ```
-
-::: tip
-Чекбокс «Согласен с условиями» часто нужен только на валидации. Тогда хватит правила `accepted` в доставке. В заказ его писать не обязательно.
-:::
 
 ### Адаптивная вёрстка
 

@@ -7,12 +7,17 @@ description: "Методы экземпляра: ошибки полей, соо
 
 Доступ: `FetchIt.instances.get(formElement)`. В событиях экземпляр лежит в `e.detail.fetchit`.
 
+Типы методов для TypeScript: [`fetchit.d.ts`](/components/fetchit/frontend/typescript).
+
 Свойства:
 
 | Свойство | Описание |
 | --- | --- |
 | `form` | `HTMLFormElement` |
-| `config` | Конфиг из `FetchIt.create()` (actionUrl, pageId, классы, clearFieldsOnSuccess) |
+| `config` | Конфиг из `FetchIt.create()`: `actionUrl`, `pageId`, классы, `clearFieldsOnSuccess`, защита. Общий у всех форм одного вызова сниппета |
+| `formData` | Данные текущей или последней отправки; `undefined` до первой |
+| `fields` | Элементы `input`, `select` и `textarea` формы |
+| `elements` | Все элементы формы |
 
 ## clearErrors()
 
@@ -66,7 +71,7 @@ fetchit.setFormMessage('validation', 'Проверьте поля')
 
 ## disableFields() / enableFields()
 
-На время запроса скрипт сам вызывает `disable` / `enable`. Можно вызвать вручную.
+На время запроса скрипт сам вызывает `disable` / `enable`. Можно вызвать вручную. Поля, отключённые в разметке, после отправки остаются отключёнными.
 
 ## getFields(name)
 

@@ -7,11 +7,11 @@ title: mspsLexiconScript
 
 После вызова заполняются:
 
-- при `ms3productsets.izitoast_include` = Да — теги `<link>` и `<script>` для [iziToast](https://github.com/marcosmoura/iziToast) по путям из настроек `izitoast_css` / `izitoast_js`;
-- `window.mspsLexicon` — строки интерфейса (`empty`, `added`, `removed`, `set_added`, `go_catalog`, `error`);
-- `window.mspsConfig` — `maxItems`, `lang`, `toastTimeout` (мс), `toastPosition` (напр. `topRight`).
+- при `ms3productsets.izitoast_include` = Да: теги `<link>` и `<script>` для [iziToast](https://github.com/marcosmoura/iziToast) по путям из настроек `izitoast_css` / `izitoast_js`;
+- `window.mspsLexicon`: строки интерфейса (`empty`, `added`, `add_failed`, `removed`, `set_added`, `go_catalog`, `error`);
+- `window.mspsConfig`: `maxItems`, `lang`, `toastTimeout` (мс), `toastPosition` (напр. `topRight`).
 
-Подключайте **до** `productsets.js`. Если автоподключение iziToast выключено, загрузите CSS и JS вручную — [Интеграция на сайт](../integration).
+Подключайте **до** `productsets.js`. Если автоподключение iziToast выключено, загрузите CSS и JS вручную. См. [Интеграция на сайт](../integration). Чанк `tplMspsLexiconScript` в пакете запасной: на страницу лексикон пишет сниппет.
 
 ## Параметры
 

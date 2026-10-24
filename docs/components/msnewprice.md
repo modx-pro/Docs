@@ -46,7 +46,7 @@ categories: discounts
 
 ## Следить за товаром
 
-Доступна подписка на товар авторизированным пользователям.
+Доступна подписка на товар авторизованным пользователям.
 
 [![](https://file.modx.pro/files/8/e/4/8e4f296e3c715e9850b4ed133b0b2aa7s.jpg)](https://file.modx.pro/files/8/e/4/8e4f296e3c715e9850b4ed133b0b2aa7.png)
 

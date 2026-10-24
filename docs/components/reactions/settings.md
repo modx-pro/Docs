@@ -48,7 +48,7 @@ like,love,fire,star,clap,rocket,heart_eyes
 
 | Ключ | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
-| `reactions_webhooks_enabled` | combo-boolean | Нет | HTTP-колбэки после изменения реакций |
+| `reactions_webhooks_enabled` | combo-boolean | Нет | HTTP-вебхуки после изменения реакций |
 | `reactions_webhook_url` | text | *(пусто)* | URL webhook (JSON, совместим с Telegram / Discord / Slack) |
 | `reactions_notify_authors` | combo-boolean | Нет | Сообщение автору ресурса через `modUserMessage` |
 

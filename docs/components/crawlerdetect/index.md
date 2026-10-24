@@ -1,6 +1,6 @@
 ---
 title: CrawlerDetect
-description: Определение веб-краулеров по User-Agent и защита форм от спама без CAPTCHA
+description: Определение ботов по заголовкам запроса и защита форм от спама без CAPTCHA
 categories: other
 author: Ibochkarev
 logo: https://modstore.pro/assets/extras/crawlerdetect/logo.png
@@ -27,13 +27,13 @@ items: [
 ---
 # CrawlerDetect
 
-Дополнение для MODX: определяет веб-краулеров (ботов) по заголовку User-Agent и защищает формы от спама без CAPTCHA. Использует библиотеку [JayBizzle/Crawler-Detect](https://github.com/JayBizzle/Crawler-Detect).
+Определяет ботов по заголовкам запроса (User-Agent и другие из набора JayBizzle) и блокирует отправку FormIt без CAPTCHA. Библиотека: [JayBizzle/Crawler-Detect](https://github.com/JayBizzle/Crawler-Detect).
 
 ## Возможности
 
-- **Защита форм** — блокировка отправки форм ботами через preHook FormIt
-- **Скрытие виджетов** — не показывать чат, аналитику и тяжёлые скрипты ботам
-- **Точнее считать посетителей** — исключать ботов из счётчиков «онлайн» и «просмотров»
+- **Защита форм:** preHook FormIt блокирует отправку ботами
+- **Скрытие виджетов:** не показывать чат, аналитику и тяжёлые скрипты ботам
+- **Счётчики посетителей:** не учитывать ботов в «онлайн» и «просмотрах»
 
 ## Системные требования
 
@@ -44,22 +44,20 @@ items: [
 
 ## Зависимости
 
-- **FormIt** — для защиты форм (preHook `crawlerDetectBlock`)
-- **FetchIt** — опционально, для AJAX-форм
-- **SendIt** — опционально, для AJAX-форм
+- **FormIt:** для защиты форм (preHook `crawlerDetectBlock`)
+- **FetchIt:** не обязателен, для AJAX-форм
+- **SendIt:** не обязателен, для AJAX-форм
 
 ## Установка
-
-Установите пакет через **Менеджер пакетов** MODX:
 
 1. **Управление пакетами** → **Установить пакеты**
 2. Найдите **CrawlerDetect** в репозитории
 3. Нажмите **Установить**
 
-Зависимости (библиотека JayBizzle/Crawler-Detect) уже входят в пакет. Запускать `composer install` на сервере **не нужно**.
+Библиотека JayBizzle уже в пакете (`vendor/autoload.php`). `composer install` на сервере не нужен.
 
-После установки в **Элементы → Сниппеты** появятся: `isCrawler`, `crawlerDetectBlock`.
+При установке и обновлении пакет шлёт анонимную телеметрию на `https://metrics.modx.pro/` (без домена сайта).
 
-## После установки
+После установки в **Элементы → Сниппеты** появятся `isCrawler` и `crawlerDetectBlock`.
 
-Подробнее: [Быстрый старт](quick-start) и [Интеграция](integration).
+Дальше: [Быстрый старт](quick-start), [Интеграция](integration).

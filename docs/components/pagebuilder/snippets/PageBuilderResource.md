@@ -5,11 +5,9 @@ description: Сниппет PageBuilderResource — секции другого 
 
 # Сниппет PageBuilderResource
 
-Тот же PHP, что у [PageBuilder](PageBuilder). В properties сниппета `resource_id` помечен обязательным, но код берёт текущий ресурс, если передали `0`.
+Выводит секции другого ресурса: тот же PHP, что у [PageBuilder](PageBuilder), ресурс задаётся параметром `resource_id`.
 
 ## Назначение
-
-<!-- MEDIA: screenshot-front | nice | на главной виден блок секций с другого resource_id (например FAQ) | тестовый стенд: дочерняя страница с секцией faq, главная с [[!PageBuilderResource? &resource_id=`…` &section_types=`faq`]] -->
 
 - Hero или FAQ с дочерней страницы на главной.
 - Общий блок контента на нескольких ресурсах без дублирования секций в каждом документе.
@@ -22,14 +20,14 @@ description: Сниппет PageBuilderResource — секции другого 
 
 | Параметр | По умолчанию | Описание |
 | --- | --- | --- |
-| `resource_id` | `0` | ID источника. `0` = текущий ресурс. Если ресурс не найден, сниппет вернёт пустую строку |
+| `resource_id` | `0` | ID источника. `0` = текущий ресурс. Если ресурс не найден: HTML-путь — пустая строка, при `return_values=1` — JSON `{ "plainText": "", "sections": [] }` |
 | `section_types` | пусто | Фильтр по ключам секций |
 | `return_values` | `0` | JSON вместо HTML (как у PageBuilder) |
 | `use_cache` | `1` | Кеш HTML |
 | `load_css` | из настройки | Frontend CSS |
 | `wrap_page` | как `load_css` | Обёртка `pb-page` |
 
-В properties сниппета **PageBuilderResource** перечислены только `resource_id` и `section_types`. Остальные параметры работают так же, как у PageBuilder.
+В properties перечислены только `resource_id` и `section_types`. Отметки обязательности у `resource_id` нет, только текст в описании. Остальные параметры работают как у PageBuilder; значение `0` означает текущий ресурс, сниппет без аргументов не падает.
 
 ## Пример: FAQ с страницы «О компании» на главной
 

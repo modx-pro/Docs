@@ -1,48 +1,53 @@
 ---
 title: Toastify JS
-description: Уведомления Toastify JS для FetchIt через CDN и FetchIt.Message
+description: Тосты Toastify JS для ответов FetchIt
 ---
 
 # Toastify JS
 
-[Toastify JS](https://apvarun.github.io/toastify-js/): лёгкие тосты на чистом JS.
+[Toastify JS](https://apvarun.github.io/toastify-js/) — простые тосты без зависимостей. Цвета задаются прямо в вызове.
 
-## Подключение через CDN
+## Подключение
 
 ```html
-<!-- JavaScript -->
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js@1/src/toastify.min.js" defer></script>
-
-<!-- CSS -->
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js@1/src/toastify.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js@1/src/toastify.min.css">
+<script src="https://cdn.jsdelivr.net/npm/toastify-js@1/src/toastify.min.js" defer></script>
 ```
 
-Задайте [`FetchIt.Message`](/components/fetchit/frontend/class#fetchitmessage):
+## FetchIt.Message
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
+  const colors = {
+    success: 'linear-gradient(135deg, #16a34a, #22c55e)',
+    error: 'linear-gradient(135deg, #b91c1c, #ef4444)',
+  }
+
+  const show = (type, message) => {
+    const text = FetchIt.sanitizeHTML(message).trim()
+    if (!text) {
+      return
+    }
+
+    Toastify({
+      text,
+      duration: type === 'error' ? 8000 : 5000,
+      close: true,
+      gravity: 'top',
+      position: 'right',
+      stopOnFocus: true,
+      style: { background: colors[type] },
+      ariaLive: type === 'error' ? 'assertive' : 'polite',
+    }).showToast()
+  }
+
   FetchIt.Message = {
-    success(message) {
-      Toastify({ text: message }).showToast()
-    },
-    error(message) {
-      Toastify({ text: message }).showToast()
-    },
+    success: (message) => show('success', message),
+    error: (message) => show('error', message),
   }
 })
 ```
 
-В отдельном файле с `defer` (после скрипта FetchIt) обёртка `DOMContentLoaded` не нужна:
+Без `style` успех и ошибка выглядят одинаково: у Toastify нет встроенных типов.
 
-```js
-FetchIt.Message = {
-  success(message) {
-    Toastify({ text: message }).showToast()
-  },
-  error(message) {
-    Toastify({ text: message }).showToast()
-  },
-}
-```
-
-Блоки формы `[data-success]` и `[data-validation-error]` работают параллельно с тостами. Если нужны только они, `Message` можно не задавать. Селекторы: [документация](/components/fetchit/selectors).
+Почему текст проходит через `sanitizeHTML` и зачем проверка на пустую строку — в [общем разделе](/components/fetchit/examples/notifications/#storonnie-biblioteki).

@@ -49,15 +49,15 @@ switch ($modx->event->name) {
 
         // Check file size
         if (filesize($file) > 10 * 1024 * 1024) { // 10MB
-            $modx->event->output('File is too large');
-            return 'cancel';
+            $modx->event->output('cancel');
+            return;
         }
 
         // Check business hours
         $hour = (int)date('G');
         if ($hour >= 10 && $hour < 18) {
-            $modx->event->output('Import is disabled during business hours');
-            return 'cancel';
+            $modx->event->output('cancel');
+            return;
         }
         break;
 }
@@ -157,6 +157,31 @@ switch ($modx->event->name) {
 }
 ```
 
+### Post-processing
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnAfterImport':
+        $stats = $scriptProperties['stats'];
+
+        // Clear the cache
+        $modx->cacheManager->refresh();
+
+        // Refresh the search index
+        // $modx->runProcessor('MySearch\Processors\Reindex');
+
+        // Regenerate the sitemap
+        // $modx->runProcessor('pdoSitemap\Processors\Generate');
+
+        // Sync with an external system
+        if ($stats['created'] > 0 || $stats['updated'] > 0) {
+            // $onec->syncProducts();
+        }
+        break;
+}
+```
+
 ---
 
 ## msOnImportRow
@@ -191,13 +216,15 @@ switch ($modx->event->name) {
                 '[Import] Row %d skipped: no price',
                 $row
             ));
-            return 'cancel';
+            $modx->event->output('cancel');
+            return;
         }
 
         // Skip certain categories
         $excludedParents = [10, 15, 20];
         if (in_array($data['parent'], $excludedParents)) {
-            return 'cancel';
+            $modx->event->output('cancel');
+            return;
         }
         break;
 }
@@ -315,7 +342,8 @@ switch ($modx->event->name) {
                     $row,
                     $data['article']
                 ));
-                return 'cancel';
+                $modx->event->output('cancel');
+                return;
             }
         }
 

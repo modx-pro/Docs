@@ -107,7 +107,7 @@ pdoPage can output JSON and stop processing when request matches three condition
 - Request made via XMLHttpRequest (ajax).
 - Request contains variable from &pageVarKey. Default `page`.
 
-Set **&ajax=`1`** and send page a GET request like:
+Set `` &ajax=`1` `` and send page a GET request like:
 
 ```js
 $.get('document.html?page=5', function (response) {

@@ -11,9 +11,9 @@ description: "Выбор одной страницы MODX: тот же picker, �
 
 ## Зачем этот тип
 
-В панели управления поле подписано как выбор страницы. Редактор тот же, что у [relation](relation): Autocomplete с поиском, объект `{ id, pagetitle }`. Алиасы схемы: `resources`, `resource_list` → `resourcelist`.
+Поле выбирает одну страницу через Autocomplete с поиском — тот же редактор, что у [relation](relation). Алиасы схемы: `resources`, `resource_list` → `resourcelist`.
 
-По умолчанию поиск: `searchAction` = `mgr/resources/search` (до 20 результатов). Свой connector задаётся ключом `searchAction`, как у relation.
+По умолчанию поиск идёт через `mgr/resources/search` (до 20 результатов). Свой connector задаётся ключом `searchAction`.
 
 ## Когда использовать
 
@@ -23,7 +23,7 @@ description: "Выбор одной страницы MODX: тот же picker, �
 
 ## Советы
 
-Нужен Pro и capability `advanced-fields`: [relation](relation). Несколько страниц: [multirelation](multirelation).
+Нужен Pro-тип с capability `advanced-fields`: [relation](relation).
 
 ## Похожие типы
 
@@ -45,7 +45,7 @@ description: "Выбор одной страницы MODX: тот же picker, �
 
 ## Значение
 
-Как у `relation`: объект `{ id, pagetitle }`.
+Объект `{ id, pagetitle }`.
 
 ## Данные секции {#vyvod-v-section-data}
 
@@ -60,7 +60,7 @@ description: "Выбор одной страницы MODX: тот же picker, �
 }
 ```
 
-- Поиск в менеджере может показывать `uri` и `context_key`, но в data пишутся `id` и `pagetitle`.
+- Поиск в менеджере может показывать `uri` и `context_key`, но в данные секции пишутся `id` и `pagetitle`.
 
 ## Пример в chunk
 
@@ -91,7 +91,7 @@ description: "Выбор одной страницы MODX: тот же picker, �
 | `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
-- Дополнительно: `searchAction` (по умолчанию `mgr/resources/search`).
+- Дополнительно: `searchAction` для своего connector.
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).
 

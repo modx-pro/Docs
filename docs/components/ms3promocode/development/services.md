@@ -1,22 +1,26 @@
 # Сервисы
 
-Доменная логика разделена на несколько сервисов, зарегистрированных в DI-контейнере MODX. Все сервисы доступны через `$modx->services->get('ms3promocode_*')`.
+Доменная логика разложена по сервисам в DI-контейнере MODX. Доступ — через `$modx->services->get('ms3promocode_*')`.
 
 ## Список сервисов
 
 | DI-ключ                              | Класс                                                       | Назначение                                                  |
 |--------------------------------------|-------------------------------------------------------------|-------------------------------------------------------------|
-| `ms3promocode_promo_code_service`    | `ms3PromoCode\Services\PromoCodeService`                    | CRUD + поиск по коду + инкремент/декремент счётчика         |
-| `ms3promocode_validation_service`    | `ms3PromoCode\Services\ValidationService`                   | Lifecycle (disabled/scheduled/expired/exhausted) + min_order |
-| `ms3promocode_discount_calculator`   | `ms3PromoCode\Services\DiscountCalculator`                  | Расчёт скидки + пропорциональное распределение              |
-| `ms3promocode_rule_engine`           | `ms3PromoCode\Services\RuleEngine`                          | Matching по правилам (для scope=matching)                   |
+| `ms3promocode_service`               | `ms3PromoCode\Services\PromoCodeService`                    | CRUD, поиск по коду, инкремент и декремент счётчика         |
+| `ms3promocode_validation_service`    | `ms3PromoCode\Services\ValidationService`                   | Жизненный цикл (`disabled` / `scheduled` / `expired` / `exhausted`) и `min_order` |
+| `ms3promocode_discount_calculator`   | `ms3PromoCode\Services\DiscountCalculator`                  | Расчёт скидки и пропорциональное распределение              |
+| `ms3promocode_rule_engine`           | `ms3PromoCode\Services\RuleEngine`                          | Подбор по правилам (для `scope=matching`)                   |
 | `ms3promocode_code_generator`        | `ms3PromoCode\Services\CodeGenerator`                       | Генерация кодов по маске                                    |
-| `ms3promocode_application_service`   | `ms3PromoCode\Services\ApplicationService`                  | Фасад: apply / remove / sync / validate                     |
-| `ms3promocode_usage_tracker`         | `ms3PromoCode\Services\UsageTracker`                        | Запись / отмена / восстановление применений в БД            |
+| `ms3promocode_application_service`   | `ms3PromoCode\Services\ApplicationService`                  | Фасад: `apply` / `remove` / `sync` / `validate`             |
+| `ms3promocode_usage_tracker`         | `ms3PromoCode\Services\UsageTracker`                        | Запись, отмена и восстановление применений в БД             |
+
+::: tip
+Ключ `ms3promocode` — экземпляр самого класса `ms3PromoCode\ms3PromoCode`. Используется внутренней админкой компонента; сторонние расширения работают через сервисы из таблицы.
+:::
 
 ## ApplicationService — главный фасад
 
-Большинство интеграций должны использовать только этот сервис.
+Публичная точка интеграции: внешним плагинам достаточно этого сервиса.
 
 ```php
 /** @var \ms3PromoCode\Services\ApplicationService $svc */
@@ -27,69 +31,123 @@ $svc = $modx->services->get('ms3promocode_application_service');
 
 #### `apply(msOrder $order, string $code): array`
 
-Применить код к корзине / заказу.
+Применяет код к заказу или корзине.
 
 ```php
 $result = $svc->apply($order, 'SALE10');
 
 if ($result['success']) {
-    // $result['code']     - "SALE10"
-    // $result['discount'] - сумма
-    // $result['breakdown'] - per-position breakdown
+    // $result['code']      - "SALE10"
+    // $result['discount']  - сумма скидки
+    // $result['breakdown'] - распределение по позициям
 } else {
-    // $result['error']['code']    - "expired" / "exhausted" / etc.
+    // $result['error']['code']    - "expired" / "exhausted" и т.д.
     // $result['error']['message'] - локализованное сообщение
 }
 ```
 
 #### `validate(msOrder $order, string $code): array`
 
-Проверить без записи. Возвращает `['valid' => bool, 'preview' => [...]]` или `['valid' => false, 'reason' => ..., 'message' => ...]`.
+Проверяет код без записи. Возвращает `['valid' => true, 'preview' => [...]]` или `['valid' => false, 'reason' => ..., 'message' => ...]`.
 
 #### `validateCodeOnly(string $code): array`
 
-Только lifecycle-проверка кода — без расчёта скидки. Используется когда корзина пуста.
+Только жизненный цикл, без расчёта скидки — для пустой корзины.
 
 #### `remove(msOrder $order): void`
 
-Снять применённый код. Идемпотентен — если кода нет, ничего не делает.
+Снимает применённый код. Идемпотентен: без применённого кода ничего не меняет.
 
 #### `getCurrent(msOrder $order): ?array`
 
-Получить снимок применённого кода из `msOrder.properties.promo_code` (или `null`).
+Возвращает снимок применённого кода из `msOrder.properties.promo_code` или `null`.
 
 ```php
 $current = $svc->getCurrent($order);
-// ['id' => int, 'code' => string, 'discount_amount' => float, 'breakdown' => [...], 'applied_at' => string]
+// [
+//   'id'                 => int,
+//   'code'               => string,
+//   'discount_type'      => 'percent' | 'fixed',
+//   'discount_value'     => float,
+//   'discount_amount'    => float,          // фактически применённая сумма
+//   'breakdown'          => [product_key => float, ...],
+//   'original_cart_cost' => float,          // сумма позиций до скидки на момент применения
+//   'applied_at'         => string,         // ISO 8601
+// ]
 ```
 
 #### `syncAfterCartChange(msOrder $order): array`
 
-Пересчитать применение после изменения состава корзины. Внутри: `apply` с текущим кодом, fallback на `remove` если новый состав не подходит.
+Пересчитывает применение после изменения состава корзины: повторный `apply` с текущим кодом, а если состав больше не подходит — `remove`.
 
 ```php
 $result = $svc->syncAfterCartChange($order);
-// ['changed' => bool, 'reason' => string, 'message' => string]
+
+// 1. В заказе нет применённого кода:
+//    ['changed' => false]
+
+// 2. Код пересчитан к новому составу:
+//    ['changed' => true]
+
+// 3. Код автоматически снят (состав не подходит):
+//    ['changed' => true, 'reason' => string, 'message' => string]
+//    reason — одна из констант ValidationService::ERROR_*
 ```
+
+Поля `reason` и `message` присутствуют только в третьем варианте.
+
+### Снимок цены позиции
+
+`apply` сохраняет снимок для каждой уценённой позиции в `msOrderProduct.properties.ms3promocode`:
+
+```php
+// Форма позиционного снимка:
+[
+    'original_price'  => float,  // цена ДО уценки (за единицу)
+    'discount_amount' => float,  // применённая скидка на позицию
+    'promo_code_id'   => int,
+]
+```
+
+По снимку пересчёт и снятие восстанавливают исходную цену. С 1.0.1-beta1 действует инвариант целостности:
+
+```
+live_price + (discount_amount / count) ≈ original_price   (допуск ≤ 0.01)
+```
+
+Если инвариант нарушен — например, внешний плагин или менеджер переписал `price` после `apply` — снимок считается устаревшим: `apply` берёт за исходную цену текущую `price`, `remove` просто удаляет снимок без восстановления прежней. Это ожидаемое поведение, когда `price` делят с другими плагинами (например, `ms3AddOptions` при смене опции).
+
+### Константы и ключи
+
+- `ApplicationService::KEY_PROMO` (`'promo_code'`) — ключ в `msOrder.properties`.
+- `ApplicationService::KEY_POSITION` (`'ms3promocode'`) — ключ в `msOrderProduct.properties`.
+
+Сторонние плагины читают снимки по этим ключам напрямую, без обращения к сервису.
+
+### Компенсация копеек
+
+`apply` держит инвариант: `sum(breakdown)` в ответе равна `discount` до копейки. При `count > 1` округление `new_price = target_cost / count` теряет или прибавляет копейку. Остаток переносится на позицию с `count = 1`; если таких нет — на позицию с наибольшей уже применённой скидкой. Поэтому `breakdown` в ответе может отличаться на копейки от математического распределения из `DiscountCalculator`.
 
 ## PromoCodeService
 
 ```php
 /** @var \ms3PromoCode\Services\PromoCodeService $svc */
-$svc = $modx->services->get('ms3promocode_promo_code_service');
+$svc = $modx->services->get('ms3promocode_service');
 ```
 
 ### Методы
 
-| Метод                                                  | Описание                                       |
-|--------------------------------------------------------|------------------------------------------------|
-| `getByCode(string $code): ?msPromoCode`                | Поиск по коду (case-insensitive)               |
-| `get(int $id): ?msPromoCode`                           | Поиск по ID                                    |
-| `incrementUsage(msPromoCode $code): void`              | `used_count++`                                 |
-| `decrementUsage(msPromoCode $code): void`              | `used_count--` (не ниже 0)                     |
-| `create(array $data): msPromoCode`                     | Создание                                       |
-| `update(msPromoCode $code, array $data): bool`         | Обновление                                     |
-| `remove(msPromoCode $code): bool`                      | Удаление                                       |
+| Метод                                                                                              | Описание                                                                                        |
+|----------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
+| `getByCode(string $code): ?msPromoCode`                                                            | Поиск по коду (case-insensitive)                                                                |
+| `get(int $id): ?msPromoCode`                                                                       | Поиск по ID                                                                                     |
+| `getList(array $filters = [], array $sort = [], int $limit = 20, int $offset = 0): array`          | Постраничный список `['results' => msPromoCode[], 'total' => int]`. Фильтры: `query`, `active`, `created_from`, `created_to` |
+| `getStatus(msPromoCode $code): string`                                                             | Текущий статус жизненного цикла (`active` / `disabled` / `scheduled` / `expired` / `exhausted`) |
+| `create(array $data): msPromoCode`                                                                 | Создаёт запись                                                                                  |
+| `update(int $id, array $data): msPromoCode`                                                        | Обновляет по ID, возвращает обновлённый объект                                                  |
+| `delete(int $id): bool`                                                                            | Удаляет по ID                                                                                   |
+| `incrementUsage(msPromoCode $code, int $by = 1): void`                                             | `used_count` += `$by`                                                                           |
+| `decrementUsage(msPromoCode $code, int $by = 1): void`                                             | `used_count` -= `$by`, не ниже 0                                                                |
 
 ## ValidationService
 
@@ -102,10 +160,10 @@ $svc = $modx->services->get('ms3promocode_validation_service');
 
 | Метод                                                            | Описание                                       |
 |------------------------------------------------------------------|------------------------------------------------|
-| `validateCode(?msPromoCode $code): array`                        | Lifecycle-проверка                             |
-| `validateForOrder(msPromoCode $code, msOrder $order): array`     | Проверка по корзине (min_order_amount)         |
+| `validateCode(?msPromoCode $code): array`                        | Проверка жизненного цикла                      |
+| `validateForOrder(msPromoCode $code, msOrder $order): array`     | Проверка по корзине (`min_order_amount`)       |
 
-Возвращает `['valid' => bool, 'reason' => string, 'message' => string]`.
+Оба метода возвращают `['valid' => bool, 'reason' => string, 'message' => string]`.
 
 ### Константы
 
@@ -121,7 +179,7 @@ ValidationService::ERROR_NOT_APPLICABLE   // 'not_applicable'
 
 ## DiscountCalculator
 
-Чистая логика — без MODX-зависимостей, тестируется изолированно.
+Чистая логика без MODX-зависимостей, тестируется изолированно.
 
 ```php
 /** @var \ms3PromoCode\Services\DiscountCalculator $svc */
@@ -132,13 +190,16 @@ $result = $svc->calculate($promoCode, $matchingItems);
 // $result['breakdown'] — [product_key => discount, ...]
 ```
 
-`$matchingItems` — массив `[product_key => ['price' => float, 'count' => int|float, 'cost' => float]]`.
+`$matchingItems` — `[product_key => ['price' => float, 'count' => int|float, 'cost' => float?]]`. Поле `cost` опционально (без него берётся `price * count`); `ApplicationService` всегда его передаёт.
 
-Логика:
+Логика расчёта:
+
 1. `base = sum(matching costs)`
-2. `raw = base * percent / 100` или `value` (для fixed)
+2. `raw = base * percent / 100` или `value` для `fixed`
 3. `discount = min(raw, base)` — не больше базы
-4. `breakdown` — пропорционально `cost / base * discount` с компенсацией копеек
+4. `breakdown` — пропорционально `cost / base * discount`; последняя позиция получает математический остаток, чтобы `sum(breakdown) == discount` до копейки.
+
+Денежную компенсацию копеек на уровне `msOrderProduct.price` / `cost` выполняет `ApplicationService` — см. «Компенсация копеек» выше.
 
 ## RuleEngine
 
@@ -147,10 +208,22 @@ $result = $svc->calculate($promoCode, $matchingItems);
 $svc = $modx->services->get('ms3promocode_rule_engine');
 
 $matches = $svc->match($product, $rules);
-// true/false — подходит ли товар под все секции правил
+// true/false — проходит ли товар все секции правил
+
+$filtered = $svc->filter($products, $rules);
+// массив товаров, прошедших все секции
 ```
 
-Подробнее: [Правила (Rules)](rules).
+По умолчанию подключается семь стратегий: `ProductIds`, `ExcludeProductIds`, `ParentIds`, `ExcludeParentIds`, `VendorIds`, `ProductData`, `ProductOption`. Без аргумента (или с `null`) движок получает именно этот набор. Расширить его можно через конструктор:
+
+```php
+$engine = new \ms3PromoCode\Services\RuleEngine([
+    new MyCustomRule(),
+    // ...прочие стратегии
+]);
+```
+
+Подробнее — [Правила (Rules)](rules).
 
 ## CodeGenerator
 
@@ -158,11 +231,18 @@ $matches = $svc->match($product, $rules);
 /** @var \ms3PromoCode\Services\CodeGenerator $svc */
 $svc = $modx->services->get('ms3promocode_code_generator');
 
-// Один уникальный код по маске
-$code = $svc->generateUnique('WINTER-####-??');
+// Один код по маске без проверки уникальности
+$code = $svc->generate('WINTER-####-??');
 // "WINTER-4729-KM"
 
-// Превью без сохранения
+// Уникальный код с проверкой коллизии по БД;
+// при исчерпании попыток бросает RuntimeException
+$code = $svc->generateUnique('WINTER-####-??');
+
+// Второй параметр — предел попыток (по умолчанию MAX_ATTEMPTS = 10)
+$code = $svc->generateUnique('AA-##', 50);
+
+// Предпросмотр без сохранения
 $examples = $svc->previewExamples('SALE-####', 3);
 // ["SALE-4729", "SALE-2814", "SALE-9356"]
 
@@ -171,14 +251,20 @@ $codes = $svc->generateBatch('FRIDAY-???-##', 100);
 // массив из 100 уникальных кодов
 ```
 
+Константы:
+
+- `CodeGenerator::DEFAULT_MASK` — `'##-????'`. Используется, если параметр `mask` не задан.
+- `CodeGenerator::MAX_ATTEMPTS` — `10`. Предел попыток `generateUnique` до `RuntimeException`.
+
 ## UsageTracker
 
 ```php
 /** @var \ms3PromoCode\Services\UsageTracker $svc */
 $svc = $modx->services->get('ms3promocode_usage_tracker');
 
-// Записать применение (вызывается плагином на msOnCreateOrder)
-$svc->recordApplication([
+// recordApplication(array $data): msPromoCodeUsage
+// Пишется из плагина на msOnCreateOrder; возвращает созданную запись.
+$usage = $svc->recordApplication([
     'promo_code_id'   => 12,
     'order_id'        => 1234,
     'customer_id'     => 56,
@@ -188,11 +274,13 @@ $svc->recordApplication([
     'breakdown'       => ['ms-prod-1' => 300, 'ms-prod-2' => 200],
 ]);
 
-// Отменить применение по order_id
-$svc->cancelApplication($orderId);
+// cancelApplication(int $orderId): bool
+// Идемпотентно: true — активная запись отменена, false — отменять нечего.
+$ok = $svc->cancelApplication($orderId);
 
-// Восстановить ранее отменённое применение
-$svc->reinstateApplication($orderId);
+// reinstateApplication(int $orderId): bool
+// true — отменённая запись восстановлена, false — восстанавливать нечего.
+$ok = $svc->reinstateApplication($orderId);
 ```
 
 ## Использование сервисов из своего кода
@@ -218,7 +306,7 @@ if ($result['success']) {
 ```php
 // В плагине на событие OnUserCreated
 /** @var \ms3PromoCode\Services\PromoCodeService $svc */
-$svc = $modx->services->get('ms3promocode_promo_code_service');
+$svc = $modx->services->get('ms3promocode_service');
 
 /** @var \ms3PromoCode\Services\CodeGenerator $gen */
 $gen = $modx->services->get('ms3promocode_code_generator');

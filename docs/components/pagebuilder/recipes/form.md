@@ -19,7 +19,7 @@ description: "Заявка через FetchIt: разовая contact_form ил�
 
 1. Добавьте секцию `contact_form`.
 2. Задайте **Ключ формы**. Если форм на странице несколько, ключи не повторяйте.
-3. В repeater **Поля формы** добавьте name, label и type: `text`, `email`, `phone`, `textarea`, `select`, `radio`, `checkbox`, `date`. Для select и radio варианты пишите по строке: `Подпись|value` или только value. Имя поля: `[a-z][a-z0-9_]*`.
+3. В repeater **Поля формы** добавьте name, label и type: `text`, `email`, `phone`, `textarea`, `select`, `radio`, `checkbox`, `date`. Для select и radio варианты пишите по одному значению в строке — строка станет и подписью, и значением. Имя поля: `[a-z][a-z0-9_]*`, регистр не важен.
 4. Обязательный checkbox пустой, пока значение не `1`, `yes`, `true` или `on`.
 5. **Сохранить** ресурса. Получатель письма — системная настройка `emailsender`. Пустое значение: отправка не выполняется.
 
@@ -41,7 +41,7 @@ description: "Заявка через FetchIt: разовая contact_form ил�
 | --- | --- | --- | --- |
 | `name` | Имя | `text` | |
 | `email` | Почта | `email` | |
-| `topic` | Тема | `select` | `Доставка\|delivery` и `Оплата\|payment`, каждая с новой строки |
+| `topic` | Тема | `select` | `Доставка` и `Оплата`, каждое значение с новой строки |
 
 Вторая секция `contact_form`, ключ `callback_footer`. Поля те же, ключ другой.
 

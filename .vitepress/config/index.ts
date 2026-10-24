@@ -13,10 +13,14 @@ import { withMermaid } from 'vitepress-plugin-mermaid'
 import { modstore, modxpro, telegram } from '../../docs/icons.ts'
 import { coreMembers } from '../../docs/authors.ts'
 import { normalize } from '../theme/utils.ts'
+import { documentTitle } from '../theme/seo-snippet.ts'
+import { buildSeoHead, pageDescription } from './seo-head.ts'
 
 const SITE_HOST = 'https://docs.modx.pro/'
 const SITE_TITLE = 'docs.modx.pro'
 const SITE_TITLE_SEPARATOR = ' / '
+// сборка для превью PR (.github/workflows/preview.yml): без счётчика посещаемости
+const IS_PREVIEW = Boolean(process.env.DOCS_PREVIEW)
 
 const OG_CACHE_VERSION = (
   process.env.GITHUB_SHA?.slice(0, 8)
@@ -63,6 +67,24 @@ const readabilityLayoutScript = `(function () {
   } catch (e) {}
 })();`
 
+const metrikaScript: HeadConfig = [
+  'script',
+  {},
+  `(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+  m[i].l=1*new Date();
+  for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+  k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+  (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+  ym(103589705, "init", {
+    clickmap:true,
+    trackLinks:true,
+    accurateTrackBounce:true,
+    webvisor:false,
+    trackHash:true,
+  });`,
+]
+
 export default withMermaid(
   defineConfigWithTheme<DocsTheme.Config>({
   lastUpdated: true,
@@ -91,6 +113,11 @@ export default withMermaid(
 
   markdown: {
     languages,
+    // shiki has no `env` and `cron`: .env files are dotenv, a crontab line is a shell command
+    languageAlias: {
+      env: 'dotenv',
+      cron: 'shellscript',
+    },
     theme: {
       light: lightTheme,
       dark: darkTheme,
@@ -125,23 +152,7 @@ export default withMermaid(
 
     ['script', {}, readabilityLayoutScript],
 
-    [
-      'script',
-      {},
-      `(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-      m[i].l=1*new Date();
-      for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-      k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-      (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-
-      ym(103589705, "init", {
-        clickmap:true,
-        trackLinks:true,
-        accurateTrackBounce:true,
-        webvisor:false,
-        trackHash:true,
-      });`,
-    ],
+    ...(IS_PREVIEW ? [] : [metrikaScript]),
   ],
 
   themeConfig: {
@@ -194,8 +205,8 @@ export default withMermaid(
     return prepareData(pageData, siteConfig)
   },
 
-  transformHead({ pageData }: { pageData }) {
-    const title = pageData.title + SITE_TITLE_SEPARATOR + SITE_TITLE
+  transformHead({ pageData }) {
+    const title = documentTitle(pageData.title, pageData.titleTemplate)
     const image = pageData?.component
       ? SITE_HOST + 'og/' + getComponentSlug(pageData.component) + '.png?v=' + getOgImageVersion({
           v: OG_CACHE_VERSION,
@@ -224,18 +235,19 @@ export default withMermaid(
       ['meta', { name: 'twitter:image', content: image }],
     ]
 
-    if (pageData.description) {
-      output.push(
-        ['meta', { property: 'og:description', content: pageData.description }],
-        ['meta', { name: 'twitter:description', content: pageData.description }],
-      )
-    }
+    const description = pageDescription(pageData)
+    output.push(
+      ['meta', { property: 'og:description', content: description }],
+      ['meta', { name: 'twitter:description', content: description }],
+    )
 
     if (pageData.component && author) {
       output.push(
         ['meta', { property: 'article:author', content: author }],
       )
     }
+
+    output.push(...buildSeoHead({ pageData, url, image }))
 
     return output
   },

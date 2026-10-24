@@ -50,7 +50,7 @@ Component for user pages (tickets) and comments. Current package version: **1.14
 - Create and edit tickets on the frontend with permission checks.
 - Ajax comments on tickets and any MODX resource.
 - Multiple comment threads per page (`.comments-thread` wrapper).
-- Flat comment list via `&tree=`0`` and `limit`/`offset` pagination.
+- Flat comment list via `` &tree=`0` `` and `limit`/`offset` pagination.
 - Rights to publish in a section (`section_add_children`) and to comment.
 - Ticket cache, Jevix filtering on output, MarkItUp on the frontend.
 - Email to authors, reply targets, and subscribers; BCC to admins.

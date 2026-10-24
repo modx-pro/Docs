@@ -39,7 +39,8 @@ Snippet parameters **`usePdoPage`**, old page **`limit`**, and **`pageVarKey`** 
 | Name | Description |
 |------|-------------|
 | `[[+ms3f.total]]` | Set via `$modx->setPlaceholder` — total items across `default` + `gifts` + `plans` |
-| **Passed into chunk `tpl`:** `itemTpl`, `emptyTpl`, `list`, `resource_type`, `extendedToolbar`, **`tabCounts`**, **`useServerProductList`**, **`serverListIdsStr`**, etc. (see chunk `tplFavoritesPage`) |
+
+**Passed into chunk `tpl`:** `itemTpl`, `emptyTpl`, `list`, `resource_type`, `extendedToolbar`, **`tabCounts`**, **`useServerProductList`**, **`serverListIdsStr`**, etc. (see chunk `tplFavoritesPage`)
 
 In the Fenom chunk: e.g. `{$tabCounts.default}`, `{$list}`, `{$resource_type}`.
 

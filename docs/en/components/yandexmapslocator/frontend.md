@@ -71,7 +71,9 @@ Sample response:
 }
 ```
 
-Same-origin, no CORS or Bearer. With Pro installed and REST enabled, the frontend may call `api.php`. When `api_enabled=No`, it falls back to `search.php`.
+Same-origin, no CORS or Bearer. The on-page locator calls REST `api.php` only when Pro is installed, `api_enabled=Yes`, and `api_token` is empty. If a token is set, REST is off, or Pro is missing, the frontend stays on `search.php`. The Bearer token is never written into page HTML.
+
+An `address` query on `search.php` spends both the list bucket (`api_list_rate_limit`, 120/min) and the geocode bucket (`api_geocode_rate_limit`, 30/min).
 
 ## JavaScript API
 
@@ -85,7 +87,7 @@ locator.search({ address: 'Omsk, Lenina st., 25' });
 locator.locate();
 
 // Clear geo filter ("All locations")
-locator.resetLocate?.();
+locator.clearLocation();
 
 locator.on('store:click', ({ id }) => console.log('card', id));
 locator.on('marker:click', ({ id }) => console.log('marker', id));
@@ -94,7 +96,7 @@ locator.on('balloon:build', (payload) => {
 });
 ```
 
-JS events: `store:click`, `marker:click`, `balloon:build`, `marker:options`.
+JS events: `store:click`, `marker:click`, `balloon:build`, `marker:options`, `search:start`, `search:complete`, `error`. Public methods: `search`, `locate`, `clearLocation`, `showStore`, `setStores`, `setCenter`, `getStores`.
 
 After `locate()` the button switches to "All locations" and clears the geo filter. On mobile, geolocation opens the "Map" tab.
 

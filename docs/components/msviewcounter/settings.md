@@ -11,19 +11,44 @@ description: Ключи msviewcounter_* — режимы, online, boost, fake, �
 
 ## Основные (msviewcounter_main)
 
-| Ключ | По умолчанию | Описание |
-|------|--------------|----------|
-| `msviewcounter_mode` | `real` | Режим: `real`, `boost` или `fake` |
-| `msviewcounter_show_total` | Да | Показывать строку «Этот товар просмотрели…» |
-| `msviewcounter_show_online` | Да | Показывать строку «Сейчас смотрят…» |
-| `msviewcounter_online_ttl` | `120` | Сколько секунд посетитель считается active |
-| `msviewcounter_heartbeat_interval` | `30` | Интервал heartbeat-запросов (сек) |
-| `msviewcounter_cleanup_interval` | `300` | Интервал очистки устаревших active-сессий (сек) |
-| `msviewcounter_cleanup_batch_limit` | `1000` | Максимум строк за одно удаление в `msviewcounter_active` |
-| `msviewcounter_dedup_session` | Да | Не увеличивать total повторно в той же сессии |
-| `msviewcounter_block_bots` | Да | Исключать ботов из записи статистики |
+| Ключ | Тип | По умолчанию | Минимум | Описание |
+|------|-----|--------------|---------|----------|
+| `msviewcounter_mode` | Текст | `real` | — | Режим: `real`, `boost` или `fake` |
+| `msviewcounter_show_total` | Да/Нет | Да | — | Показывать строку «Этот товар просмотрели…» |
+| `msviewcounter_show_online` | Да/Нет | Да | — | Показывать строку «Сейчас смотрят…» |
+| `msviewcounter_online_ttl` | Число | `120` | `30` | Сколько секунд посетитель считается active |
+| `msviewcounter_heartbeat_interval` | Число | `30` | `10` | Интервал heartbeat-запросов (сек) |
+| `msviewcounter_cleanup_interval` | Число | `300` | `60` | Как часто запускается очистка устаревших active-сессий (сек) |
+| `msviewcounter_cleanup_batch_limit` | Число | `1000` | `100` | Максимум строк за одно удаление в `msviewcounter_active` |
+| `msviewcounter_dedup_session` | Да/Нет | Да | — | Не увеличивать total повторно в той же сессии |
+| `msviewcounter_block_bots` | Да/Нет | Да | — | Исключать ботов из записи статистики |
+| `msviewcounter_debug_mode` | Да/Нет | Нет | — | Отладочный вывод в консоли браузера |
+
+::: warning Границы значений применяются молча
+Пакет не показывает ошибку и не пишет в лог, а подставляет минимум: введёте `online_ttl = 10` — получите `30`, `heartbeat_interval = 5` — получите `10`. В форме при этом остаётся введённое вами число, то есть **реальное значение посмотреть негде**.
+
+Границы применяет `Config::fromModx()` при каждом чтении настроек (`src/Config.php:46-59`), поэтому «забытое» значение исправляется само. Затронуты девять настроек:
+
+| Ключ | Минимум |
+|------|---------|
+| `msviewcounter_online_ttl` | `30` |
+| `msviewcounter_heartbeat_interval` | `10` |
+| `msviewcounter_cleanup_interval` | `60` |
+| `msviewcounter_cleanup_batch_limit` | `100` |
+| `msviewcounter_boost_total_base` | `0` |
+| `msviewcounter_boost_total_multiplier` | `0` |
+| `msviewcounter_boost_total_jitter_max` | `0` |
+| `msviewcounter_boost_online_base` | `0` |
+| `msviewcounter_boost_online_jitter_max` | `0` |
+
+Отдельно `fake_total_min` / `fake_total_max` и `fake_online_min` / `fake_online_max` проходят через `orderedBounds()`: если минимум больше максимума, значения меняются местами, отрицательные обрезаются до нуля, а равные дают фиксированное число без разброса. Пустой `fake_salt` заменяется дефолтом.
+:::
+
+Значения `show_total` и `show_online` управляют **только выводом**. Запись просмотров в `msviewcounter_totals` идёт независимо от них: если `show_total = Нет`, просмотры всё равно копятся. Флаги читает `ViewCounter::counterInput()`: если соответствующий флаг выключен, в стратегию идёт `0`.
 
 ### msviewcounter_mode
+
+Обычное текстовое поле: значение вводится строкой. Любое неизвестное значение трактуется как `real`.
 
 | Значение | Поведение |
 |----------|-----------|
@@ -31,61 +56,88 @@ description: Ключи msviewcounter_* — режимы, online, boost, fake, �
 | `boost` | Запись в БД как в `real`, на витрине — формулы с base, multiplier и дневным jitter |
 | `fake` | Синтетические числа по hash(pid + salt), **без записи в БД** и **без heartbeat JS** |
 
-Подробное описание каждого режима, формулы и примеры: [Интеграция — режимы работы](integration#режимы-работы).
+Подробное описание каждого режима, формулы и примеры: [Интеграция — режимы работы](integration#rezhimy-raboty).
 
 ### online_ttl и heartbeat_interval
 
 `online_ttl` должен быть **больше** `heartbeat_interval`, иначе сессия успеет «протухнуть» между ping-запросами. Рекомендуемое соотношение: TTL в 3–4 раза больше интервала (по умолчанию 120 / 30).
 
+Интервал ограничивается снизу **дважды**: в PHP (`Config::fromModx()`, минимум 10) и в браузере (`Math.max(10, …)` в `viewcounter.js`). Значение меньше 10 секунд одинаково станет 10 на обеих сторонах.
+
+### Очистка active-сессий
+
+Два ключа работают в паре, но задают разное:
+
+- **`online_ttl`** — порог устаревания. Строка считается старой, если `last_seen` старше, чем `online_ttl` секунд. Этот же порог используется и при подсчёте `online`, и при удалении.
+- **`cleanup_interval`** — только периодичность прохода. Ничего не удаляет само по себе, лишь задаёт, как часто разрешено запускать удаление.
+
+Проход запускается **из heartbeat**, а не по cron. Часовой интервал хранится в кеше под ключом `msviewcounter_last_cleanup`. Пока идёт heartbeat, очистка выполняется не реже, чем раз в `cleanup_interval` секунд.
+
+Отсюда следствие: если `msviewcounter_show_online = Нет` или режим `fake`, heartbeat не отправляется и очистка **не идёт никогда** — таблица `msviewcounter_active` растёт, пока online включён заново.
+
 ## Boost (msviewcounter_boost)
 
-Используются при `msviewcounter_mode = boost`. Raw-данные берутся из БД (как в `real`), на витрине применяются формулы — см. [Интеграция — boost](integration#boost--реальные-данные-усиленный-вывод).
+Используются при `msviewcounter_mode = boost`. Raw-данные берутся из БД (как в `real`), на витрине применяются формулы — см. [Интеграция — boost](integration#boost-realnye-dannye-usilennyy).
 
-| Ключ | По умолчанию | Описание |
-|------|--------------|----------|
-| `msviewcounter_boost_total_base` | `0` | Минимум total в выводе |
-| `msviewcounter_boost_total_multiplier` | `1` | Множитель реального total |
-| `msviewcounter_boost_total_jitter_max` | `0` | Максимальный стабильный дневной разброс total |
-| `msviewcounter_boost_online_base` | `1` | Минимум online в выводе |
-| `msviewcounter_boost_online_jitter_max` | `2` | Максимальный стабильный дневной разброс online |
+| Ключ | Тип | По умолчанию | Минимум | Описание |
+|------|-----|--------------|---------|----------|
+| `msviewcounter_boost_total_base` | Число | `0` | `0` | Минимум total в выводе |
+| `msviewcounter_boost_total_multiplier` | Текст | `1` | `0` | Множитель реального total |
+| `msviewcounter_boost_total_jitter_max` | Число | `0` | `0` | Максимальный стабильный дневной разброс total |
+| `msviewcounter_boost_online_base` | Число | `1` | `0` | Минимум online в выводе |
+| `msviewcounter_boost_online_jitter_max` | Число | `2` | `0` | Максимальный стабильный дневной разброс online |
+
+Отрицательные значения обрезаются до нуля. `boost_total_multiplier` вводится текстом и приводится к числу с плавающей точкой.
+
+::: warning Boost с настройками по умолчанию не меняет ничего
+Дефолт `base = 0`, `multiplier = 1`, `jitter_max = 0` даёт ровно то же число, что и `real`. Чтобы boost отличался от честного режима, поднимите `boost_total_base` или `boost_total_jitter_max` — иначе переключение режима не изменит витрину.
+:::
 
 ## Fake (msviewcounter_fake)
 
-Используются при `msviewcounter_mode = fake`. Числа считаются детерминированно по ID товара и salt — см. [Интеграция — fake](integration#fake--синтетика-без-бд).
+Используются при `msviewcounter_mode = fake`. Числа считаются детерминированно по ID товара и salt — см. [Интеграция — fake](integration#fake-sintetika-bez-bd).
 
-| Ключ | По умолчанию | Описание |
-|------|--------------|----------|
-| `msviewcounter_fake_total_min` | `50` | Минимум синтетических просмотров |
-| `msviewcounter_fake_total_max` | `500` | Максимум синтетических просмотров |
-| `msviewcounter_fake_online_min` | `1` | Минимум синтетического online |
-| `msviewcounter_fake_online_max` | `8` | Максимум синтетического online |
-| `msviewcounter_fake_salt` | `msviewcounter` | Соль для стабильных значений по ID товара |
+| Ключ | Тип | По умолчанию | Описание |
+|------|-----|--------------|----------|
+| `msviewcounter_fake_total_min` | Число | `50` | Минимум синтетических просмотров |
+| `msviewcounter_fake_total_max` | Число | `500` | Максимум синтетических просмотров |
+| `msviewcounter_fake_online_min` | Число | `1` | Минимум синтетического online |
+| `msviewcounter_fake_online_max` | Число | `8` | Максимум синтетического online |
+| `msviewcounter_fake_salt` | Текст | `msviewcounter` | Соль для стабильных значений по ID товара |
 
 Значения привязаны к ID товара и salt: обновление страницы не меняет числа. Смена `fake_salt` пересчитывает все fake-значения.
 
+Пакет нормализует границы сам, без ошибок:
+
+- **`min` больше `max`** — значения меняются местами, диапазон остаётся рабочим.
+- **Отрицательные значения** — обрезаются до `0`.
+- **Равные `min` и `max`** — разброса нет, все товары получают одно и то же число. Это полезно, если нужен фиксированный «вес» витрины.
+- **`fake_salt` пустой или из пробелов** — используется значение по умолчанию `msviewcounter`. Значение обрезается от краёв.
+
 ## Рекомендуемые профили
 
-**Честная статистика на рабочем магазине**
+### Честная статистика на рабочем магазине
 
 - `msviewcounter_mode` = `real`
 - `show_total` и `show_online` = Да
 - `dedup_session` = Да, `block_bots` = Да
 
-**Новый магазин без истории**
+### Новый магазин без истории
 
 - `msviewcounter_mode` = `fake`
 - Настроить диапазоны `fake_total_*` и `fake_online_*`
 
-**Реальные данные с минимальной базой**
+### Реальные данные с минимальной базой
 
 - `msviewcounter_mode` = `boost`
 - `boost_total_base` > 0 и/или `boost_online_base` ≥ 1
 - Небольшой `boost_online_jitter_max`, например `2`
 
-**Только просмотры, без online**
+### Только просмотры, без online
 
 - `show_total` = Да, `show_online` = Нет
 - Heartbeat JS не подключается
+- Очистка `msviewcounter_active` при этом тоже не идёт
 
 ## Лексикон текстов
 
@@ -97,6 +149,20 @@ description: Ключи msviewcounter_* — режимы, online, boost, fake, �
 | `msviewcounter_online_text` | Шаблон строки online |
 | `msviewcounter_view_word_*` | Склонение «раз / раза / раз» |
 | `msviewcounter_person_word_*` | Склонение «человек / человека / человек» |
+
+Пакет выбирает форму по числу сам, вам не нужно дублировать тексты под каждое значение:
+
+| Форма | Когда выбирается | Пример |
+|-------|------------------|--------|
+| `_1` | последняя цифра `1` (кроме 11–14) | 1 просмотр, 21 просмотр |
+| `_2` | последняя цифра 2–4 | 2 просмотра, 103 просмотра |
+| `_5` | `0`, 5–9, 11–14, а также 111–114 | 5 просмотров, 11 просмотров |
+
+В лексиконе есть английский вариант (`lexicon/en`), поэтому строки сайта на английском подставляются автоматически.
+
+::: info Ключ `msviewcounter_invalid_product` не используется
+Он объявлен в лексиконе `ru` и `en`, но код его не вызывает. При `pid <= 0` сниппет молча возвращает пустую строку, без текста с ошибкой.
+:::
 
 ## См. также
 

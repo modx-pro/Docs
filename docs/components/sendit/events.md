@@ -141,7 +141,7 @@ switch($modx->event->name){
 
 :::
 
-#### OnBeforePageRender - генерируется перед тем как будет проверен хэш и вызван сниппет-рендер
+#### OnBeforePageRender - генерируется перед тем как будет проверен хеш и вызван сниппет-рендер
 
 Доступные параметры:
 
@@ -307,6 +307,106 @@ switch ($modx->event->name){
 ```php:line-numbers
 switch ($modx->event->name){
   case 'OnUserActivate':
+
+    break;
+}
+```
+
+:::
+
+### События кабинета покупателя
+
+С версии 2.9.0, только MODX 2. Подробное описание данных и примеры — в разделе [Кабинет покупателя](/components/sendit/cabinet#events).
+
+---
+
+#### siOnBeforeUserCabinetAction - генерируется перед выполнением действия кабинета покупателя
+
+Доступные параметры:
+
+* **$method** - действие: *toCart*, *repeat*, *pay*, *cancel*, *requestReturn*, *saveAddress*, *removeAddress*, *applyAddress*.
+* **$data** - данные действия.
+* **$object** - объект `msOrder` или `siUserAddress`.
+* **$Cabinet** - экземпляр класса действия.
+* **$SendIt** - экземпляр класса-обработчика.
+
+Через `$modx->event->returnedValues['data']` можно поправить данные действия, через `$modx->event->returnedValues['error']` — запретить его.
+
+::: details Пример плагина
+
+```php:line-numbers
+switch ($modx->event->name){
+  case 'siOnBeforeUserCabinetAction':
+    if ($method === 'cancel' && $object->get('cost') > 50000) {
+      $modx->event->returnedValues['error'] = 'Для отмены свяжитесь с менеджером.';
+    }
+    break;
+}
+```
+
+:::
+
+#### siOnUserCabinetAction - генерируется после выполнения действия кабинета покупателя
+
+Доступные параметры те же, что у **siOnBeforeUserCabinetAction**, плюс действие *setDefaultAddress*. На этом событии проект обрабатывает заявку на возврат (*requestReturn*).
+
+::: details Пример плагина
+
+```php:line-numbers
+switch ($modx->event->name){
+  case 'siOnUserCabinetAction':
+    if ($method === 'requestReturn') {
+      // $data['items'], $data['reason'], $data['comment']
+    }
+    break;
+}
+```
+
+:::
+
+### События входа по коду
+
+С версии 2.10.0, только MODX 2. Подробнее — в разделе [Вход по коду](/components/sendit/codeauth#events).
+
+---
+
+#### siOnBeforeSendCode - генерируется перед отправкой одноразового кода
+
+Доступные параметры:
+
+* **$recipient** - получатель, как его ввёл пользователь.
+* **$code** - сгенерированный код.
+* **$params** - параметры пресета.
+
+Через `$modx->event->returnedValues['code']` можно подменить код, через `$modx->event->returnedValues['error']` — запретить отправку.
+
+::: details Пример плагина
+
+```php:line-numbers
+switch ($modx->event->name){
+  case 'siOnBeforeSendCode':
+    if (preg_replace('/\D+/', '', $recipient) === '79990000000') {
+      $modx->event->returnedValues['code'] = '0000';
+    }
+    break;
+}
+```
+
+:::
+
+#### siOnCodeLogin - генерируется после входа или регистрации по коду
+
+Доступные параметры:
+
+* **$method** - *login* или *register*.
+* **$user** - объект modUser.
+* **$recipient** - получатель, на который был отправлен код.
+
+::: details Пример плагина
+
+```php:line-numbers
+switch ($modx->event->name){
+  case 'siOnCodeLogin':
 
     break;
 }

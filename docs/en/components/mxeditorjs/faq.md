@@ -14,7 +14,14 @@ title: FAQ
 
 1. TV type **Textarea**, **Rich Text** = **Yes**
 2. Open **Template Variables** tab on the resource
-3. Editor initializes when the field is visible on the page
+3. The editor starts when the field is visible on the page
+
+## Editor does not appear in MIGX
+
+1. `which_editor` = **mxEditorJs**, `mxeditorjs.enabled` = **Yes**
+2. Form Tabs field `"inputTVtype": "richtext"`
+3. The plugin serves `migxmxeditorjs` on `OnTVInputRenderList`
+4. The value is HTML inside MIGX JSON. The row has no sidecar. `MxEditorJsFlush` runs before submit
 
 ## Video does not embed
 
@@ -22,7 +29,7 @@ Paste a link (YouTube, RuTube, etc.) into an **empty** block with Ctrl+V. There 
 
 ## Image or gallery upload fails
 
-Ask admin to check:
+Ask the admin to check:
 
 - `mxeditorjs.image_mediasource` and folder permissions
 - `mxeditorjs.image_upload_path` (template with `{resource_id}`)
@@ -31,15 +38,15 @@ Ask admin to check:
 
 ## Layout breaks on the site after save
 
-Frontend uses HTML snapshot from `modResource.content`. **Raw HTML** block and some embeds pass through as-is. Check theme CSS for `mxeditorjs-gallery`, tables, and iframes.
+The site uses the HTML snapshot from `modResource.content`. **Raw HTML** block and some embeds pass through as-is. Check theme CSS for `mxeditorjs-gallery`, tables, and iframes.
 
 ## Migration overwrote content
 
-Repeat migration with `force` and `confirmed` overwrites sidecar. Back up the database before bulk migration. Preview: connector `content/migrate` with `dry_run=1`.
+Repeat migration with `force` and `confirmed` overwrites the sidecar. Back up the database before bulk migration. Preview: connector `content/migrate` with `dry_run=1`.
 
 ## TypeError when opening a static resource
 
-v1.0.1+ plugin normalizes `MODx.loadRTE(elements)` argument. Upgrade to the latest package.
+The plugin normalizes the `MODx.loadRTE(elements)` argument. Upgrade to the latest package.
 
 ## Where JSON is stored
 
@@ -48,4 +55,4 @@ v1.0.1+ plugin normalizes `MODx.loadRTE(elements)` argument. Upgrade to the late
 | Main content | `mxeditorjs_content` |
 | TV | `mxeditorjs_tv_content` |
 
-HTML for the site — in `modResource.content` or TV textarea value.
+HTML for the site lives in `modResource.content` or the TV textarea value.

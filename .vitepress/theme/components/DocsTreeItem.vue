@@ -51,7 +51,7 @@ const toggle = function () {
     <DocsTree
       v-show="isOpen"
       v-if="isFolder"
-      :items="props.item.items"
+      :items="props.item.items ?? []"
       class="list"
     />
   </li>

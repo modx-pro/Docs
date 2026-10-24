@@ -101,7 +101,7 @@ switch ($modx->event->name){
 
 ### Working without the index
 
-If there are few resources/fields or you cannot maintain the index, switch to direct table queries by passing `&fromIndex=`0`` in the snippet call.
+If there are few resources/fields or you cannot maintain the index, switch to direct table queries by passing `` &fromIndex=`0` `` in the snippet call.
 
 ## simpleFilters snippet
 

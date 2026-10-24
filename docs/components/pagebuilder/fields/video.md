@@ -11,7 +11,7 @@ description: "Объект видео с enrich embed_url provider и watch_url"
 
 ## Зачем этот тип
 
-URL YouTube, Vimeo или Rutube в инспекторе (поле текста + poster как у [image](image)). После save enrich для распознанных ссылок добавляет `embed_url`, `provider`, `watch_url`. Произвольный URL без провайдера остаётся без embed. Плоские `video_embed_url`, `video_provider`, `video_watch_url` — только у секции с `type=video`. Объект с `url` enrich-ится, если имя ключа содержит `video`.
+URL YouTube, Vimeo или Rutube плюс poster, как у [image](image). При сохранении enrich распознаёт ссылку и добавляет `embed_url`, `provider`, `watch_url`. URL без распознанного провайдера остаётся без embed.
 
 ## Когда использовать
 
@@ -21,7 +21,7 @@ URL YouTube, Vimeo или Rutube в инспекторе (поле текста 
 
 ## Советы
 
-В чанке выводите адрес плеера и сервис, не только исходный `url`. Набор фотографий делают полем [gallery](gallery), не video.
+В чанке берите `embed_url` и `provider`, не только исходный `url`. Набор фотографий делают полем [gallery](gallery), не video.
 
 ## Похожие типы
 
@@ -43,11 +43,11 @@ URL YouTube, Vimeo или Rutube в инспекторе (поле текста 
 
 ## Значение
 
-Объект `{ url, poster }`. `poster`: media-объект как у `image`. Enrich добавляет `embed_url`, `provider`, `watch_url`.
+Объект `{ url, poster }`. `poster` — media-объект, как у [image](image).
 
 ## Данные секции {#vyvod-v-section-data}
 
-Ключ `video` в данных секции после save enrich (`SectionFieldEnricher` + `VideoEmbedResolver`):
+Ключ `video` в данных секции после сохранения (`SectionFieldEnricher` + `VideoEmbedResolver`):
 
 ```json
 {
@@ -76,7 +76,7 @@ URL YouTube, Vimeo или Rutube в инспекторе (поле текста 
 }
 ```
 
-- Плоские `video_*` — только секция `type=video`. Enrich объекта `{ url, … }` — если имя ключа содержит `video` (без плоских ключей).
+- Плоские `video_*` — только у секции `type=video`. Объект enrich-ится, если имя ключа содержит `video`.
 
 ## Пример в chunk
 
@@ -87,20 +87,15 @@ URL YouTube, Vimeo или Rutube в инспекторе (поле текста 
 [[$pagebuilder_partial_image?
   &image=`[[+video.poster]]`
   &alt=`[[+video.poster.title]]`
-  &class=`pb-video__poster`
 ]]
 ```
 
 ```fenom
 <iframe src="{$video.embed_url|escape}" title="Video"></iframe>
-{include 'pagebuilder_partial_image' image=$video.poster alt=$video.poster.title class='pb-video__poster'}
+{include 'pagebuilder_partial_image' image=$video.poster alt=$video.poster.title}
 ```
 
 :::
-
-## Примечание
-
-Плоские `video_embed_url` / `video_provider` / `video_watch_url`: только секция `type=video`. Имя поля с «video» enrich-ит вложенный объект, не плоские ключи.
 
 ## Общие свойства
 
@@ -114,8 +109,6 @@ URL YouTube, Vimeo или Rutube в инспекторе (поле текста 
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
-
-- Дополнительно: `poster`: вложенный media-объект. Enrich: `embed_url`, `provider`, `watch_url`.
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).
 

@@ -5,15 +5,13 @@ description: Шаблоны товара, ms3Variants, ЮKassa, аналитик
 
 # Интеграция и сценарии
 
-Документ для интегратора и разработчика: шаблоны витрины, варианты, оплата и метрики.
-
 | Тема | Где в документе |
 |------|-----------------|
 | Разметка карточки товара | [Шаблон товара](#интеграция-с-шаблонами) |
 | ms3Variants | [Интеграция с ms3Variants](#интеграция-с-ms3variants) |
 | ЮKassa | [Оплата через ЮKassa](#оплата-через-юkassa-msp3yookassa) |
 | Аналитика | [Google Analytics / Метрика](#интеграция-с-google-analytics) |
-| Полный цикл JS | [Подключение на сайте](frontend) |
+| Полный цикл JS | [Подключение на сайте](/components/msfastorder/frontend) |
 
 ## Интеграция с шаблонами
 
@@ -22,38 +20,26 @@ description: Шаблоны товара, ms3Variants, ЮKassa, аналитик
 ::: code-group
 
 ```fenom
-<div class="product-card">
-  <h1>{$_modx->resource.pagetitle}</h1>
-  <div class="price">{$price} ₽</div>
-
-  <form class="ms3_form" method="post">
-    <input type="hidden" name="id" value="{$_modx->resource.id}">
-    <input type="number" name="count" value="1">
-    <button type="submit" name="ms3_action" value="cart/add">В корзину</button>
-  </form>
-
-  {'!msFastOrder' | snippet}
-</div>
+<form class="ms3_form" method="post">
+  <input type="hidden" name="id" value="{$_modx->resource.id}">
+  <input type="number" name="count" value="1">
+  <button type="submit" name="ms3_action" value="cart/add">В корзину</button>
+</form>
+{'!msFastOrder' | snippet}
 ```
 
 ```modx
-<div class="product-card">
-  <h1>[[*pagetitle]]</h1>
-  <div class="price">[[+price]] ₽</div>
-
-  <form class="ms3_form" method="post">
-    <input type="hidden" name="id" value="[[*id]]">
-    <input type="number" name="count" value="1">
-    <button type="submit" name="ms3_action" value="cart/add">В корзину</button>
-  </form>
-
-  [[!msFastOrder]]
-</div>
+<form class="ms3_form" method="post">
+  <input type="hidden" name="id" value="[[*id]]">
+  <input type="number" name="count" value="1">
+  <button type="submit" name="ms3_action" value="cart/add">В корзину</button>
+</form>
+[[!msFastOrder]]
 ```
 
 :::
 
-### Кастомная кнопка
+### Своя кнопка
 
 ::: code-group
 
@@ -78,15 +64,13 @@ description: Шаблоны товара, ms3Variants, ЮKassa, аналитик
 ::: code-group
 
 ```fenom
-<button type="button" class="btn btn-fast-order" data-msfo-trigger data-msfo-product-id="{$product_id}">
-  <i class="icon-flash"></i>
+<button type="button" data-msfo-trigger data-msfo-product-id="{$product_id}">
   Купить в 1 клик
 </button>
 ```
 
 ```modx
-<button type="button" class="btn btn-fast-order" data-msfo-trigger data-msfo-product-id="[[+product_id]]">
-  <i class="icon-flash"></i>
+<button type="button" data-msfo-trigger data-msfo-product-id="[[+product_id]]">
   Купить в 1 клик
 </button>
 ```
@@ -95,19 +79,18 @@ description: Шаблоны товара, ms3Variants, ЮKassa, аналитик
 
 ## Интеграция с ms3Variants
 
-msFastOrder полностью поддерживает компонент ms3Variants для работы с вариантами товаров.
+msFastOrder копирует выбранный вариант и количество со страницы товара в модалку.
 
 ### Структура интеграции
 
 ms3Variants хранит данные в таблицах:
+
 - `ms3_product_variants` — варианты (SKU, цена, остатки, вес, изображение)
 - `ms3_variant_options` — опции вариантов (color, size и др.)
 
 ### Автоматическое копирование вариантов
 
-Для автоматического копирования выбранного варианта в форму быстрого заказа, убедитесь что:
-
-1. Форма на странице товара имеет класс `ms3variants-product-{$id}`:
+Форма на странице товара должна иметь класс `ms3variants-product-{$id}`:
 
 ::: code-group
 
@@ -134,9 +117,9 @@ ms3Variants хранит данные в таблицах:
 
 :::
 
-2. При изменении варианта ms3Variants обновляет цену, изображение и поле `input[name="_variant_id"]` (см. [ms3Variants](/components/ms3variants/frontend/product)).
+При смене варианта ms3Variants обновляет цену, изображение и поле `input[name="_variant_id"]` (см. [ms3Variants](/components/ms3variants/frontend/product)).
 
-3. msFastOrder при открытии модалки копирует количество и `variant_id` / `ms3variant_id` из этой формы — в заказ уходит `options.variant_id`.
+msFastOrder при открытии модалки копирует количество и `variant_id` / `ms3variant_id` из этой формы. В заказ уходит `options.variant_id`.
 
 ### Ручная передача варианта
 
@@ -161,7 +144,7 @@ document.addEventListener('msfo:modal:beforeLoad', function () {
 1. Создаёт заказ в MiniShop3 и переводит его в статус **«Новый»** (`ms3_status_new`).
 2. Регистрирует заказ в `$_SESSION['ms3']['orders']` (как стандартный checkout MS3).
 3. Запрашивает ссылку у обработчика оплаты MS3: `Payment::getPaymentLink()` через `ms3_payment_service`.
-4. Возвращает её в AJAX (`data.payment_link`) и на экране успеха (чанк `msfo_success`).
+4. Возвращает её в AJAX (`data.payment_link`) и на экране успеха (JS `FormHandler.renderSuccess`; чанк `msfo_success` — только эталон).
 
 ```mermaid
 sequenceDiagram
@@ -179,25 +162,16 @@ sequenceDiagram
   U->>PAY: оплата
 ```
 
-**Отдельный URL оплаты в настройках msFastOrder указывать не нужно** — ссылка формируется автоматически из способа оплаты, заданного в `msfastorder_payment_id`.
-
-| Тип способа оплаты MS3 | Что будет в `payment_link` |
-|------------------------|----------------------------|
-| Без класса (`DefaultPayment`) | Страница успеха MS3: `?msorder={uuid}` (нормализуется для `ms3_get_order`) |
-| С классом провайдера (ЮKassa и др.) | URL платёжной системы от обработчика |
-
-Подробнее о настройках: [Системные настройки](settings#режим-ms).
+Отдельный URL оплаты в настройках msFastOrder не нужен. Ссылка берётся из способа оплаты в `msfastorder_payment_id`. Типы ссылок (DefaultPayment / ЮKassa): [Системные настройки](/components/msfastorder/settings#режим-ms).
 
 ### Оплата через ЮKassa (msp3YooKassa)
 
-Рекомендуемый способ подключения онлайн-оплаты для быстрого заказа — дополнение [msp3YooKassa](https://docs.modx.pro/components/msp3yookassa/) для MiniShop3.
+Онлайн-оплата после быстрого заказа — дополнение [msp3YooKassa](/components/msp3yookassa/) для MiniShop3.
 
 #### Шаг 1. Установить msp3YooKassa
 
 1. Установите пакет **msp3YooKassa** через [ModStore](https://modstore.pro/) (**Extras → Installer** → **Download Extras**).
 2. Убедитесь, что на сайте уже работают **MODX 3**, **MiniShop3** и **msFastOrder**.
-
-Документация провайдера: [msp3YooKassa на docs.modx.pro](https://docs.modx.pro/components/msp3yookassa/).
 
 #### Шаг 2. Настроить ключи и webhook в MODX
 
@@ -209,14 +183,14 @@ sequenceDiagram
 | Secret Key | Секретный ключ API |
 | Webhook URL | URL для уведомлений о статусе платежа (как в личном кабинете ЮKassa) |
 
-В личном кабинете [ЮKassa](https://yookassa.ru/) создайте магазин, получите ключи и пропишите **webhook** на URL, который указан в настройках msp3YooKassa (обычно отдельный endpoint компонента).
+В личном кабинете [ЮKassa](https://yookassa.ru/) создайте магазин, получите ключи и пропишите **webhook** на URL из настроек msp3YooKassa (обычно отдельный endpoint компонента).
 
 Без корректного webhook статусы заказов в MS3 могут не обновляться после оплаты.
 
 #### Шаг 3. Способ оплаты в MiniShop3
 
 1. **Компоненты → MiniShop3 → Способы оплаты**.
-2. Создайте или откройте способ **«Оплата через ЮKassa»** (класс обработчика: `Msp3YooKassa\Payment\YooKassaPayment` или аналог из документации msp3YooKassa).
+2. Создайте или откройте способ **«Оплата через ЮKassa»** (класс обработчика — см. [документацию msp3YooKassa](/components/msp3yookassa/)).
 3. Включите способ (**активен**).
 4. Запомните **числовой ID** записи (колонка `id` в списке).
 
@@ -228,8 +202,9 @@ sequenceDiagram
 | `msfastorder_payment_id` | ID способа «Оплата через ЮKassa» из MS3 |
 | `msfastorder_delivery_id` | ID активной доставки MS3 |
 | `ms3_order_success_page_id` | Ресурс «Спасибо» со сниппетом `[[!ms3_get_order]]` (для просмотра заказа; при ЮKassa основная оплата идёт по `payment_link`) |
+| `ms3_order_redirect_thanks_id` | Запас, если `ms3_order_success_page_id` пуст. Иначе запасной вариант — `site_start` |
 
-Режим **MAIL** для оплаты через ЮKassa не используется — заказ в MS3 не создаётся.
+Режим **MAIL** для оплаты через ЮKassa не используется: заказ в MS3 не создаётся.
 
 #### Шаг 5. Проверка
 
@@ -240,7 +215,7 @@ sequenceDiagram
   autonumber
   participant U as Покупатель
   participant FO as msFastOrder
-  participant MS as MS3 + YooKassaPayment
+  participant MS as MS3 + msp3YooKassa
   participant Y as ЮKassa
   participant W as webhook msp3YooKassa
 
@@ -267,17 +242,17 @@ sequenceDiagram
   "data": {
     "order_id": 15,
     "method": "MS",
-    "payment_link": "https://yoomoney.ru/checkout/payments/..."
+    "payment_link": "https://…"
   }
 }
 ```
 
-Опционально: `msfastorder_success_redirect` — если задан URL и в ответе есть `payment_link`, через ~2 с выполнится автоматический переход на оплату (см. [Системные настройки](settings)).
+Опционально: `msfastorder_success_redirect` — если задан URL и в ответе есть `payment_link`, через ~2 с выполнится автоматический переход на оплату (см. [Системные настройки](/components/msfastorder/settings)).
 
 #### Что не нужно делать
 
 - Не прописывайте URL ЮKassa вручную в настройках msFastOrder — только **ID способа оплаты** MS3.
-- Не дублируйте логику оплаты в чанках: достаточно стандартного `msfo_success` с `{$payment_link}`.
+- Не дублируйте логику оплаты в чанках: кнопку «Оплатить» рисует JS; `msfo_success` — эталон разметки.
 
 ### Базовая оплата MS3 (без внешнего провайдера)
 
@@ -311,14 +286,12 @@ sequenceDiagram
 
 ## Интеграция с AjaxForm
 
-Форма в модалке собирается в **msfo.js** и отправляется на `connector.php` (`order/create`). Оборачивать её в `[[!AjaxForm]]` не нужно: у AjaxForm другой сценарий — серверный чанк формы и сниппет-обработчик ([AjaxForm](/components/ajaxform)).
+Форму в модалке не оборачивайте в `[[!AjaxForm]]`: её собирает **msfo.js** и шлёт на `connector.php` (`order/create`). AjaxForm — другой сценарий (серверный чанк и сниппет-обработчик, [AjaxForm](/components/ajaxform)). На одной странице они не конфликтуют.
 
-На одной странице msFastOrder и AjaxForm **не конфликтуют**: быстрый заказ живёт отдельно, AjaxForm — для ваших обычных форм (обратная связь, подписка и т.п.).
-
-Если на сайте уже подключён AjaxForm, можно использовать его всплывающие сообщения для быстрого заказа и добавить свои проверки до отправки:
+Если AjaxForm уже подключён, можно **отдельно** (msFastOrder его не вызывает) подписаться на `msfo:*` и показать сообщения:
 
 ```javascript
-// Уведомления AjaxForm вместо/в дополнение к разметке в модалке
+// Пример со сторонним AjaxForm, не часть msFastOrder
 document.addEventListener('msfo:order:success', function (e) {
   if (typeof AjaxForm === 'undefined') return;
   const msg = e.detail?.message || 'Заказ принят';
@@ -349,21 +322,31 @@ document.addEventListener('msfo:modal:loaded', function () {
 });
 ```
 
-Чекбокс `agreement` добавьте в форму в обработчике `msfo:modal:loaded` (см. [События JavaScript → modal:loaded](events#modal-loaded)). Серверная проверка без создания заказа — action `order/validate` ([AJAX API](api#order-validate)).
+Чекбокс `agreement` добавьте в форму в обработчике `msfo:modal:loaded` (см. [События JavaScript → modal:loaded](/components/msfastorder/events#modal-loaded)). Серверная проверка без создания заказа — action `order/validate` ([AJAX API](/components/msfastorder/api#order-validate)).
 
 ## Интеграция с Google Analytics
 
 ```javascript
-document.addEventListener('msfo:order:success', function(e) {
-    gtag('event', 'purchase', {
-        transaction_id: e.detail.data.order_id,
-        value: e.detail.data.total,
-        currency: 'RUB',
-        items: [{
-            item_id: e.detail.data.product_id,
-            quantity: e.detail.data.count
-        }]
-    });
+// product_id и count в ответе order/create нет — возьмите из form:submit или со страницы
+let lastProductId = null;
+let lastCount = 1;
+
+document.addEventListener('msfo:form:submit', function (e) {
+  lastProductId = e.detail.data.product_id;
+  lastCount = e.detail.data.count || 1;
+});
+
+document.addEventListener('msfo:order:success', function (e) {
+  if (!e.detail.data) return;
+  gtag('event', 'purchase', {
+    transaction_id: e.detail.data.order_id,
+    value: e.detail.data.total,
+    currency: 'RUB',
+    items: [{
+      item_id: lastProductId,
+      quantity: lastCount
+    }]
+  });
 });
 ```
 
@@ -382,4 +365,4 @@ document.addEventListener('msfo:order:success', function(e) {
 
 На фронте — событие `msfo:order:success` и отправка данных на свой endpoint.
 
-На бэкенде — плагин MODX на сохранение заказа MS3 или кастомный хук после `OrderProcessor::createOrder` (расширение через fork/плагин в вашем проекте).
+На бэкенде — плагин MODX на сохранение заказа MS3 или свой хук после `OrderProcessor::createOrder` (расширение через fork/плагин в вашем проекте).

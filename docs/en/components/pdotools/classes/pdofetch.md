@@ -438,12 +438,12 @@ Of course, don't forget to join tables via Join if you plan to sort by them.
 
 Next the query is prepared by method **prepareQuery** and executed via PDO.
 
-pdoFetch snippets have another parameter **&return=``** that determines what method run() returns:
+pdoFetch snippets have another parameter ` &return=`` ` that determines what method run() returns:
 
 - **sql** - string with ready SQL query, it's not executed.
 - **ids** - list of matching object ids, comma-separated. Usually used to select needed resource ids with one snippet and pass them to another.
 - **data** - array with results. When calling via snippet you get the word Array, since all MODX snippets return only strings. But when called from another snippet you get an array.
-- **tpl** - query result formatted in specified chunk **&tpl=``**. If no chunk, just printed result arrays.
+- **tpl** - query result formatted in specified chunk ` &tpl=`` `. If no chunk, just printed result arrays.
 
 By default snippets have &return = **tpl**, and if parameter &returnIds exists, then **ids**. **Data** and **sql** in snippets aren't used. First just doesn't work, second you see in pdoTools log anyway.
 

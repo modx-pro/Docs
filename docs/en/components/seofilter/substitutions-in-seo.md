@@ -9,7 +9,7 @@ Use field alias as placeholder. For color (alias color) use `{$color}` → green
 | `{$value}`,`{$[alias]}` | Field value | `{$color}` → **Red** |
 | `{$input}`, `{$[alias]_input}` | Query value; `{$input}` for single-field | `{$metro_input}` → **6** |
 | `{$alias}`, `{$[alias]_alias}` | Word alias | `{$color_alias}` → **krasnyij** |
-| `{$total}`, `{$count}` | Result count (if enabled) | `{$count \| decl : 'item\items' : true}` |
+| `{$total}`, `{$count}` | Result count (if enabled) | `{$count \| decl : 'item\|items' : true}` |
 | `{$page}`,`{$page_number}` | Current page; set **seofilter_page_key** | 1 |
 | `{$id}`,`{$page_id}` | Rule resource ID | `{$id \| resource : 'pagetitle'}` |
 | `{$rule_id}` | Rule ID | 19 |

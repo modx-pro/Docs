@@ -53,11 +53,9 @@ items: [
 
 # ms3Remains
 
-**ms3Remains** дополняет [MODX Revolution 3](https://modx.com/) и [MiniShop3](/components/minishop3/): остатки товаров по комбинациям опций. Одна строка отвечает, сколько единиц с таким набором опций лежит на остатке.
+**ms3Remains** для [MODX Revolution 3](https://modx.com/) и [MiniShop3](/components/minishop3/): остатки товаров по комбинациям опций. Одна строка отвечает, сколько единиц с таким набором опций лежит на остатке.
 
 Пример. У футболки есть опции `color` и `size`. Укажите их в `ms3remains_option_keys`. Компонент ведёт отдельный остаток для каждой пары: «красная / M», «красная / L», «синяя / M». Товар без опций работает с одной базовой строкой. Пустой `ms3remains_option_keys` не отключает опции в корзине: в расчёт остатка войдут все опции, которые покупатель передал с товаром.
-
-С чего начать: [Быстрый старт](quick-start).
 
 ## Минимальный путь
 
@@ -135,7 +133,7 @@ flowchart TB
 
 - **[MiniShop3](/components/minishop3/)**: товары, заказы, статусы
 - **VueTools**: manager UI (тема `vuetools.theme`: `aura` или `modx`)
-- **pdoTools**: обязателен (`>=3.0.0`). Нужен для примеров Fenom и вызова сниппета на витрине
+- **pdoTools**: обязателен (`>=3.0.0`). Нужен, чтобы разобрать примеры Fenom. Сниппет `ms3Remains` pdoTools не вызывает
 
 ### Опционально
 
@@ -163,8 +161,6 @@ ms3Remains не меняет файлы MiniShop3, ms3Variants и CommerceBridge
 
 ## Установка
 
-<!-- MEDIA: screenshot-admin | must | Extras → Installer: установка пакета ms3Remains на тестовом стенде | MODX 3, синтетический стенд, пакет ms3Remains в списке Extras -->
-
 1. [Подключите репозиторий ModStore](https://modstore.pro/info/connection). Для зашифрованного transport нужен провайдер `modstore.pro`, иначе установка падает с `Package provider not found`.
 2. Установите **MiniShop3**, **VueTools** и **pdoTools**.
 3. **Extras → Installer**: установите **ms3Remains**.
@@ -173,10 +169,10 @@ ms3Remains не меняет файлы MiniShop3, ms3Variants и CommerceBridge
 Установка создаёт:
 
 - namespace `ms3remains`
-- меню и controller manager
-- plugin и события
-- system settings
-- policy template и policy
+- меню и контроллер manager
+- плагин и события
+- системные настройки
+- шаблон политики и политику
 - таблицы `ms3remains_remains` и `ms3remains_order_deductions`
 - фрагменты MiniShop3 для сервиса статуса заказа и manager API
 

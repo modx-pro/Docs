@@ -5,7 +5,7 @@ description: "Список точек с названием, адресом и �
 
 # Адреса
 
-Секция `locations` выводит точки из repeater. Chunk: `pagebuilderpro_locations`. Требуется PageBuilder Pro. Карту эта секция не встраивает.
+Секция `locations` выводит точки из repeater. Карту эта секция не встраивает.
 
 ![Адреса](/components/pagebuilder/screenshots/sections/locations.jpg)
 
@@ -14,6 +14,16 @@ description: "Список точек с названием, адресом и �
 - Офисы и магазины списком
 - Пункты выдачи без iframe карты
 - Контакты филиалов
+
+## Параметры блока
+
+| Параметр | Значение |
+| --- | --- |
+| key | `locations` |
+| Слой | Pro |
+| Категория | контент (`content`) |
+| Chunk | `pagebuilderpro_locations` |
+| Требования | pro |
 
 ## Поля
 

@@ -4,7 +4,7 @@ description: Device type detection in MODX and different content on a single pag
 categories: utilities
 author: modx-pro
 repository: https://github.com/modx-pro/MobileDetect
-logo: https://modstore.pro/assets/extras/mobiledetect/logo.png
+logo: https://modstore.pro/assets/extras/mobiledetect/logo.jpg
 modstore: https://modstore.pro/packages/utilities/mobiledetect
 
 compatibility:

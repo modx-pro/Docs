@@ -167,7 +167,7 @@ mFilterSitemap создаёт XML карту сайта для виртуаль�
 mFilter включает задачу `mfl_generate_sitemap` для автоматической генерации sitemap-файла раз в сутки.
 
 ::: tip
-Параметры задачи (включая `filename` для имени выходного файла) и пример ручного запуска описаны в общем разделе: [Scheduler-задачи → mfl_generate_sitemap](/components/mfilter/interface/scheduler#mfl-generate-sitemap).
+Параметры задачи (включая `filename` для имени выходного файла) и пример ручного запуска описаны в общем разделе: [Scheduler-задачи → mfl_generate_sitemap](/components/mfilter/interface/scheduler#mfl_generate_sitemap).
 :::
 
 Задача отличается от прямого вызова сниппета тем, что **сохраняет XML в файл** (по умолчанию `sitemap-filters.xml` в корне сайта), а не отдаёт его как ответ HTTP. Используется когда основная карта сайта собирается отдельно (например, через `pdoSitemap`), а mFilter добавляет файл с фильтрованными URL.

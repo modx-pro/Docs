@@ -5,7 +5,7 @@ description: Overview of the ms3OptionsColor snippet and chunks
 
 # Snippets
 
-The package ships one storefront snippet. Chunks connect via the `tpl` parameter or run on their own (select, cart, mFilter).
+The package ships one storefront snippet. Chunks connect via `tpl` or run on their own: select, cart, mFilter.
 
 | Snippet | Purpose |
 | --- | --- |
@@ -18,10 +18,10 @@ The package ships one storefront snippet. Chunks connect via the `tpl` parameter
 | `tplMs3OptionsColor` | Color square on the product page and in the catalog (snippet default) |
 | `tplMs3OptionsColorSelect` | Ready `<select>` with label and option rows |
 | `tplMs3OptionsColorSelectOption` | Single `<option>` with `data-color` / `data-pattern` |
-| `tplMs3OptionsColorCart` | Example color block in a cart line |
+| `tplMs3OptionsColorCart` | Full cart template (`tpl.msCart` replacement), not a row include |
 | `tplMFilterMs3OptionsColor` | mFilter row for type `ms3oc` |
 
-Stock chunks use Fenom. Styles rely on `data-ms3oc-*`, not theme CSS class names.
+Stock chunks use Fenom. Styles read `data-ms3oc-*`, not theme class names.
 
 ## Where to start
 

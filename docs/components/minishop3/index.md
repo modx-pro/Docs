@@ -9,7 +9,7 @@ repository: https://github.com/modx-pro/MiniShop3
 
 compatibility:
   - modx3
-  - php81
+  - php82
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
   { text: 'Отличия от miniShop2', link: 'differences-from-ms2' },
@@ -56,7 +56,7 @@ items: [
           { text: 'Галерея', link: 'interface/utilities/gallery' },
           { text: 'Импорт', link: 'interface/utilities/import' },
           { text: 'Поля товара', link: 'interface/utilities/product-fields' },
-          { text: 'Дополнительные поля', link: 'interface/utilities/extra-fields' },
+          { text: 'Свои поля', link: 'interface/utilities/extra-fields' },
           { text: 'Колонки гридов', link: 'interface/utilities/grid-columns' },
           { text: 'Поля модели', link: 'interface/utilities/model-fields' },
         ],
@@ -64,13 +64,13 @@ items: [
     ],
   },
   {
-    text: 'Cookbook менеджера',
+    text: 'Cookbook админки',
     link: 'manager/',
     items: [
       { text: 'Обзор', link: 'manager/' },
       { text: 'Поле в заказе', link: 'manager/examples/order-custom-field' },
       { text: 'Поле у товара', link: 'manager/examples/product-extra-field' },
-      { text: 'Дополнительные поля', link: 'manager/extra-fields/cookbook' },
+      { text: 'Свои поля', link: 'manager/extra-fields/cookbook' },
       { text: 'Поля модели', link: 'manager/model-fields/cookbook' },
       { text: 'Поля товара', link: 'manager/product-fields/cookbook' },
       { text: 'Колонки грида', link: 'manager/grid-config/cookbook' },
@@ -115,7 +115,7 @@ items: [
           { text: 'Уведомления', link: 'development/events/notifications' },
           { text: 'Импорт', link: 'development/events/import' },
           { text: 'msProducts', link: 'development/events/msproducts' },
-          { text: 'Менеджер', link: 'development/events/manager' },
+          { text: 'Админка', link: 'development/events/manager' },
         ],
       },
       {
@@ -167,14 +167,25 @@ items: [
 
 MiniShop3 разработан специально для MODX Revolution 3.x и использует все преимущества новой версии:
 
-- **PHP 8.1+** — современный синтаксис, типизация, атрибуты
+- **PHP 8.2+** — современный синтаксис, типизация, атрибуты
 - **Namespaces** — все классы организованы в пространстве имён `MiniShop3\`
 - **PSR-4 автозагрузка** — через Composer
 - **Миграции Phinx** — версионирование структуры БД
 
 ### Улучшенная архитектура
 
-- **Web API** — `api.php` (`/api/v1/*`) для витрины и headless: корзина, заказ, ЛК, каталог, delivery/payment. [Документация](/components/minishop3/development/web-api/)
+```mermaid
+flowchart TB
+  store[Витрина сниппеты / JS]
+  api[api.php Web API /api/v1]
+  mgr[Vue-менеджер]
+  mgrApi[Manager API /api/mgr]
+  core[Сервисы MS3 + xPDO]
+  store --> api --> core
+  mgr --> mgrApi --> core
+```
+
+- **Web API** — `api.php` (`/api/v1/*`) для фронтенда и headless: корзина, заказ, ЛК, каталог, delivery/payment. [Документация](/components/minishop3/development/web-api/)
 - **Service Container** — зависимости через DI-контейнер MODX
 - **Vue 3 + PrimeVue** — современный интерфейс админки через [VueTools](/components/vuetools/)
 - **Современный фронтенд** — без jQuery, нативный JavaScript
@@ -192,8 +203,8 @@ MiniShop3 сохраняет обратную совместимость с mini
 
 | Требование | Версия |
 | --- | --- |
-| MODX Revolution | 3.0.0+ |
-| PHP | 8.1+ |
+| MODX Revolution | 3.0.3+ |
+| PHP | 8.2+ |
 | MySQL | 5.7+ / MariaDB 10.3+ |
 
 ### Зависимости MODX
@@ -213,10 +224,12 @@ MiniShop3 использует следующие PHP библиотеки (вк
 | Библиотека | Версия | Назначение |
 | --- | --- | --- |
 | [nikic/fast-route](https://github.com/nikic/FastRoute) | ^1.3 | Маршрутизация REST API |
-| [rakit/validation](https://github.com/rakit/validation) | ^1.4 | Валидация данных форм и API |
 | [intervention/image](https://image.intervention.io/) | ^3.0 | Обработка изображений (ресайз, водяные знаки) |
 | [robmorgan/phinx](https://phinx.org/) | ^0.16 | Миграции базы данных |
 | [ramsey/uuid](https://uuid.ramsey.dev/) | ^4.7 | Генерация UUID для токенов |
+| [brick/math](https://github.com/brick/math) | ^0.12 | Точная арифметика (зависимость UUID и др.) |
+
+Валидация форм и API — собственный `ValidationService` (`ms3_validation_service`), пакет `rakit/validation` удалён.
 
 ## Установка
 
@@ -224,8 +237,8 @@ MiniShop3 использует следующие PHP библиотеки (вк
 
 Стандартный способ установки через менеджер пакетов MODX с подключёнными репозиториями:
 
-1. Перейдите в **Extras → Installer**
-2. Нажмите **Download Extras**
+1. Перейдите в **Пакеты → Установщик**
+2. Нажмите **Загрузить пакеты**
 3. Установите **[VueTools](/components/vuetools/)** (если ещё не установлен)
 4. Найдите **MiniShop3** в списке доступных пакетов
 5. Нажмите **Download** и затем **Install**
@@ -238,8 +251,8 @@ MiniShop3 использует следующие PHP библиотеки (вк
 
 1. Скачайте транспортный пакет со страницы [релизов GitHub](https://github.com/modx-pro/MiniShop3/releases)
 2. Загрузите файл `.transport.zip` в `/core/packages/` вашего сайта
-3. Перейдите в **Extras → Installer**
-4. Нажмите **Search locally for packages**
+3. Перейдите в **Пакеты → Установщик**
+4. Нажмите **Искать пакеты локально**
 5. Найдите MiniShop3 в списке и нажмите **Install**
 
 ### Способ 3: Установка из исходников (для разработчиков)
@@ -256,7 +269,9 @@ git clone https://github.com/modx-pro/MiniShop3.git
 cd MiniShop3
 
 # Установка PHP зависимостей
+cd core/components/minishop3
 composer install
+cd ../../..
 
 # Сборка Vue виджетов (требуется Node.js 18+)
 cd vueManager
@@ -269,7 +284,7 @@ cd ..
 php _build/build.php
 ```
 
-После установки перейдите в **Extras → MiniShop3** для настройки магазина.
+После установки перейдите в **Пакеты → MiniShop3** для настройки магазина.
 
 Подробное руководство по первоначальной настройке — на странице [Быстрый старт](quick-start).
 
@@ -282,7 +297,6 @@ core/components/minishop3/
 ├── bootstrap.php           # Инициализация компонента
 ├── config/
 │   ├── routes/             # Маршруты REST API
-│   ├── mgr/                # Конфигурация админки
 │   ├── combos/             # Комбобоксы для админки
 │   ├── filters/            # Фильтры для гридов
 │   └── ms3.services.d/     # Кастомные сервисы
@@ -292,11 +306,10 @@ core/components/minishop3/
 │   ├── chunks/             # Чанки (шаблоны Fenom)
 │   ├── plugins/            # MODX плагины
 │   ├── tasks/              # Задачи Scheduler
-│   └── templates/          # Email-шаблоны
+│   └── templates/          # Шаблоны страниц фронтенда
 ├── lexicon/                # Языковые файлы (en, ru)
-├── migrations/             # Миграции Phinx
+├── migrations/             # Миграции Phinx (включая сиды)
 ├── schema/                 # xPDO схема БД
-├── seeds/                  # Сиды для БД
 ├── src/
 │   ├── Controllers/        # Бизнес-логика (Cart, Order, Customer)
 │   ├── Model/              # xPDO модели
@@ -324,6 +337,5 @@ assets/components/minishop3/
 │   ├── mgr/                # Стили админки
 │   └── web/                # Стили сайта
 ├── img/                    # Изображения
-├── payment/                # Обработчики платёжных систем
-└── plugins/                # JavaScript плагины
+└── payment/                # Обработчики платёжных систем
 ```

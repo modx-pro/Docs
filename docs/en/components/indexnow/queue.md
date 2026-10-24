@@ -1,69 +1,104 @@
 ---
-title: Очередь и отправка
-description: События плагина, dedupe, worker, HTTP-коды и retry
+title: Queue and delivery
+description: Plugin events, dedupe, worker, HTTP codes, and retry
 ---
 
-# Очередь и отправка
+# Queue and delivery
 
-## Поток
+## Flow
 
-```text
-Событие ресурса → постановка в очередь (dedupe)
-  → Scheduler или «Обработать очередь»
-  → QueueWorker (batch по host)
-  → IndexNow API
-  → История
+```mermaid
+flowchart LR
+  EV[Resource event] --> EN[Queue dedupe]
+  EN --> TK[Queue tick up to 25 URLs]
+  EN --> SC[Scheduler]
+  EN --> MN[Process queue]
+  TK --> WK[QueueWorker]
+  SC --> WK
+  MN --> WK
+  WK --> API[IndexNow API]
+  API --> HI[History]
 ```
 
-Таблицы: `modx_indexnow_queue`, `modx_indexnow_history` (с учётом префикса таблиц сайта).
+Tables: `modx_indexnow_queue`, `modx_indexnow_history` (with your table prefix).
 
-## Какие события ловит плагин
+## Queue tick (primary background)
 
-| Событие | Поведение |
+The plugin listens to `OnWebPageComplete` (front end) and `OnManagerPageAfterRender` (manager). With IndexNow enabled and `indexnow_queue_enabled = Yes`, after enqueue the code calls `scheduleQueueTick()`: once per request, via `register_shutdown_function`.
+
+One tick:
+
+- takes a MODX cache lock (`indexnow_queue_tick`, TTL **55** seconds) so parallel requests do not run duplicate workers;
+- processes at most **25** due URLs (`QUEUE_TICK_BATCH_MAX`), even if `indexnow_batch_size` is higher;
+- if Scheduler is installed, calls `ensureScheduledRun()` as backup cron.
+
+Scheduler is not required for background delivery. Tick covers the usual case after a resource save or a manager page load.
+
+## Plugin events
+
+| Event | Behavior |
 | --- | --- |
-| `OnDocFormSave` | Опубликованный ресурс → `update`. Снятый с публикации → `delete`. |
-| `OnResourcePublish` | Как сохранение опубликованного → `update`. |
+| `OnDocFormSave` | Published resource → `update`. Unpublished → `delete`. |
+| `OnResourcePublish` | Same as saving published → `update`. |
 | `OnResourceUnPublish` | → `delete`. |
-| `OnBeforeDocFormDelete` | Запоминает URL до удаления. |
-| `OnDocFormDelete` | Ставит в очередь `delete` по запомненному URL. |
+| `OnBeforeDocFormDelete` | Stores URL before delete. |
+| `OnDocFormDelete` | Enqueues `delete` for the stored URL. |
+| `OnWebPageComplete` | Schedules queue tick after the front-end response. |
+| `OnManagerPageAfterRender` | Schedules queue tick after the manager response. |
 
-В очередь update попадают опубликованные, не удалённые ресурсы, для которых собран абсолютный URL.
+Update enqueue applies to published, non-deleted resources with a resolvable absolute URL. Hosts `localhost`, private/reserved IPs, and `metadata.google.internal` fail URL validation.
 
-Если `publishedon` в будущем, запись ждёт: `available_at = publishedon`.
+If `publishedon` is in the future, the row waits with `available_at = publishedon`.
 
 ## Deduplication
 
-Открытые строки (`pending` / `processing`) уникальны по паре `host + url`.
+Open rows (`pending` / `processing`) are unique by `host + url`.
 
-Повторное сохранение той же страницы не плодит дубликаты. Обновляются `action`, `available_at` и служебные поля.
+Saving the same page again does not create duplicates. `action`, `available_at`, and metadata are updated.
 
-Правило: побеждает последнее событие. Пример: снятие с публикации дало `delete`, повторная публикация переписывает ту же строку на `update`.
+Last event wins. Example: unpublish sets `delete`, republish rewrites the same row to `update`.
 
 ## Worker
 
-Один проход:
+```mermaid
+stateDiagram-v2
+  [*] --> pending
+  pending --> processing: claim batch
+  processing --> success: HTTP 200 or 202
+  processing --> pending: retry 429 5xx
+  processing --> failed: HTTP 400 403 405 422
+  failed --> pending: Retry in UI
+  success --> [*]
+  failed --> [*]: Delete
+```
 
-1. Вернуть «зависшие» `processing` старше 15 минут в `pending`.
-2. Взять `pending`, у которых `available_at <= сейчас`.
-3. Сгруппировать по `host`.
-4. Отправить POST batch на endpoint. Размер batch задаёт `indexnow_batch_size`.
-5. Записать историю и обновить очередь.
+One pass:
 
-## HTTP-коды
+1. Reset stale `processing` older than 15 minutes to `pending`.
+2. Claim `pending` rows with `available_at <= now`, limited by `indexnow_batch_size` (or less on tick).
+3. Group by `host`.
+4. POST batch(es) to the endpoint per host group.
+5. Write history and update the queue.
 
-| Код | Поведение |
+If the key is invalid or `indexnow_endpoint` fails validation, the worker **exits without sending** (message in the MODX log). The queue grows with no history rows.
+
+## HTTP codes
+
+| Code | Behavior |
 | --- | --- |
-| `200`, `202` | Успех. Строка уходит из очереди, в истории `success`. |
-| `429`, `5xx`, сеть / timeout | Временная ошибка. Retry через `indexnow_retry_delay`, пока не кончатся `indexnow_max_attempts`. |
-| `400`, `403`, `405`, `422` | Постоянная ошибка. Статус `failed`, автоматический retry не крутит бесконечно. |
+| `200`, `202` | Success. Row leaves the queue; history status `success`. |
+| `429`, `5xx`, network / timeout | Temporary. Retry after `indexnow_retry_delay` until `indexnow_max_attempts`. |
+| `400`, `403`, `405`, `422` | Permanent. Status `failed`; no endless automatic retry. |
+| Other 4xx (e.g. `401`, `404`, `410`) | Also **immediate** `failed`, no retry series (not treated as temporary). |
 
-Успешный ответ IndexNow значит «уведомление принято», не «страница уже в поиске». То же в [документации Яндекса](https://yandex.ru/support/webmaster/ru/indexing-options/index-now).
+A successful IndexNow response means the notification was accepted, not that the page is already in search results. Same in [Yandex documentation](https://yandex.com/support/webmaster/indexing-options/index-now.html).
 
-## Retry IndexNow и retry Scheduler
+## IndexNow retry vs Scheduler retry
 
-- `attempts` / `available_at` в очереди: про доставку URL на endpoint.
-- Retry у задачи Scheduler: отдельно, только если упало выполнение самой задачи.
+- Queue `attempts` / `available_at`: delivery to the endpoint.
+- Scheduler task retry: separate; only when the task runner itself fails.
 
-## Ручная обработка
+## Manual processing
 
-Без Scheduler нажмите **Обработать очередь** на вкладке Статус или после наполнения очереди.
+- **Process queue** on Status: immediate full worker pass with `indexnow_batch_size` limit.
+- Queue tick and Scheduler pick up due URLs without UI action.

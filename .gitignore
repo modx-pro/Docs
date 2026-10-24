@@ -10,6 +10,10 @@ node_modules/
 **/.vitepress/cache
 **/.vitepress/dist
 
+# og:image, generated at build time (scripts/generate-og-images.mjs)
+docs/public/og/
+docs/public/og-default.png
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

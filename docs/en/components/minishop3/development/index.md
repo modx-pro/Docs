@@ -3,30 +3,55 @@ title: Development
 ---
 # Development
 
-Section for developers extending MiniShop3 functionality.
+```mermaid
+flowchart TB
+  need[Task]
+  need -->|Plugin on a process| events[Events]
+  need -->|Headless / SPA| webapi[Web API /api/v1]
+  need -->|Routes and middleware| router[API Router]
+  need -->|Background| scheduler[Scheduler]
+  need -->|PHP CRUD for entities| backend[Backend API]
+  need -->|Replacing classes| services[ServiceRegistry]
+  need -->|Manager tabs| tabs[product / order tabs]
+  webapi --> router
+```
 
 ## Contents
 
-- [Events](events) — event system for plugins
-- [Web API](api): docs for storefront and Nuxt ([endpoint map](web-api/endpoints))
-- [API Router](routing) — routing, middleware, custom routes
-- [Scheduler](scheduler) — background tasks and Scheduler integration
-- [Models and DB schema](models) — xPDO models and table structure
+- [Events](events) — plugin hook points
+- [Web API](api) — frontend and Nuxt, [endpoint map](web-api/endpoints)
+- [API Router](routing) — routing, middleware, your own routes
+- [Scheduler](scheduler) — background tasks
+- [Models and DB schema](models) — xPDO models
 - [Service layer](services) — DI container, extending and replacing services
 - [JavaScript API](javascript) — Headless API for SPA (Vue, React, Vanilla JS)
-- [Frontend JavaScript](frontend-js) — full documentation including UI layer
-- [Product tabs integration](product-tabs-integration) — adding tabs to the product page
-- [Order tabs integration](order-tabs-integration) — adding tabs to the order page
-- [Backend API](backend-api/) — programmatic API for working with entities from PHP (products, orders, options, customers)
+- [Frontend JavaScript](frontend-js) — site-side modules, including the UI layer
+- [Product tabs integration](product-tabs-integration)
+- [Order tabs integration](order-tabs-integration)
+- [Backend API](backend-api/) — products, orders, options and customers from PHP
 
 ## Manager API and processors
 
-As of **1.10+**, most manager screens use the **Manager REST API** (`Controllers\Api\Manager\*` via FastRoute). Legacy **processors** (`MiniShop3\Processors\*`) remain for:
+```mermaid
+flowchart TB
+  vue[Manager Vue screens] --> mgrapi[Manager REST API]
+  shop[Frontend] --> webapi["Web API /api/v1"]
+  php["runProcessor, import, gallery"] --> proc[Processors]
+  mgrapi --> svc[Service layer]
+  svc --> ev[MODX events]
+  vuecrud[Vendor Vue CRUD] --> db[(Database)]
+```
 
-- legacy connector / `runProcessor()` from PHP;
-- utilities where the controller explicitly calls a processor (`RunsMs3Processors`: import, bulk gallery updates);
-- some settings where events are still tied to the processor lifecycle.
+As of **1.10+**, the screens for orders, customers, settings and utilities run through the **Manager REST API** (`Controllers\Api\Manager\*` on FastRoute). The product and category forms are the exception: those are plain MODX resource screens, and Vue only lives in their tabs. The older **processors** (`MiniShop3\Processors\*`) remain only for:
 
-Vue CRUD (vendors, deliveries, payments, etc.) does **not** call `Processors/Settings/Vendor/*` — plugins on `msOnVendorCreate` from the admin UI will not run. See [Vendor events](events/vendor).
+- the previous connector and `runProcessor()` calls from PHP;
+- utilities where the controller calls a processor explicitly: `ImportController` (product import) and `UtilitiesGalleryController` (bulk gallery operations), both through the `RunsMs3Processors` trait;
+- customer authentication in the Web API: login, registration, logout, password reset request and password reset all run through `Processors\Api\Customer\*`.
 
-The headless storefront uses Web API (`/api/v1/*`), not processors.
+The remaining Manager API controllers call no processors: they work through the service layer.
+
+Events are not always lost. Orders, their statuses and lines go through services that fire the events themselves. A plugin on `msOnChangeOrderStatus` does run from the manager.
+
+Vue CRUD for directories writes straight to the database and skips `Processors/Settings/Vendor/*`. Vendor CRUD plugins do not run from the manager. Deliveries and payments have cost events in `events.php`, not CRUD events. Link types have no CRUD events. See [Vendor events](events/vendor).
+
+The headless frontend calls the Web API (`/api/v1/*`). Login, registration, logout, forgot-password and reset-password delegate to `MiniShop3\Processors\Api\Customer\*`.

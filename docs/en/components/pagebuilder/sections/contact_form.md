@@ -33,7 +33,7 @@ Requires PageBuilder Pro and **FetchIt**.
 
 ## form_key and fields
 
-**Form key** (`form_key`) must be unique on the page if you have several forms. Repeater **Form fields**: name, label, type (`text`, `email`, `phone`, `textarea`, `select`, `radio`, `checkbox`, `date`), required. For select and radio, write options one per line (`Label|value` or value only). Field name: `[a-z][a-z0-9_]*`. A required checkbox stays empty until the value is `1`, `yes`, `true`, or `on`.
+**Form key** (`form_key`) must be unique on the page if you have several forms. Repeater **Form fields**: name, label, type (`text`, `email`, `phone`, `textarea`, `select`, `radio`, `checkbox`, `date`), required. For select and radio, write one value per line — the line becomes both the label and the value. Field name: `[a-z][a-z0-9_]*`, case-insensitive. A required checkbox stays empty until the value is `1`, `yes`, `true`, or `on`.
 
 Email recipient: `emailsender` or site mail settings (same as handler). Without **FetchIt** the section shows a form unavailability message.
 

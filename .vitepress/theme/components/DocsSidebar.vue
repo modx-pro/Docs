@@ -61,7 +61,7 @@ watch(() => route.data.relativePath, (newPath, oldPath) => {
   nextTick(() => {
     if (
       !newPath.includes('components/')
-      || /^(\w*\/)?components\/(?!index.md)/.test(oldPath)
+      || /^(\w*\/)?components\/(?!index.md)/.test(oldPath ?? '')
     ) {
       return
     }

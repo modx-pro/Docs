@@ -5,22 +5,36 @@ description: Switch and apply the PrimeVue theme
 
 # Theme
 
-The PrimeVue theme is set by one system setting, `vuetools.theme` — for every component that supports it at once. Since 1.2.0.
+System setting `vuetools.theme` sets the PrimeVue theme for every component that calls `getActiveTheme()`. Since 1.2.0.
 
 ## Switch the theme
 
-Setting: **System → System Settings → `vuetools.theme`**.
+**System → System Settings → `vuetools.theme`**.
+
+```mermaid
+flowchart TB
+  Opt[vuetools.theme]
+  Win[window.VueTools.theme]
+  Fn[getActiveTheme]
+  Pick{theme name}
+  Aura[Aura]
+  Modx[ModxManagerTheme]
+  Use["app.use(PrimeVue, …)"]
+  Opt --> Win --> Fn --> Pick
+  Pick -->|aura or unknown| Aura --> Use
+  Pick -->|modx| Modx --> Use
+```
 
 | Value | Theme |
 |-------|-------|
-| `aura` | `Aura` — the standard PrimeVue theme (default) |
-| `modx` | `Modx` — the MODX Revolution 3 manager look |
+| `aura` | `Aura`: standard PrimeVue theme (default) |
+| `modx` | `ModxManagerTheme`: MODX Revolution 3 manager look (no dark mode) |
 
-Changing the value switches the theme for every component that reads it through `getActiveTheme()` — with no rebuild of those components.
+After changing the setting, widgets with `getActiveTheme()` pick up the theme without rebuild. Name: `trim` and lowercase (` MODX ` → `modx`). Empty or unknown → `aura`. Registry has only `aura` and `modx`; you cannot register a custom theme in the package.
+
+`getActiveTheme()` returns a reference to the registry entry. Do not mutate `theme.options`: changes affect every later call on the page ([issue #66](https://github.com/modx-pro/vueTools/issues/66)).
 
 ## Apply in a component
-
-Pass `getActiveTheme()` to `app.use(PrimeVue, …)`:
 
 ```javascript
 import { PrimeVue } from 'primevue'
@@ -29,7 +43,7 @@ import { getActiveTheme } from '@vuetools/useTheme'
 app.use(PrimeVue, getActiveTheme())
 ```
 
-With a locale:
+With locale:
 
 ```javascript
 import { getPrimeVueLocale } from '@vuetools/usePrimeVueLocale'
@@ -37,15 +51,29 @@ import { getPrimeVueLocale } from '@vuetools/usePrimeVueLocale'
 app.use(PrimeVue, { ...getActiveTheme(), locale: getPrimeVueLocale() })
 ```
 
-`getActiveTheme()` reads the value from `window.VueTools.theme` (injected by the `VueCoreManager` plugin next to the Import Map) and returns `{ theme }` for the active theme. An unknown setting value falls back to `Aura`.
+`getActiveTheme()` reads `window.VueTools.theme` and returns `{ theme }` for the active registry entry.
 
-Don't set the theme by hand (`{ theme: { preset: Aura } }`) — a component with a hardcoded theme won't follow the setting.
+Hardcoded preset in code (`{ theme: { preset: Aura } }`) ignores `vuetools.theme`. `useTheme({ name })` equals `getActiveTheme(name)` and returns `{ theme }`.
+
+## Presets `Modx`, `ModxManagerTheme`, `ModxTheme`
+
+Import from `primevue`, `vuetools`, or `vuetools/theme` (same build):
+
+| Export | Purpose |
+|---------|------------|
+| `Modx` | Nora-based preset: square controls, manager density. Field 32px (`2rem`), button 36px (`2.25rem`). Button without severity and `severity="success"`: green `#6CB24A`. Navy `#234368` is not button fill |
+| `ModxManagerTheme` | `{ preset: Modx, options: { darkModeSelector: 'none', cssLayer: false } }`. Manager without dark mode. What `getActiveTheme()` returns when `vuetools.theme = modx` |
+| `ModxTheme` | `{ preset: Modx, options: { darkModeSelector: '.p-dark', cssLayer: false } }`. Standalone / storefront: dark mode via `p-dark` on an ancestor |
+
+```javascript
+import { Modx, ModxManagerTheme, ModxTheme } from 'vuetools/theme'
+```
 
 ## Version requirement {#version}
 
-`getActiveTheme()` and the `@vuetools/useTheme` key appeared in VueTools 1.2.0. On an older package that key is missing from the Import Map and the component module fails on import — the console shows a module resolution error and the widget never appears.
+`getActiveTheme()` and `@vuetools/useTheme` appeared in VueTools 1.2.0. On an older package the key is missing from the Import Map and the module fails on import.
 
-The theme-capable version is marked by the `vuetools/theme` key in the Import Map. For a themed component extend the dependency check (see [VueTools presence check](integration#vuetools-check)) with that key:
+Theme-capable version marker: `vuetools/theme` in the Import Map. Extend the dependency check (see [Integration](integration#vuetools-check)):
 
 ```javascript
 hasVueCore = mapContent.imports
@@ -53,15 +81,15 @@ hasVueCore = mapContent.imports
     && mapContent.imports['vuetools/theme'];
 ```
 
-Then on an older package the reader sees a clear "update VueTools" message instead of a console error. Name the minimum version in the message — VueTools 1.2.0.
+State minimum VueTools 1.2.0 in the message.
 
 ## Existing components
 
-Updating VueTools alone changes nothing visually: `Aura` is active by default. A component that sets the theme the old way (`Aura` or `ModxManagerTheme` in code) keeps working and does not follow the setting until it moves to `getActiveTheme()`.
+Updating VueTools alone does not change appearance: default is `Aura`. A component with hardcoded `Aura` or `ModxManagerTheme` does not follow the setting until it uses `getActiveTheme()`.
 
-## Custom theme
+## Custom theme in a component
 
-You can extend the `Modx` preset without copying it:
+Extend a preset locally with `definePreset`. This is **your** app preset: it is not in the VueTools registry and does not change `getActiveTheme()` for other extras:
 
 ```javascript
 import { definePreset, Modx } from 'primevue'
@@ -69,6 +97,8 @@ import { definePreset, Modx } from 'primevue'
 const MyPreset = definePreset(Modx, {
   semantic: { primary: { 500: '#1a3a5c' } }
 })
+
+app.use(PrimeVue, { theme: { preset: MyPreset } })
 ```
 
-New themes register in a registry inside VueTools, while components keep calling `getActiveTheme()` — their code doesn't change.
+To share a theme across extras, add it to the VueTools package (`useTheme.js` / release).

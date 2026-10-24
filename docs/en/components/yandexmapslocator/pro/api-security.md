@@ -16,7 +16,7 @@ Request → `ApiSecurityMiddleware` (enabled, Bearer, rate limit, CORS) → pars
 | Key | Production recommendation |
 |------|----------------------------|
 | `yandexmapslocator_api_enabled` | Yes. Disable during an incident |
-| `yandexmapslocator_api_token` | Set a long secret; do not leave empty |
+| `yandexmapslocator_api_token` | Long secret for server-side clients. Never written into locator HTML |
 | `yandexmapslocator_api_cors_origins` | Exact frontend origins, not `*` |
 | `yandexmapslocator_api_allowed_parents` | Restrict location containers |
 | `yandexmapslocator_api_resource_tvs` | TV whitelist for `include=tv` |
@@ -30,8 +30,9 @@ Full list: [System settings](../settings#rest-and-limits-yandexmapslocator_api).
 
 - `Content-Type: application/json; charset=utf-8`
 - `X-Content-Type-Options: nosniff`
-- List: `Cache-Control: public, max-age=60`
-- Geocode: `Cache-Control: no-store`
+- List: `Cache-Control: public, max-age=60` only if the token is empty, there is no `Authorization` header, and `fields` stay in the short public set. Otherwise `private, max-age=60`
+- Successful geocode: `Cache-Control: private, max-age=60`
+- Errors: `Cache-Control: no-store`
 - CORS only from allowlist
 - `429` + `Retry-After: 60` when limit exceeded
 

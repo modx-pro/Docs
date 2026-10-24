@@ -5,7 +5,7 @@ description: "Список записей провайдера datasource. Capab
 
 # Динамический список
 
-Секция `dynamic_list` показывает записи провайдера на момент рендера. Chunk: `pagebuilderpro_dynamic_list`. Нужны PageBuilder Pro и capability `datasources`.
+Секция `dynamic_list` показывает записи провайдера на момент рендера.
 
 ![Динамический список](/components/pagebuilder/screenshots/sections/dynamic_list.jpg)
 
@@ -18,6 +18,16 @@ description: "Список записей провайдера datasource. Capab
 ## Запрос
 
 Запрос принимает только объявленные поля и операторы `eq`, `contains`, `in`, `gte`, `lte`, `between`, `empty`, `not_empty`. `contains` не различает регистр, включая кириллицу. Недопустимые операторы отсекает `QueryPolicy`. Ключи `sql`, `php`, `snippet` и `class` в payload и context запроса отклоняет `QueryRequest` (и `DatasourceQueryService` для context). Лимит секции и запроса обрезается до 100 без ошибки.
+
+## Параметры блока
+
+| Параметр | Значение |
+| --- | --- |
+| key | `dynamic_list` |
+| Слой | Pro |
+| Категория | контент (`content`) |
+| Chunk | `pagebuilderpro_dynamic_list` |
+| Требования | pro, `datasources` |
 
 ## Поля
 

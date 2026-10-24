@@ -1,18 +1,18 @@
 ---
 title: Открыто сейчас
-description: Фильтр working_now, TZ на точке и бейджи YandexMapsLocator Pro
+description: Фильтр working_now, пояс на точке и бейджи YandexMapsLocator Pro
 ---
 
 # Открыто сейчас
 
-**Pro.** На сайте появляются бейджи «Открыто» / «Закрыто», кнопка «Только открытые» и поля `is_open_now`, `status_hint`, `closes_at`, `next_open_at`. В сниппете и REST тот же смысл даёт фильтр `working_now` (или query `working_now=1`).
+**Pro.** На сайте появляются бейджи «Открыто» / «Закрыто», кнопка «Только открытые» и поля `is_open_now`, `status_hint`, `closes_at`, `next_open_at`. Фильтр включается только через `filters=working_now`. Параметр `working_now=1` код не читает.
 
 ## Часовой пояс
 
 В TV `yandexmaps_working_hours` храните **местное время точки**, не UTC сервера.
 
 1. На точке: TV `yandexmaps_timezone` (IANA), например `Europe/Moscow` или `Asia/Omsk`.
-2. Fallback сети: Free-настройка `yandexmapslocator_timezone` (по умолчанию `Europe/Moscow`).
+2. Запасной вариант сети: Free-настройка `yandexmapslocator_timezone` (по умолчанию `Europe/Moscow`).
 
 От пояса зависят фильтр, бейджи и поля статуса.
 
@@ -20,7 +20,7 @@ description: Фильтр working_now, TZ на точке и бейджи Yandex
 
 Для `working_now` / `is_open_now` в `yandexmaps_working_hours` нужен **JSON**.
 
-Ключи дней: `mon` … `sun`. Значение: массив интервалов `"HH:MM-HH:MM"`. Пустой массив — выходной. Интервал через полночь (`22:00-06:00`) тоже ок.
+Ключи дней: `mon` … `sun`. Значение: массив интервалов `"HH:MM-HH:MM"`. Пустой массив: выходной. Интервал через полночь (`22:00-06:00`) допустим.
 
 Пример (пн-чт 09-21, пт 09-22, сб 10-22, вс 10-20):
 
@@ -66,7 +66,7 @@ description: Фильтр working_now, TZ на точке и бейджи Yandex
 
 Произвольный текст вроде «пн-пт 10-19» в карточке покажется, но статус «открыто сейчас» для него **не считается**. Точка для фильтра закрыта.
 
-На форме ресурса кнопка Pro «Проверить расписание» показывает статус и ближайшее открытие/закрытие без сохранения.
+На форме ресурса кнопка Pro «Проверить расписание» показывает статус и ближайшее открытие/закрытие без сохранения. Кнопка появляется только если TV `yandexmaps_working_hours` назначен шаблону этого ресурса. Без привязки её нет, хотя Pro установлен.
 
 ## Сниппет
 
@@ -87,7 +87,7 @@ description: Фильтр working_now, TZ на точке и бейджи Yandex
 
 В чанке точки после Pro `AfterStorePrepare` доступны `{$is_open_now}`, при необходимости `{$status_hint}`, `{$closes_at}`, `{$next_open_at}`.
 
-Разметка статуса как в default `yandexmapslocator.store`:
+Разметка статуса как в `yandexmapslocator.store` пакета:
 
 ```fenom
 {if isset($is_open_now)}
@@ -136,8 +136,32 @@ description: Фильтр working_now, TZ на точке и бейджи Yandex
 
 Поля Pro попадают в ответ только если их перечислили в `fields`.
 
-## UI
+## Интерфейс
 
 Модуль `pro.js` добавляет бейдж на карточке и кнопку «Только открытые» в панели фильтров.
 
 Нужны установленный Pro и capability `pro` в map config.
+
+Контракт модуля:
+
+- идемпотентен: повторный вызов `install(locator)` ничего не делает, отмечается `data-yml-pro-ui`
+- подписывается на `search:start` и дописывает `working_now` в `filters`, когда кнопка активна
+- перехватывает `clearLocation()` и сбрасывает кнопку
+- вешает бейдж через хук `balloon:build`
+- держит состояние в `locator.openNowFilter`
+
+Разметка, которую ставит модуль:
+
+| Что | Значение |
+|-----|----------|
+| Атрибут кнопки | `data-yml-open-now` |
+| Атрибут активного состояния | `data-yml-active` |
+| Класс кнопки | `yml-search__open-now` |
+| Класс бейджа | `yml-balloon__status is-open` / `is-closed` |
+| Класс подписи бейджа | `yml-balloon__status-hint` |
+
+::: tip
+
+CSS всех этих классов лежит в Free: `assets/components/yandexmapslocator/css/locator.css`. Отдельного Pro-фронтенд-CSS нет, `css/mgr.css` в Pro покрывает только панель управления в менеджере. Если классы не стилизованы, проверьте, что подключён `locator.css` Free.
+
+:::

@@ -3,10 +3,7 @@ title: Site integration
 ---
 # Site integration
 
-For two audiences:
-
-- **Manager:** what to enable and how to verify.
-- **Developer:** how to wire snippets in Fenom and standard MODX.
+How to wire snippets in Fenom and standard MODX, and how to verify the result.
 
 ## 1. Load assets (required)
 
@@ -30,7 +27,7 @@ In the template (or shared head/footer), load **lexicon first**, then CSS and JS
 
 ## 2. Block in the product card: “Frequently bought together”
 
-**Manager:** after adding the call, a recommendations block should appear on the product card. If there are no products, the block is not shown.
+After you add the call, a recommendations block should appear on the product card. If there are no products, the block is not shown.
 
 ::: code-group
 
@@ -69,7 +66,7 @@ In the template (or shared head/footer), load **lexicon first**, then CSS and JS
 
 ## 3. Auto recommendations by category
 
-**Manager:** handy for home or landing when you need a block from a specific category.
+For home or landing when you need a block from a specific category.
 
 ::: code-group
 
@@ -96,8 +93,6 @@ In the template (or shared head/footer), load **lexicon first**, then CSS and JS
 :::
 
 ## 4. VIP set
-
-**Manager:**
 
 1. Fill system setting `ms3productsets.vip_set_1` (`1,2,3,...`).
 2. Ensure products are published.
@@ -152,7 +147,7 @@ Default `hideIfEmpty=true` returns an empty string.
 
 ## 6. AJAX block render (JS API)
 
-`render()` works the same; templates differ in `resource_id` and container markup.
+`render()` works the same. Templates differ in `resource_id` and container markup.
 
 ::: code-group
 
@@ -192,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 :::
 
-On pages without a current resource (home, etc.) pass `resource_id: 0` or omit the field — see [API](/en/components/ms3productsets/api).
+On pages without a current resource (home, and similar) pass `resource_id: 0` or omit the field. See [API](/en/components/ms3productsets/api).
 
 ## 7. “Add to cart” in set card
 
@@ -210,24 +205,24 @@ Button label from MiniShop3 lexicon (`ms3_cart_add`), same as chunk **tplSetItem
 
 :::
 
-`productsets.js` handles the click and POSTs to `connector.php`.
+Stock `tplSetItem` is a MiniShop3 `ms3_form`, not `data-add-to-cart`. The example below is custom. `productsets.js` hits MiniShop3 Web API first (`ms3Config.actionUrl`). Connector `add_to_cart` is fallback.
 
 ## 8. “Add entire set” button
 
 `data-add-set` adds all products in the set. Used in **tplSetVIP** and **tplSetWrapper** (when `count > 0`).
 
-The set container must include `data-product-id` (cards from tplSetItem). JS finds the container from the button (`.msps__vip-set`, `.msps__wrapper`) and calls `addToCart` for each product.
+**tplSetVIP** / **tplSetWrapper** / **tplPopcorn** set `data-msps-product-ids`. JS reads that first, then `[data-product-id]` / `[data-add-to-cart]`, then `input[name="id"]`.
 
 ::: code-group
 
 ```fenom
-<button type="button" class="msps__add-all-button" data-add-set="1">
+<button type="button" data-add-set="1">
   {'msproductsets_add_all_to_cart' | lexicon}
 </button>
 ```
 
 ```modx
-<button type="button" class="msps__add-all-button" data-add-set="1">
+<button type="button" data-add-set="1">
   [[%msproductsets_add_all_to_cart? &namespace=`ms3productsets` &topic=`default`]]
 </button>
 ```

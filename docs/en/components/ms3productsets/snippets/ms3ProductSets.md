@@ -3,7 +3,7 @@ title: ms3ProductSets
 ---
 # Snippet ms3ProductSets
 
-Outputs product sets for MiniShop3. Logic: first tries manual links from `ms3_product_sets`, then applies auto logic by type when result is empty.
+Outputs product sets for MiniShop3. First reads manual links from `ms3_product_sets` and drops unpublished or deleted IDs. If the filtered list is empty, applies auto logic by type.
 
 ## Supported types
 
@@ -14,7 +14,8 @@ Outputs product sets for MiniShop3. Logic: first tries manual links from `ms3_pr
 - `auto_sales`
 - `vip`
 - `auto`
-- `also-bought`, `cross-sell`, `custom` (handled as auto)
+- `also-bought`, `cross-sell` (same auto path as `buy_together`)
+- `custom` (same as `auto`)
 
 Unknown `type` falls back to `buy_together`.
 
@@ -27,10 +28,13 @@ Unknown `type` falls back to `buy_together`.
 | `category_id` | Category ID for auto mode | `0` |
 | `set_id` | VIP set number (`vip_set_{set_id}`) | `0` |
 | `max_items` | Product limit (1–100) | `ms3productsets.max_items` |
-| `tpl` | Card chunk | `tplSetItem` |
+| `tpl` | Card chunk (`tplSetVIP` / `tplPopcorn` use `itemTpl` for the row) | `tplSetItem` |
+| `itemTpl` | Row chunk when `tpl` is a VIP/popcorn wrapper | `''` |
+| `set_title` / `discount_percent` | Placeholders for the VIP wrapper | `''` |
+| `showLog` | Passed to `msProducts` | `false` |
 | `tplWrapper` | Block wrapper chunk (`output`, `type`, `count`) | `''` (no wrapper; set a chunk name such as `tplSetWrapper`) |
 | `emptyTpl` | Empty result chunk | `tplSetEmpty` |
-| `hideIfEmpty` | `true`: empty string, `false`: `emptyTpl` | `true` |
+| `hideIfEmpty` | `true`: empty string. `false`: `emptyTpl`. | `true` |
 | `exclude_ids` | Product IDs to exclude | `''` |
 | `showUnpublished` | Passed to `msProducts` | `false` |
 | `showHidden` | Passed to `msProducts` | `false` |

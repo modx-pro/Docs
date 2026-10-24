@@ -1,15 +1,22 @@
 ---
 title: PageBuilderContactForm
-description: "FetchIt-handler секции contact_form. Из шаблона не вызывается"
+description: "FetchIt вызывает обработчик секции contact_form. Из шаблона не вызывается"
 ---
 
 # Сниппет PageBuilderContactForm
 
-Handler AJAX-отправки секции Pro [contact_form](../sections/contact_form). Чанк секции вызывает его через **FetchIt**. Из шаблона ресурса сниппет не вызывайте.
+Обработчик AJAX-отправки секции Pro [contact_form](../sections/contact_form). Чанк секции вызывает его через **FetchIt**. Из шаблона ресурса сниппет не вызывайте.
 
 ## Назначение
 
 Валидация полей, письмо через `modMail`, JSON-ответ FetchIt (success / field errors / redirect).
+
+```mermaid
+flowchart LR
+    A[Проверка CSRF и полей] -->|"ошибки"| E["JSON с ошибками полей"]
+    A -->|"ок"| B[Письмо через modMail]
+    B --> C["JSON: успех или redirect"]
+```
 
 ## Где вызывается
 
@@ -35,14 +42,20 @@ Chunk `pagebuilderpro_contact_form` вызывает [PageBuilderFetchIt](PageBu
 | свойство `resource_id` в action FetchIt | 2 |
 | текущий ресурс MODX | 3 |
 
-Секция с тем же `form_key` не найдена — `pagebuilder_fe_form_not_found`. Прямой вызов handler без сервиса FetchIt — JSON с `pagebuilder_fe_fetchit_unavailable`. На этапе отрисовки формы без FetchIt чанк показывает `pagebuilder_fe_form_unavailable` (см. [PageBuilderFetchIt](PageBuilderFetchIt)).
+### Ошибки
+
+| Ситуация | Ответ |
+| --- | --- |
+| Секция с тем же `form_key` не найдена | `pagebuilder_fe_form_not_found` |
+| Прямой вызов обработчика без сервиса FetchIt | JSON с `pagebuilder_fe_fetchit_unavailable` |
+| Отрисовка формы без FetchIt | Чанк показывает `pagebuilder_fe_form_unavailable`, см. [PageBuilderFetchIt](PageBuilderFetchIt) |
 
 ## Зависимости
 
 | Пакет | Зачем |
 | --- | --- |
 | pagebuilderpro | Секция `contact_form` |
-| FetchIt | AJAX и inline errors |
+| FetchIt | AJAX и ошибки в полях |
 
 ## См. также
 

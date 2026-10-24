@@ -12,6 +12,8 @@ items: [
   { text: 'Отправка данных', link: 'sending' },
   { text: 'Пагинация', link: 'pagination' },
   { text: 'Идентификация', link: 'identification' },
+  { text: 'Вход по коду', link: 'codeauth' },
+  { text: 'Кабинет покупателя miniShop2', link: 'cabinet' },
   { text: 'Создание опросников', link: 'quizform' },
   { text: 'Загрузка файлов', link: 'fileuploader' },
   { text: 'Сохранение данных', link: 'saveformdata' },
@@ -40,6 +42,8 @@ popular: true
 4. Сохранение данных форм в localStorage и заполнение полей после перезагрузки.
 5. Авторизация, регистрация, восстановление пароля и редактирование личных данных.
 6. Вывод любых данных с разбивкой по страницам.
+7. Вход и регистрация по одноразовому коду (с версии 2.10.0, только MODX 2) — [подробнее](/components/sendit/codeauth).
+8. Кабинет покупателя miniShop2: заказы, оплата, отмена, возврат, адреса доставки, сохранённая корзина (с версии 2.9.0, только MODX 2) — [подробнее](/components/sendit/cabinet).
 
 ## Особенности
 
@@ -137,6 +141,17 @@ return $result['success'] ? $SendIt->success($msg, $data) : $SendIt->error($msg,
 |      **si_storage_time**       |  Время хранения загруженных файлов во временной папке   |                         `86400`                          |
 |       **si_allow_dirs**        | Список имен папок из которых можно удалять другие папки |                     `uploaded_files`                     |
 | **si_use_custom_session_id**   |   Использовать пользовательский ID сессии               |                          *Нет*                           |
+| **si_cabinet_page_id**         | ID страницы кабинета, на которую ведут вход и регистрация (`redirectTo` = `cabinet`) | `5` |
+| **si_cabinet_actions**         | Включённые действия кабинета покупателя | `tocart,repeat,pay,cancel,return,addresses,savecart` |
+| **si_cabinet_checkout_id**     | ID страницы оформления заказа для повтора заказа | `0` |
+| **si_cabinet_pay_statuses**    | Статусы, в которых покупатель может оплатить заказ | `1` |
+| **si_cabinet_cancel_statuses** | Статусы, из которых покупатель может отменить заказ | `1` |
+| **si_cabinet_return_statuses** | Статусы, в которых покупатель может оформить возврат | `3` |
+| **si_cabinet_return_days**     | Срок для возврата, дней (`0` — без ограничения) | `14` |
+| **si_code_sender**             | Класс отправки кода входа, реализующий `siCodeSender` | |
+| **si_code_sender_path**        | Путь к файлу класса отправки кода (`{core_path}`, `{base_path}`) | |
+
+Подробнее о настройках кабинета — в разделе [Кабинет покупателя](/components/sendit/cabinet#settings), о настройках отправки кода — в разделе [Вход по коду](/components/sendit/codeauth#sender).
 
 ## Параметры по умолчанию
 

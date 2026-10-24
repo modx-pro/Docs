@@ -32,9 +32,9 @@ Front-end calls must be **uncached** (`[[!...]]`, `{'!...' | snippet}`), otherwi
 | Initialize | `[[!GeoLocation2Initialize]]` | `{'!GeoLocation2Initialize' \| snippet}` |
 | Current city | `[[!GeoLocation2Current]]` | `{'!GeoLocation2Current' \| snippet}` |
 | Modal | `[[!GeoLocation2Modal]]` | `{'!GeoLocation2Modal' \| snippet}` |
-| City list | `[[!GeoLocation2? &limit=`0`]]` | `{'!GeoLocation2' \| snippet : ['limit' => 0]}` |
+| City list | `` [[!GeoLocation2? &limit=`0`]] `` | `{'!GeoLocation2' \| snippet : ['limit' => 0]}` |
 | SxGeo | `[[!GeoLocation2Location]]` | `{'!GeoLocation2Location' \| snippet}` |
-| City data | `[[!GeoLocation2Data? &forCurrent=`1`]]` | `{'!GeoLocation2Data' \| snippet : ['forCurrent' => 1]}` |
+| City data | `` [[!GeoLocation2Data? &forCurrent=`1`]] `` | `{'!GeoLocation2Data' \| snippet : ['forCurrent' => 1]}` |
 
 ## See also
 

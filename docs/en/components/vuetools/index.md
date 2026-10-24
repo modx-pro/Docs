@@ -11,27 +11,31 @@ compatibility:
   - php81
   - vue3
 items:
+  - text: Quick Start
+    link: quick-start
   - text: Integration
     link: integration
   - text: Theme
     link: theme
   - text: API Composables
     link: composables
+  - text: Practices and CRUD
+    link: practices
 ---
 
 # VueTools
 
-Base package: gives MODX 3.x components a shared Vue 3 stack (Vue, Pinia, PrimeVue) through the ES Modules Import Map. Several components use the same libraries instead of bundling their own copies.
+Vue, Pinia, and PrimeVue load once through the Import Map. Extras do not bundle their own copies.
 
 ## What it solves
 
-Without a shared package, every component ships its own copy of Vue, Pinia and PrimeVue. VueTools serves them once for the whole manager.
+Without a shared package, every Extra ships separate copies of Vue, Pinia, and PrimeVue.
 
 - One library version across all components.
 - Libraries load once and stay in the browser cache.
-- PrimeVue styles isolated from the MODX ExtJS manager.
-- Ready composables for MODX: `useLexicon`, `useApi`, `useModx`, `usePermission`, `usePrimeVueLocale`, `useTheme`.
-- A single theme switched by one system setting (since 1.2.0).
+- PrimeIcons isolated with the `.vueApp` prefix (see below).
+- Ready composables: `useLexicon`, `useApi`, `useModx`, `usePermission`, `usePrimeVueLocale`, `useTheme`.
+- Theme from the `vuetools.theme` system setting (since 1.2.0).
 
 ## What's inside
 
@@ -48,7 +52,7 @@ Without a shared package, every component ships its own copy of Vue, Pinia and P
 | `useApi` | HTTP client for the standard MODX connector API |
 | `useModx` | Access to `window.MODx` |
 | `usePermission` | User permission checks |
-| `usePrimeVueLocale` | PrimeVue locales for DataTable, DatePicker, Calendar |
+| `usePrimeVueLocale` | PrimeVue locales for DataTable and DatePicker |
 | `useTheme` | Active theme from the `vuetools.theme` setting |
 
 ## Requirements
@@ -65,44 +69,77 @@ Without a shared package, every component ships its own copy of Vue, Pinia and P
 2. Click **Download Extras**.
 3. Find **VueTools**, click **Download**, then **Install**.
 
-After install the package activates itself: the Import Map, PrimeVue styles and the client theme setting register on every manager page.
+After install, VueTools injects the Import Map, styles, and client theme config on manager pages.
 
 ## How the Import Map works
 
-The `VueCoreManager` plugin fires on `OnManagerPageBeforeRender` and prepends two blocks to `<head>`: the Import Map and the `window.VueTools` client theme config.
+```mermaid
+flowchart TB
+  Plugin[VueCoreManager]
+  Hook[OnManagerPageBeforeRender]
+  Head["head: importmap + window.VueTools"]
+  Map[imports map]
+  Widget[ES module widget]
+  Vendor[vendor and composables]
+  Plugin --> Hook --> Head
+  Head --> Map
+  Widget -->|"import from vue, @vuetools/…"| Map
+  Map --> Vendor
+```
+
+The `VueCoreManager` plugin on `OnManagerPageBeforeRender` inserts one block: Import Map and `window.VueTools` script. Usually at the start of the controller `<head>`. If `controller->head['html']` is unavailable, HTML goes to `sjscripts`.
+
+Base URL: `MODX_ASSETS_URL` or `vuetools.assets_url`. Files get `?v=` (mtime or package version) so updates do not serve stale cache.
+
+Example map (paths and `?v=` are illustrative):
 
 ```json
 {
   "imports": {
-    "vue": "/assets/components/vuetools/vendor/vue.min.js",
-    "pinia": "/assets/components/vuetools/vendor/pinia.min.js",
-    "primevue": "/assets/components/vuetools/vendor/primevue.min.js",
-    "vuetools": "/assets/components/vuetools/vendor/primevue.min.js",
-    "vuetools/theme": "/assets/components/vuetools/vendor/primevue.min.js",
-    "@vuetools/useApi": "/assets/components/vuetools/composables/useApi.min.js",
-    "@vuetools/useLexicon": "/assets/components/vuetools/composables/useLexicon.min.js",
-    "@vuetools/useModx": "/assets/components/vuetools/composables/useModx.min.js",
-    "@vuetools/usePermission": "/assets/components/vuetools/composables/usePermission.min.js",
-    "@vuetools/usePrimeVueLocale": "/assets/components/vuetools/composables/usePrimeVueLocale.min.js",
-    "@vuetools/useTheme": "/assets/components/vuetools/composables/useTheme.min.js"
+    "vue": "/assets/components/vuetools/vendor/vue.min.js?v=…",
+    "pinia": "/assets/components/vuetools/vendor/pinia.min.js?v=…",
+    "primevue": "/assets/components/vuetools/vendor/primevue.min.js?v=…",
+    "vuetools": "/assets/components/vuetools/vendor/primevue.min.js?v=…",
+    "vuetools/theme": "/assets/components/vuetools/vendor/primevue.min.js?v=…",
+    "@vuetools/useApi": "/assets/components/vuetools/composables/useApi.min.js?v=…",
+    "@vuetools/useLexicon": "/assets/components/vuetools/composables/useLexicon.min.js?v=…",
+    "@vuetools/useModx": "/assets/components/vuetools/composables/useModx.min.js?v=…",
+    "@vuetools/usePermission": "/assets/components/vuetools/composables/usePermission.min.js?v=…",
+    "@vuetools/usePrimeVueLocale": "/assets/components/vuetools/composables/usePrimeVueLocale.min.js?v=…",
+    "@vuetools/useTheme": "/assets/components/vuetools/composables/useTheme.min.js?v=…",
+    "@vuetools/": "/assets/components/vuetools/composables/"
   }
 }
 ```
 
-When a component module runs `import { ref } from 'vue'`, the browser finds the `vue` key and loads the file. Each URL carries a `?v=` query based on the file modification time, so after an update the browser fetches the fresh build instead of a cached one.
+`import { ref } from 'vue'` resolves through this map.
 
-The `vuetools/theme` key points to the same bundle as `primevue` and marks a theme-capable version: a component uses it to tell VueTools 1.2.0+ from an older one (see [Theme](theme)).
+Keys `vuetools` and `vuetools/theme` point to the same build as `primevue`. Theme presets (`Modx`, `ModxManagerTheme`, `ModxTheme`) import from them. Key `vuetools/theme` also marks VueTools 1.2.0+ (see [Theme](theme)).
+
+The `@vuetools/` prefix maps to the composables directory. There is no `@vuetools` key without a slash: do not use it as a public entry.
+
+### `window.VueTools`
+
+The second tag in the same block writes:
+
+```javascript
+window.VueTools = Object.assign({}, window.VueTools || {}, { theme: 'aura' })
+```
+
+Only `theme` is on the object (value from `vuetools.theme`). Package and library versions are not exposed here. See [PHP service](integration#php-service).
 
 ## Style isolation
 
-PrimeVue styles are isolated with the `.vueApp` prefix so they don't clash with ExtJS. Every Vue widget container must have the `vueApp` class:
+In `vuetools.css`, **PrimeIcons** selectors (`.pi`) are wrapped with `.vueApp`. The widget container needs class `vueApp` or icons will not show:
 
 ```html
 <div id="my-vue-app" class="vueApp"></div>
 ```
 
+PrimeVue 4 component styles do not depend on `.vueApp`. The class is for icons only, not ExtJS isolation.
+
 ::: warning
-Without the `vueApp` class PrimeVue styles won't apply to the widget.
+Without `vueApp`, PrimeIcons (`.pi`) styles will not apply to the widget.
 :::
 
 ::: info Former name
@@ -111,9 +148,11 @@ The package was previously called **ModxProVueCore** and was renamed to **VueToo
 
 ## Next
 
-- [Integration](integration) — step by step: Vite, module loading, entry point.
-- [Theme](theme) — switch and apply the theme.
-- [API Composables](composables) — helper reference.
+- [Quick Start](quick-start): from install to a widget on a tab.
+- [Integration](integration): Vite, controller, PHP service.
+- [Theme](theme): switch and presets.
+- [API Composables](composables): function reference.
+- [Practices and CRUD](practices): Extra layout and list → form → toast.
 
 ## Support
 

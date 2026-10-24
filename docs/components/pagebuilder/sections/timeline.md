@@ -5,7 +5,7 @@ description: "Список событий с датой, заголовком и
 
 # Хронология
 
-Секция `timeline` выводит события в порядке строк repeater. Chunk: `pagebuilderpro_timeline`. Требуется PageBuilder Pro.
+Секция `timeline` выводит события в порядке строк repeater.
 
 ![Хронология](/components/pagebuilder/screenshots/sections/timeline.jpg)
 
@@ -14,6 +14,16 @@ description: "Список событий с датой, заголовком и
 - История компании или продукта
 - Этапы проекта
 - Даты релизов
+
+## Параметры блока
+
+| Параметр | Значение |
+| --- | --- |
+| key | `timeline` |
+| Слой | Pro |
+| Категория | контент (`content`) |
+| Chunk | `pagebuilderpro_timeline` |
+| Требования | pro |
 
 ## Поля
 

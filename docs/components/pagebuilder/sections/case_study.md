@@ -5,7 +5,7 @@ description: "История клиента с результатом, текс�
 
 # Кейс
 
-Секция `case_study` описывает один проект. Chunk: `pagebuilderpro_case_study`. Требуется PageBuilder Pro.
+Секция `case_study` описывает один проект.
 
 ![Кейс](/components/pagebuilder/screenshots/sections/case_study.jpg)
 
@@ -14,6 +14,16 @@ description: "История клиента с результатом, текс�
 - Один клиентский пример на лендинге
 - Результат в одной строке и история ниже
 - Ссылка на полную страницу проекта
+
+## Параметры блока
+
+| Параметр | Значение |
+| --- | --- |
+| key | `case_study` |
+| Слой | Pro |
+| Категория | контент (`content`) |
+| Chunk | `pagebuilderpro_case_study` |
+| Требования | pro |
 
 ## Поля
 

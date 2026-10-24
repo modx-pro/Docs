@@ -23,7 +23,7 @@ If the JSON is invalid, `json_decode` in msProducts/pdoResources silently skips 
 
 `msProducts` always groups by `msProduct.id`. On MySQL with `ONLY_FULL_GROUP_BY` you cannot sort by plain `Aggregate.likes` — use an aggregate:
 
-`&sortby=`MAX(Aggregate.likes)`` or `'sortby' => 'MAX(Aggregate.likes)'`
+`` &sortby=`MAX(Aggregate.likes)` `` or `'sortby' => 'MAX(Aggregate.likes)'`
 
 For `pdoResources` without `GROUP BY`, `Aggregate.likes` is enough.
 

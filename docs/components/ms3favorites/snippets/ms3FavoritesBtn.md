@@ -13,7 +13,7 @@ title: ms3FavoritesBtn
 | **list** | Идентификатор списка | `default` |
 | **resource_type** | Тип ресурсов: `products`, `resources`, `articles`, `pages`, `custom` | `products` |
 | **tpl** | Чанк кнопки. Поддерживает `@FILE path.tpl` (pdoTools, путь от `pdotools_elements_path`) | `tplMs3fBtn` |
-| **remove** | `1` — перезагрузка при удалении. Или префикс id элемента (`product-item`) для удаления `#product-item-{id}` | `—` |
+| **remove** | `1`: перезагрузка при удалении. Или префикс id элемента (`product-item`) для удаления `#product-item-{id}` | `—` |
 | **label** | Метка для аналитики (передаётся в чанк) | `—` |
 | **classes** | Дополнительные CSS-классы | `—` |
 
@@ -24,11 +24,13 @@ title: ms3FavoritesBtn
 | `[[+ms3f_id]]` | ID ресурса |
 | `[[+ms3f_list]]` | Имя списка |
 | `[[+ms3f_resource_type]]` | Тип ресурсов |
-| `[[+ms3f_in_favorites]]` | 1 — в избранном, 0 — нет |
+| `[[+ms3f_in_favorites]]` | 1: в избранном, 0: нет |
 | `[[+ms3f_tooltip]]` | Текст подсказки |
 | `[[+ms3f_label]]` | Метка для аналитики |
 | `[[+ms3f_classes]]` | Дополнительные классы |
-| `[[+ms3f_remove_attr]]` | data-атрибут для удаления |
+| `[[+ms3f_remove_attr]]` | `data-ms3f-remove-reload="1"` или `data-remove-prefix`. Скрипт читает атрибут при клике |
+
+На `/wishlist/` карточка снимается и без `remove`. Значение `1` после снятия перезагружает страницу. Другое значение удаляет элемент `#префикс-{id}`.
 
 ## Примеры
 
@@ -86,7 +88,7 @@ title: ms3FavoritesBtn
 ```
 :::
 
-**Кнопка в стиле box (wishlist, подсказка):**
+**Чанк с подсказкой** `tplMs3fBtnWishlistBox`. Параметр `tpl` сниппет читает, разметку чанка скрипт не разбирает:
 
 ::: code-group
 ```modx

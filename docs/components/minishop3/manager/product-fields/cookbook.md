@@ -7,13 +7,13 @@ description: Секции, visible и page_key product_data на вкладке 
 
 <!-- ![Утилита «Поля товара»](/components/minishop3/screenshots/mgr-product-fields.png) -->
 
-**Поля товара** задают раскладку вкладки **Данные** на карточке товара. Колонку в БД создают через [extra fields](/components/minishop3/manager/extra-fields/cookbook).
+**Поля товара** задают раскладку вкладки **Данные** на карточке товара. Колонку в БД создают через [Свои поля](/components/minishop3/manager/extra-fields/cookbook).
 
 Справочник: [Поля товара](/components/minishop3/interface/utilities/product-fields).
 
 ## Цель
 
-Вы группируете `article`, `price`, extra-поля по секциям, скрываете лишнее, меняете порядок. Vue-компонент вкладки читает `GET /api/mgr/config/page-fields/product_data`.
+Вы группируете `article`, `price`, свои поля по секциям, скрываете лишнее, меняете порядок.
 
 ## page_key
 
@@ -21,12 +21,12 @@ description: Секции, visible и page_key product_data на вкладке 
 | --- | --- |
 | `product_data` | Вкладка «Данные товара» |
 
-Других page_key в 1.13.x для этой утилиты нет.
+Других page_key для этой утилиты нет.
 
-## Связь с extra fields
+## Связь со своими полями
 
-1. POST в **Дополнительные поля** для `MiniShop3\Model\msProductData` создаёт колонку и строку в `ms3_product_fields`.
-2. **Поля товара** меняют секцию, label, xtype, `visible`, `sort_order`. Новую колонку здесь не создают.
+1. POST в **Свои поля** для `MiniShop3\Model\msProductData` создаёт колонку и строку в `ms3_product_fields`.
+2. **Поля товара** меняют секцию, label, xtype, `visible`, `sort_order`.
 
 Полный пример: [Оптовая цена](/components/minishop3/manager/examples/product-extra-field).
 
@@ -34,7 +34,7 @@ description: Секции, visible и page_key product_data на вкладке 
 
 1. **Утилиты → Поля товара** → **Добавить секцию**.
 2. Ключ `prices`, название **Цены**, `sort_order` после «Основные данные».
-3. Перенесите `price`, `old_price`, extra `wholesale_price` в секцию **Цены**.
+3. Перенесите `price`, `old_price`, своё поле `wholesale_price` в секцию **Цены**.
 4. Сохраните, перезагрузите карточку товара.
 
 ## Кейс: скрыть color и size
@@ -48,20 +48,38 @@ description: Секции, visible и page_key product_data на вкладке 
 ## Кейс: SEO-блок
 
 1. Секция `seo`, название **SEO**.
-2. Перенесите `tags` или кастомные extra-поля метаданных.
+2. Перенесите `tags` или свои поля метаданных.
 3. Поднимите секцию в списке drag-and-drop.
 
 ## API appendix
 
 ```http
 GET /api/mgr/config/page-fields/product_data
+GET /api/mgr/config/page-fields/product_data/all
 GET /api/mgr/config/sections/product_data
 PUT /api/mgr/config/page-fields/product_data
 PUT /api/mgr/config/sections/product_data
 DELETE /api/mgr/config/sections/product_data/{section_key}
 ```
 
-GET доступен любой сессии менеджера. Запись: `mssetting_save`. `POST /config/sections/...` в 1.13.x нет.
+GET доступен любой сессии менеджера. Запись: `mssetting_save`.
+
+Отдельного `POST /config/sections/...` нет: **новую секцию создаёт PUT** `/api/mgr/config/sections/product_data`, если записи с таким ключом ещё нет. `GET .../page-fields/{page_key}/all` возвращает полный список полей, включая скрытые.
+
+```mermaid
+flowchart TB
+  util[Утилита Поля товара]
+  putSec[PUT /config/sections/product_data]
+  exists{Секция есть в БД?}
+  create[Создать секцию]
+  update[Обновить секции]
+  putFields[PUT /config/page-fields/product_data]
+  tab[Вкладка Данные на карточке]
+  util --> putSec --> exists
+  exists -->|Нет| create --> putFields
+  exists -->|Да| update --> putFields
+  putFields --> tab
+```
 
 Пример PUT полей (массив **`fields`**):
 
@@ -87,20 +105,21 @@ GET доступен любой сессии менеджера. Запись: `
     {
       "section_key": "prices",
       "label": "Цены",
-      "hidden": false,
-      "sort_order": 10
+      "hidden": false
     }
   ]
 }
 ```
+
+Порядок секций задаёт порядок элементов в массиве `sections`: сервер не читает поле `sort_order` в теле PUT. Для полей в `PUT page-fields` `sort_order` работает.
 
 ## Troubleshooting
 
 | Симптом | Действие |
 | --- | --- |
 | Изменения не видны | Жёсткая перезагрузка карточки товара |
-| Поля нет в списке | Сначала extra field для `msProductData` |
+| Поля нет в списке | Сначала своё поле для `msProductData` |
 | Путаете с model fields | Model fields — заказ, vendor. Product fields — только вкладка «Данные» |
 | xtype не тот | Редактирование поля в утилите или через PUT page-fields |
 
-См. [Cookbook менеджера](/components/minishop3/manager/), [model-fields](/components/minishop3/manager/model-fields/cookbook).
+См. [Cookbook админки](/components/minishop3/manager/), [Cookbook полей модели](/components/minishop3/manager/model-fields/cookbook).

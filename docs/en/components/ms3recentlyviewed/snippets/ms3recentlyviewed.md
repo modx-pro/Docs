@@ -5,7 +5,7 @@ title: ms3recentlyviewed
 
 Outputs a list of products by given IDs. Used for the “Recently viewed” block with server-side output or after getting IDs from the connector.
 
-Internally it calls msProducts (pdoTools); the addon automatically sets the `parents` parameter required in MODX 3.
+Internally it calls msProducts (pdoTools). The addon sets the `parents` parameter required in MODX 3.
 
 ## Parameters
 
@@ -13,11 +13,17 @@ Internally it calls msProducts (pdoTools); the addon automatically sets the `par
 |-----------|-------------|---------|
 | **ids** | Comma-separated product IDs | — |
 | **tpl** | Product card chunk | tplViewedItem |
+| **tplOuter** | Wrapper chunk. Empty = no wrapper | *(empty)* |
 | **emptyTpl** | Empty state chunk | tplViewedEmpty |
-| **limit** | Max items in result | from setting ms3recentlyviewed.max_items (20) |
-| **fromDB** | Load IDs from DB for logged-in user (when sync_enabled) | false |
+| **limit** | Max items in result | from setting `ms3recentlyviewed.max_items` (`20`) |
+| **includeThumbs** | Thumb aliases for `msProducts` | `thumb,small` |
+| **fromDB** | Load IDs from DB if the user is authenticated in the current context. `sync_enabled` is not read | `false` |
+| **autoIdsFallback** | If the ID list is empty, take the first catalog products (demo). Not in transport | `false` |
+| **showUnpublished** / **showDeleted** / **showZeroPrice** | Passed to the product query. Not in transport | `false` |
 
-**ids** is passed from outside (template, placeholder **`[[+viewedIds]]`**) or omitted when **fromDB=true** — then the snippet loads the list from DB. For guests with **`storage_type` = `cookie`**, the **ms3recentlyviewedViewedIdsPlaceholder** plugin sets the placeholder; in Fenom use **`$_modx->getPlaceholder('viewedIds')`**, not a non-existent `$viewedIds` variable.
+**ids** comes from the template or placeholder **`[[+viewedIds]]`**, or is omitted when **fromDB=true** (authenticated user). `sync_enabled` does not gate this read. Guests + `storage_type=cookie`: plugin fills `viewedIds`. Fenom: **`$_modx->getPlaceholder('viewedIds')`**.
+
+Stub snippet **`ms3rvDebugGetViews`** returns an empty string. Do not call it.
 
 ## Examples
 
@@ -57,4 +63,4 @@ Internally it calls msProducts (pdoTools); the addon automatically sets the `par
 
 :::
 
-When there are no products, the snippet returns an empty string or `emptyTpl` content — the template can hide the block when the result is empty.
+When there are no products, the snippet returns an empty string or `emptyTpl` content. The template can hide the block when the result is empty.

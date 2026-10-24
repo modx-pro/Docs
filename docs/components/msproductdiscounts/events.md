@@ -223,7 +223,7 @@ switch($modx->event->name){
 
 Доступные параметры:
 
-* **$webConfig** - массив параметров фронтэнда.
+* **$webConfig** - массив параметров фронтенда.
 * **$object** - экземпляр класса MsProductDiscounts\Base.
 
 ::: details Пример плагина

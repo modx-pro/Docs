@@ -72,4 +72,4 @@ Since 1.14.0, `tpl.Tickets.list.row` may link to `#first_unread`. On load, JS sc
 
 ## subscribeAuthor on custom pages
 
-Pass `&TicketsInit=`1`` to load Tickets JS without `TicketComments` on the page. See [subscribeAuthor](snippets/subscribeauthor).
+Pass `` &TicketsInit=`1` `` to load Tickets JS without `TicketComments` on the page. See [subscribeAuthor](snippets/subscribeauthor).
