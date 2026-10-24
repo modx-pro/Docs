@@ -278,7 +278,6 @@ console.log(window.MS3ProductTabsRegistry.pendingTabs);
 
 Непустая очередь после загрузки страницы означает, что вкладки не дошли до Vue.
 
-<!-- MEDIA: output | must | Что пишет консоль браузера в случаях из этого раздела: по одной строке на причину с пометкой `console.error` или `console.warn` (нет `key` или `title`; повторный ключ) и строка `TypeError`, когда вместо `MS3ProductTabsRegistry` стоит заглушка. Рядом вывод `console.log(window.MS3ProductTabsRegistry.pendingTabs)`: пустой список при верной регистрации и непустой при заглушке. | Текстовый блок, не кадр. На стенде: временный плагин на событии `msOnManagerCustomCssJs` с проверкой `page === 'product_update'`. Первый заход: регистрация через `whenRegistryReady`, по одному ошибочному вызову на случай, открыть товар, скопировать строки из консоли. Второй заход: плагин создаёт заглушку `window.MS3ProductTabsRegistry = {pendingTabs: [], register: …}` и регистрирует верную вкладку; взять строку `TypeError` и вывод `pendingTabs`. Префиксы записать так, как они напечатаны, и проверить, зависят ли они от момента вызова. Второй аргумент с настройками вкладки заменить на `{…}`; у `TypeError` оставить первую строку без пути стенда. Плагин после съёмки удалить. -->
 ```text
 console.error [ProductTabsRegistry] Tab must have key and title {…}
 console.warn [ProductTabsRegistry] Tab "specs" already registered

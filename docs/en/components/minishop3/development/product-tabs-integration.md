@@ -278,8 +278,6 @@ console.log(window.MS3ProductTabsRegistry.pendingTabs);
 
 A queue that is not empty after the page has loaded means the tabs never reached Vue.
 
-<!-- MEDIA: output | must | What the browser console prints for the cases in this section: one line per cause, marked `console.error` or `console.warn` (no `key` or `title`; duplicate key), and the `TypeError` line when a stub stands in place of `MS3ProductTabsRegistry`. Next to it, the output of `console.log(window.MS3ProductTabsRegistry.pendingTabs)`: an empty list after a valid registration and a non-empty one with a stub. | A text block, not a screenshot. On the stand: a temporary plugin on the `msOnManagerCustomCssJs` event with a `page === 'product_update'` check. First pass: register through `whenRegistryReady`, one faulty call per case, open a product, copy the lines from the console. Second pass: the plugin creates the stub `window.MS3ProductTabsRegistry = {pendingTabs: [], register: …}` and registers a valid tab; take the `TypeError` line and the `pendingTabs` output. Record the prefixes exactly as printed and check whether they depend on when the call is made. Replace the second argument with the tab settings by `{…}`; keep only the first line of the `TypeError`, without the stand path. Delete the plugin after capture. -->
-
 ```text
 console.error [ProductTabsRegistry] Tab must have key and title {…}
 console.warn [ProductTabsRegistry] Tab "specs" already registered

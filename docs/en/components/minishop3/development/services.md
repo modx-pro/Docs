@@ -57,6 +57,16 @@ MiniShop3 uses MODX’s built-in DI container (`$modx->services`) to register an
 
 ### Registering services
 
+```mermaid
+flowchart TD
+  boot["bootstrap.php puts a single ms3 key into the container"] --> plug["The OnMODXInit plugin asks for ms3"]
+  plug --> ctor["The MiniShop3 constructor calls ServiceRegistry::register()"]
+  ctor --> merge["Configs merge: built-in, ms3.services.php, ms3.services.d"]
+  merge --> keys["The ms3_* keys are declared in the container"]
+  keys --> lazy["The object is created on the first get()"]
+  lazy --> use["A snippet, plugin or controller receives the service"]
+```
+
 Registration happens in two steps:
 
 1. The component's `bootstrap.php` adds a single key to the container — `ms3`.
@@ -517,6 +527,35 @@ A custom class **must**:
 2. **Extend** the MiniShop3 base class — but only for services without a declared interface
 
 Services that declare an `interface` (`ms3_inventory`, `ms3_order_lifecycle_ports`, `ms3_webhook_dispatcher`) need no inheritance: implementing the interface from scratch is enough. The check runs through `is_a()`, and the inheritance branch is skipped in that case. The shipped example does exactly that — its inventory implementation does not extend `ProductStockInventory`.
+
+An inventory example — the class implements the interface and extends nothing:
+
+```php
+// core/config/ms3.services.php
+return [
+    'ms3_inventory' => [
+        'class' => \MyCompany\Warehouse\WmsInventory::class,
+        'interface' => \MiniShop3\Services\Inventory\InventoryServiceInterface::class,
+    ],
+];
+```
+
+```php
+namespace MyCompany\Warehouse;
+
+use MiniShop3\Services\Inventory\InventoryServiceInterface;
+
+class WmsInventory implements InventoryServiceInterface
+{
+    public function getAvailable(InventoryKey $key): float { /* ask the WMS */ }
+    public function assertAvailable(InventoryKey $key, float $qty): void { /* check */ }
+    public function reserve(InventoryKey $key, float $qty, InventoryContext $ctx, bool $notify = true): void { }
+    public function release(InventoryKey $key, float $qty, InventoryContext $ctx, bool $notify = true): void { }
+    public function commit(InventoryKey $key, float $qty, InventoryContext $ctx): void { }
+}
+```
+
+The same applies to `ms3_order_lifecycle_ports` (`OrderLifecyclePortsInterface`) and `ms3_webhook_dispatcher` (`WebhookDispatcherInterface`). Commented-out stubs ship in `core/components/minishop3/config/ms3.services.example.php`.
 
 ::: warning Repeat `interface` in your own config
 Merging configs replaces the value as a whole. Leaving `'interface' => null` for such a service in `ms3.services.php` makes the validator demand inheritance from the stock class and reject an honest implementation of the interface. Carry the `interface` line over together with `class`.

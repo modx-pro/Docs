@@ -357,8 +357,6 @@ console.log(window.MS3OrderTabsRegistry)
 console.log(window.MS3OrderTabsRegistry.pendingTabs)
 ```
 
-<!-- MEDIA: output | must | What the browser console prints when a plugin with the stub registers rejected tabs: one line per case from the list (no `key` or `title`; a reserved key; a repeated key; no `component` for `type: 'vue'`; no `xtype` for `type: 'extjs'`), marked as `console.error` or `console.warn`. Next to it, the output of `console.log(window.MS3OrderTabsRegistry)` on a loaded order page. | On the test site: a temporary plugin on the `msOnManagerCustomCssJs` event with the stub from this page and several faulty `register()` calls, open an order, copy the lines from the console; capture the registry output with one valid tab left. Do not capture it by typing into the console by hand: after the page loads the message prefix differs. Delete the plugin afterwards. -->
-
 Draining the queue from the stub prints this:
 
 ```text
