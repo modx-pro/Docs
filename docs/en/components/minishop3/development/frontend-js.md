@@ -6,20 +6,6 @@ description: Modular JavaScript architecture for the store frontend
 
 Modular JavaScript architecture for the store frontend.
 
-## Overview
-
-MiniShop3 uses a modular JavaScript architecture without jQuery. All modules are plain ES6+ and target modern browsers.
-
-**Features:**
-
-- Modular structure (core, ui, modules)
-- REST API client with httpOnly cookie tokenization
-- Hook system for extension
-- Centralized selectors with override
-- Automatic cart rendering
-- Promise-based confirmation dialogs
-- Events for integration
-
 ## Module structure
 
 ```
@@ -1108,44 +1094,6 @@ MiniShop3 automatically handles forms with class `.ms3_form` (or `[data-ms3-form
   <input type="hidden" name="ms3_action" value="order/submit">
   <button type="submit">Checkout</button>
 </form>
-```
-
-### Routing
-
-```javascript
-// From ms3.js
-
-initFormHandler() {
-  document.querySelectorAll('.ms3_form').forEach(form => {
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault()
-
-      const entity = form.dataset.ms3Entity
-      const method = form.dataset.ms3Method
-      const formData = new FormData(form)
-
-      switch (`${entity}/${method}`) {
-        case 'cart/add':
-          await this.cartUI.handleAdd(
-            formData.get('id'),
-            formData.get('count'),
-            this.extractOptions(formData)
-          )
-          break
-
-        case 'order/submit':
-          await this.orderUI.handleSubmit()
-          break
-
-        case 'customer/profile':
-          await this.customerUI.handleProfileUpdate(formData)
-          break
-
-        // ...
-      }
-    })
-  })
-}
 ```
 
 ## Extension and customization
