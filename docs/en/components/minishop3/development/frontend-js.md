@@ -1242,7 +1242,7 @@ getLexicon(key) {
 }
 ```
 
-### Additional modules
+## Additional modules
 
 ### order-addresses.js
 
