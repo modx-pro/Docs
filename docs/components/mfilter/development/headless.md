@@ -57,7 +57,7 @@ const response = await mfilter.api.apply({
 | Товары | `items` и HTML по стандартным чанкам | Только HTML — чанками и параметрами вызова `mFilter` на странице |
 | Значения фильтров с числами | Не приходят | Приходят в `suggestions` |
 
-`hash` — значение атрибута `data-mfilter-hash` в обёртке выдачи, его выводит сниппет `mFilter`. С ним сервер повторяет вызов сниппета со страницы:
+`hash` — значение атрибута `data-mfilter-hash` в обёртке выдачи, его выводит сниппет `mFilter`. С ним сервер повторяет вызов сниппета со страницы. Если по хешу на сервере ничего нет, запрос получает ошибку 410 — ответа без хеша вместо него не будет:
 
 ```js
 const hash = document.querySelector('[data-mfilter-hash]').dataset.mfilterHash;
@@ -81,12 +81,23 @@ parsed.page;      // 2
 
 ## Ошибки
 
-Без `resource_id` и при ошибке сервера вызов бросает исключение `Error('HTTP error 400')`, а не возвращает `success: false`:
+Без `resource_id`, с хешем, по которому ничего нет, и при ошибке сервера вызов бросает исключение, а не возвращает `success: false`. В исключении — код ответа и объяснение сервера:
+
+| Поле | Что в нём |
+|---|---|
+| `error.status` | Код ответа: `400`, `410`, `500` |
+| `error.message` | `HTTP error 410: <текст сервера>` |
+| `error.data` | Тело ответа: `success`, `code`, `message` |
+
+Решайте по `error.status`: текст сообщения зависит от языка сайта.
 
 ```js
 try {
-    const response = await mfilter.api.apply({ resource_id: 5, filters });
+    const response = await mfilter.api.apply({ resource_id: 5, hash, filters });
 } catch (error) {
+    if (error.status === 410) {
+        // параметры вызова сниппета на сервере не найдены — страницу нужно перезагрузить
+    }
     console.error(error.message);
 }
 ```
