@@ -290,7 +290,6 @@ await ms3.cartAPI.clean()
 | `add`, `change`, `changeOption`, `remove` | `last_key`, `cart`, `status`, `items` |
 | `clean` | `cart`, `status`, `items` — no `last_key` |
 
-
 `last_key` is the key of the line the operation touched. `changeOption` adds `old_product_key` next to it: a new set of options changes the key. When the request carries `render`, a `render` key with the ready markup joins the list.
 
 ## OrderAPI
@@ -416,7 +415,6 @@ const response = await ms3.orderAPI.getCost()
 | `clean` | empty |
 | `submit` | `order_id`, `order_num`, `redirect`, plus `payment_link` with the built-in payment |
 | `getCost` | the order amounts together with the cart totals |
-
 
 `add` returns an empty `message`: there is no write confirmation, judge by `success`.
 

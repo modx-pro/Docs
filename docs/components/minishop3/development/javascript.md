@@ -274,7 +274,6 @@ await ms3.cartAPI.clean()
 | `add`, `change`, `changeOption`, `remove` | `last_key`, `cart`, `status`, `items` |
 | `clean` | `cart`, `status`, `items` — без `last_key` |
 
-
 `last_key` — ключ позиции, которой коснулась операция. У `changeOption` рядом приходит `old_product_key`: смена набора опций меняет ключ. Когда в запросе передан `render`, к этим ключам добавляется `render` с готовой разметкой.
 
 ## OrderAPI
@@ -403,7 +402,6 @@ const response = await ms3.orderAPI.getCost()
 | `clean` | пусто |
 | `submit` | `order_id`, `order_num`, `redirect`, у штатной оплаты ещё `payment_link` |
 | `getCost` | суммы заказа вместе с итогами корзины |
-
 
 У `add` поле `message` приходит пустым: подтверждения записи нет, судите по `success`.
 

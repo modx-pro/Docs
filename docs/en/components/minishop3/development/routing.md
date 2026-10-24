@@ -271,16 +271,28 @@ $router->post('/api/mgr/products', function($params) use ($modx) {
 ]);
 ```
 
-**Main MiniShop3 permissions:**
+**MiniShop3 permissions.** The `miniShopManagerPolicy` template declares fifteen permissions of its own; `view_document` from the MODX core joins them.
 
-- `msproduct_save` — create/edit products
-- `mssetting_save` — manage settings (deliveries, payments, vendors, notifications)
-- `view_document` — read categories and category product grids
-- `msorder_list` — order and customer lists, customer addresses (GET)
-- `msorder_view` — view customer card
-- `msorder_save` — edit orders and customers, order line mutations
-- `msorder_remove` — delete orders, customers, bulk delete
+| Permission | What it opens | Enforced in |
+| --- | --- | --- |
+| `msproduct_save` | creating and editing products, sorting, editing product data in the grid | routes |
+| `msproduct_publish` | publishing a product from the category grid | routes |
+| `msproduct_delete` | bulk deletion of category products | routes |
+| `mscategory_save` | the whole category options group | routes |
+| `msorder_list` | order and customer lists, customer addresses, customer groups | routes |
+| `msorder_view` | the customer card, a customer group by ID | routes |
+| `msorder_save` | editing orders and customers, order line mutations, shipment | routes |
+| `msorder_remove` | deleting orders, customers, groups, bulk deletion | routes |
+| `msorder_inventory_override` | editing order contents past a stock shortage (since 1.14.3-beta1) | service |
+| `mssetting_list` | reading the reference data of the forms | routes, `AnyPermissionMiddleware` |
+| `mssetting_view` | the same, viewing | routes, `AnyPermissionMiddleware` |
+| `mssetting_save` | deliveries, payments, vendors, statuses, link types, options, extra fields, grid config | routes |
+| `msproductfile_generate` | bulk gallery operations | routes |
+| `msproductfile_list` | reading the product gallery | processors |
+| `msproductfile_save` | uploading, editing and deleting gallery files | processors |
+| `view_document` | reference lists, the category product grid, grid config for reading | routes |
 
+The two gallery permissions are not part of the route map: they are checked by the `Processors\Gallery\*` processors that `UtilitiesGalleryController` calls.
 ::: tip Where a user gets these permissions
 They all live in the `miniShopManagerPolicy` access policy created by the install. The policy grants nothing until it is assigned to a user group: since 1.14.2-beta1 install and upgrade assign it to every group that already has access to the `mgr` context, as an additional record with `authority 9999` — the group's own permissions still win.
 
