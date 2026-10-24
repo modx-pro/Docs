@@ -70,7 +70,7 @@ filter.removeFilter('price');
 | Событие | Когда | Что в `e.detail` |
 |---|---|---|
 | `mfilter:success` | Выдача обновлена | `filters`, `total`, `page`, `pageCount`, `sort`, `limit`, `tpl`, `response` — ответ сервера |
-| `mfilter:error` | Запрос не удался | `error` |
+| `mfilter:error` | Запрос не удался или не был отправлен | `error`: в `error.status` — код ответа сервера, `error.code` равен `'mfilter_hash_missing'`, если в разметке нет `data-mfilter-hash` и запрос не отправлялся. При догрузке — ещё `append: true` |
 | `mfilter:beforeSubmit` | Перед запросом | `state`, `cancel` — поставьте `true`, чтобы отменить запрос |
 | `mfilter:afterSubmit` | После запроса, удачного или нет | те же поля, что у `success`, без `response` |
 | `mfilter:contentLoaded` | Новые карточки вставлены на страницу | `container`, `append` — `true` при догрузке, и поля как у `success` |
