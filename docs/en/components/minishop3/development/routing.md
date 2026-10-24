@@ -331,7 +331,24 @@ $router->group('/api/v1/cart', function($router) use ($modx) {
 }, [$tokenMiddleware]);
 ```
 
-On routes with middleware, without a valid token the server auto-mints a guest token (except paths in middleware `publicRoutes`, e.g. logout). Catalog, health, and `token/get` in `web.php` do not use the middleware.
+On a route carrying the middleware the server mints a guest token when the request has no token at all. The middleware also holds a `publicRoutes` list of fifteen prefixes and one path pattern: a path from the list passes without a guest token and without a 401. There is no separate `optional` mode in the code — membership in the list is what decides.
+
+```text
+/api/v1/product/get          /api/v1/delivery/get
+/api/v1/product/list         /api/v1/delivery/list
+/api/v1/product/filters      /api/v1/delivery/webhook
+/api/v1/category/get         /api/v1/payment/get
+/api/v1/category/list        /api/v1/payment/list
+/api/v1/category/tree        /api/v1/payment/webhook/
+/api/v1/health               /api/v1/customer/token/get
+                             /api/v1/customer/logout
+```
+
+The pattern is `/api/v1/product/*/images`, where `*` covers exactly one segment: the product gallery stays public without opening the whole `/api/v1/product/*` branch.
+
+A match is tested as `path === prefix` or `path starts with prefix and a slash`. The payment entry already ends with a slash, so the code compares it with two slashes in a row and `/api/v1/payment/webhook/{id}` never matches it ([details](https://github.com/modx-pro/MiniShop3/issues/903)).
+
+In practice the list works on two paths — `GET /customer/token/get` and `POST /customer/logout` — because those are the only public paths the middleware is attached to. Catalog, health and the webhooks in `web.php` do not use it at all.
 
 Details: [Web API authorization](/en/components/minishop3/development/web-api/auth).
 

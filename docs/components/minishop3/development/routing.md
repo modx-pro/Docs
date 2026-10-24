@@ -325,7 +325,22 @@ $router->group('/api/v1/cart', function($router) use ($modx) {
 }, [$tokenMiddleware]);
 ```
 
-В самом middleware есть список `publicRoutes` — пятнадцать префиксов и шаблон галереи товара. Это каталог, доставки, оплаты, вебхуки, `/health`, а также `/customer/token/get` и `/customer/logout`. Путь из списка проходит без гостевого токена и без 401. Отдельного режима `optional` в коде нет: поведение определяет попадание пути в этот список.
+В самом middleware есть список `publicRoutes` из пятнадцати префиксов и один шаблон пути. Путь из списка проходит без гостевого токена и без 401. Отдельного режима `optional` в коде нет: поведение определяет попадание пути в этот список.
+
+```text
+/api/v1/product/get          /api/v1/delivery/get
+/api/v1/product/list         /api/v1/delivery/list
+/api/v1/product/filters      /api/v1/delivery/webhook
+/api/v1/category/get         /api/v1/payment/get
+/api/v1/category/list        /api/v1/payment/list
+/api/v1/category/tree        /api/v1/payment/webhook/
+/api/v1/health               /api/v1/customer/token/get
+                             /api/v1/customer/logout
+```
+
+Шаблон — `/api/v1/product/*/images`, где `*` закрывает ровно один сегмент: так галерея товара остаётся публичной, не открывая всю ветку `/api/v1/product/*`.
+
+Совпадение проверяется как `путь === префикс` или `путь начинается с префикса и слэша`. У записи оплаты слэш на конце уже есть, поэтому код сверяет её с двумя слэшами подряд и `/api/v1/payment/webhook/{id}` под неё не попадает никогда ([разбор](https://github.com/modx-pro/MiniShop3/issues/903)).
 
 На практике список работает на двух путях: `GET /customer/token/get` и `POST /customer/logout` — только на этих публичных путях middleware и стоит. Каталог, health и вебхуки в `web.php` его вообще не подключают.
 

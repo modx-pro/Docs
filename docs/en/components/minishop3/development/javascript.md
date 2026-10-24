@@ -964,7 +964,6 @@ There are three shapes, and they differ in where the per-field breakdown sits.
 | Validation with a per-field breakdown | `code: 422`, `error_code: validation_failed`, `errors` is a field → message map; `data` carries the current draft |
 | A shop rule | `code: 400`, `error_code: business_rule`, `data` holds an array of field names, for example `["delivery_id"]` |
 
-
 So `errors` is always a map or `null`, and an array of field names arrives in `data`, not in `errors`.
 
 ## Tokens and authorization

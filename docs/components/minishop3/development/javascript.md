@@ -953,7 +953,6 @@ document.querySelector('.add-to-cart').addEventListener('click', () => {
 | Валидация с разбором по полям | `code: 422`, `error_code: validation_failed`, `errors` — карта «поле → сообщение»; в `data` приходит текущий черновик |
 | Правило магазина | `code: 400`, `error_code: business_rule`, в `data` массив имён полей, например `["delivery_id"]` |
 
-
 То есть `errors` — это всегда карта или `null`, а массив имён полей приходит в `data`, не в `errors`.
 
 ## Токены и авторизация
