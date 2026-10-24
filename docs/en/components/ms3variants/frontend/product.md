@@ -3,245 +3,180 @@ title: Product page
 ---
 # Product page
 
-Output and selection of variants on the product page.
+How to output variants on the product page and connect them to the price, the cart form and the gallery.
 
-## Basic output
+## Variant output
 
 ```fenom
-{'msProductVariants' | snippet}
+{'!msProductVariants' | snippet}
 ```
 
-The snippet outputs:
-- Variant list
-- Hidden field for the selected variant
-- Loads JS and CSS
+The snippet outputs the variant list with the standard `ms3_variants` and `ms3_variants_row` chunks and includes `ms3variants.js` and `ms3variants.css` (the `includeJs`, `includeCss` parameters). The call must be uncached — see [Snippets](../snippets) for why.
 
-## Default chunks
+On page load, the variant the customer chose before is selected (stored in `localStorage` under the `ms3v_selected_{product ID}` key), otherwise the first one in the list. The first one may be an out-of-stock variant. The price, SKU and other data on the page are immediately replaced with the selected variant's data.
 
-### ms3_variants (wrapper)
+A ready product page template with the attributes in place is in the file `core/components/ms3variants/elements/templates/product_variants.tpl`. Installation does not create it as a MODX template — copy its content into your template.
 
-```fenom
-{if $variants?}
-    <div class="ms3-variants"
-         id="ms3variants-{$product_id}"
-         data-ms3v-init
-         data-ms3v-product-id="{$product_id}">
+## Your own variant markup {#markup}
 
-        {* Hidden field for variant ID *}
-        <input type="hidden" name="_variant_id" data-ms3v-variant-id value="">
+Your own chunks in the `tpl` and `tplRow` parameters work if they contain the attributes JavaScript reads:
 
-        {* Variant list *}
-        <div class="ms3-variants-list">
-            {$rows}
-        </div>
-    </div>
-{/if}
-```
+| Where | Attribute | Required | What it does |
+|-------|-----------|----------|--------------|
+| Wrapper | `data-ms3v-init` | yes | Starts variant selection |
+| Wrapper | `id` | yes | Any unique value. Without it, nothing starts, silently |
+| Wrapper | `data-ms3v-product-id` | yes | Product ID |
+| Row | `data-ms3v-variant` | yes | Variant ID; a click on the row selects the variant |
+| Row | `data-variant-price`, `data-variant-old-price`, `data-variant-count`, `data-variant-sku`, `data-variant-weight` | no | Data put on the page and into the event |
+| Row | `data-variant-file-id` | no | Image ID for gallery switching. The standard chunk does not output it |
+| Row | `<img>` inside `.ms3-variant-image` | no | Variant image URL |
 
-### ms3_variants_row (variant row)
+Chunk placeholders are listed on the [Snippets](../snippets) page.
 
 ```fenom
-<div class="ms3-variant-row {if !$in_stock}ms3-variant-out-of-stock{/if}"
-     data-ms3v-variant="{$id}"
-     data-variant-price="{$price}"
-     data-variant-old-price="{$old_price}"
-     data-variant-count="{$count}"
-     data-variant-sku="{$sku}"
-     data-variant-weight="{$weight}">
+{* tpl *}
+<div id="ms3variants-{$product_id}" data-ms3v-init data-ms3v-product-id="{$product_id}">
+    {$rows}
+</div>
 
-    {* Image *}
-    {if $image_url?}
-        <div class="ms3-variant-image">
-            <img src="{$image_url}" alt="{$sku}" loading="lazy">
-        </div>
-    {/if}
-
-    {* Options *}
-    <div class="ms3-variant-options">
-        {foreach $options as $opt}
-            <span class="ms3-variant-option">{$opt.value}</span>
-        {/foreach}
-    </div>
-
-    {* Price *}
-    <div class="ms3-variant-price">
-        {if $old_price > 0}
-            <span class="ms3-variant-old-price">{$old_price}</span>
-        {/if}
-        <span class="ms3-variant-current-price">{$price}</span>
-    </div>
-
-    {* Stock *}
-    <div class="ms3-variant-stock">
-        {if $in_stock}
-            <span class="ms3-variant-in-stock">In stock: {$count}</span>
-        {else}
-            <span class="ms3-variant-out">Out of stock</span>
-        {/if}
-    </div>
+{* tplRow *}
+<div data-ms3v-variant="{$id}" data-variant-price="{$price}" data-variant-file-id="{$file_id}">
+    {$options_string} — {$price}
 </div>
 ```
 
-## Updating page data
+## Price and SKU on the page {#page-fields}
 
-When a variant is selected, JavaScript automatically updates elements with `data-ms3v-*` attributes on the page:
+When a variant is selected, JavaScript updates page elements with `data-ms3v-*` attributes:
 
-| Attribute | Description | Updated value |
-|-----------|-------------|---------------|
-| `data-ms3v-price` | Current price | Formatted variant price |
-| `data-ms3v-old-price` | Old price | Shown/hidden automatically |
-| `data-ms3v-sku` | SKU | Variant SKU |
-| `data-ms3v-weight` | Weight | Shown/hidden automatically |
-| `data-ms3v-stock` | Stock | Quantity in stock |
-| `data-ms3v-image` | Image | Variant image URL |
-| `data-ms3v-field="{field}"` | Custom field | Value from variant data |
+| Attribute | What is put in |
+|-----------|----------------|
+| `data-ms3v-price` | Variant price in the format from [Price format](#price-format) |
+| `data-ms3v-old-price` | Old price; if there is none, the element is hidden |
+| `data-ms3v-sku` | SKU |
+| `data-ms3v-weight` | Weight as a number; with weight 0 the element is hidden |
+| `data-ms3v-stock` | Stock; empty when zero |
+| `data-ms3v-image` | Image URL: into `src` of the `<img>` itself or a nested one |
+| `data-ms3v-field="key"` | Key value without formatting: `id`, `price`, `old_price`, `count`, `sku`, `weight`, `image`, `file_id` |
 
-### Markup example
-
-Add these attributes to elements in the product page template:
+Every attribute except `data-ms3v-field` is updated only on the first such element on the page. The element's content is replaced entirely, so put units outside it:
 
 ```fenom
-{* SKU — always in DOM, updated on variant change *}
-<span class="text-muted">SKU: <strong data-ms3v-sku>{$article}</strong></span>
-
-{* Price *}
-<div class="product-price">
-    <div data-ms3v-old-price
-         {if !$old_price || $old_price <= 0}style="display:none"{/if}>
-        {if $old_price? && $old_price > 0}{$old_price} ₽{/if}
-    </div>
-    <div data-ms3v-price>
-        {$price ?: 0} ₽
-    </div>
-</div>
-
-{* Weight *}
-<strong data-ms3v-weight>{$weight} kg</strong>
+<span data-ms3v-sku>{$article}</span>
+<span data-ms3v-old-price {if !($old_price > 0)}style="display:none"{/if}>{$old_price}</span>
+<span data-ms3v-price>{$price}</span>
+<span data-ms3v-weight>{$weight}</span> kg
 ```
 
-::: warning Elements must be in the DOM
-The element with `data-ms3v-old-price` must always be present in the HTML (not inside `{if}`). JS controls its visibility via `style.display`. If the element is wrapped in a Fenom condition and not rendered — JS cannot update it.
+::: warning The old price element must always be in the markup
+Do not wrap the `data-ms3v-old-price` element in an `{if}` condition. If it is not in the HTML, JavaScript cannot show the old price for a variant that has one. JavaScript controls the element's visibility itself.
 :::
 
-An example product page template with these attributes is included at:
-`core/components/ms3variants/elements/templates/product_variants.tpl`
+## Cart form {#cart-form}
 
-## Cart form integration
-
-The snippet is called next to the cart form. When a variant is selected, JS finds the `.ms3_form` form on the page and updates the `options` field:
+When a variant is selected, JavaScript writes `{"_variant_id": ID}` into the `options` field of the add-to-cart form:
 
 ```fenom
-{* Variants *}
-{'msProductVariants' | snippet}
+{'!msProductVariants' | snippet}
 
-{* Add to cart form *}
 <form method="post" class="ms3_form" data-cart-state="add">
     <input type="hidden" name="id" value="{$_modx->resource.id}">
-    <input type="hidden" name="count" value="1">
     <input type="hidden" name="options" value="[]">
     <input type="hidden" name="ms3_action" value="cart/add">
-
     <button type="submit">Add to cart</button>
 </form>
 ```
 
-When a variant is selected, JavaScript automatically:
-1. Fills the hidden `_variant_id` field
-2. Updates the `options` field with the selected variant's `_variant_id`
-3. Updates elements with `data-ms3v-*` attributes
+The variant is written into the first `.ms3_form[data-cart-state="add"]` form on the page, and if there is none — into the first `.ms3_form` of any kind. If other cart forms are higher on the page, for example in a related products block, the variant is written to the wrong one.
 
-## JavaScript API
+If the page has a `data-cart-state="change"` form and the selected variant is already in the cart, the add form is hidden and the change form is shown: its `product_key` and `count` fields get the data of that cart item. When a variant that is not in the cart is selected, the add form is shown again with quantity 1. The state is updated without a page reload — on the MiniShop3 cart event `ms3:cart:updated`.
 
-### Initialization
+::: warning Standard MiniShop3 options in the same form are not sent
+If the form has standard MiniShop3 option fields (`options[color]`) besides the variant, they do not reach the cart: MiniShop3 takes a non-empty `options` field and ignores the `options[...]` fields. The cart gets the variant without the chosen color.
+:::
 
-JavaScript initializes automatically for elements with `data-ms3v-init`.
+## Row states {#states}
 
-For manual initialization:
+| Class | When |
+|-------|------|
+| `active` | Row of the selected variant |
+| `in-cart` | The variant is in the cart; a `.ms3-variant-cart-badge` is added to the row with the count in the cart. Its text is always in Russian ("В корзине: N шт."): it is fixed in the script |
+| `ms3-variant-out-of-stock` | The variant is out of stock. Set by the chunk; in your own `tplRow` — `{if !$in_stock}ms3-variant-out-of-stock{/if}` |
+
+An out-of-stock variant can be selected, and the add button stays available. If stock control is on ([`ms3variants_check_stock`](../settings#ms3variants_check_stock), Yes by default), the server refuses adding it to the cart with the message "Variant is out of stock".
+
+## Starting JavaScript {#init}
+
+Automatic start is by `data-ms3v-init` on the `DOMContentLoaded` event. The snippet includes the script itself. If you include `ms3variants.js` yourself (with `returnData` or `includeJs` = 0), use a regular `<script>` without `async`: a script loaded after this event does not start.
+
+The automatically started instance is not accessible from outside. To call methods, start it manually once the wrapper is on the page. The standard `ms3_variants` chunk outputs `data-ms3v-init`, so you need your own `tpl` without this attribute, otherwise there will be two instances on the wrapper:
 
 ```javascript
 const variants = new ms3Variants({
     productId: 42,
     containerId: 'ms3variants-42',
-    priceFormat: {
-        decimals: 0,
-        decPoint: ',',
-        thousandsSep: ' ',
-        currency: '₽',
-        currencyPosition: 'after'
-    },
-    onSelect: function(variantData) {
-        console.log('Selected variant:', variantData);
-    }
+    onSelect: function (data) { /* data — as in the selected event */ }
 });
 ```
 
-### Price format configuration
+Parameters: `productId`, `containerId` (the wrapper `id`), `priceFormat` (see [Price format](#price-format)), `onSelect`.
 
-Price format can be set via data attributes on the container:
+| Method | What it does |
+|--------|--------------|
+| `getSelectedVariant()` | ID of the selected variant |
+| `setVariant(id)` | Selects a variant and remembers the choice |
+| `reset()` | Removes the selection and forgets the choice. It does not clear the form's `options` field: the previous variant is still added to the cart |
 
-```fenom
-<div data-ms3v-init
-     data-ms3v-product-id="{$product_id}"
-     data-ms3v-price-decimals="0"
-     data-ms3v-price-currency="₽"
-     data-ms3v-price-currency-position="after"
-     data-ms3v-price-thousands-sep=" "
-     data-ms3v-price-dec-point=",">
-```
+## Price format {#price-format}
 
-### Methods
+The format is set with wrapper attributes or with the `priceFormat` parameter on [manual start](#init). The standard `ms3_variants` chunk does not output these attributes, and the snippet has no format parameters: a custom format needs your own `tpl`.
+
+| Attribute | `priceFormat` key | Default |
+|-----------|-------------------|---------|
+| `data-ms3v-price-decimals` | `decimals` | `0` |
+| `data-ms3v-price-dec-point` | `decPoint` | `,` |
+| `data-ms3v-price-thousands-sep` | `thousandsSep` | space |
+| `data-ms3v-price-currency` | `currency` | `₽` |
+| `data-ms3v-price-currency-position` | `currencyPosition` | `after` (or `before`) |
+
+::: warning Set all five values at once
+If only some are set, the rest are not taken from the defaults but are lost: the price shows the text `undefined`.
+:::
+
+## Events {#events}
+
+`ms3variants:selected` — a variant is selected, including automatically on page load. `e.detail` fields: `productId`, `id`, `price`, `old_price`, `count`, `sku`, `weight`, `image`, `file_id`.
+
+Subscribe on the variants wrapper: a handler on `document` fires twice for one selection.
 
 ```javascript
-// Get ID of currently selected variant
-const currentId = variants.getSelectedVariant();
-
-// Select variant programmatically
-variants.setVariant(variantId);
-
-// Reset selection
-variants.reset();
-```
-
-### Events
-
-When a variant is selected, the `ms3variants:selected` event is fired:
-
-```javascript
-document.addEventListener('ms3variants:selected', function(e) {
-    console.log('Product ID:', e.detail.productId);
-    console.log('Variant ID:', e.detail.id);
-    console.log('Price:', e.detail.price);
-    console.log('Old price:', e.detail.old_price);
-    console.log('SKU:', e.detail.sku);
-    console.log('Count:', e.detail.count);
-    console.log('Weight:', e.detail.weight);
+document.getElementById('ms3variants-42').addEventListener('ms3variants:selected', function (e) {
+    console.log(e.detail.id, e.detail.price);
 });
 ```
 
-## Gallery integration
+## Gallery {#gallery}
 
-When a variant with an image is selected, the `ms3variants:image-change` event is fired:
+`ms3variants:image-change` is sent to `document` if the selected variant has an image, including on page load. `e.detail` fields: `productId`, `variantId`, `fileId`, `imageUrl`. With the standard chunk `fileId` is always `0` — find the gallery slide by the file name from `imageUrl`.
 
 ```javascript
-document.addEventListener('ms3variants:image-change', function(e) {
-    console.log('Image URL:', e.detail.imageUrl);
-    console.log('File ID:', e.detail.fileId);
+document.addEventListener('ms3variants:image-change', function (e) {
+    myGallery.goToImage(e.detail.fileId || e.detail.imageUrl);
 });
 ```
 
 ### Splide adapter
 
-An adapter for the Splide gallery is included:
-
 ```fenom
-{* Load adapter *}
 <script src="{'assets_url' | option}components/ms3variants/js/web/adapters/splide-adapter.js"></script>
 ```
 
-The adapter automatically:
-- Listens for `ms3variants:image-change`
-- Finds the slide with the target image
-- Switches the gallery to that slide
+The adapter works if:
+
+- slides are `#ms3-gallery-main .splide__slide` elements; the right one is found by `data-file-id`, then by file name;
+- the Splide instance is in `element.splide` of the `#ms3-gallery-main` element or is passed with `window.ms3VariantsSetSplide(splide)`.
+
+A variant is selected right on page load, so call `ms3VariantsSetSplide()` right after creating Splide: the adapter misses events before the call. If the gallery is built differently, the adapter silently does nothing. Ready markup is in the file `core/components/ms3variants/elements/chunks/ms3_gallery_splide.tpl`; installation does not create it as a chunk.
 
 ### GLightbox adapter
 
@@ -249,61 +184,8 @@ The adapter automatically:
 <script src="{'assets_url' | option}components/ms3variants/js/web/adapters/glightbox-adapter.js"></script>
 ```
 
-### Custom integration
+Include the adapter after the GLightbox library: without it, the adapter fails with a console error as soon as it finds a gallery element.
 
-For other galleries, subscribe to the event:
+The adapter searches the whole page: by `data-file-id`, then `a.glightbox` by address or file name. It sets the `active` class on the found element and scrolls the page to it, including on page load.
 
-```javascript
-document.addEventListener('ms3variants:image-change', function(e) {
-    const imageUrl = e.detail.imageUrl;
-
-    // Your gallery switch code
-    myGallery.goToSlide(imageUrl);
-});
-```
-
-## Option selectors
-
-To build an interface with separate option selectors (instead of a variant list):
-
-```fenom
-{set $data = 'msProductVariants' | snippet : ['returnData' => 1]}
-
-{if $data.total > 0}
-    <div class="variant-selectors" data-ms3v-selectors>
-        {foreach $data.available_options as $key => $values}
-            <div class="variant-option-group">
-                <label>{$key}</label>
-                <select data-option-key="{$key}">
-                    <option value="">Select {$key}</option>
-                    {foreach $values as $value}
-                        <option value="{$value}">{$value}</option>
-                    {/foreach}
-                </select>
-            </div>
-        {/foreach}
-    </div>
-
-    <input type="hidden" name="_variant_id" data-ms3v-variant-id>
-{/if}
-```
-
-JavaScript to handle the selectors:
-
-```javascript
-document.querySelectorAll('[data-option-key]').forEach(select => {
-    select.addEventListener('change', findMatchingVariant);
-});
-
-function findMatchingVariant() {
-    const selected = {};
-    document.querySelectorAll('[data-option-key]').forEach(select => {
-        if (select.value) {
-            selected[select.dataset.optionKey] = select.value;
-        }
-    });
-
-    // Find variant with these options
-    // and set its ID in the hidden field
-}
-```
+The `active` class is removed from all `.glightbox` and `[data-file-id]` elements on the page at the same time. If your gallery shows slides by the `active` class, the adapter conflicts with it.
