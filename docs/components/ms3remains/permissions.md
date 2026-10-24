@@ -7,7 +7,7 @@ description: Разрешение ms3remains_manage для меню, API и вк
 
 Компонент добавляет одно разрешение: `ms3remains_manage`.
 
-Страница CMP откроется и с правом `settings`. Запросы API без `ms3remains_manage` вернут 403. Меню без этого разрешения не показывается.
+Страница CMP откроется и при праве `settings`. Запросы API без `ms3remains_manage` вернут 403. Меню без этого разрешения скрыто.
 
 Разрешение нужно для:
 
@@ -17,13 +17,11 @@ description: Разрешение ms3remains_manage для меню, API и вк
 
 ## Выдача
 
-<!-- MEDIA: screenshot-admin | must | Политика доступа группы пользователей: включённое разрешение ms3remains_manage | MODX 3, тестовый стенд, группа с политикой ms3Remains -->
-
 1. Откройте группу пользователей в manager.
 2. В политике доступа включите `ms3remains_manage`.
 3. Очистите кэш и перелогиньте пользователя.
 
-Пакет ставит policy template и policy при установке, так что разрешение доступно сразу.
+Пакет ставит шаблон политики и политику при установке. Разрешение доступно сразу.
 
 ## Manager API
 
@@ -31,7 +29,7 @@ description: Разрешение ms3remains_manage для меню, API и вк
 
 | Метод | Путь | Назначение |
 | --- | --- | --- |
-| `GET` | `/stocks` | список остатков |
+| `GET` | `/stocks` | список остатков. Параметры запроса ниже |
 | `GET` | `/stocks/by-product/{productId}` | сетка вкладки товара |
 | `POST` | `/stocks/set` | записать количество |
 | `GET` | `/stocks/csv/export` | выгрузка CSV |
@@ -46,6 +44,22 @@ description: Разрешение ms3remains_manage для меню, API и вк
 | `GET` | `/dictionary/categories` | список категорий |
 | `GET` | `/dictionary/order-statuses` | статусы заказов |
 | `GET` | `/dictionary/variants` | варианты ms3Variants |
+
+### Параметры `GET /stocks`
+
+| Параметр | Назначение |
+| --- | --- |
+| `category_id` | id категории |
+| `product_id` | id товара |
+| `variant_id` | id варианта |
+| `search` | строка поиска |
+| `availability` | `in_stock` или `out_of_stock`. Другое значение процессор отбрасывает |
+| `page` | номер страницы, с 1 |
+| `limit` | размер страницы. Без параметра процессор берёт 25, больше 100 не отдаёт. Экран открывается с 20 |
+| `sort_field` | поле сортировки. Пустое значение читается из `sort`, по умолчанию `updatedon`. Принимаются `quantity`, `status`, `product_id`, `productId`, `product_name`, `productName`, `pagetitle`, `variant_sku`, `variantSku`, `options`, `id`, `updated`, `updated_at`, `updatedAt`, `updatedon`. Другое имя молча становится `updatedon` |
+| `sort_order` | `ASC` или `DESC`. Пустое значение читается из `dir`, по умолчанию `DESC`. Всё, кроме `ASC`, становится `DESC` |
+
+`GET /stocks/csv/export` принимает `category_id`, `product_id`, `variant_id` и `search`. Фильтр `availability` при выгрузке не применяется.
 
 Сервисный PHP API для скриптов: [Обмен с внешними системами](external-sync).
 
