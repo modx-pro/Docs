@@ -72,6 +72,21 @@ For ExtJS tabs the core injects `record` into `extConfig` itself — you do not 
 
 ## Load order
 
+```mermaid
+flowchart TB
+  start["Plugin script before product-tabs.min.js"]
+  start --> missing["MS3ProductTabsRegistry does not exist yet"]
+  missing --> stub[Stub in place of the object]
+  missing --> wait[whenRegistryReady]
+  stub --> keep["The registry is not created: the object is already there"]
+  keep --> mount["_onMounted"]
+  mount --> err["TypeError, queued tabs never appear"]
+  wait --> poll{Object present}
+  poll -->|no| again["Retry in 100 ms"]
+  again --> poll
+  poll -->|yes| reg[register]
+```
+
 `product-tabs.min.js` is included as an ES module, and modules run after the page has been parsed. A plain plugin script therefore always runs earlier, and at that moment `window.MS3ProductTabsRegistry` does not exist yet.
 
 ::: warning Do not create a stub
@@ -79,8 +94,6 @@ The [order page](/en/components/minishop3/development/order-tabs-integration#reg
 
 Wait for the registry instead — see [the function below](#waiting-for-registry).
 :::
-
-<!-- MEDIA: diagram | must | Load order as two lanes with a shared start: the plugin script runs before `product-tabs.min.js`, and `window.MS3ProductTabsRegistry` does not exist yet. Top lane labelled "do not": the plugin puts a stub in its place → the module creates `new ProductTabsRegistry()` only when no such object exists, so the stub stays → tab initialisation calls `_onMounted()` on it → `TypeError`, queued tabs do not appear. Bottom lane labelled "do this": the plugin calls `whenRegistryReady` → no object yet, retry in 100 ms → the module creates the real object → the next poll finds it → `register()` is called. Only the steps named in the section text. | Draw from the text of the "Do not create a stub" warning and the "Waiting for the registry" subsection, not from the code. SVG, transparent background; two versions (Russian and English) from one source; code names are not translated. Style it like the load-order diagram on the order page so the two pages read as a pair. Do not draw the mounting of the Vue app or handing the queue over to it: the section text does not describe that. -->
 
 ### Waiting for the registry {#waiting-for-registry}
 
@@ -265,4 +278,12 @@ console.log(window.MS3ProductTabsRegistry.pendingTabs);
 
 A queue that is not empty after the page has loaded means the tabs never reached Vue.
 
-<!-- MEDIA: output | must | What the browser console prints for the cases in this section: one line per cause, marked `console.error` or `console.warn` (no `key` or `title`; duplicate key), and the `TypeError` line when a stub stands in place of `MS3ProductTabsRegistry`. Next to it, the output of `console.log(window.MS3ProductTabsRegistry.pendingTabs)`: an empty list after a valid registration and a non-empty one with a stub. | A text block, not a screenshot. On the stand: a temporary plugin on the `msOnManagerCustomCssJs` event with a `page === 'product_update'` check. First pass: register through `whenRegistryReady`, one faulty call per case, open a product, copy the lines from the console. Second pass: the plugin creates the stub `window.MS3ProductTabsRegistry = {pendingTabs: [], register: …}` and registers a valid tab; take the `TypeError` line and the `pendingTabs` output. Record the prefixes exactly as printed and check whether they depend on when the call is made. Replace the second argument with the tab settings by `{…}`; keep only the first line of the `TypeError`, without the stand path. Delete the plugin after capture. -->
+```text
+console.error [ProductTabsRegistry] Tab must have key and title {…}
+console.warn [ProductTabsRegistry] Tab "specs" already registered
+console.warn [ProductTabs] Invalid plugin tab data: {…}
+console.warn [ProductTabs] Tab with key "specs" already registered
+TypeError: window.MS3ProductTabsRegistry._onMounted is not a function
+```
+
+`pendingTabs` after the page has loaded: `[]` when the tabs reached Vue. If a stub sits in place of the registry, the queued tab stays there — for example `[{ key: "specs", title: "Specs" }]`.

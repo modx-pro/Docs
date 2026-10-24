@@ -8,6 +8,20 @@ MiniShop3 uses [FastRoute](https://github.com/nikic/FastRoute) for API request r
 
 ## Architecture
 
+```mermaid
+flowchart TB
+  subgraph web [Web API]
+    w1[web.php] --> w2[ms3_routes_web.custom.php]
+    w2 --> w3["ms3.routes.d/web"]
+    w3 --> wb[build]
+  end
+  subgraph mgr [Manager API]
+    m1[manager.php] --> m2[ms3_routes_manager.custom.php]
+    m2 --> m3["ms3.routes.d/manager"]
+    m3 --> mb[build]
+  end
+```
+
 ### Two API types
 
 | Parameter | Manager API | Web API |
@@ -273,11 +287,27 @@ They all live in the `miniShopManagerPolicy` access policy created by the instal
 A group created after the install does not get the policy: the resolver only runs while the package is being installed or upgraded. Details in the [quick start](/en/components/minishop3/quick-start#install-creates).
 :::
 
+#### AnyPermissionMiddleware
+
+Lets the request through when the user holds **at least one** permission from the list. Needed where the controller does the exact check itself: bulk actions on category products check a permission per action.
+
+```php
+use MiniShop3\Router\Middleware\AnyPermissionMiddleware;
+
+$router->post('/multiple', $handler, [
+    new AnyPermissionMiddleware($modx, ['msproduct_save', 'msproduct_publish', 'msproduct_delete'])
+]);
+```
+
+#### ServiceCheckMiddleware
+
+Checks that the `ms3` service started. If it did not, the answer is `503` with `error_code: internal_error` and the handler never runs. It sits first in the Web API stack.
+
 #### TokenMiddleware
 
 Validates and auto-mints the customer token for Web API when needed.
 
-Resolve order: `Authorization: Bearer` → legacy `MS3TOKEN` header → httpOnly cookie `ms3_token` → `$_REQUEST` → session. Query `token` / `ms3_token` is stripped and not accepted.
+Resolve order: `Authorization: Bearer` → legacy `MS3TOKEN` header → httpOnly cookie `ms3_token` → `$_REQUEST` → session. The middleware removes the `ms3_token` query parameter from the request; `token` in the query stays but does not authorize either — e-mail confirmation uses it.
 
 ```php
 use MiniShop3\Middleware\TokenMiddleware;
@@ -396,8 +426,8 @@ Middleware runs in the order they are listed:
 $router->get('/api/mgr/endpoint', $handler, [
     new CorsMiddleware(),        // 1. CORS first
     new RateLimitMiddleware(),   // 2. Rate limit
-    new AuthMiddleware($modx),   // 3. Auth
-    new PermissionMiddleware(),  // 4. Permissions
+    new AuthMiddleware($modx),                          // 3. Auth
+    new PermissionMiddleware($modx, 'msproduct_save'),  // 4. Permission
 ]);
 ```
 
@@ -413,6 +443,110 @@ If middleware returns a `Response`, the rest of the middleware and the handler a
 | --- | --- | --- |
 | GET | `/health` | API health check |
 | GET | `/user/info` | Current user info |
+
+#### References (`/references`) {#references}
+
+Reading the reference lists (permission `view_document`): all eight routes of the group are `GET`. They back the autocomplete and value pickers in the manager forms.
+
+| Method | Route | Description |
+| --- | --- | --- |
+| GET | `/vendors` | Vendor list |
+| GET | `/autocomplete` | Product autocomplete |
+| GET | `/options` | Option list |
+| GET | `/product-option-fields` | Product option fields |
+| GET | `/product-field-values` | Product field values |
+| GET | `/products` | Product search / autocomplete |
+| GET | `/link-types` | Link types (`msLink`) |
+| GET | `/customers` | Customer search / autocomplete |
+
+#### Model fields by alias (`/models/{alias}/fields`)
+
+Model fields by `alias`. The product and order forms take their field configuration from here.
+
+| Method | Route | Description |
+| --- | --- | --- |
+| GET | `/{alias}/fields` | Model fields by `alias`. No permission of its own: an mgr session is enough |
+
+#### Extra fields (`/extra-fields`)
+
+CRUD for the extra fields of orders and products. Reading needs no `mssetting_save`, writing does.
+
+| Method | Route | Description |
+| --- | --- | --- |
+| GET | `/` | List the extra fields |
+| GET | `/{id}` | Get an extra field by ID |
+| POST | `/` | Create an extra field |
+| PUT | `/{id}` | Update an extra field |
+| DELETE | `/{id}` | Delete an extra field |
+
+#### Options (`/options`)
+
+CRUD for the shop option settings. Permission `mssetting_save`.
+
+| Method | Route | Description |
+| --- | --- | --- |
+| GET | `/types` | Option types |
+| GET | `/tree` | Option tree |
+| GET | `/suggestions` | Option suggestions |
+| POST | `/bulk/assign` | Bulk assignment of options |
+| DELETE | `/bulk` | Bulk deletion of options |
+| POST | `/` | Create an option |
+| GET | `/` | List the options |
+| GET | `/{id}` | Get an option by ID |
+| PUT | `/{id}` | Update an option |
+| DELETE | `/{id}` | Delete an option |
+
+#### Option groups (`/option-groups`)
+
+Grouping of options, replacing the former approach built on `modCategory`. Permission `mssetting_save`.
+
+| Method | Route | Description |
+| --- | --- | --- |
+| GET | `/` | List the option groups |
+| POST | `/` | Create an option group |
+| GET | `/{id}` | Get an option group by ID |
+| PUT | `/{id}` | Update an option group |
+| DELETE | `/{id}` | Delete an option group |
+| DELETE | `/bulk` | Bulk deletion |
+| PUT | `/positions` | Update positions (sorting) |
+
+#### Customer groups (`/customer-groups`)
+
+The link to MODX user groups for catalog ACL. Reading: `msorder_list`. Writing: `msorder_save`.
+
+| Method | Route | Description | Permission |
+| --- | --- | --- | --- |
+| GET | `/` | List the customer groups | `msorder_list` |
+| POST | `/` | Create a customer group | `msorder_save` |
+| GET | `/{id}` | Get a customer group | `msorder_view` |
+| PUT | `/{id}` | Update a customer group | `msorder_save` |
+| DELETE | `/{id}` | Delete a customer group | `msorder_remove` |
+
+#### Category options (`/categories/{category_id}/options`)
+
+Options of one category. The permission for the whole group is `mscategory_save`.
+
+| Method | Route | Description |
+| --- | --- | --- |
+| GET | `/` | List the category options |
+| POST | `/` | Create a category option |
+| POST | `/sort` | Sort the category options |
+| POST | `/bulk` | Bulk operations on category options |
+| POST | `/duplicate` | Duplicate an option |
+| PUT | `/{option_id}` | Update a category option |
+| DELETE | `/{option_id}` | Delete a category option |
+
+#### Category products (`/categories/{id}/products`)
+
+| Method | Route | Description | Permission |
+| --- | --- | --- | --- |
+| GET | `/{id}/products` | Products of the category | `view_document` |
+| GET | `/{id}/products/filters` | Filter configuration | `view_document` |
+| POST | `/{id}/products/sort` | Sorting | `msproduct_save` |
+| DELETE | `/{id}/products/bulk` | Bulk deletion | `msproduct_delete` |
+| POST | `/{id}/products/multiple` | Batch actions. The route admits any product mutation permission; the controller makes the exact check | see `CategoryProductActionPermissions` |
+| PUT | `/{id}/products/{productId}/data` | Edit product data | `msproduct_save` |
+| POST | `/{id}/products/{productId}/publish` | Publication | `msproduct_publish` |
 
 #### Config (`/config`)
 
@@ -437,7 +571,7 @@ CRUD for admin grid column configuration. Read: `view_document`, write: `mssetti
 | PUT | `/{grid_key}/field/{field_name}` | Update column |
 | DELETE | `/{grid_key}/{field_name}` | Delete column |
 
-**Known `grid_key` values in MS3 1.13:** `orders`, `order_products`, `customers`, `vendors`, `category-products`.
+**Six grids have a configuration in the database:** `orders`, `order_products`, `customers`, `vendors`, `category-products`, `deliveries` — their columns come from seed migrations. The payments grid asks for the `payments` key, but no seed exists for it: the answer comes back empty and the grid draws its built-in columns. The grid picker in the settings offers five keys, without `deliveries` and `payments`.
 
 ##### `GET /grid-config/{grid_key}` response
 
@@ -505,12 +639,54 @@ Read and write are split into two middleware groups.
 | PUT | `/{id}/products/{product_id}` | Update line |
 | DELETE | `/{id}/products/{product_id}` | Remove line |
 
+**Order shipment:**
+
+| Method | Route | Description | Permission |
+| --- | --- | --- | --- |
+| GET | `/{id}/shipment` | Get the shipment data of an order | `msorder_list` |
+| PUT | `/{id}/shipment` | Save or update the shipment of an order | `msorder_save` |
+
 **Form references** (no separate PermissionMiddleware, mgr session):
 
 | Method | Route | Description |
 | --- | --- | --- |
 | GET | `/statuses-dropdown` | Statuses with translations |
 | GET | `/deliveries-active` | Active deliveries for select |
+
+#### Model field metadata (`/model-fields`)
+
+Field metadata of the models, used by the dynamic forms. Reading needs no special permission, writing needs `mssetting_save`.
+
+**Reading (metadata):**
+
+| Method | Route | Description |
+| --- | --- | --- |
+| GET | `/models` | List of available models |
+| GET | `/sections/{model}` | Sections of a model |
+| GET | `/` | Field list (parameters: `model`, `section`) |
+| GET | `/{id}` | Get a field by ID |
+
+**Reading (data with combo options):**
+
+| Method | Route | Description | Permission |
+| --- | --- | --- | --- |
+| GET | `/visible/{model}` | Visible fields of a model | any one from the list below |
+| GET | `/combo-options/{model}` | Combo options of a model | any one from the list below |
+| GET | `/combo-options/{model}/{field_name}` | Combo options of one field | any one from the list below |
+
+`AnyPermissionMiddleware` on those three GETs: `msorder_list`, `msorder_view`, `msorder_save`, `msproduct_save`, `mscategory_save`, `mssetting_list`, `mssetting_view`, `mssetting_save`, `view_document`.
+
+**Writing**, permission `mssetting_save`:
+
+| Method | Route | Description |
+| --- | --- | --- |
+| POST | `/sections` | Create a section |
+| PUT | `/sections/ranks` | Section order |
+| PUT | `/sections/{id}` | Update a section |
+| DELETE | `/sections/{id}` | Delete a section |
+| POST | (root) | Create a field |
+| PUT | `/ranks` | Field order |
+| PUT | `/{id}` | Update a field |
 
 #### Customers (`/customers`)
 
@@ -528,7 +704,83 @@ Read and write are split into two middleware groups.
 
 #### Store settings
 
-**Deliveries (`/deliveries`)**, **Payments (`/payments`)**, **Vendors (`/vendors`)**, **Statuses (`/statuses`)**, **Links (`/links`)** — CRUD with permission `mssetting_save`.
+##### Deliveries (`/deliveries`)
+
+CRUD for the delivery methods. Permission `mssetting_save`.
+
+| Method | Route | Description |
+| --- | --- | --- |
+| GET | `/` | List the delivery methods |
+| POST | `/` | Create a delivery method |
+| DELETE | `/bulk` | Bulk deletion of delivery methods |
+| POST | `/sort` | Sort the delivery methods |
+| PUT | `/positions` | Update delivery positions |
+| GET | `/{id}` | Get a delivery method by ID |
+| PUT | `/{id}` | Update a delivery method |
+| DELETE | `/{id}` | Delete a delivery method |
+| GET | `/{id}/payments` | Payment methods of a delivery |
+| POST | `/{id}/payments` | Add a payment method to a delivery |
+| DELETE | `/{id}/payments/{payment_id}` | Remove a payment method from a delivery |
+
+##### Payments (`/payments`)
+
+CRUD for the payment methods. Permission `mssetting_save`.
+
+| Method | Route | Description |
+| --- | --- | --- |
+| GET | `/` | List the payment methods |
+| POST | `/` | Create a payment method |
+| DELETE | `/bulk` | Bulk deletion of payment methods |
+| POST | `/sort` | Sort the payment methods |
+| PUT | `/positions` | Update payment positions |
+| GET | `/{id}` | Get a payment method by ID |
+| PUT | `/{id}` | Update a payment method |
+| DELETE | `/{id}` | Delete a payment method |
+| GET | `/{id}/deliveries` | Delivery methods of a payment method |
+| POST | `/{id}/deliveries` | Add a delivery to a payment method |
+| DELETE | `/{id}/deliveries/{delivery_id}` | Remove a delivery from a payment method |
+
+##### Vendors (`/vendors`)
+
+CRUD for the vendors. Permission `mssetting_save`.
+
+| Method | Route | Description |
+| --- | --- | --- |
+| GET | `/` | List the vendors |
+| POST | `/` | Create a vendor |
+| DELETE | `/bulk` | Bulk deletion of vendors |
+| POST | `/sort` | Sort the vendors |
+| GET | `/{id}` | Get a vendor by ID |
+| PUT | `/{id}` | Update a vendor |
+| DELETE | `/{id}` | Delete a vendor |
+
+##### Statuses (`/statuses`)
+
+CRUD for the order statuses. Permission `mssetting_save`.
+
+| Method | Route | Description |
+| --- | --- | --- |
+| GET | `/` | List the statuses |
+| POST | `/` | Create a status |
+| DELETE | `/bulk` | Bulk deletion of statuses |
+| POST | `/sort` | Sort the statuses |
+| GET | `/{id}` | Get a status by ID |
+| PUT | `/{id}` | Update a status |
+| DELETE | `/{id}` | Delete a status |
+
+##### Link types (`/links`)
+
+CRUD for the product link types. Permission `mssetting_save`.
+
+| Method | Route | Description |
+| --- | --- | --- |
+| GET | `/` | List the link types |
+| POST | `/` | Create a link type |
+| DELETE | `/bulk` | Bulk deletion of link types |
+| GET | `/types` | Get the link types (alias kept for backward compatibility) |
+| GET | `/{id}` | Get a link type |
+| PUT | `/{id}` | Update a link type |
+| DELETE | `/{id}` | Delete a link type |
 
 #### Product data (`/product-data`)
 
@@ -563,6 +815,12 @@ Read and write are split into two middleware groups.
 | POST | `/preview` | Preview | `msproduct_save` |
 | POST | `/start` | Start import | `msproduct_save` |
 | GET | `/progress/{import_id}` | Import progress | `msproduct_save` |
+
+#### Gallery (`/utilities/gallery`)
+
+| Method | Route | Description | Permission |
+| --- | --- | --- | --- |
+| POST | `/update` | Bulk gallery operations | `msproductfile_generate` |
 
 ### Web API (`/api/v1/*`)
 

@@ -27,7 +27,7 @@ Vue OrderView (корневой компонент)
 
 ## Регистрация вкладки
 
-Метод `register(tabConfig)` принимает:
+Метод `window.MS3OrderTabsRegistry.register(tabConfig)` принимает:
 
 | Параметр | Тип | Обязательный | Описание |
 | --- | --- | --- | --- |
@@ -51,7 +51,7 @@ Vue OrderView (корневой компонент)
 
 | Параметр | Тип | Описание |
 | --- | --- | --- |
-| `orderId` | number | ID заказа (0 при создании) |
+| `orderId` | number \| string | ID заказа. На странице создания приходит строка `'new'` |
 | `order` | object \| null | Данные заказа. `null` при создании и пока не пришёл ответ API — отсюда `order?.num` в примерах |
 | `config` | object | Конфигурация ms3 (`ms3.config`) |
 | `isCreateMode` | boolean | Режим создания нового заказа |
@@ -85,10 +85,16 @@ $controller->addHtml('
 
 ::: warning Порядок загрузки
 Скрипт из `msOnManagerCustomCssJs` выполняется **до** загрузки Vue-модуля (`order.min.js`).
-В этот момент `MS3OrderTabsRegistry` ещё не существует — необходимо создать заглушку с очередью. Vue-модуль при загрузке подхватит `pendingTabs` из заглушки.
+В этот момент `MS3OrderTabsRegistry` ещё не существует, поэтому создайте заглушку с очередью: Vue-модуль при загрузке подхватит из неё `pendingTabs`.
 :::
 
-<!-- MEDIA: diagram | must | Порядок загрузки на странице заказа по шагам: 1) на событии `msOnManagerCustomCssJs` плагин выводит свой скрипт; 2) скрипт выполняется до `order.min.js`, реестра ещё нет, поэтому скрипт создаёт заглушку, и `register()` кладёт вкладку в `pendingTabs`; 3) загружается `order.min.js`, создаёт настоящий реестр и подхватывает очередь; 4) очередь пуста, вкладки приняты. Только шаги, названные в тексте раздела. | Нарисовать по тексту предупреждения «Порядок загрузки»; имена из кода не переводить; две версии (русская и английская) из одного источника. -->
+```mermaid
+flowchart LR
+  plug["msOnManagerCustomCssJs"] --> early["Скрипт до order.min.js"]
+  early --> stub["Заглушка, register пишет в pendingTabs"]
+  stub --> vue["order.min.js забирает очередь"]
+  vue --> done["Очередь пуста, вкладки приняты"]
+```
 
 ### Заглушка с очередью {#registry-stub}
 
@@ -165,7 +171,7 @@ $controller->addHtml('
 import { ref, onMounted } from 'vue'
 
 const props = defineProps({
-  orderId: { type: Number, required: true },
+  orderId: { type: [Number, String], required: true },  // На создании это 'new'
   order: { type: Object, default: null },
   config: { type: Object, default: () => ({}) },
   isCreateMode: { type: Boolean, default: false }
@@ -302,7 +308,7 @@ $controller->addHtml('
 ```
 
 ::: warning Снимок данных
-ExtJS-вкладка создаётся **один раз** при первом переключении на неё и живёт до закрытия страницы заказа: при переходе на другие вкладки панель не уничтожается и состояние в ней сохраняется. Значения `order`, `orderId`, `config`, `isCreateMode` — это снимок на момент создания. Если заказ будет сохранён или изменён, ExtJS-панель **не получит** обновлённые данные автоматически. Для обновления данных реализуйте собственную логику (polling, подписка на события).
+ExtJS-вкладка создаётся **один раз** при первом переключении на неё и живёт до закрытия страницы заказа: при переходе на другие вкладки панель не уничтожается и состояние в ней сохраняется. Значения `order`, `orderId`, `config`, `isCreateMode` — это снимок на момент создания. После сохранения или правки заказа панель обновлённых данных **не получит**. Обновляйте их сами: опросом сервера или подпиской на события.
 :::
 
 ## Позиционирование вкладок
@@ -319,7 +325,7 @@ ExtJS-вкладка создаётся **один раз** при первом 
 
 Своя вкладка без указанного `position` получает `100`. Значение из диапазона **5–99** поставит её после встроенных, но раньше вкладок с позицией по умолчанию.
 
-Встроенные вкладки занимают целые числа 0–4, поэтому встать между ними целым значением нельзя — сортировка идёт по числу, и `2.5` встанет между «Адресом» и «Отгрузкой».
+Между встроенными вкладками целым числом не встать, но сортировка идёт по числу: `2.5` поставит вкладку между «Адресом» и «Отгрузкой».
 
 Вкладки с одинаковой позицией сортируются в порядке регистрации.
 
@@ -351,4 +357,15 @@ console.log(window.MS3OrderTabsRegistry)
 console.log(window.MS3OrderTabsRegistry.pendingTabs)
 ```
 
-<!-- MEDIA: output | must | Что пишет консоль браузера, когда плагин с заглушкой регистрирует отклонённые вкладки: по одной строке на каждый случай из списка (нет `key` или `title`; ключ из зарезервированных; повторный ключ; нет `component` при `type: 'vue'`; нет `xtype` при `type: 'extjs'`) с пометкой `console.error` или `console.warn`. Рядом — вывод `console.log(window.MS3OrderTabsRegistry)` на загруженной странице заказа. | На стенде: временный плагин на событии `msOnManagerCustomCssJs` с заглушкой из страницы и несколькими ошибочными вызовами `register()`, открыть заказ, скопировать строки из консоли; вывод реестра снять, оставив одну верную вкладку. Вручную из консоли не снимать: после загрузки страницы префикс сообщений другой. Плагин после съёмки удалить. -->
+Разбор очереди из заглушки пишет так:
+
+```text
+console.error [OrderTabsRegistry] Tab must have key and title {…}
+console.error [OrderTabsRegistry] Tab key "info" is reserved {key: "info", …}
+console.error [OrderTabsRegistry] Unsupported tab type "custom" (use vue or extjs) {type: "custom", …}
+console.error [OrderTabsRegistry] Vue tab requires component (component name or definition) {type: "vue", …}
+console.error [OrderTabsRegistry] ExtJS tab requires xtype {type: "extjs", …}
+console.warn [OrderTabsRegistry] Tab "tracking" already registered
+```
+
+На уже открытой странице те же отказы идут с префиксом `[OrderView]`. После загрузки с одной принятой вкладкой `pendingTabs` равен `[]`.

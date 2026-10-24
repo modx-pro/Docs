@@ -14,7 +14,7 @@ title: События статуса заказа
 | Параметр | Тип | Описание |
 | --- | --- | --- |
 | `msOrder` | `msOrder` | Объект заказа |
-| `old_status` | `int` \| `null` | ID текущего статуса (`null`, если активная запись статуса не найдена) |
+| `old_status` | `int` \| `null` | ID текущего статуса. `null`, если у заказа пустой `status_id` |
 | `status` | `int` | ID нового статуса |
 
 ### Прерывание операции
@@ -28,8 +28,8 @@ switch ($modx->event->name) {
         $oldStatus = $scriptProperties['old_status'];
         $newStatus = $scriptProperties['status'];
 
-        // Статус 6 в стандартном наборе: отмена. Поля payment_status у заказа нет.
-        if ($newStatus == 6) {
+        // 5 — ms3_status_canceled. Поля payment_status у заказа нет.
+        if ($newStatus == 5) {
             $modx->event->output('Отмена заказа запрещена');
             return;
         }
@@ -54,14 +54,26 @@ switch ($modx->event->name) {
     case 'msOnBeforeChangeOrderStatus':
         $newStatus = $scriptProperties['status'];
 
-        if ($newStatus === 3) { // 3 = "оплачен"
-            $modx->event->returnedValues = ['status' => 7]; // 7 = "требует подтверждения"
+        if ($newStatus === 3) { // ms3_status_paid
+            $modx->event->returnedValues = ['status' => 4]; // ms3_status_sent
         }
         break;
 }
 ```
 
+Подменённый статус ядро проверяет теми же правилами, что и запрошенный. Учтите, что статус 4 финальный: заказ, переведённый в него, дальше никуда не перейдёт. Если после подмены заказ должен жить дальше, заводите свой статус без флага `final`.
+
 ### Проверка допустимости перехода
+
+::: warning Часть переходов ядро отбивает до события
+`OrderStatusService::validateStatusTransition()` выполняется **раньше** `msOnBeforeChangeOrderStatus`, поэтому запрещённый им переход до плагина не доходит. Правила такие:
+
+- из статуса с флагом `final` уйти нельзя вообще — ответ `ms3_err_status_final`. В поставке `final` стоит у статусов 4 (отправлен) и 5 (отменён);
+- из статуса с флагом `fixed` нельзя перейти на статус с меньшим или равным `position` — ответ `ms3_err_status_fixed`;
+- если задана настройка `ms3_order_status_transitions`, переход должен быть в ней перечислен.
+
+Не пишите в плагине проверок, которые ядро уже сделало: они не выполнятся. Например, запрет отмены отправленного заказа писать не нужно — статус 4 финальный, и переход 4 → 5 отклоняется раньше.
+:::
 
 ```php
 <?php
@@ -72,7 +84,7 @@ switch ($modx->event->name) {
         $newStatus = $scriptProperties['status'];
 
         switch ($newStatus) {
-            case 3: // Отправлен
+            case 4: // ms3_status_sent
                 $properties = $order->get('properties') ?? [];
                 if (empty($properties['tracking_number'])) {
                     $modx->event->output('Укажите трек-номер');
@@ -80,16 +92,9 @@ switch ($modx->event->name) {
                 }
                 break;
 
-            case 4: // Выполнен
-                if ($oldStatus != 3) {
-                    $modx->event->output('Заказ должен быть сначала отправлен');
-                    return;
-                }
-                break;
-
-            case 6: // Отменён
-                if ($oldStatus == 4) {
-                    $modx->event->output('Нельзя отменить выполненный заказ');
+            case 5: // ms3_status_canceled
+                if ($oldStatus == 3) { // ms3_status_paid
+                    $modx->event->output('Оплаченный заказ отменяйте через возврат');
                     return;
                 }
                 break;
@@ -105,9 +110,9 @@ switch ($modx->event->name) {
 ```mermaid
 flowchart TD
   save["Сохранение статуса и движения склада"] --> history["Запись в историю"]
-  history --> notify["Уведомления"]
-  notify --> event["msOnChangeOrderStatus"]
-  event --> out{"output() непустой?"}
+  history --> event["msOnChangeOrderStatus"]
+  event --> notify["Уведомления"]
+  notify --> out{"output() непустой?"}
   out -->|да| err["Ошибка покупателю, статус не откатывается"]
   out -->|нет| ok["Ответ успешный"]
 ```
@@ -122,14 +127,14 @@ flowchart TD
 Проверки, которые должны прервать переход, размещайте в `msOnBeforeChangeOrderStatus`.
 :::
 
-Остаток в этом событии не трогайте: `OrderStatusService` до вызова плагина уже выполнил `applyStatusChange()` — `ms3_status_new` резервирует, `ms3_status_paid` списывает резерв, `ms3_status_canceled` возвращает. Повторная запись `stock` в плагине уменьшит или увеличит остаток второй раз.
+Остаток в этом событии не трогайте. `OrderStatusService` до вызова плагина уже выполнил `applyStatusChange()`: `ms3_status_new` резервирует, `ms3_status_paid` списывает резерв, `ms3_status_canceled` возвращает. Повторная запись `stock` в плагине уменьшит или увеличит остаток второй раз.
 
 ### Параметры
 
 | Параметр | Тип | Описание |
 | --- | --- | --- |
 | `msOrder` | `msOrder` | Объект заказа |
-| `old_status` | `int` | ID предыдущего статуса |
+| `old_status` | `int` \| `null` | ID предыдущего статуса. `null`, если у заказа пустой `status_id` |
 | `status` | `int` | ID нового статуса |
 
 ### Пример использования
@@ -154,7 +159,7 @@ switch ($modx->event->name) {
 }
 ```
 
-### Начисление бонусов при выполнении заказа
+### После оплаты
 
 ```php
 <?php
@@ -163,21 +168,12 @@ switch ($modx->event->name) {
         $order = $scriptProperties['msOrder'];
         $newStatus = $scriptProperties['status'];
 
-        if ($newStatus == 4) { // "Выполнен"
-            $customer = $order->getOne('Customer');
-            if ($customer) {
-                $bonus = floor($order->get('cost') * 0.05);
-                $currentBonus = $customer->get('bonus') ?? 0;
-                $customer->set('bonus', $currentBonus + $bonus);
-                $customer->save();
-
-                $modx->log(modX::LOG_LEVEL_INFO, sprintf(
-                    '[Bonus] Начислено %d бонусов покупателю #%d за заказ #%s',
-                    $bonus,
-                    $customer->get('id'),
-                    $order->get('num')
-                ));
-            }
+        if ($newStatus == 3) { // ms3_status_paid
+            $modx->log(modX::LOG_LEVEL_INFO, sprintf(
+                '[Status] Заказ #%s оплачен, сумма %s',
+                $order->get('num'),
+                $order->get('cost')
+            ));
         }
         break;
 }
@@ -192,7 +188,7 @@ switch ($modx->event->name) {
         $order = $scriptProperties['msOrder'];
         $newStatus = $scriptProperties['status'];
 
-        if ($newStatus == 3) { // "Отправлен"
+        if ($newStatus == 4) { // ms3_status_sent
             $address = $order->getOne('Address');
             $phone = $address->get('phone');
             $trackingNumber = $order->get('properties')['tracking_number'] ?? '';

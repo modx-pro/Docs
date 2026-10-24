@@ -215,6 +215,47 @@ Tables without xPDO models: access goes through `PdoShipmentStore` and the `ms3_
 
 With `ms3_shipment_enabled=1`, `OrderStatusService` carries the shipment status over to the order: `shipped` → `ms3_status_sent`, `cancelled` / `failed` → `ms3_status_canceled`. For `delivered` / `in_transit` see the `ms3_shipment_on_*_status` settings.
 
+### Payment attempts
+
+Tables without xPDO models. Access goes through `PdoPaymentAttemptStore` and the `ms3_payment_lifecycle` DI key (`PaymentLifecycleService`). Phinx migration: `create_payment_attempts`.
+
+| Table | Description |
+| --- | --- |
+| `ms3_payment_attempts` | A payment attempt for an order |
+| `ms3_payment_attempt_events` | Webhook idempotency: `provider_event_id` per attempt and event type |
+
+#### ms3_payment_attempts — fields
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `id` | int | Attempt ID |
+| `order_id` | int unsigned | Order ID |
+| `payment_method_id` | int unsigned | Payment method ID |
+| `provider` | varchar(191) | Provider class or name |
+| `external_id` | varchar(191) | ID on the provider side |
+| `status` | varchar(32) | `pending`, `authorized`, `paid`, `failed`, `cancelled`, `refunded`, `partially_refunded`. Default `pending` |
+| `amount` | decimal(13,3) | Amount |
+| `currency` | varchar(8) | Currency, default `RUB` |
+| `payload` | text | Provider payload |
+| `refunded_amount` | decimal(13,3) | Refunded amount |
+| `refund_external_id` | varchar(191) | Refund ID on the provider side |
+| `refundedon` | int unsigned | Unix time of the refund |
+| `createdon` / `updatedon` | int unsigned | Unix time |
+
+Unique key: `payment_method_id`, `provider`, `external_id`.
+
+#### ms3_payment_attempt_events — fields
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `id` | int | Event ID |
+| `attempt_id` | int unsigned | Attempt ID |
+| `event_type` | varchar(32) | Event type |
+| `provider_event_id` | varchar(191) | Provider event ID |
+| `createdon` | int unsigned | Unix time |
+
+Unique key: `attempt_id`, `event_type`, `provider_event_id`.
+
 ### Vendors
 
 | Model | Table | Description |
@@ -258,7 +299,7 @@ To create orders from code there is the `ms3_programmatic_order` service (`Progr
 $result = $modx->services->get('ms3_programmatic_order')->create([
     'idempotency_key' => 'crm-order-15', // required
     'products' => [
-        ['id' => $productId, 'count' => 2],
+        ['product_id' => $productId, 'count' => 2],
     ],
     'delivery_id' => $deliveryId,
     'payment_id' => $paymentId,

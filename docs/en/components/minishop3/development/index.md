@@ -32,11 +32,26 @@ flowchart TB
 
 ## Manager API and processors
 
+```mermaid
+flowchart TB
+  vue[Manager Vue screens] --> mgrapi[Manager REST API]
+  shop[Frontend] --> webapi["Web API /api/v1"]
+  php["runProcessor, import, gallery"] --> proc[Processors]
+  mgrapi --> svc[Service layer]
+  svc --> ev[MODX events]
+  vuecrud[Vendor Vue CRUD] --> db[(Database)]
+```
+
 As of **1.10+**, the screens for orders, customers, settings and utilities run through the **Manager REST API** (`Controllers\Api\Manager\*` on FastRoute). The product and category forms are the exception: those are plain MODX resource screens, and Vue only lives in their tabs. The older **processors** (`MiniShop3\Processors\*`) remain only for:
 
 - the previous connector and `runProcessor()` calls from PHP;
-- utilities where the controller calls a processor explicitly: `ImportController` (product import) and `UtilitiesGalleryController` (bulk gallery operations), both through the `RunsMs3Processors` trait.
+- utilities where the controller calls a processor explicitly: `ImportController` (product import) and `UtilitiesGalleryController` (bulk gallery operations), both through the `RunsMs3Processors` trait;
+- customer authentication in the Web API: login, registration, logout, password reset request and password reset all run through `Processors\Api\Customer\*`.
 
-The other eighteen controllers call no processors — they work through the service layer. Events are not always lost that way: orders, their statuses and items go through services that fire events themselves, so a plugin on `msOnChangeOrderStatus` does run from the admin UI. Vue CRUD for the settings directories, however, writes to the database directly, bypassing `Processors/Settings/*` — plugins on vendor, delivery, payment and link type events will not run from the admin UI. See [Vendor events](events/vendor).
+The remaining Manager API controllers call no processors: they work through the service layer.
 
-The headless frontend goes without processors too: it runs through the Web API (`/api/v1/*`).
+Events are not always lost. Orders, their statuses and lines go through services that fire the events themselves. A plugin on `msOnChangeOrderStatus` does run from the manager.
+
+Vue CRUD for directories writes straight to the database and skips `Processors/Settings/Vendor/*`. Vendor CRUD plugins do not run from the manager. Deliveries and payments have cost events in `events.php`, not CRUD events. Link types have no CRUD events. See [Vendor events](events/vendor).
+
+The headless frontend calls the Web API (`/api/v1/*`). Login, registration, logout, forgot-password and reset-password delegate to `MiniShop3\Processors\Api\Customer\*`.

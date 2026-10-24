@@ -38,14 +38,16 @@ $customer = $modx->getObject(msCustomer::class, ['email' => $email]);
 | `msProductData` | `Files` | 1:N | файлы галереи |
 | `msOrder` | `Address` | 1:1 | адрес заказа (`msOrderAddress`) |
 | `msOrder` | `Products` | 1:N | товары в заказе |
-| `msOrder` | `msCustomer` | N:1 | покупателя. Алиас именно такой, не `Customer` |
+| `msOrder` | `Customer` | N:1 | покупателя (`msCustomer`) |
 | `msCustomer` | `Tokens` | 1:N | токены авторизации |
 | `msCustomerAddress` | `Customer` | N:1 | покупателя — обратная связь от адреса |
 | `msCustomerToken` | `Customer` | N:1 | покупателя — обратная связь от токена |
 
-Связи `Addresses` у `msCustomer` нет: адреса читают прямым запросом к `msCustomerAddress` по `customer_id` — см. [Работа с покупателем](#customer-example).
+Связи `Addresses` у `msCustomer` нет. Адреса читают прямым запросом к `msCustomerAddress` по `customer_id`. См. [Работа с покупателем](#customer-example).
 
 ## Файл схемы
+
+XML-схема описывает модели для генератора xPDO:
 
 ```
 core/components/minishop3/schema/minishop3.mysql.schema.xml
@@ -57,6 +59,10 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | `baseClass` | `xPDO\Om\xPDOObject` |
 | `platform` | `mysql` |
 | `version` | `3.0` |
+
+::: warning Таблицы создаёт не XML
+Структуру таблиц задают карты моделей в `src/Model/mysql/` и миграции Phinx. XML нужен только генератору моделей, в установке он не участвует и местами уже разошёлся с картой — например по уникальности индекса на фамилию покупателя. Сверяйте поля по карте модели.
+:::
 
 ## Таблицы базы данных
 
@@ -130,7 +136,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | `payment_id` | int | ID способа оплаты |
 | `context` | varchar(100) | Контекст MODX |
 | `order_comment` | text | Комментарий к заказу |
-| `idempotency_key` | varchar | Ключ идемпотентности (программные заказы) |
+| `idempotency_key` | varchar(128) | Ключ идемпотентности (программные заказы) |
 | `createdon` | datetime | Дата создания |
 | `updatedon` | datetime | Дата обновления |
 
@@ -148,11 +154,11 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | Поле | Тип | Описание |
 | --- | --- | --- |
 | `id` | int | ID группы |
-| `name` | varchar(191) | Название группы |
+| `name` | varchar(255) | Название группы |
 | `user_group_id` | int | ID группы пользователей MODX (принципал для modAccessResourceGroup) |
 | `active` | tinyint(1) | Активна |
-| `created_at` | datetime | Дата создания |
-| `updated_at` | datetime | Дата обновления |
+| `created_at` | timestamp | Дата создания |
+| `updated_at` | timestamp | Дата обновления |
 
 #### msCustomer — основные поля
 
@@ -161,7 +167,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | `id` | int | ID покупателя |
 | `user_id` | int | ID связанного modUser (опционально) |
 | `first_name` | varchar(191) | Имя |
-| `last_name` | varchar(191) | Фамилия |
+| `last_name` | varchar(191) | Фамилия. В XML-схеме индекс по этому полю помечен уникальным, но таблицу создаёт миграция из карты модели, где уникальности нет, — в базе индекс обычный ([разбор](https://github.com/modx-pro/MiniShop3/issues/905)) |
 | `phone` | varchar(50) | Телефон |
 | `email` | varchar(191) | Email |
 | `password` | varchar(255) | Хеш пароля |
@@ -212,7 +218,48 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | `meta` | text | JSON-метаданные |
 | `createdon` / `updatedon` | int unsigned | Unix-время |
 
-При `ms3_shipment_enabled=1` статус отгрузки переносит в заказ `OrderStatusService`: `shipped` → `ms3_status_sent`, `cancelled`/`failed` → `ms3_status_canceled`. Для `delivered` / `in_transit` смотрите настройки `ms3_shipment_on_*_status`.
+При `ms3_shipment_enabled=1` статус отгрузки переносит в заказ `ShipmentLifecycleService`: `shipped` → `ms3_status_sent`, `cancelled`/`failed` → `ms3_status_canceled`. Для `delivered` / `in_transit` смотрите настройки `ms3_shipment_on_*_status`. Сам статус заказа применяет `OrderStatusService`, но соответствие статусов живёт в сервисе отгрузок: чтобы задать своё, подмените `ms3_shipment_lifecycle`.
+
+### Попытки оплаты
+
+Таблицы без xPDO-моделей. Доступ через `PdoPaymentAttemptStore` и DI-ключ `ms3_payment_lifecycle` (`PaymentLifecycleService`). Миграция Phinx: `create_payment_attempts`.
+
+| Таблица | Описание |
+| --- | --- |
+| `ms3_payment_attempts` | Попытка оплаты заказа |
+| `ms3_payment_attempt_events` | Идемпотентность webhook: `provider_event_id` на попытку и тип события |
+
+#### ms3_payment_attempts — поля
+
+| Поле | Тип | Описание |
+| --- | --- | --- |
+| `id` | int | ID попытки |
+| `order_id` | int unsigned | ID заказа |
+| `payment_method_id` | int unsigned | ID способа оплаты |
+| `provider` | varchar(191) | Класс или имя провайдера |
+| `external_id` | varchar(191) | ID у провайдера |
+| `status` | varchar(32) | `pending`, `authorized`, `paid`, `failed`, `cancelled`, `refunded`, `partially_refunded`. По умолчанию `pending` |
+| `amount` | decimal(13,3) | Сумма |
+| `currency` | varchar(8) | Валюта, по умолчанию `RUB` |
+| `payload` | text | Данные провайдера |
+| `refunded_amount` | decimal(13,3) | Сумма возврата |
+| `refund_external_id` | varchar(191) | ID возврата у провайдера |
+| `refundedon` | int unsigned | Unix-время возврата |
+| `createdon` / `updatedon` | int unsigned | Unix-время |
+
+Уникальный ключ: `payment_method_id`, `provider`, `external_id`.
+
+#### ms3_payment_attempt_events — поля
+
+| Поле | Тип | Описание |
+| --- | --- | --- |
+| `id` | int | ID события |
+| `attempt_id` | int unsigned | ID попытки |
+| `event_type` | varchar(32) | Тип события |
+| `provider_event_id` | varchar(191) | ID события у провайдера |
+| `createdon` | int unsigned | Unix-время |
+
+Уникальный ключ: `attempt_id`, `event_type`, `provider_event_id`.
 
 ### Производители
 
@@ -233,9 +280,9 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | --- | --- | --- |
 | `msModelField` | `ms3_model_fields` | Настройки полей моделей |
 | `msModelFieldSection` | `ms3_model_field_sections` | Секции полей |
-| `msGridField` | `ms3_grid_fields` | Конфигурация колонок гридов (customers, orders, products) |
-| `msProductField` | `ms3_product_fields` | Поля товара (устаревшие) |
-| `msPageSection` | `ms3_page_sections` | Секции страниц (устаревшие) |
+| `msGridField` | `ms3_grid_fields` | Конфигурация колонок гридов: `customers`, `orders`, `order_products`, `vendors`, `category-products`, `deliveries` |
+| `msProductField` | `ms3_product_fields` | Поля товара. Строку создаёт `ExtraFieldsService` вместе со своим полем, читают `ConfigService` и `FieldConfigManager` |
+| `msPageSection` | `ms3_page_sections` | Секции страниц. Обслуживает `/api/mgr/config/page-fields/{page_key}` |
 | `msExtraField` | `ms3_extra_fields` | Дополнительные поля |
 
 ### Уведомления
@@ -251,13 +298,13 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 ::: warning Так заказ создавать не стоит
 Пример ниже показывает, как устроены записи заказа в базе, и только. Собранный так заказ не прошёл валидацию, не получил расчёт стоимости и доставки, не поднял события и не отправил уведомления.
 
-Для создания заказов из кода есть сервис `ms3_programmatic_order` (`ProgrammaticOrderService`): он строит черновик и проводит его через обычное оформление, а по `idempotency_key` не создаёт дубль при повторном вызове.
+Для создания заказов из кода есть сервис `ms3_programmatic_order` (`ProgrammaticOrderService`). Он строит черновик и проводит его через обычное оформление. По `idempotency_key` не создаёт дубль при повторном вызове.
 
 ```php
 $result = $modx->services->get('ms3_programmatic_order')->create([
     'idempotency_key' => 'crm-order-15', // обязателен
     'products' => [
-        ['id' => $productId, 'count' => 2],
+        ['product_id' => $productId, 'count' => 2],
     ],
     'delivery_id' => $deliveryId,
     'payment_id' => $paymentId,
@@ -291,7 +338,7 @@ $orderProduct->fromArray([
     'price' => $price,
     'count' => $count,
     'cost' => $price * $count,
-    'options' => json_encode($options),
+    'options' => $options,
 ]);
 $orderProduct->save();
 ```
@@ -333,7 +380,7 @@ $addresses = $modx->getIterator(msCustomerAddress::class, [
 
 ### Итерация по записям
 
-`getIterator()` достаёт записи по одной и не держит всю выборку в памяти — на больших наборах это предпочтительнее `getCollection()`:
+`getIterator()` достаёт записи по одной и не держит всю выборку в памяти. На больших наборах это предпочтительнее `getCollection()`:
 
 ```php
 use MiniShop3\Model\msOrder;
@@ -344,9 +391,9 @@ foreach ($modx->getIterator(msOrder::class, ['status_id' => 2]) as $order) {
 ```
 
 ::: danger getIterator() и классы без своей таблицы
-`getCollection()` и `getObject()` сами добавляют в условие фильтр по `class_key` — это делает `addDerivativeCriteria()`. Более того, `msProduct` и `msCategory` дублируют эту защиту в своих `loadCollection()` и `load()`. **А `getIterator()` не проходит ни через один из этих методов: он создаёт итератор напрямую, и фильтра не будет.**
+`getCollection()` и `getObject()` сами добавляют в условие фильтр по `class_key`. Это делает `addDerivativeCriteria()`. Более того, `msProduct` и `msCategory` дублируют эту защиту в своих `loadCollection()` и `load()`. **`getIterator()` не проходит ни через один из этих методов: он создаёт итератор напрямую, и фильтра не будет.**
 
-Для `msProduct` и `msCategory` это критично: своей таблицы у них нет, они живут в `site_content` вместе со всеми ресурсами MODX. Без фильтра выборка захватит чужие записи, и первая же из них даст ошибку вида «Instantiated a derived class msProduct that is not a subclass of the requested class msCategory».
+Для `msProduct` и `msCategory` это критично: своей таблицы у них нет, они живут в `site_content` вместе со всеми ресурсами MODX. Без фильтра выборка захватит чужие записи. Первая же из них даст ошибку вида «Instantiated a derived class msProduct that is not a subclass of the requested class msCategory».
 
 Поэтому при `getIterator()` для таких классов `class_key` задавайте вручную:
 
@@ -361,12 +408,12 @@ foreach ($modx->getIterator(msProduct::class, $criteria) as $product) {
 }
 ```
 
-Моделей со своей таблицей — `msOrder`, `msCustomer`, `msProductData` и остальных из таблиц выше — это не касается.
+Это не касается моделей со своей таблицей: `msOrder`, `msCustomer`, `msProductData` и остальных из таблиц выше.
 :::
 
 ## Архитектура моделей
 
-Модель отвечает за таблицу и связи, бизнес-логика живёт в сервисах — см. [Сервисный слой](/components/minishop3/development/services).
+Модель отвечает за таблицу и связи. Бизнес-логика живёт в сервисах. См. [Сервисный слой](/components/minishop3/development/services).
 
 Полностью «тонкими» модели не стали: `msProduct` и `msCategory` расширяют `modResource`, а MODX держит бизнес-логику в моделях. Поэтому модель вправе вызвать сервис:
 
@@ -374,11 +421,13 @@ foreach ($modx->getIterator(msProduct::class, $criteria) as $product) {
 // src/Model/msProductData.php
 class msProductData extends xPDOSimpleObject
 {
-    public function getPrice(array $data = []): float
+    public function getPrice($data = [])
     {
-        // Делегирование в сервис форматирования
-        $ms3 = $this->xpdo->services->get('ms3');
-        return $ms3->format->price($this->get('price'));
+        if (empty($data)) {
+            $data = $this->toArray();
+        }
+
+        return $this->getProductDataService()->getModifiedPrice($this, $data);
     }
 }
 ```
@@ -386,15 +435,15 @@ class msProductData extends xPDOSimpleObject
 ## Регенерация моделей
 
 ::: warning Модели создаются вручную
-В MiniShop3 модели НЕ генерируются автоматически из XML-схемы через `buildModel()`. Они создаются и поддерживаются вручную в директории `src/Model/`.
+В MiniShop3 модели не генерируются автоматически из XML-схемы через `buildModel()`. Они создаются и поддерживаются вручную в директории `src/Model/`.
 
 Это позволяет:
 
-- Добавлять свои методы в модели
-- Использовать полную типизацию PHP 8
-- Иметь полный контроль над кодом моделей
+- добавлять свои методы в модели;
+- использовать полную типизацию PHP 8;
+- иметь полный контроль над кодом моделей.
 
-**Важно:** Не запускайте `buildModel()` — это перезапишет методы, добавленные вручную.
+Не запускайте `buildModel()`: это перезапишет методы, добавленные вручную.
 :::
 
 ### Структура файлов модели
@@ -416,11 +465,12 @@ use MODX\Revolution\modResource;
 
 class msProduct extends modResource
 {
-    // Свои методы модели
-    public function getPrice(): float
+    // Свои методы модели. Не переопределяйте getPrice(): он уже есть
+    // у msProduct с другой подписью и прогоняет цену через модификаторы
+    public function getRawPrice(): float
     {
         $data = $this->getOne('Data');
-        return $data ? (float)$data->get('price') : 0.0;
+        return $data ? (float) $data->get('price') : 0.0;
     }
 }
 ```
@@ -434,7 +484,7 @@ namespace MiniShop3\Model\mysql;
 class msProduct extends \MiniShop3\Model\msProduct
 {
     public static $metaMap = [
-        'package' => 'MiniShop3\\Model\\',
+        'package' => 'MiniShop3\\Model',
         'version' => '3.0',
         'extends' => 'MODX\\Revolution\\modResource',
         'fields' => [
@@ -453,13 +503,14 @@ class msProduct extends \MiniShop3\Model\msProduct
 core/components/minishop3/migrations/
 ├── 20251020000000_initial_schema.php
 ├── 20251021000000_seed_page_sections.php
+├── 20251022000000_seed_product_fields.php
 ├── 20251023000000_seed_order_statuses.php
 └── ...
 ```
 
 ### Запуск миграций
 
-Руками запускать их обычно не нужно: при установке и обновлении пакета миграции применяет резолвер `resolver_02_migrations`, а при работе с дополнительными полями — `ExtraFieldsService`. Оба используют окружение `production`, оно же стоит в `phinx.php` по умолчанию.
+Руками запускать их обычно не нужно. При установке и обновлении пакета миграции применяет резолвер `resolver_02_migrations`. При работе с дополнительными полями их применяет `ExtraFieldsService`. Оба используют окружение `production` — оно же стоит в `phinx.php` по умолчанию.
 
 Для разработки миграции прогоняют из CLI:
 
@@ -520,4 +571,4 @@ erDiagram
 
 `ms3_shipments` / `ms3_shipment_events` — PDO-таблицы (не классы `MiniShop3\Model\*`).
 
-Линия `msCustomer → msCustomerAddress` показывает связь в базе: адреса ссылаются на покупателя через `customer_id`. Алиаса для обхода от покупателя к адресам в схеме нет, пройти можно только в обратную сторону — `$address->getOne('Customer')`.
+Линия `msCustomer → msCustomerAddress` — это связь в базе через `customer_id`, а не алиас схемы: пройти её можно только в обратную сторону, `$address->getOne('Customer')`.

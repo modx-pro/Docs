@@ -419,7 +419,7 @@ flowchart TD
   draft --> statusNew["Дальше статус Новый"]
 ```
 
-Вызывается, когда номер заказа уже выделен, а статус всё ещё черновик. Статус «Новый» ставится позже. Если событие вернёт ошибку, номер сбрасывается только при включённом учёте остатков.
+Вызывается, когда номер заказа уже выделен, а статус всё ещё черновик. Статус «Новый» ставится позже. Если событие вернёт ошибку, номер обнуляется только на витрине и только при включённом учёте остатков (`OrderSubmitHandler::revertAllocatedNumber()`). На пути админки и программного создания заказа номер не сбрасывается никогда: выделенный номер остаётся за черновиком.
 
 Событие приходит в трёх сценариях, и набор параметров у них разный:
 
@@ -519,8 +519,7 @@ switch ($modx->event->name) {
 
 ### Пример использования
 
-<!-- EXAMPLE? 38 строк и четыре независимых сценария в одном примере: лог, CRM, остатки, бонусы -->
-<!-- FACT? пример уменьшает `stock` вручную, хотя в MS3 есть сервис остатков -->
+Остаток здесь не меняйте. При `ms3_inventory_enabled=1` его двигает сервис `ms3_inventory`: резерв на статусе `ms3_status_new`, фиксация на `ms3_status_paid`, возврат на `ms3_status_canceled`. Поля `bonus` у покупателя нет.
 
 ```php
 <?php
@@ -529,34 +528,11 @@ switch ($modx->event->name) {
         /** @var \MiniShop3\Model\msOrder $order */
         $order = $scriptProperties['msOrder'];
 
-        // Логирование
         $modx->log(modX::LOG_LEVEL_INFO, sprintf(
             '[Order] Создан заказ #%s, сумма: %s',
             $order->get('num'),
             $order->get('cost')
         ));
-
-        // Отправка в CRM
-        // $crm->createOrder($order->toArray());
-
-        // Уменьшение остатков на складе
-        foreach ($order->getMany('Products') as $product) {
-            $msProduct = $product->getOne('Product');
-            if (!$msProduct) {
-                continue;
-            }
-            $stock = (float) ($msProduct->get('stock') ?? 0);
-            $msProduct->set('stock', max(0, $stock - $product->get('count')));
-            $msProduct->save();
-        }
-
-        // Начисление бонусов покупателю
-        if ($customer = $order->getOne('Customer')) {
-            $bonus = floor($order->get('cost') / 100);
-            $currentBonus = $customer->get('bonus') ?? 0;
-            $customer->set('bonus', $currentBonus + $bonus);
-            $customer->save();
-        }
         break;
 }
 ```

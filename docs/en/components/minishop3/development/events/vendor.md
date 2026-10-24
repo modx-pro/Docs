@@ -9,6 +9,8 @@ Tracking operations on vendors (brands).
 Vendor CRUD in the manager (**Extras → MiniShop3 → Vendors**) goes through `VendorsController` (Manager API) **without** `$modx->invokeEvent`. The events below fire only when the older processors `MiniShop3\Processors\Settings\Vendor\*` are called (`runProcessor`, the old connector). To intercept changes made in the Vue manager, add your own REST middleware after the save, or extend the controller in an add-on.
 :::
 
+The package does not build the keys in the tables below. The processors only set `$objectType = 'msVendor'`. The parameter array comes from the MODX processor: `CreateProcessor`, `UpdateProcessor`, or `RemoveProcessor`.
+
 ## msOnBeforeVendorCreate
 
 Fired **before** creating a vendor.

@@ -14,7 +14,7 @@ Fired **before** changing order status. Lets you validate or abort the change.
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `msOrder` | `msOrder` | Order object |
-| `old_status` | `int` | Current status ID |
+| `old_status` | `int` \| `null` | Current status ID. `null` when the order has an empty `status_id` |
 | `status` | `int` | New status ID |
 
 ### Aborting the operation
@@ -28,8 +28,10 @@ switch ($modx->event->name) {
         $oldStatus = $scriptProperties['old_status'];
         $newStatus = $scriptProperties['status'];
 
-        if ($newStatus == 6 && $order->get('payment_status') == 'paid') {
-            $modx->event->output('Cannot cancel a paid order');
+        // 5 is ms3_status_canceled, 3 is ms3_status_paid.
+        // The order has no payment_status field: judge by the current status.
+        if ($newStatus == 5 && $oldStatus == 3) {
+            $modx->event->output('Refund a paid order instead of cancelling it');
             return;
         }
 
@@ -52,15 +54,26 @@ switch ($modx->event->name) {
     case 'msOnBeforeChangeOrderStatus':
         $newStatus = $scriptProperties['status'];
 
-        // Orders without prepayment go to "needs confirmation" instead of "paid"
-        if ($newStatus === 3) { // 3 = "paid"
-            $modx->event->returnedValues = ['status' => 7]; // 7 = "needs confirmation"
+        if ($newStatus === 3) { // ms3_status_paid
+            $modx->event->returnedValues = ['status' => 4]; // ms3_status_sent
         }
         break;
 }
 ```
 
+The core validates the substituted status by the same rules as the requested one. Mind that status 4 is final: an order moved there goes nowhere afterwards. When the order has to live on after the substitution, create a status of your own without the `final` flag.
+
 ### Checking whether the transition is allowed
+
+::: warning The core rejects some transitions before the event
+`OrderStatusService::validateStatusTransition()` runs **before** `msOnBeforeChangeOrderStatus`, so a transition it rejects never reaches a plugin. The rules:
+
+- a status flagged `final` cannot be left at all — the answer is `ms3_err_status_final`. Out of the box `final` is set on 4 (shipped) and 5 (cancelled);
+- from a status flagged `fixed` you cannot move to a status whose `position` is lower or equal — the answer is `ms3_err_status_fixed`;
+- when `ms3_order_status_transitions` is set, the transition has to be listed there.
+
+Do not repeat a check the core already made — it will not run. Forbidding the cancellation of a shipped order, for one: status 4 is final, so 4 → 5 is rejected earlier.
+:::
 
 ```php
 <?php
@@ -71,7 +84,7 @@ switch ($modx->event->name) {
         $newStatus = $scriptProperties['status'];
 
         switch ($newStatus) {
-            case 3: // Shipped
+            case 4: // ms3_status_sent
                 $properties = $order->get('properties') ?? [];
                 if (empty($properties['tracking_number'])) {
                     $modx->event->output('Enter a tracking number');
@@ -79,16 +92,9 @@ switch ($modx->event->name) {
                 }
                 break;
 
-            case 4: // Completed
-                if ($oldStatus != 3) {
-                    $modx->event->output('The order must be shipped first');
-                    return;
-                }
-                break;
-
-            case 6: // Cancelled
-                if ($oldStatus == 4) {
-                    $modx->event->output('A completed order cannot be cancelled');
+            case 5: // ms3_status_canceled
+                if ($oldStatus == 3) { // ms3_status_paid
+                    $modx->event->output('Refund a paid order instead of cancelling it');
                     return;
                 }
                 break;
@@ -100,6 +106,16 @@ switch ($modx->event->name) {
 ---
 
 ## msOnChangeOrderStatus
+
+```mermaid
+flowchart TD
+  save["Save status and inventory movements"] --> history["Write history"]
+  history --> event["msOnChangeOrderStatus"]
+  event --> notify["Notifications"]
+  event --> out{"output() is not empty?"}
+  out -->|yes| err["Error to the customer, status is not rolled back"]
+  out -->|no| ok["Successful response"]
+```
 
 Fired **after** successful order status change.
 
@@ -116,7 +132,7 @@ Put any check that should abort the transition into `msOnBeforeChangeOrderStatus
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `msOrder` | `msOrder` | Order object |
-| `old_status` | `int` | Previous status ID |
+| `old_status` | `int` \| `null` | Previous status ID. `null` when the order has an empty `status_id` |
 | `status` | `int` | New status ID |
 
 ### Example
@@ -140,7 +156,7 @@ switch ($modx->event->name) {
 }
 ```
 
-### Bonus points on order completion
+### After payment
 
 ```php
 <?php
@@ -149,22 +165,12 @@ switch ($modx->event->name) {
         $order = $scriptProperties['msOrder'];
         $newStatus = $scriptProperties['status'];
 
-        // Status "Completed" = 4
-        if ($newStatus == 4) {
-            $customer = $order->getOne('Customer');
-            if ($customer) {
-                $bonus = floor($order->get('cost') * 0.05);
-                $currentBonus = $customer->get('bonus') ?? 0;
-                $customer->set('bonus', $currentBonus + $bonus);
-                $customer->save();
-
-                $modx->log(modX::LOG_LEVEL_INFO, sprintf(
-                    '[Bonus] %d bonus points to customer #%d for order #%s',
-                    $bonus,
-                    $customer->get('id'),
-                    $order->get('num')
-                ));
-            }
+        if ($newStatus == 3) { // ms3_status_paid
+            $modx->log(modX::LOG_LEVEL_INFO, sprintf(
+                '[Status] Order #%s is paid, total %s',
+                $order->get('num'),
+                $order->get('cost')
+            ));
         }
         break;
 }
@@ -179,7 +185,7 @@ switch ($modx->event->name) {
         $order = $scriptProperties['msOrder'];
         $newStatus = $scriptProperties['status'];
 
-        if ($newStatus == 3) {
+        if ($newStatus == 4) { // ms3_status_sent
             $address = $order->getOne('Address');
             $phone = $address->get('phone');
             $trackingNumber = $order->get('properties')['tracking_number'] ?? '';
