@@ -282,6 +282,17 @@ await ms3.cartAPI.clean()
 `cartAPI.clean()` is a headless method: it only sends the request to the server. The mini-cart, counters and product cards **do not refresh** by themselves. For a full UI update use `ms3.cartUI.handleClean()` — it calls the API, renders the HTML and dispatches `ms3:cart:updated`. More in [Frontend JavaScript](frontend-js#cartui).
 :::
 
+### What the cart methods return
+
+| Method | `data` in the response |
+| --- | --- |
+| `get` | `cart`, `status`, `items` |
+| `add`, `change`, `changeOption`, `remove` | `last_key`, `cart`, `status`, `items` |
+| `clean` | `cart`, `status`, `items` — no `last_key` |
+
+
+`last_key` is the key of the line the operation touched. `changeOption` adds `old_product_key` next to it: a new set of options changes the key. When the request carries `render`, a `render` key with the ready markup joins the list.
+
 ## OrderAPI
 
 API for working with the order.
@@ -393,6 +404,21 @@ const response = await ms3.orderAPI.getCost()
   }
 }
 ```
+
+### What the order methods return
+
+| Method | `data` in the response |
+| --- | --- |
+| `get` | `order` — the whole draft |
+| `add` | the written field only: `{ "first_name": "Ivan" }` |
+| `set` | `order` |
+| `remove` | `removed` — the name of the removed key |
+| `clean` | empty |
+| `submit` | `order_id`, `order_num`, `redirect`, plus `payment_link` with the built-in payment |
+| `getCost` | the order amounts together with the cart totals |
+
+
+`add` returns an empty `message`: there is no write confirmation, judge by `success`.
 
 ## CustomerAPI
 
