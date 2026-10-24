@@ -27,7 +27,7 @@ The validation events use the response differently — not to abort the operatio
 Fired **before** adding or changing an order field.
 
 ::: warning No event arrives for internal fields
-Since 1.14.2-beta1 `OrderFieldManager` rejects the internal draft columns before the event is fired. A plugin that used to intercept writes to `customer_id`, `status_id`, `cost` or `properties` no longer runs. The same check covers all four field events: `msOnBeforeAddToOrder`, `msOnAddToOrder`, `msOnBeforeRemoveFromOrder`, `msOnRemoveFromOrder`. The list of closed columns is in [fields the storefront may not change](/en/components/minishop3/development/web-api/checkout#protected-fields).
+Since 1.14.2-beta1 `OrderFieldManager` rejects the internal draft columns before the event is fired. A plugin that used to intercept writes to `customer_id`, `status_id`, `cost` or `properties` no longer runs. The same check covers all four field events: `msOnBeforeAddToOrder`, `msOnAddToOrder`, `msOnBeforeRemoveFromOrder`, `msOnRemoveFromOrder`. The list of closed columns is in [fields the frontend may not change](/en/components/minishop3/development/web-api/checkout#protected-fields).
 :::
 
 ### Parameters
@@ -391,18 +391,18 @@ switch ($modx->event->name) {
 
 ```mermaid
 flowchart TD
-  store["Storefront submit: handler, no origin"] --> event["msOnBeforeCreateOrder"]
+  store["Frontend submit: handler, no origin"] --> event["msOnBeforeCreateOrder"]
   admin["Finalize from the manager: origin manager"] --> event
   api["ProgrammaticOrderService: origin integration"] --> event
   event --> draft["Status is still draft, number is already assigned"]
   draft --> statusNew["Next status is New"]
 ```
 
-Fired when the order number is already assigned and the status is still draft. The New status is set later. When the event returns an error, the number is cleared on the storefront path only, and only with inventory tracking on (`OrderSubmitHandler::revertAllocatedNumber()`). The manager and programmatic paths never clear it: the allocated number stays with the draft.
+Fired when the order number is already assigned and the status is still draft. The New status is set later. When the event returns an error, the number is cleared on the frontend path only, and only with inventory tracking on (`OrderSubmitHandler::revertAllocatedNumber()`). The manager and programmatic paths never clear it: the allocated number stays with the draft.
 
 The event arrives in three scenarios, and the parameter set differs:
 
-1. Storefront submit — `OrderSubmitHandler` (params have **no** `origin` / `from_manager`; has `handler`, `customFields`)
+1. Frontend submit — `OrderSubmitHandler` (params have **no** `origin` / `from_manager`; has `handler`, `customFields`)
 2. Finalization in the admin — `OrderFinalizeService` (`origin=manager`, `from_manager=true`, `service`)
 3. Programmatic creation — `ProgrammaticOrderService` → `finalize` (`origin=integration`, `from_manager=false`, `service`)
 
@@ -411,11 +411,11 @@ The event arrives in three scenarios, and the parameter set differs:
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `msOrder` | `msOrder` | Order object (always) |
-| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Storefront submit only |
+| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Frontend submit only |
 | `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Finalize paths only (admin / integration) |
-| `origin` | `string` | Finalize paths only: `manager` from the admin, `integration` from programmatic creation. The `OrderOrigin::STOREFRONT` constant exists but no path sets it — a storefront submit carries no `origin` key at all |
-| `from_manager` | `bool` | Present on both finalize paths (`true` with `origin=manager`, `false` with `origin=integration`); missing only on the storefront submit |
-| `customFields` | `array` | Storefront only — fields from `properties._validated` |
+| `origin` | `string` | Finalize paths only: `manager` from the admin, `integration` from programmatic creation. The `OrderOrigin::STOREFRONT` constant exists but no path sets it — a frontend submit carries no `origin` key at all |
+| `from_manager` | `bool` | Present on both finalize paths (`true` with `origin=manager`, `false` with `origin=integration`); missing only on the frontend submit |
+| `customFields` | `array` | Frontend only — fields from `properties._validated` |
 
 ::: tip Distinguishing scenarios
 
@@ -428,7 +428,7 @@ if ($fromManager) {
 } elseif ($origin === \MiniShop3\Services\Order\OrderOrigin::INTEGRATION) {
     // ProgrammaticOrderService / cron
 } elseif (!empty($scriptProperties['handler'])) {
-    // storefront
+    // frontend
 }
 ```
 
@@ -481,18 +481,18 @@ switch ($modx->event->name) {
 
 ## msOnCreateOrder
 
-Fired right after `msOnBeforeCreateOrder`, while the order is still a draft. Pair to `msOnBeforeCreateOrder` — same three scenarios and the same parameter set (storefront has no `origin`). `msOnMgrCreateOrder` runs later, after the status change.
+Fired right after `msOnBeforeCreateOrder`, while the order is still a draft. Pair to `msOnBeforeCreateOrder` — same three scenarios and the same parameter set (frontend has no `origin`). `msOnMgrCreateOrder` runs later, after the status change.
 
 ### Parameters
 
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `msOrder` | `msOrder` | Created order (always) |
-| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Storefront only |
+| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Frontend only |
 | `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Admin or integration |
 | `origin` | `string` | Finalize paths only |
-| `from_manager` | `bool` | Present on both finalize paths (`true`/`false`); missing only on the storefront submit |
-| `customFields` | `array` | Storefront only |
+| `from_manager` | `bool` | Present on both finalize paths (`true`/`false`); missing only on the frontend submit |
+| `customFields` | `array` | Frontend only |
 
 ### Example
 
@@ -521,7 +521,7 @@ switch ($modx->event->name) {
 Fired **before** finalizing an order in the admin — when a manager turns a draft into a full order with the "Submit" button on the order page. This is the admin counterpart of `msOnSubmitOrder`.
 
 ::: tip Relation to msOnBeforeCreateOrder
-After `msOnBeforeMgrCreateOrder`, the universal `msOnBeforeCreateOrder` still runs with the same four parameters (`service`, `msOrder`, `origin`, `from_manager`). Take `msOnBeforeMgrCreateOrder` for admin-only logic, and `msOnBeforeCreateOrder` when the same logic is needed both on the storefront and in the admin.
+After `msOnBeforeMgrCreateOrder`, the universal `msOnBeforeCreateOrder` still runs with the same four parameters (`service`, `msOrder`, `origin`, `from_manager`). Take `msOnBeforeMgrCreateOrder` for admin-only logic, and `msOnBeforeCreateOrder` when the same logic is needed both on the frontend and in the admin.
 :::
 
 ### Parameters

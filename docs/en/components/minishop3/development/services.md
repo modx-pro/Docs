@@ -173,7 +173,7 @@ $imageService = $modx->services->get('ms3_product_image');
 | `ms3_rate_limiter` | `Services\Customer\RateLimiter` | Rate limiting |
 | `ms3_customer_address_manager` | `Services\Customer\CustomerAddressManager` | Address management |
 | `ms3_customer_field_manager` | `Services\Customer\CustomerFieldManager` | Customer profile fields |
-| `ms3_customer_order` | `Services\Customer\CustomerOrderService` | Customer orders on storefront |
+| `ms3_customer_order` | `Services\Customer\CustomerOrderService` | Customer orders on frontend |
 | `ms3_customer_order_resolver` | `Services\Customer\CustomerOrderResolver` | Bind order to customer on submit |
 | `ms3_customer_duplicate_checker` | `Services\CustomerDuplicateChecker` | Duplicate check |
 | `ms3_customer_factory` | `Services\CustomerFactory` | Customer factory |

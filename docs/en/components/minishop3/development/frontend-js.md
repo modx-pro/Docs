@@ -261,7 +261,7 @@ window.ms3Config = {
 }
 ```
 
-The component prints the first six keys itself when `ms3_register_global_config` is on. `currencySymbol` and `currencyPosition` are read by `OrderUI.formatPrice()` — storefront sums rely on them. `render.cart` and `selectors` are printed empty: snippets and your own code fill them.
+The component prints the first six keys itself when `ms3_register_global_config` is on. `currencySymbol` and `currencyPosition` are read by `OrderUI.formatPrice()` — frontend sums rely on them. `render.cart` and `selectors` are printed empty: snippets and your own code fill them.
 
 ### Ready event
 

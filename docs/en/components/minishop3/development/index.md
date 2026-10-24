@@ -35,7 +35,7 @@ flowchart TB
 ```mermaid
 flowchart TB
   vue[Manager Vue screens] --> mgrapi[Manager REST API]
-  shop[Storefront] --> webapi["Web API /api/v1"]
+  shop[Frontend] --> webapi["Web API /api/v1"]
   php["runProcessor, import, gallery"] --> proc[Processors]
   mgrapi --> svc[Service layer]
   svc --> ev[MODX events]

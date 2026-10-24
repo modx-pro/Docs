@@ -1,11 +1,11 @@
 ---
 title: REST API
-description: "MiniShop3 Web API: entry point and documentation sections for the storefront and Nuxt"
+description: "MiniShop3 Web API: entry point and documentation sections for the frontend and Nuxt"
 ---
 
 # REST API
 
-MiniShop3 Web API (`api.php`) handles the storefront and headless clients: cart, checkout, customer account, public catalog. Manager API (`connector.php`) runs under a MODX session for the Vue admin and is not covered here.
+MiniShop3 Web API (`api.php`) handles the frontend and headless clients: cart, checkout, customer account, public catalog. Manager API (`connector.php`) runs under a MODX session for the Vue admin and is not covered here.
 
 ```text
 /assets/components/minishop3/api.php?route=/api/v1/...
@@ -21,7 +21,7 @@ MiniShop3 Web API (`api.php`) handles the storefront and headless clients: cart,
 
 ```mermaid
 flowchart LR
-  store[Storefront and headless] --> web["api.php /api/v1"]
+  store[Frontend and headless] --> web["api.php /api/v1"]
   mgr[Vue manager] --> man["connector.php /api/mgr"]
 ```
 
@@ -39,4 +39,4 @@ flowchart LR
 | [Examples](web-api/examples) | curl and TypeScript/`$fetch` |
 
 - Routing and your own routes — [API Router](routing)
-- Storefront JS on the same domain — [Frontend JavaScript](frontend-js)
+- Frontend JS on the same domain — [Frontend JavaScript](frontend-js)
