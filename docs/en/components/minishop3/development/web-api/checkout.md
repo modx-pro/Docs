@@ -68,7 +68,7 @@ Every `/order/*` path goes through `TokenMiddleware` with token auto-mint.
 | `GET` | `/order/cost/payment` | Payment fee |
 | `POST` | `/order/submit` | Submit. Optional `data` object. An empty body is sent as an empty array |
 
-A draft usually holds `delivery_id`, `payment_id`, `address_*`, and contact fields. The exact set depends on the delivery rules. The storefront script calls `order/add` for a single field, not `order/set`.
+A draft usually holds `delivery_id`, `payment_id`, `address_*`, and contact fields. The exact set depends on the delivery rules. The frontend script calls `order/add` for a single field, not `order/set`.
 
 ### Fields the frontend may not change {#protected-fields}
 
