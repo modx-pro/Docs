@@ -451,7 +451,7 @@ Remove address.
 await ms3.customerAPI.deleteAddress(5)
 ```
 
-## Hook system
+## Hook system {#hooks}
 
 Hooks let you extend behavior without changing source code.
 

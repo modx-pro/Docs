@@ -98,7 +98,7 @@ const response = await cart.add(123, 2, { color: 'red' })
 | `window.ms3Config` | Конфигурация с сервера |
 
 ::: warning `ms3Config` можно отключить настройкой
-При `ms3_register_global_config = false` объект на страницу не выводится. Регистрация сниппетов корзины печатается всегда и обращается к нему без проверки. В консоли появится `ReferenceError: ms3Config is not defined`. Перерисовка корзины и виджета итогов перестанет работать.
+При `ms3_register_global_config = false` объект на страницу не выводится. А сниппеты `msCart` и `msOrderTotal` в любом случае печатают строку `ms3Config.render.cart.push(…)` — она регистрирует токен отрисовки и обращается к объекту без проверки. В консоли появится `ReferenceError: ms3Config is not defined`. Перерисовка корзины и виджета итогов перестанет работать.
 
 По умолчанию настройка включена. Выключайте её, только если конфиг выводится своим кодом.
 :::
@@ -486,7 +486,7 @@ await ms3.customerAPI.login('ivan@example.com', 'secret')
 
 `POST /api/v1/customer/email/resend-verification`.
 
-## Система хуков
+## Система хуков {#hooks}
 
 Хуки расширяют поведение, не трогая исходный код.
 

@@ -136,7 +136,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | `payment_id` | int | ID способа оплаты |
 | `context` | varchar(100) | Контекст MODX |
 | `order_comment` | text | Комментарий к заказу |
-| `idempotency_key` | varchar | Ключ идемпотентности (программные заказы) |
+| `idempotency_key` | varchar(128) | Ключ идемпотентности (программные заказы) |
 | `createdon` | datetime | Дата создания |
 | `updatedon` | datetime | Дата обновления |
 
