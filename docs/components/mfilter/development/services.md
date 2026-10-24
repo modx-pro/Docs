@@ -309,29 +309,31 @@ $seo = $seoBuilder->build($resourceId, $filters);
 
 ## TemplateParser
 
-Парсер плейсхолдеров SEO-шаблонов (`mfl_seo_templates`). Поддерживает `{$filters.vendor_id}`, `{$filters.color|gen}` (склонение через WordFormsManager), `{$resource.pagetitle}`, фильтры Fenom.
+Парсер SEO-шаблонов (`mfl_seo_templates`). Понимает плейсхолдеры `{$ключ}`, условия `{if $ключ}…{else}…{/if}` и модификаторы через точку — падежи из словоформ и текстовые. Это не Fenom: модификаторы через `|` не работают. Синтаксис — в [SEO шаблонах](../interface/seo-templates).
+
+Контекст для страницы каталога собирает `SeoBuilder`: поля ресурса, его TV, значения фильтров с `_first` и `_count`, `site_name`.
 
 ```php
 $parser = $mfilter->getTemplateParser();
 
 // Подставить значения в шаблон
-$h1 = $parser->parse('Купить {$filters.vendor_id} в Москве', [
-    'filters' => ['vendor_id' => 'Apple'],
-    'resource' => $modx->resource->toArray(),
+$h1 = $parser->parse('Купить {$vendor}{if $color} {$color.gen} цвета{/if}', [
+    'vendor' => 'Apple',
+    'color' => 'чёрный',
 ]);
-// 'Купить Apple в Москве'
+// 'Купить Apple чёрного цвета' — если «чёрный» есть в словоформах
 
-// Валидация шаблона на этапе сохранения (синтаксические ошибки)
-$errors = $parser->validate($templateString): array;
+// Синтаксические ошибки: незакрытый {if}, лишние символы в плейсхолдере
+$errors = $parser->validate($templateString);
 
-// Извлечь плейсхолдеры из шаблона (для UI-подсказок)
-$placeholders = $parser->extractPlaceholders($templateString): array;
-// ['filters.vendor_id', 'resource.pagetitle']
+// Ключи плейсхолдеров — без модификаторов и того, что после точки
+$keys = $parser->extractPlaceholders('{$pagetitle} {$color.gen}');
+// ['pagetitle', 'color']
 ```
 
 ## WordFormsManager
 
-Склонение значений в SEO-текстах. Использует таблицу `mfl_word_forms` (12 падежных форм + 3 направительные «где/куда/откуда»). Может автогенерировать формы через [Morpher API](/components/mfilter/settings#словоформы).
+Склонение значений в SEO-текстах. Использует таблицу `mfl_word_forms` (12 падежных форм + 3 направительные «где/куда/откуда»). Может автогенерировать формы через [Morpher API](/components/mfilter/settings#slovoformy).
 
 ```php
 $wm = $mfilter->getWordFormsManager();

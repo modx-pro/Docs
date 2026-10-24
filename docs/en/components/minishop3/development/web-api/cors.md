@@ -27,6 +27,25 @@ OPTIONS preflight returns 200 without token mint.
 
 ## Rate limit
 
+Over the quota:
+
+```http
+HTTP/1.1 429 Too Many Requests
+Retry-After: 42
+```
+
+```json
+{
+  "success": false,
+  "message": "ms3_err_rate_limit",
+  "code": 429,
+  "errors": null,
+  "error_code": "rate_limited"
+}
+```
+
+`Retry-After` is sent only with a 429. `X-RateLimit-Limit`, `X-RateLimit-Remaining` and `X-RateLimit-Reset` go out on requests that are still inside the window. The bucket is counted per IP, and `OPTIONS` does not consume the quota.
+
 | Key | Default | Meaning |
 | --- | --- | --- |
 | `ms3_rate_limit_max_attempts` | 60 | Requests |

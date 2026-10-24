@@ -3,21 +3,7 @@ title: Frontend JavaScript
 ---
 # Frontend JavaScript
 
-Модульная архитектура JavaScript на стороне сайта.
-
-## Обзор
-
-MiniShop3 использует модульную архитектуру JavaScript без зависимости от jQuery. Все модули написаны на чистом ES6+ и работают в современных браузерах.
-
-**Ключевые особенности:**
-
-- Модульная структура (core, ui, modules)
-- REST API клиент с httpOnly cookie токенизацией
-- Система хуков для расширения
-- Централизованные селекторы с переопределением
-- Автоматический рендеринг корзины
-- Promise-based диалоги подтверждения
-- События для интеграции
+JavaScript на стороне сайта: модули без jQuery, ES6+, современные браузеры.
 
 ## Структура модулей
 
@@ -53,7 +39,7 @@ assets/components/minishop3/js/web/
 
 ### Системная настройка `ms3_frontend_assets`
 
-Контролирует порядок загрузки CSS и JS файлов:
+Задаёт порядок загрузки CSS и JS:
 
 ```json
 [
@@ -71,31 +57,31 @@ assets/components/minishop3/js/web/
     "[[+jsUrl]]web/ui/CartUI.js",
     "[[+jsUrl]]web/ui/OrderUI.js",
     "[[+jsUrl]]web/ui/CustomerUI.js",
-    "[[+jsUrl]]web/ui/AuthUI.js",
     "[[+jsUrl]]web/ui/QuantityUI.js",
     "[[+jsUrl]]web/ui/ProductCardUI.js",
+    "[[+jsUrl]]web/ui/AuthUI.js",
     "[[+jsUrl]]web/ms3.js"
 ]
 
 ```
 
-**Поддерживаемые плейсхолдеры:**
+**Плейсхолдеры:**
 
 | Плейсхолдер | Значение |
 | --- | --- |
 | `[[+cssUrl]]` | `assets/components/minishop3/css/` |
 | `[[+jsUrl]]` | `assets/components/minishop3/js/` |
 
-**Особенности загрузки:**
+**Куда попадает файл:**
 
-- CSS файлы подключаются в `<head>`
-- JS файлы подключаются в конце HTML с атрибутом `defer`
+- CSS уходит в `<head>`;
+- JS — в конец HTML, с атрибутом `defer`.
 
 ### Изменение порядка
 
-Для изменения или отключения файлов отредактируйте системную настройку `ms3_frontend_assets`.
+Чтобы отключить или переставить файлы, измените `ms3_frontend_assets`.
 
-**Пример: отключение iziToast (использование своих уведомлений):**
+**Пример: без iziToast, со своими уведомлениями:**
 
 ```json
 [
@@ -113,10 +99,10 @@ assets/components/minishop3/js/web/
 
 ### Модуль Selectors.js
 
-Централизованные CSS/data-* селекторы для всех UI-компонентов. Селекторы используют data-атрибуты как приоритетные с fallback на CSS-классы для обратной совместимости.
+Селекторы UI собраны в одном месте. Сначала data-атрибуты, затем CSS-классы для обратной совместимости.
 
 ```javascript
-// Дефолтные селекторы
+// Стандартные селекторы
 {
   form: '[data-ms3-form], .ms3_form',
   formOrder: '[data-ms3-form="order"], .ms3_order_form',
@@ -134,6 +120,7 @@ assets/components/minishop3/js/web/
   orderCancel: '.ms3-order-cancel',
   addressSetDefault: '.set-default-address',
   addressDelete: '.delete-address',
+  resendVerificationEmail: '#resend-verification-email, [data-ms3-resend-verification]',
   authLoginForm: '#ms3-login-form',
   authRegisterForm: '#ms3-register-form',
   authForgotPassword: '#forgot-password-link'
@@ -143,7 +130,7 @@ assets/components/minishop3/js/web/
 
 ### Переопределение селекторов
 
-Через `ms3Config.selectors` можно частично переопределить селекторы — они сливаются с дефолтными:
+`ms3Config.selectors` подменяет отдельные селекторы — ваши значения сливаются со стандартными:
 
 ```javascript
 window.ms3Config = {
@@ -157,7 +144,7 @@ window.ms3Config = {
 
 ### Использование в UI-классах
 
-Все UI-классы получают селекторы из `ms3.selectors`:
+UI-классы берут селекторы из `ms3.selectors`:
 
 ```javascript
 // Внутри UI-класса
@@ -170,7 +157,9 @@ const cancelBtns = document.querySelectorAll(this.selectors.orderCancel)
 
 ### Инициализация
 
-Главный объект `ms3` инициализируется автоматически при загрузке `ms3.js`:
+Объект `ms3` создаётся сам при загрузке `ms3.js`. Селекторы собираются из `getSelectors()` и `ms3Config.selectors`.
+
+<!-- EXAMPLE? 55 строк исходника ms3.js: список полей объекта и шесть однотипных `new ...UI(...)` + шесть `init()` -->
 
 ```javascript
 // assets/components/minishop3/js/web/ms3.js
@@ -178,75 +167,72 @@ const cancelBtns = document.querySelectorAll(this.selectors.orderCancel)
 const ms3 = {
   config: {},
   selectors: {},
-
-  // Ядро
   tokenManager: null,
   apiClient: null,
-
-  // API модули
   cartAPI: null,
   orderAPI: null,
   customerAPI: null,
-
-  // UI модули
   cartUI: null,
   orderUI: null,
   customerUI: null,
   authUI: null,
   quantityUI: null,
   productCardUI: null,
-
-  // Утилиты
   hooks: null,
   message: null,
 
-  async init() {
-    this.config = window.ms3Config || {}
-    this.selectors = getSelectors(this.config)
+async init() {
+  this.config = window.ms3Config || {}
+  this.hooks = window.ms3Hooks
+  this.message = window.ms3Message
 
-    // Хуки и сообщения
-    this.hooks = window.ms3Hooks
-    this.message = window.ms3Message
+  this.tokenManager = new TokenManager({
+    tokenName: this.config.tokenName || 'ms3_token',
+  })
+  this.apiClient = new ApiClient({
+    baseUrl: this.config.actionUrl || '/assets/components/minishop3/api.php',
+    tokenManager: this.tokenManager,
+    ctx: this.config.ctx,
+  })
+  this.tokenManager.setApiClient(this.apiClient)
+  await this.tokenManager.ensureToken()
 
-    // Токены и API клиент
-    this.tokenManager = new TokenManager(this.config)
-    await this.tokenManager.ensureToken()
-    this.apiClient = new ApiClient(this.config, this.tokenManager)
+  this.cartAPI = new CartAPI(this.apiClient)
+  this.orderAPI = new OrderAPI(this.apiClient)
+  this.customerAPI = new CustomerAPI(this.apiClient)
 
-    // API модули
-    this.cartAPI = new CartAPI(this.apiClient)
-    this.orderAPI = new OrderAPI(this.apiClient)
-    this.customerAPI = new CustomerAPI(this.apiClient)
+  this.cartUI = new CartUI(this.cartAPI, this.hooks, this.message, this.config)
+  this.orderUI = new OrderUI(this.orderAPI, this.hooks, this.message, this.config)
+  this.customerUI = new CustomerUI(this.customerAPI, this.hooks, this.message, this.config)
+  this.authUI = new AuthUI(this.customerAPI, this.hooks, this.message, this.config)
+  this.quantityUI = new QuantityUI(this.cartAPI, this.hooks, this.message, this.config)
+  this.productCardUI = new ProductCardUI(this.cartAPI, this.hooks, this.message, this.config)
 
-    // UI модули
-    this.cartUI = new CartUI(this.cartAPI, this.hooks, this.message, this.config)
-    this.orderUI = new OrderUI(this.orderAPI, this.hooks, this.message, this.config)
-    this.customerUI = new CustomerUI(this.customerAPI, this.hooks, this.message, this.config)
-    this.authUI = new AuthUI(this.customerAPI, this.hooks, this.message, this.config)
+  this.cartUI.init()
+  this.orderUI.init()
+  this.customerUI.init()
+  this.authUI.init()
+  this.quantityUI.init()
+  await this.productCardUI.init()
 
-    // Инициализация
-    this.cartUI.init()
-    this.orderUI.init()
-    this.customerUI.init()
-    this.authUI.init()
-
-    this.initFormHandler()
-
-    // Событие готовности
-    document.dispatchEvent(new CustomEvent('ms3:ready'))
-  }
+  document.dispatchEvent(new Event('ms3:ready'))
+}
 }
 
 ```
 
 ### Конфигурация ms3Config
 
-Передаётся с сервера через сниппеты:
+Сервер кладёт конфиг через сниппеты:
 
 ```javascript
 window.ms3Config = {
   actionUrl: '/assets/components/minishop3/api.php',
+  connectorUrl: '/assets/components/minishop3/connector.php',
+  ctx: 'web',                 // Ключ контекста страницы
   tokenName: 'ms3_token',
+  currencySymbol: 'руб.',     // Из настроек магазина
+  currencyPosition: 'after',  // before или after, ms3_currency_position
 
   // Переопределение селекторов
   selectors: {
@@ -264,6 +250,8 @@ window.ms3Config = {
 
 ```
 
+Шесть первых ключей печатает сам компонент, если включена настройка `ms3_register_global_config`. `currencySymbol` и `currencyPosition` читает `OrderUI.formatPrice()` — от них зависит вывод сумм на страницах сайта. `render.cart` и `selectors` компонент печатает пустыми, наполняют их сниппеты и ваш код.
+
 ### Событие готовности
 
 ```javascript
@@ -276,13 +264,13 @@ document.addEventListener('ms3:ready', () => {
 
 ### Публичный refresh API (с 1.11.0)
 
-`window.ms3.refresh()` — единая точка для интеграции со сторонними AJAX-компонентами (mFilter, mSearch2, кастомный AJAX, бесконечный скролл), которые заменяют DOM каталога. После замены вызовите этот метод — MS3 ре-привязывает состояние своих UI-модулей (`ProductCardUI.updateAllCards()`, `QuantityUI.reinit()`) к новой разметке.
+`window.ms3.refresh()` заново привязывает UI MiniShop3 к разметке каталога. Вызовите его после того, как сторонний AJAX (mFilter, mSearch2, свой код, бесконечный скролл) заменил DOM. Метод вызывает `ProductCardUI.updateAllCards()` и `QuantityUI.reinit()`.
 
 ```javascript
-// Универсальный паттерн для любого AJAX-компонента:
+// Общий приём для любого AJAX-компонента:
 fetch('/catalog/page/2')
   .then(/* ... заменить DOM каталога ... */)
-  .then(() => window.ms3?.refresh?.())  // optional chaining safe на странице без MS3
+  .then(() => window.ms3?.refresh?.())  // на странице без MiniShop3 ошибки не будет
 
 // mFilter:
 document.addEventListener('mfilter:contentLoaded', () => {
@@ -296,23 +284,27 @@ document.addEventListener('mse2_load.response', () => {
 
 ```
 
-Эквивалентный вариант через DOM-событие — `document.dispatchEvent(new CustomEvent('ms3:refresh'))`. Listener зарегистрирован один раз на module scope, повторные `init()` его не дублируют.
+Тот же вызов через DOM: `document.dispatchEvent(new CustomEvent('ms3:refresh'))`. Слушатель зарегистрирован один раз на уровне модуля. Повторные `init()` его не дублируют.
 
-**Важно:** MS3 **не** слушает специфические события сторонних компонентов (`mfilter:contentLoaded`, `mse2_load.response` и т.п.). Связь односторонняя: сторонний компонент → MS3. Это сделано чтобы не плодить зависимости MS3 от каждого совместимого компонента.
+Сам MiniShop3 **не** слушает события сторонних компонентов (`mfilter:contentLoaded`, `mse2_load.response` и подобные). Связь односторонняя: вызывает всегда сторонний компонент. Так MiniShop3 не зависит от каждого совместимого дополнения.
 
-Аргумент `detail` зарезервирован для будущего scoped-refresh (`ms3.refresh({ scope: container })`) — сейчас не используется, но включён в сигнатуру, чтобы будущие изменения не ломали API.
+Аргумент `detail` у метода и события сейчас не используется, он оставлен в сигнатуре на будущее.
 
 ## Ядро (Core)
 
 ### TokenManager
 
-Управление токенами авторизации. Токен хранится в httpOnly cookie `ms3_token`, которая устанавливается сервером автоматически.
+Токен лежит в cookie `ms3_token`, её ставит сервер.
 
 ::: info httpOnly cookie
-Начиная с версии 1.6, токен хранится в httpOnly cookie вместо localStorage. Это значительно повышает безопасность — токен недоступен из JavaScript и защищён от XSS-атак.
+С версии 1.6 токен хранится в httpOnly cookie, а не в localStorage. JavaScript его не видит, XSS до cookie не достаёт.
 
-Cookie автоматически передаётся браузером при каждом запросе.
+Браузер передаёт cookie сам при каждом запросе.
 :::
+
+Поэтому `ensureToken()` cookie не читает, а запрашивает `GET /api/v1/customer/token/get` с `credentials: 'same-origin'`. Сам `ApiClient` метод получает от `init()` через `setApiClient()`.
+
+Запрос уходит один раз за жизненный цикл страницы: после удачного ответа поднимается флаг `tokenInitialized`, и повторный `ensureToken()` сразу возвращает управление. Принудительно обновить токен можно только через `fetchNewToken()`.
 
 ```javascript
 class TokenManager {
@@ -327,9 +319,10 @@ class TokenManager {
 
   // Проверить наличие токена и получить при необходимости
   async ensureToken() {
-    // Токен в httpOnly cookie — JS не видит его напрямую.
-    // При отсутствии cookie запрашивает новый токен с сервера
-    return this.fetchNewToken()
+    // Токен в httpOnly cookie — JS не видит его напрямую
+    if (this.tokenInitialized) return
+
+    await this.fetchNewToken()
   }
 
   // Запросить новый токен (сервер установит httpOnly cookie)
@@ -347,8 +340,10 @@ class TokenManager {
         'X-Requested-With': 'XMLHttpRequest',
       },
     })
-    const data = await response.json()
-    return data.success
+    const result = await response.json()
+    if (result.success) {
+      this.tokenInitialized = true  // Ничего не возвращает: Promise<void>
+    }
   }
 }
 
@@ -356,7 +351,9 @@ class TokenManager {
 
 ### ApiClient
 
-HTTP-клиент. Токен передаётся автоматически через httpOnly cookie:
+HTTP-клиент. Токен уходит сам через httpOnly cookie.
+
+`buildUrl()` кладёт путь в query `route` и контекст в `ctx`; query-строку из самого пути он разбирает и переносит в параметры. `request()` шлёт запрос с `credentials: 'same-origin'`. Методы: `get(route)`, `post(route, data)`, `put(route, data)`, `patch(route, data)`, `delete(route)`.
 
 ```javascript
 class ApiClient {
@@ -373,24 +370,46 @@ class ApiClient {
     return url
   }
 
-  async request(method, route, data = null) {
+  async request(method, route, data = null, isRetry = false) {
     const url = this.buildUrl(route)
 
-    const options = {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      },
-      credentials: 'same-origin'  // Включает httpOnly cookie
+    const headers = {
+      Accept: 'application/json',
+      'X-Requested-With': 'XMLHttpRequest',
     }
 
-    if (data && method !== 'GET') {
-      options.body = JSON.stringify(data)
+    const options = { method, headers, credentials: 'same-origin' }
+
+    // Тело — только у POST, PATCH и PUT; FormData уходит как есть
+    if (data && ['POST', 'PATCH', 'PUT'].includes(method)) {
+      if (data instanceof FormData) {
+        options.body = data
+      } else {
+        headers['Content-Type'] = 'application/json'
+        options.body = JSON.stringify(data)
+      }
     }
 
     const response = await fetch(url.toString(), options)
-    return response.json()
+    const result = await response.json()
+
+    // 401 с токеновой ошибкой: обновить токен и повторить запрос один раз
+    if (!isRetry && response.status === 401 && this.isTokenError(result)) {
+      await this.tokenManager.fetchNewToken()
+      return this.request(method, route, data, true)
+    }
+
+    return result
+  }
+
+  isTokenError(result) {
+    if (!result || result.success) return false
+    return ['ms3_err_token', 'ms3_err_token_invalid', 'ms3_err_token_expired'].includes(result.message)
+  }
+
+  // Web API кладёт данные в data, устаревшие процессоры — в object
+  static getPayload(result) {
+    return result ? (result.data ?? result.object ?? null) : null
   }
 
   get(route) { return this.request('GET', route) }
@@ -404,7 +423,7 @@ class ApiClient {
 
 ### CartAPI
 
-API для работы с корзиной:
+Методы корзины:
 
 ```javascript
 class CartAPI {
@@ -412,32 +431,35 @@ class CartAPI {
     this.api = apiClient
   }
 
-  async get() {
-    return this.api.get('/api/v1/cart/get')
+  // include_thumbs=1 добавляет в позиции поле thumb
+  async get(params = {}) {
+    let endpoint = '/api/v1/cart/get'
+    if (params.include_thumbs) endpoint += '?include_thumbs=1'
+    return this.api.get(endpoint)
   }
 
-  async add(id, count = 1, options = {}, renderTokens = null) {
-    return this.api.post('/api/v1/cart/add', {
-      id, count, options, render: renderTokens
-    })
+  async add(id, count = 1, options = {}, render = null) {
+    const data = { id, count, options }
+    if (render) data.render = JSON.stringify(render)
+    return this.api.post('/api/v1/cart/add', data)
   }
 
-  async change(key, count, renderTokens = null) {
-    return this.api.post('/api/v1/cart/change', {
-      key, count, render: renderTokens
-    })
+  async change(productKey, count, render = null) {
+    const data = { product_key: productKey, count }
+    if (render) data.render = JSON.stringify(render)
+    return this.api.post('/api/v1/cart/change', data)
   }
 
-  async remove(key, renderTokens = null) {
-    return this.api.post('/api/v1/cart/remove', {
-      key, render: renderTokens
-    })
+  async remove(productKey, render = null) {
+    const data = { product_key: productKey }
+    if (render) data.render = JSON.stringify(render)
+    return this.api.post('/api/v1/cart/remove', data)
   }
 
-  async clean(renderTokens = null) {
-    return this.api.post('/api/v1/cart/clean', {
-      render: renderTokens
-    })
+  async clean(render = null) {
+    const data = {}
+    if (render) data.render = JSON.stringify(render)
+    return this.api.post('/api/v1/cart/clean', data)
   }
 }
 
@@ -459,7 +481,7 @@ await ms3.cartAPI.remove('abc123')
 
 ### OrderAPI
 
-API для работы с заказом:
+Методы заказа:
 
 ```javascript
 class OrderAPI {
@@ -492,7 +514,7 @@ class OrderAPI {
 
 ### CustomerAPI
 
-API для работы с данными покупателя:
+Методы покупателя:
 
 ```javascript
 class CustomerAPI {
@@ -536,8 +558,8 @@ class CustomerAPI {
   }
 
   // Авторизация
-  async login(data) {
-    return this.api.post('/api/v1/customer/login', data)
+  async login(email, password) {
+    return this.api.post('/api/v1/customer/login', { email, password })
   }
 
   // Регистрация
@@ -559,6 +581,8 @@ class CustomerAPI {
 
 Обработчик интерфейса корзины:
 
+<!-- EXAMPLE? 85 строк исходника: `handleClean()` повторяет `handleAdd()` почти целиком -->
+
 ```javascript
 class CartUI {
   constructor(cartAPI, hooks, message, config) {
@@ -569,9 +593,7 @@ class CartUI {
   }
 
   init() {
-    this.initQuantityButtons()  // Кнопки +/-
-    this.initQuantityInputs()   // Поля количества
-    this.initOptionSelects()    // Селекты опций
+    this.initOptionSelects()    // Селекты опций: делегированный слушатель change
   }
 
   // Добавление товара
@@ -617,8 +639,6 @@ class CartUI {
       }
     }
 
-    // Переинициализация обработчиков
-    setTimeout(() => this.init(), 100)
   }
 
   // Очистка корзины
@@ -650,6 +670,12 @@ class CartUI {
 }
 
 ```
+
+Кнопки `+`/`−` и поля количества ведёт отдельный класс `QuantityUI` (`initButtons()`, `initInputs()`): `CartUI.init()` их не касается. Перерисовку корзины обработчики переживают сами: `initOptionSelects()` слушает `change` на документе, а `QuantityUI` навешивает свои заново по событию `ms3:cart:updated`.
+
+Если у токена в `ms3Config.render.cart` не задан селектор или элемент по нему не найден, `renderCart()` пробует запасные: `#ms3oc-cart-live`, `#msb-test-cart`, `#msCart`, `[data-ms-cart]`, `.msCart`. Подстановка срабатывает, только когда во всём документе нашёлся ровно один такой узел, — иначе разметка одной корзины уехала бы в другую.
+
+Разметки под первые два идентификатора в поставке нет: ни один чанк и ни один сниппет их не выводит. На практике работают три последних, а `#ms3oc-cart-live` и `#msb-test-cart` рассчитаны на разметку со стороны.
 
 ::: tip Очистка корзины из внешнего скрипта
 При вызове `cartAPI.clean()` напрямую — выполняется только API-запрос без рендеринга и без события `ms3:cart:updated`. Для полного обновления интерфейса (мини-корзина, счётчики, карточки товаров) используйте `cartUI.handleClean()`:
@@ -691,11 +717,17 @@ class OrderUI {
     document.querySelectorAll(this.selectors.formOrder).forEach(form => {
       this.initForm(form)
     })
+
+    // Корзина изменилась — пересчитать стоимость: мог сработать порог бесплатной доставки
+    document.addEventListener('ms3:cart:updated', () => this.updateOrderCosts())
   }
 
   // Автосохранение полей
   initRegularInput(input) {
     input.addEventListener('change', async () => {
+      // Без родительского div обработчик выходит молча
+      if (!input.closest('div')) return
+
       const response = await this.handleAdd(input.name, input.value)
 
       if (response.success) {
@@ -729,9 +761,15 @@ class OrderUI {
 
 ```
 
+::: warning Поле без обёртки не сохраняется
+Автосохранение ищет у поля ближайший родительский `div` — в него оно пишет классы валидации и текст ошибки. Поля без такого родителя обработчик пропускает молча: запрос не уходит, ошибки в консоли нет. Если своя вёрстка формы заказа кладёт `input` прямо в `form`, оберните его в `div`.
+:::
+
 ### CustomerUI
 
-Обработчик интерфейса покупателя. Управляет профилем, адресами и отменой заказов:
+Обработчик интерфейса покупателя. Управляет профилем, адресами, отменой заказов и повторной отправкой письма подтверждения:
+
+<!-- EXAMPLE? 90 строк исходника: `initOrderCancel()` и два обработчика в `initAddressManagement()` показывают один и тот же приём -->
 
 ```javascript
 class CustomerUI {
@@ -741,23 +779,24 @@ class CustomerUI {
     })
     this.initOrderCancel()
     this.initAddressManagement()
+    this.initResendVerification()  // Повторное письмо подтверждения e-mail
   }
 
   // Обновление профиля
   async handleProfileUpdate(formData) {
-    const hookData = { formData }
-    await this.hooks.runHooks('beforeUpdateProfile', hookData)
-    if (hookData.cancel) return
-
     const data = {}
     for (const [key, value] of formData.entries()) {
       if (key === 'ms3_action') continue
       data[key] = value
     }
 
+    const hookData = { data }
+    await this.hooks.runHooks('beforeUpdateProfile', hookData)
+    if (hookData.cancel) return
+
     const response = await this.customer.updateProfile(data)
 
-    await this.hooks.runHooks('afterUpdateProfile', { response })
+    await this.hooks.runHooks('afterUpdateProfile', { data, response })
 
     if (response.success) {
       this.message.success(response.message)
@@ -775,10 +814,7 @@ class CustomerUI {
         const confirmMessage = btn.dataset.confirm
 
         // Диалог подтверждения с красной кнопкой
-        const confirmed = await ms3Confirm(confirmMessage, {
-          confirmClass: 'danger'
-        })
-        if (!confirmed) return
+        if (!await this.confirm(confirmMessage, { confirmClass: 'btn-danger' })) return
 
         const hookData = { orderId }
         await this.hooks.runHooks('beforeCancelOrder', hookData)
@@ -839,62 +875,52 @@ class AuthUI {
   }
 
   init() {
-    this.initLoginForm()
-    this.initRegisterForm()
+    const loginForm = document.querySelector(this.selectors.authLoginForm)
+    if (loginForm) {
+      loginForm.addEventListener('submit', e => this.handleLogin(e))
+    }
+
+    const registerForm = document.querySelector(this.selectors.authRegisterForm)
+    if (registerForm) {
+      registerForm.addEventListener('submit', e => this.handleRegister(e))
+    }
+
+    const forgotLink = document.querySelector(this.selectors.authForgotPassword)
+    if (forgotLink) {
+      forgotLink.addEventListener('click', e => this.handleForgotPassword(e))
+    }
+
+    this.initTabSupport()
   }
 
-  // Авторизация
-  async handleLogin(formData) {
-    const hookData = { formData }
+  // Аргумент — событие submit, а не форма
+  async handleLogin(event) {
+    event.preventDefault()
+    const data = this.serializeForm(event.target)
+
+    const hookData = { email: data.email }
     await this.hooks.runHooks('beforeLogin', hookData)
     if (hookData.cancel) return
 
-    const response = await this.customer.login({
-      email: formData.get('email'),
-      password: formData.get('password')
-    })
+    const result = await this.customer.login(data.email, data.password)
+    await this.hooks.runHooks('afterLogin', { email: data.email, response: result })
 
-    await this.hooks.runHooks('afterLogin', { response })
-
-    if (response.success) {
-      this.message.success(response.message)
-      // Редирект на страницу профиля или текущую
-      window.location.href = response.data?.redirect_url || window.location.href
+    if (result.success) {
+      this.showMessage('login-messages', this.t('ms3_customer_login_success'), 'success')
+      setTimeout(() => this.handleRedirect(ApiClient.getPayload(result)), 1000)
     } else {
-      this.showFormErrors('login', response)
-    }
-  }
-
-  // Регистрация
-  async handleRegister(formData) {
-    const hookData = { formData }
-    await this.hooks.runHooks('beforeRegister', hookData)
-    if (hookData.cancel) return
-
-    const response = await this.customer.register({
-      email: formData.get('email'),
-      password: formData.get('password'),
-      password_confirm: formData.get('password_confirm'),
-      first_name: formData.get('first_name'),
-      last_name: formData.get('last_name'),
-      phone: formData.get('phone'),
-      privacy_accepted: formData.get('privacy_accepted') ? true : false
-    })
-
-    await this.hooks.runHooks('afterRegister', { response })
-
-    if (response.success) {
-      this.message.success(response.message)
-      window.location.href = response.data?.redirect_url || window.location.href
-    } else {
-      this.showFormErrors('register', response)
+      this.showMessage('login-messages', result.message || this.t('ms3_err_unknown'), 'danger')
     }
   }
 }
 
 ```
 
-**Чанк авторизации:** `tpl.msCustomer.unauthorized` — содержит формы входа и регистрации с табами (Bootstrap). Инлайн-скрипт экспортирует лексиконы в `window.ms3Lexicon`:
+`handleRegister(event)` устроен так же, но пишет в блок `register-messages` и до запроса проверяет форму на клиенте: заполнены `email` и `password`, `password` совпадает с `password_confirm`, отмечен `privacy_accepted`. После успешной регистрации переход по `handleRedirect()` происходит только если в payload есть `token` (через 1500 мс); иначе через 2000 мс скрипт переключает вкладку на вход и сбрасывает форму.
+
+Ошибки входа и регистрации `showMessage()` выводит в блок рядом с формой. Всплывающее уведомление появляется только при сетевом сбое.
+
+**Чанк авторизации:** `tpl.msCustomer.unauthorized` — формы входа и регистрации, разложенные по вкладкам Bootstrap. Встроенный в чанк скрипт отдаёт лексиконы в `window.ms3Lexicon`:
 
 ```fenom
 <script>
@@ -910,7 +936,7 @@ window.ms3Lexicon.ms3_customer_login_success = '{'ms3_customer_login_success' | 
 
 ### Модуль confirm.js
 
-Promise-based диалог подтверждения с Bootstrap Modal и fallback на `window.confirm()`:
+Диалог подтверждения возвращает Promise. Рисуется через Bootstrap Modal, а без него — через `window.confirm()`:
 
 ```javascript
 // Глобальная функция
@@ -924,7 +950,7 @@ async function ms3Confirm(message, options = {}) → Promise<boolean>
 | --- | --- | --- |
 | `confirmText` | «Подтвердить» / «Confirm» | Текст кнопки подтверждения |
 | `cancelText` | «Отмена» / «Cancel» | Текст кнопки отмены |
-| `confirmClass` | `primary` | CSS-класс кнопки (primary, danger) |
+| `confirmClass` | `btn-primary` | Класс кнопки подтверждения целиком: подставляется как `btn {confirmClass} ms3-confirm-ok` |
 
 **Пример использования:**
 
@@ -935,14 +961,14 @@ if (!ok) return
 
 // С красной кнопкой (для деструктивных действий)
 const ok = await ms3Confirm('Удалить адрес?', {
-  confirmClass: 'danger'
+  confirmClass: 'btn-danger'
 })
 
 ```
 
 ### Автоматическая привязка
 
-i18n кнопок определяется по атрибуту `<html lang>`:
+Язык кнопок модуль берёт из атрибута `<html lang>`:
 
 - `lang="ru"` → «Подтвердить» / «Отмена»
 - Другие → «Confirm» / «Cancel»
@@ -957,16 +983,16 @@ window.ms3Lexicon.ms3_confirm_cancel = 'Нет'
 
 ### Декларативная привязка
 
-Атрибут `data-ms3-confirm` на любом элементе автоматически показывает диалог перед действием:
+Атрибут `data-ms3-confirm` показывает диалог по клику на элементе и отменяет действие по умолчанию. После подтверждения модуль сам делает только одно: переходит по `href`, если элемент — ссылка.
 
 ```html
-<button data-ms3-confirm="Удалить этот адрес?"
-        data-address-id="5"
-        class="delete-address">
+<a href="/account/addresses/delete?id=5" data-ms3-confirm="Удалить этот адрес?">
     Удалить
-</button>
+</a>
 
 ```
+
+На кнопке атрибут самостоятельного смысла не имеет: `preventDefault()` снимает отправку формы, а переходить модулю некуда. Для кнопок вызывайте `ms3Confirm()` из своего обработчика — у встроенных кнопок удаления адреса и отмены заказа сделано именно так.
 
 ## Система хуков
 
@@ -976,31 +1002,33 @@ window.ms3Lexicon.ms3_confirm_cancel = 'Нет'
 // window.ms3Hooks
 
 const ms3Hooks = {
-  hooks: {},
+  items: {},
 
-  addHook(name, callback, priority = 10) {
-    if (!this.hooks[name]) {
-      this.hooks[name] = []
-    }
-    this.hooks[name].push({ callback, priority })
-    this.hooks[name].sort((a, b) => a.priority - b.priority)
+  addHook(name, fn) {
+    if (!this.items[name]) this.items[name] = []
+    this.items[name].push(fn)
   },
 
-  async runHooks(name, data = {}) {
-    if (!this.hooks[name]) return data
+  async runHooks(name, context) {
+    if (!this.items[name]) return
 
-    for (const hook of this.hooks[name]) {
-      await hook.callback(data)
-      if (data.cancel) break
+    for (const fn of this.items[name]) {
+      if (context.cancel) return false
+
+      try {
+        await fn(context)
+      } catch (error) {
+        console.error(`Error executing hook "${name}":`, error)
+      }
     }
-
-    return data
-  }
+  },
 }
 
 ```
 
 ### Доступные хуки
+
+Ниже хуки, которые поднимает слой UI. Полный список вместе с составом контекста у каждого — в [JavaScript API](javascript#hooks): там есть ещё изменение количества, смена опции позиции, пересчёт стоимости заказа, отправка формы и повторное письмо подтверждения.
 
 #### Корзина
 
@@ -1144,7 +1172,7 @@ const ms3Message = {
 
 ```
 
-### Кастомизация уведомлений
+### Свои уведомления
 
 **Замена на свою библиотеку:**
 
@@ -1195,24 +1223,26 @@ document.addEventListener('ms3:cart:updated', (e) => {
 
 ### Автоматическая обработка форм
 
-MiniShop3 автоматически обрабатывает формы с классом `.ms3_form` (или `[data-ms3-form]`). Роутинг определяется по полю `ms3_action`:
+MiniShop3 сам обрабатывает формы с классом `.ms3_form` или `[data-ms3-form]`. Маршрут берётся из поля `ms3_action`:
 
 ```html
 <!-- Добавление в корзину -->
-<form class="ms3_form" data-ms3-entity="cart" data-ms3-method="add">
+<form class="ms3_form">
+  <input type="hidden" name="ms3_action" value="cart/add">
   <input type="hidden" name="id" value="123">
   <input type="number" name="count" value="1">
   <button type="submit">В корзину</button>
 </form>
 
 <!-- Оформление заказа -->
-<form class="ms3_form" data-ms3-entity="order" data-ms3-method="submit">
+<form class="ms3_form">
+  <input type="hidden" name="ms3_action" value="order/submit">
   <button type="submit">Оформить заказ</button>
 </form>
 
 ```
 
-## Расширение и кастомизация
+## Расширение
 
 ### Замена API модуля
 
@@ -1288,23 +1318,29 @@ document.addEventListener('ms3:ready', () => {
 
 ### Глобальный объект ms3Lexicon
 
+Скрипты фронтенда читают переводы из `window.ms3Lexicon`. В поставке его заполняет один чанк — `tpl.msCustomer.unauthorized`, и только восемью ключами авторизации:
+
 ```javascript
 window.ms3Lexicon = {
-  'ms3_frontend_currency': 'руб.',
-  'ms3_frontend_add_to_cart': 'Добавить в корзину',
-  'ms3_customer_login_success': 'Вы успешно вошли',
-  'ms3_confirm_ok': 'Подтвердить',
-  'ms3_confirm_cancel': 'Отмена',
-  // ...
+  ms3_customer_err_login_required: 'Введите e-mail и пароль',
+  ms3_customer_login_success: 'Вы успешно вошли',
+  ms3_customer_err_register_required: '…',
+  ms3_customer_err_password_mismatch: '…',
+  ms3_customer_err_privacy_required: '…',
+  ms3_customer_register_success: '…',
+  ms3_err_unknown: '…',
+  ms3_customer_password_recovery_not_available: '…',
 }
 
 ```
 
-### Дополнительные модули
+Остальные ключи, которые ищет код, — `ms3_confirm_ok`, `ms3_confirm_cancel` и подписи на страницах сайта — в поставке никто не отдаёт. Пока вы не положите их в `window.ms3Lexicon` сами, работают значения по умолчанию, зашитые в скрипты.
+
+## Дополнительные модули
 
 ### order-addresses.js
 
-Выбор сохранённого адреса при оформлении заказа. Модуль **не** входит в JSON `ms3_frontend_assets`: его подключает сниппет `msOrder` через `regClientStartupScript`.
+Выбор сохранённого адреса при оформлении заказа. Модуль **не** входит в JSON `ms3_frontend_assets`. Его подключает сниппет `msOrder` через `regClientStartupScript`.
 
 ```html
 <select id="saved_address_id">
@@ -1316,26 +1352,22 @@ window.ms3Lexicon = {
 
 ```
 
-Модуль автоматически заполняет поля формы при выборе адреса. Подробнее: [Оформление заказа](/components/minishop3/frontend/order).
+При выборе адреса модуль сам заполняет поля формы. Подробнее: [Оформление заказа](/components/minishop3/frontend/order).
 
-### Встроенный хук afterSendRequest
+### Хук afterSendRequest не работает
 
-В `hooks.js` зарегистрирован `afterSendRequest`: после любого API-запроса через ~100 ms вызывается `cartUI.init()` для перевешивания обработчиков на обновлённый DOM. Учитывайте это при кастомных partial-обновлениях корзины.
+В `hooks.js` зарегистрирован обработчик `afterSendRequest`, который через 100 мс вызывает `cartUI.init()`. Но запустить его некому: вызова `runHooks('afterSendRequest')` в коде нет ни одного. Свой обработчик на это имя тоже не выполнится. Замены у хука нет — после частичного обновления корзины вызывайте `ms3.refresh()`.
 
 ### change-option
 
-Смена опций позиции: `CartAPI.changeOption()` → `POST /api/v1/cart/change-option`. Хуки: `beforeChangeOptionCart` / `afterChangeOptionCart` (если подключены в вашей сборке).
+Смена опций позиции: `CartAPI.changeOption()` → `POST /api/v1/cart/change-option`. Хуки `beforeChangeOptionCart` и `afterChangeOptionCart` вызывает штатный `CartUI.js`.
 
 ## Совместимость
 
-### Требования
-
-- Современные браузеры (ES6+)
-- Без jQuery зависимости
-- Поддержка `fetch`, `Promise`, `async/await`
+Нужны современные браузеры (ES6+), `fetch`, `Promise`, `async/await`. jQuery не требуется.
 
 ## Связанные страницы
 
-- [REST API](api) — описание API endpoints
+- [REST API](api) — адреса и форматы ответов
 - [События](events) — PHP события компонента
 - [Сниппеты](../snippets/) — вывод данных на сайте

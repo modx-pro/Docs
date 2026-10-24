@@ -1,47 +1,67 @@
 # Модели и БД
 
-ms3PromoCode хранит данные в двух собственных таблицах. Структура управляется Phinx-миграциями и применяется автоматически при установке/обновлении пакета.
+Две таблицы под управлением Phinx-миграций — применяются автоматически при установке и обновлении пакета.
 
 ## Таблицы
 
 ### `ms3_promo_codes`
 
-Сами промо-коды.
+Промо-коды. `InnoDB`, `utf8mb4_unicode_ci`.
 
-| Поле                | Тип               | Описание                                                       |
-|---------------------|-------------------|----------------------------------------------------------------|
-| `id`                | INT, PK           | Идентификатор                                                  |
-| `code`              | VARCHAR(64)       | Сам код (uppercase, unique)                                    |
-| `description`       | TEXT              | Произвольное описание для менеджера                            |
-| `discount_type`     | ENUM              | `percent` / `fixed`                                            |
-| `discount_value`    | DECIMAL(10,2)     | Размер скидки                                                  |
-| `discount_scope`    | ENUM              | `all` / `matching`                                             |
-| `date_start`        | DATETIME, nullable| Начало действия (или null — без ограничения)                   |
-| `date_end`          | DATETIME, nullable| Окончание действия                                             |
-| `max_uses`          | INT               | Лимит применений (0 = без лимита)                              |
-| `used_count`        | INT               | Денормализованный счётчик использований                        |
-| `min_order_amount`  | DECIMAL(10,2), nullable | Минимальная сумма заказа                                 |
-| `rules`             | TEXT (JSON)       | JSON конфигурации правил (см. [Правила](rules))                |
-| `active`            | TINYINT(1)        | 1 = включён, 0 = отключён                                      |
-| `createdon`         | DATETIME          |                                                                |
-| `updatedon`         | DATETIME          |                                                                |
+| Поле                | Тип                | Default              | Описание                                                       |
+|---------------------|--------------------|----------------------|----------------------------------------------------------------|
+| `id`                | INT UNSIGNED, PK   | AUTO_INCREMENT       | Идентификатор                                                  |
+| `code`              | VARCHAR(64)        | —                    | Сам код (uppercase, unique)                                    |
+| `name`              | VARCHAR(255), NOT NULL | —                | Отображаемое название для админки                              |
+| `description`       | TEXT, nullable     | NULL                 | Произвольное описание для менеджера                            |
+| `discount_type`     | ENUM('percent','fixed') | —               | Тип скидки. Константы: `msPromoCode::TYPE_PERCENT`, `TYPE_FIXED` |
+| `discount_value`    | DECIMAL(12,2)      | 0.00                 | Размер скидки                                                  |
+| `discount_scope`    | ENUM('all','matching') | `'all'`          | Область применения. Константы: `msPromoCode::SCOPE_ALL`, `SCOPE_MATCHING` |
+| `rules`             | JSON, nullable     | NULL                 | Конфигурация правил (см. [Правила](rules))                     |
+| `start_date`        | DATETIME, nullable | NULL                 | Начало действия (NULL — без ограничения)                       |
+| `end_date`          | DATETIME, nullable | NULL                 | Окончание действия (NULL — без ограничения)                    |
+| `max_uses`          | INT UNSIGNED       | 0                    | Лимит применений (0 — без лимита)                              |
+| `used_count`        | INT UNSIGNED       | 0                    | Денормализованный счётчик (инкрементируется при создании Usage, уменьшается при отмене) |
+| `min_order_amount`  | DECIMAL(12,2), nullable | NULL            | Минимальная сумма заказа                                       |
+| `active`            | TINYINT(1)         | 1                    | 1 — включён, 0 — отключён                                      |
+| `created_at`        | DATETIME           | CURRENT_TIMESTAMP    | Проставляется автоматически                                    |
+| `updated_at`        | DATETIME           | CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP | Обновляется автоматически при любой записи |
+
+Индексы:
+
+- `uniq_code` — UNIQUE на `code`.
+- `idx_active` — на `active`.
+- `idx_dates` — композитный на `(start_date, end_date)`.
+- `idx_created` — на `created_at`.
 
 ### `ms3_promo_code_usages`
 
-Журнал применений.
+Журнал применений. `InnoDB`, `utf8mb4_unicode_ci`.
 
-| Поле               | Тип                | Описание                                                       |
-|--------------------|--------------------|----------------------------------------------------------------|
-| `id`               | INT, PK            |                                                                |
-| `promo_code_id`    | INT, FK            | → `ms3_promo_codes.id`                                         |
-| `order_id`         | INT, FK            | → `ms3_orders.id`                                              |
-| `customer_id`      | INT, nullable      | → `ms3_customers.id`                                           |
-| `user_id`          | INT, nullable      | → `modx_users.id`                                              |
-| `order_cost`       | DECIMAL(10,2)      | Стоимость заказа со скидкой (на момент применения)             |
-| `discount_amount`  | DECIMAL(10,2)      | Применённая сумма скидки                                       |
-| `breakdown`        | TEXT (JSON)        | `{"product_key": discount_amount, ...}` — разбивка по позициям |
-| `applied_at`       | DATETIME           |                                                                |
-| `cancelled_at`     | DATETIME, nullable | Если установлена — применение откачено                         |
+| Поле               | Тип                        | Default              | Описание                                                       |
+|--------------------|----------------------------|----------------------|----------------------------------------------------------------|
+| `id`               | INT UNSIGNED, PK           | AUTO_INCREMENT       |                                                                |
+| `promo_code_id`    | INT UNSIGNED               | —                    | Ссылка на `ms3_promo_codes.id` (логическая, см. ниже)          |
+| `order_id`         | INT UNSIGNED               | —                    | Ссылка на `ms3_orders.id`                                      |
+| `customer_id`      | INT UNSIGNED, nullable     | NULL                 | Ссылка на `ms3_customers.id`                                   |
+| `user_id`          | INT UNSIGNED, nullable     | NULL                 | Ссылка на `modx_users.id`                                      |
+| `order_cost`       | DECIMAL(12,2)              | 0.00                 | Стоимость заказа со скидкой (на момент применения)             |
+| `discount_amount`  | DECIMAL(12,2)              | 0.00                 | Применённая сумма скидки                                       |
+| `breakdown`        | JSON, NOT NULL             | —                    | `{"product_key": discount_amount, ...}` — разбивка по позициям |
+| `applied_at`       | DATETIME                   | CURRENT_TIMESTAMP    |                                                                |
+| `cancelled_at`     | DATETIME, nullable         | NULL                 | Если установлена — применение отменено                         |
+
+::: warning Про ссылки, помеченные выше
+Ссылки логические: `FOREIGN KEY` на уровне схемы не создаётся, целостность поддерживает код компонента (`UsageTracker`). В метаданных xPDO объявлена одна связь — `aggregates.PromoCode`; `Order` / `Customer` / `User` там нет (см. [BACKLOG](https://github.com/biz87/ms3PromoCode/blob/main/BACKLOG.md)).
+:::
+
+Индексы:
+
+- `idx_promo_code` — на `promo_code_id`.
+- `idx_order` — на `order_id`.
+- `idx_customer` — на `customer_id`.
+- `idx_applied` — на `applied_at`.
+- `idx_active_usages` — композитный на `(promo_code_id, cancelled_at)`.
 
 ## xPDO модели
 
@@ -55,26 +75,55 @@ ms3PromoCode хранит данные в двух собственных таб
 ```php
 $code = $modx->getObject(\ms3PromoCode\Model\msPromoCode::class, ['code' => 'SALE10']);
 
-// Все стандартные геттеры
+// Стандартные геттеры
+$code->get('name');                 // 'Весенняя распродажа'
 $code->get('discount_type');        // 'percent'
 $code->get('discount_value');       // 10.00
 $code->get('used_count');           // 42
 $code->get('rules');                // массив (поле phptype="json")
 
-// Связь "к Usages" (multi)
+// Связь «к Usages» (composite, cardinality='many')
+// При удалении msPromoCode xPDO удаляет и связанные Usages
 $usages = $code->getMany('Usages');
 
-// Helper: вычислить статус
+// Вычислить статус
 $status = $code->getStatus();
-// Возвращает одну из констант:
-// msPromoCode::STATUS_ACTIVE
-// msPromoCode::STATUS_SCHEDULED
-// msPromoCode::STATUS_EXPIRED
-// msPromoCode::STATUS_EXHAUSTED
-// msPromoCode::STATUS_DISABLED
+// Возможные значения — константы msPromoCode:
+// STATUS_ACTIVE, STATUS_SCHEDULED, STATUS_EXPIRED, STATUS_EXHAUSTED, STATUS_DISABLED
 
-// Helper: получить rules как массив (всегда массив, даже если в БД пусто)
+// rules как массив (всегда массив, даже если в БД пусто)
 $rules = $code->getRules();
+
+// toArray() всегда добавляет вычисляемое поле 'status' рядом с 'active'
+$data = $code->toArray();
+// [..., 'active' => 1, 'status' => 'active', ...]
+```
+
+#### Сигнатура `getStatus`
+
+```php
+getStatus(?int $now = null): string
+```
+
+Приоритет проверок: `disabled` → `scheduled` → `expired` → `exhausted` → `active`. У отключённого кода статус всегда `disabled`, даже если срок истёк. Параметр `$now` — timestamp для подстановки времени (удобно в тестах); по умолчанию берётся текущее.
+
+#### Константы `msPromoCode`
+
+```php
+// Типы скидки
+msPromoCode::TYPE_PERCENT       // 'percent'
+msPromoCode::TYPE_FIXED         // 'fixed'
+
+// Область применения
+msPromoCode::SCOPE_ALL          // 'all'
+msPromoCode::SCOPE_MATCHING     // 'matching'
+
+// Статусы жизненного цикла
+msPromoCode::STATUS_ACTIVE
+msPromoCode::STATUS_SCHEDULED
+msPromoCode::STATUS_EXPIRED
+msPromoCode::STATUS_EXHAUSTED
+msPromoCode::STATUS_DISABLED
 ```
 
 ### msPromoCodeUsage
@@ -82,22 +131,35 @@ $rules = $code->getRules();
 ```php
 $usage = $modx->getObject(\ms3PromoCode\Model\msPromoCodeUsage::class, ['order_id' => 1234]);
 
-$usage->get('discount_amount');     // 500.00
-$usage->get('breakdown');           // массив
-$usage->get('cancelled_at');        // null или datetime
+$usage->get('discount_amount');       // 500.00
+$usage->get('breakdown');             // массив
+$usage->get('cancelled_at');          // null или datetime
 
-// Связи
-$promo = $usage->getOne('Promo');           // → msPromoCode
-$order = $usage->getOne('Order');           // → MiniShop3\Model\msOrder
-$customer = $usage->getOne('Customer');     // → MiniShop3\Model\msCustomer (если есть)
+// Единственная связь xPDO
+$promo = $usage->getOne('PromoCode'); // → msPromoCode
+
+// Связанные msOrder / msCustomer / modUser достаются вручную по id:
+$order    = $modx->getObject(\MiniShop3\Model\msOrder::class,    $usage->get('order_id'));
+$customer = $modx->getObject(\MiniShop3\Model\msCustomer::class, $usage->get('customer_id'));
+$user     = $modx->getObject(\MODX\Revolution\modUser::class,    $usage->get('user_id'));
+```
+
+#### Вспомогательные методы
+
+```php
+// Отменено ли применение
+$usage->isCancelled();                // bool — по заполненности cancelled_at
+
+// Распределение скидки по позициям как массив
+$usage->getBreakdown();               // ['product_key' => float, ...]
 ```
 
 ## Снимки в properties
 
-Применённый к корзине код хранится **дважды**:
+Применённый к корзине код хранится дважды:
 
-1. **`msOrder.properties.promo_code`** — снимок на уровне всего заказа.
-2. **`msOrderProduct.properties.ms3promocode`** — снимок per-position (только на тех позициях, что получили часть скидки).
+1. `msOrder.properties.promo_code` — снимок на уровне заказа.
+2. `msOrderProduct.properties.ms3promocode` — снимок на уровне позиции (только для позиций, получивших часть скидки).
 
 ### `msOrder.properties.promo_code`
 
@@ -128,34 +190,31 @@ $customer = $usage->getOne('Customer');     // → MiniShop3\Model\msCustomer (�
 ```
 
 ::: tip Зачем дублировать
-- **Снимок в `msOrder`** нужен для UI (показать «применён код X со скидкой Y»), для аналитики и как источник правды для re-apply при изменениях.
-- **Снимки в `msOrderProduct`** нужны, чтобы можно было восстановить оригинальные цены при снятии кода. Без них пришлось бы ходить в каталог и доставать `Product.price` (что неверно, если цена в каталоге могла измениться после оформления заказа).
+- Снимок в `msOrder` — для UI («применён код X со скидкой Y»), для аналитики и как источник правды при повторном применении.
+- Снимки в `msOrderProduct` позволяют восстановить исходные цены при снятии кода. Иначе пришлось бы брать `Product.price` из каталога — а цена могла измениться после оформления заказа.
 :::
 
 ## Связи (xPDO relations)
 
 ```
 msPromoCode 1 ─── ∞ msPromoCodeUsage
-                              │
-                              ├── ∞ ─── 1 msOrder
-                              ├── ∞ ─── 1 msCustomer (nullable)
-                              └── ∞ ─── 1 modUser    (nullable)
+     (composite Usages ↔ aggregate PromoCode)
 ```
+
+Связей с `msOrder` / `msCustomer` / `modUser` в xPDO нет: поля `order_id` / `customer_id` / `user_id` работают как логические ссылки, объект достаётся через `$modx->getObject(...)`.
 
 ## Миграции
 
-Файлы миграций живут в `core/components/ms3promocode/migrations/` и управляются через Phinx.
+Файлы — в `core/components/ms3promocode/migrations/`, запускаются через Phinx.
 
-| Миграция                                        | Что делает                                          |
-|-------------------------------------------------|-----------------------------------------------------|
-| `20260101000000_create_ms3_promo_codes.php`     | Создание таблицы `ms3_promo_codes`                  |
-| `20260101000001_create_ms3_promo_code_usages.php` | Создание таблицы `ms3_promo_code_usages`           |
+| Миграция                                               | Что делает                                   |
+|--------------------------------------------------------|----------------------------------------------|
+| `20260418000001_create_promo_codes_table.php`          | Создание таблицы `ms3_promo_codes`           |
+| `20260418000002_create_promo_code_usages_table.php`    | Создание таблицы `ms3_promo_code_usages`     |
 
-При установке пакета миграции применяются автоматически через [resolver_02_migrations.php](https://github.com/biz87/ms3PromoCode/blob/main/_build/resolvers/resolver_02_migrations.php).
+При установке миграции запускаются автоматически через [resolver_02_migrations.php](https://github.com/biz87/ms3PromoCode/blob/main/_build/resolvers/resolver_02_migrations.php).
 
-При **удалении пакета** таблицы НЕ удаляются — это сделано намеренно, чтобы сохранить историю применений для возможного повторного использования компонента или ручного экспорта данных.
-
-Если вы точно не вернётесь к компоненту — удалите таблицы вручную:
+При удалении пакета таблицы остаются — чтобы сохранить историю применений на случай переустановки или ручного экспорта. Если компонент больше не нужен, удалите таблицы вручную:
 
 ```sql
 DROP TABLE IF EXISTS modx_ms3_promo_code_usages;
@@ -168,6 +227,5 @@ DROP TABLE IF EXISTS modx_ms3_promo_codes;
 
 ## Производительность
 
-- На таблице `ms3_promo_codes` стоит уникальный индекс на `code` — поиск по коду быстрый.
-- На таблице `ms3_promo_code_usages` — индексы на `promo_code_id`, `order_id`, `applied_at`, `cancelled_at`.
-- Для очень больших объёмов истории (>1 млн строк) рекомендуется добавить partition по `applied_at` (по годам/месяцам) — но это не входит в стандартную конфигурацию.
+Все нужные индексы перечислены в описаниях таблиц выше. При истории от миллиона строк имеет смысл добавить партиционирование по `applied_at` (по годам или месяцам) — вручную, в стандартную конфигурацию не входит.
+
