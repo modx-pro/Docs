@@ -165,7 +165,6 @@ if ($lastRun) {
 
 The status numbers match the `sTaskRun::STATUS_SCHEDULED`, `STATUS_EXECUTING`, `STATUS_SUCCESS` and `STATUS_FAILURE` constants.
 
-<!-- MEDIA: diagram | must | Жизненный цикл запуска задачи. Запуск ставится в очередь вызовом `schedule()` или пунктом «Запланировать запуск» → статус 0 `STATUS_SCHEDULED` «ждёт» → проход cron берёт запуск → статус 1 `STATUS_EXECUTING` «выполняется» → статус 2 `STATUS_SUCCESS` «успех» либо статус 3 `STATUS_FAILURE` «ошибка». От успеха стрелка: у повторяющейся задачи ставится новый запуск через `interval`, у одноразовой цепочка заканчивается. | По тексту разделов «Monitoring tasks», «Running tasks manually» и «Troubleshooting». Перед рисованием сверить по коду Scheduler (`sTaskRun`, cron-скрипт): условие перехода в статус 3 (возврат `false`, вызов `addError()` или исключение); есть ли повторные попытки после ошибки (`max_retries`); ставится ли новый запуск повторяющейся задачи после ошибки (настройка `scheduler.recurring_on_failure`); сколько запусков берёт один проход cron (`scheduler.tasks_per_run`). Ветки, которых нет в тексте страницы, на схему не переносить — сначала дописать их в текст. -->
 ## Running tasks manually
 
 ### Via manager
