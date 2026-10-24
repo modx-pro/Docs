@@ -944,17 +944,28 @@ All methods return a Promise with an object:
 }
 ```
 
-**On error:**
+**On error** the `code`, `errors` and `error_code` keys are always there, even when `errors` is empty:
 
 ```javascript
 {
   success: false,
   message: "Error description",
-  data: {
-    errors: ["field1", "field2"]  // Error fields
-  }
+  code: 400,
+  errors: null,
+  error_code: "bad_request"
 }
 ```
+
+There are three shapes, and they differ in where the per-field breakdown sits.
+
+| When | How it looks |
+| --- | --- |
+| Malformed request, no authorization, not found | `errors: null`, no `data` |
+| Validation with a per-field breakdown | `code: 422`, `error_code: validation_failed`, `errors` is a field → message map; `data` carries the current draft |
+| A shop rule | `code: 400`, `error_code: business_rule`, `data` holds an array of field names, for example `["delivery_id"]` |
+
+
+So `errors` is always a map or `null`, and an array of field names arrives in `data`, not in `errors`.
 
 ## Tokens and authorization
 
