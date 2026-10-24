@@ -51,7 +51,7 @@ tpl.msCustomer.base          # base layout
 
 | Placeholder | Type | Description |
 | --- | --- | --- |
-| `{$customer}` | array | Customer data |
+| `{$customer}` | array | The customer's public fields and their extra fields. No password, no token, no internal counters |
 | `{$customer.id}` | int | Customer ID |
 | `{$customer.email}` | string | Email |
 | `{$customer.first_name}` | string | First name |

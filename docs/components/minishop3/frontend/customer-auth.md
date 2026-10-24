@@ -15,7 +15,7 @@ description: Формы входа и регистрации покупател�
 1. Создайте ресурс ЛК (или два ресурса: вход и регистрация).
 2. Вызовите `msCustomer` некэшированно.
 3. Пропишите ID страниц в системных настройках namespace `minishop3`.
-4. Убедитесь, что на витрине подключены скрипты MS3 ([Frontend JavaScript](/components/minishop3/development/frontend-js)).
+4. Убедитесь, что на фронтенде подключены скрипты MS3 ([Frontend JavaScript](/components/minishop3/development/frontend-js)).
 
 ::: code-group
 
@@ -64,7 +64,7 @@ description: Формы входа и регистрации покупател�
 
 ### Провайдеры входа
 
-`AuthManager::registerProvider()` позволяет добавить свой способ входа (OAuth, SMS и т.д.) в PHP. Штатная витрина использует только password-провайдер через `AuthUI`. Пример регистрации провайдера: [Backend API покупателя](/components/minishop3/development/backend-api/customer).
+`AuthManager::registerProvider()` позволяет добавить свой способ входа (OAuth, SMS и т.д.) в PHP. Штатный фронтенд использует только password-провайдер через `AuthUI`. Пример регистрации провайдера: [Backend API покупателя](/components/minishop3/development/backend-api/customer).
 
 ::: warning SMS-верификация
 Сервис `SmsVerificationService` в пакете — **заглушка**: `sendVerificationCode()` логирует предупреждение и возвращает ошибку. SMS-логин из коробки нет, пока вы не подключите свой провайдер.

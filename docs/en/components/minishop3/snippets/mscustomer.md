@@ -328,7 +328,7 @@ The full section chunks are on the [Customer profile](/en/components/minishop3/f
 
 | Placeholder | Description |
 | --- | --- |
-| `{$customer}` | Customer data (array) |
+| `{$customer}` | The customer's public fields and their extra fields (array). No password, no token, no internal counters |
 | `{$customer.id}` | Customer ID |
 | `{$customer.email}` | Email |
 | `{$customer.first_name}` | First name |

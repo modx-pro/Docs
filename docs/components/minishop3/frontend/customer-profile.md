@@ -51,7 +51,7 @@ tpl.msCustomer.base          # базовый layout
 
 | Плейсхолдер | Тип | Описание |
 | --- | --- | --- |
-| `{$customer}` | array | Данные покупателя |
+| `{$customer}` | array | Публичные поля покупателя и его свои поля. Пароля, токена и служебных счётчиков в нём нет |
 | `{$customer.id}` | int | ID покупателя |
 | `{$customer.email}` | string | Email |
 | `{$customer.first_name}` | string | Имя |

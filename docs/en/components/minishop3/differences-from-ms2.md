@@ -127,7 +127,7 @@ Short map (not complete): cart, order, customer (including `me`, `token/refresh`
 
 Full table: [Endpoint map](/en/components/minishop3/development/web-api/endpoints).
 
-There is no separate `GET /api/v1/order/payments`. Public lists: `GET /api/v1/delivery/list`, `GET /api/v1/payment/list`. Draft: `GET /api/v1/order/get` (order/address fields). The Fenom storefront can render the choice via `msOrder`.
+There is no separate `GET /api/v1/order/payments`. Public lists: `GET /api/v1/delivery/list`, `GET /api/v1/payment/list`. Draft: `GET /api/v1/order/get` (order/address fields). The Fenom frontend can render the choice via `msOrder`.
 
 ### API authentication
 
@@ -163,7 +163,7 @@ await fetch(`${base}?route=/api/v1/cart/add`, {
 });
 ```
 
-Token resolution order (`TokenMiddleware`): `Authorization: Bearer` → `MS3TOKEN` header (legacy) → cookie / `ms3_token` in the request. On the storefront since 1.6 the token usually lives in the httpOnly cookie `ms3_token`.
+Token resolution order (`TokenMiddleware`): `Authorization: Bearer` → `MS3TOKEN` header (legacy) → cookie / `ms3_token` in the request. On the frontend since 1.6 the token usually lives in the httpOnly cookie `ms3_token`.
 
 ## JavaScript API
 
@@ -384,7 +384,7 @@ Check resource `class_key` values: categories `msCategory`, products `msProduct`
 
 MS3 does not read `ms2_*` keys. Create `ms3_*` (page_id, statuses, currency). Copy old MS2 values by hand.
 
-### Step 6: Storefront JavaScript
+### Step 6: Frontend JavaScript
 
 ```javascript
 // Before

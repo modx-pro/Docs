@@ -5,7 +5,7 @@ title: Cart
 
 Call parameters, placeholders and the data structure live in the snippet reference: [msCart](/en/components/minishop3/snippets/mscart).
 
-<!-- ![Storefront cart](/components/minishop3/screenshots/fe-cart.png) -->
+<!-- ![Frontend cart](/components/minishop3/screenshots/fe-cart.png) -->
 
 [![](https://file.modx.pro/files/3/f/b/3fb27bc4fb74bcbbfad003ba2165498cs.jpg)](https://file.modx.pro/files/3/f/b/3fb27bc4fb74bcbbfad003ba2165498c.png)
 

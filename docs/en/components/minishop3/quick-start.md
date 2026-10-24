@@ -4,7 +4,7 @@ description: Install MiniShop3, service pages, first product, and a test order
 ---
 # Quick start
 
-Install the package, create service pages, add a product, and place a test order on the storefront.
+Install the package, create service pages, add a product, and place a test order on the frontend.
 
 ## System requirements
 
@@ -31,7 +31,7 @@ Install the package, create service pages, add a product, and place a test order
 
 Other install methods: [main page](index).
 
-### What installation creates
+### What installation creates {#install-creates}
 
 1. Tables via Phinx (catalog, orders, customers, `ms3_grid_fields`, etc.).
 2. Snippets, plugins, chunks.
@@ -39,6 +39,13 @@ Other install methods: [main page](index).
 4. Five order statuses (ids 1–5: draft, new, paid, sent, canceled). Keys `ms3_status_new` / `paid` / `canceled` get ids 2, 3, 5.
 5. “Self pickup” delivery (id 1) and “Cash” payment (id 1) linked in `ms3_delivery_payments`.
 6. Scheduler tasks (`ms3_cleanup_tokens`, `ms3_cleanup_drafts`) — active after you enable `ms3_use_scheduler`.
+7. The `miniShopManagerPolicy` access policy holding the component permissions — and its grant to every user group that already has access to the `mgr` context.
+
+::: warning A group created after the install needs the policy granted by hand
+The policy is granted by a resolver, and the resolver only runs while the package is being installed or upgraded. A new shop administrator needs both membership in a group with `mgr` access and that group holding `miniShopManagerPolicy`: **Security → Access Controls → User Groups**, the **Context Access** tab. The other way is to run the package upgrade again — the resolver then picks the new groups up itself.
+
+Without it an administrator without `sudo` hits "Access denied. Required permission: msproduct_save" and cannot save a product or a category. Before 1.14.2-beta1 that was true of every non-`sudo` administrator ([issue #893](https://github.com/modx-pro/MiniShop3/issues/893)).
+:::
 
 After install, open **System → System Settings → minishop3** and verify `ms3_status_*` if you changed statuses manually.
 
@@ -106,7 +113,7 @@ Usually the thanks page needs only `msGetOrder` plus `msOrderTotal` in the heade
 
 Full list: [System settings](settings).
 
-`ms3_cart_page_id` and `ms3_order_page_id` drive “Go to cart” and “Checkout” links in storefront JS. Submit still redirects via `ms3_order_redirect_thanks_id` without them.
+`ms3_cart_page_id` and `ms3_order_page_id` drive “Go to cart” and “Checkout” links in frontend JS. Submit still redirects via `ms3_order_redirect_thanks_id` without them.
 
 ## Scheduler (optional)
 
@@ -146,11 +153,11 @@ The `/api/v1` group has CORS and rate limit. Docs: [Web API](development/web-api
 
 In **Extras → MiniShop3 → Settings** confirm at least one active delivery and one payment method. After install the resolver creates “Self pickup” (id 1) and “Cash” (id 1) with `first_name`, `last_name`, `email` rules for pickup.
 
-Without a delivery↔payment link, storefront checkout fails with a pair error.
+Without a delivery↔payment link, frontend checkout fails with a pair error.
 
 ## First test order
 
-1. Open the category on the storefront, add a product to the cart.
+1. Open the category on the frontend, add a product to the cart.
 2. Go to the cart, then checkout.
 3. Fill required fields for the selected delivery.
 4. Choose a payment compatible with that delivery.

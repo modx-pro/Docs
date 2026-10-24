@@ -3,43 +3,57 @@ title: Разработка
 ---
 # Разработка
 
-Раздел для разработчиков, расширяющих функциональность MiniShop3.
-
 ```mermaid
 flowchart TB
   need[Задача]
-  need -->|Плагин на процесс| events[События]
-  need -->|Headless / SPA| webapi[Web API /api/v1]
-  need -->|Маршруты и middleware| router[API Router]
-  need -->|Фон| scheduler[Scheduler]
-  need -->|PHP CRUD сущностей| backend[Backend API]
+  need -->|Вмешаться в процесс| events[События]
+  need -->|Headless или SPA| webapi[Web API /api/v1]
+  need -->|Свои роуты и middleware| router[API Router]
+  need -->|Фоновые задачи| scheduler[Scheduler]
+  need -->|CRUD сущностей из PHP| backend[Backend API]
   need -->|Замена классов| services[ServiceRegistry]
-  need -->|Вкладки mgr| tabs[product / order tabs]
+  need -->|Свои вкладки в админке| tabs["Вкладки товара и заказа"]
   webapi --> router
 ```
 
 ## Содержание
 
-- [События](events) — система событий для плагинов
-- [Web API](api): документация для витрины и Nuxt ([карта эндпоинтов](web-api/endpoints))
-- [API Router](routing) — маршрутизация, middleware, кастомизация роутов
-- [Scheduler](scheduler) — фоновые задачи и интеграция с Scheduler
-- [Модели и схема БД](models) — xPDO модели и структура таблиц
-- [Сервисный слой](services) — DI контейнер, расширение и замена сервисов
+- [События](events) — точки подключения плагинов
+- [Web API](api) — фронтенд и Nuxt, [карта эндпоинтов](web-api/endpoints)
+- [API Router](routing) — маршрутизация, middleware, свои роуты
+- [Scheduler](scheduler) — фоновые задачи
+- [Модели и схема БД](models) — модели xPDO
+- [Сервисный слой](services) — DI-контейнер, расширение и замена сервисов
 - [JavaScript API](javascript) — Headless API для SPA (Vue, React, Vanilla JS)
-- [Frontend JavaScript](frontend-js) — полная документация включая UI-слой
-- [Интеграция вкладок товара](product-tabs-integration) — добавление вкладок на страницу товара
-- [Интеграция вкладок заказа](order-tabs-integration) — добавление вкладок на страницу заказа
-- [Backend API](backend-api/) — программный интерфейс для работы с сущностями из PHP-кода (товары, заказы, опции, покупатели)
+- [Frontend JavaScript](frontend-js) — модули на стороне сайта, включая UI-слой
+- [Интеграция вкладок товара](product-tabs-integration)
+- [Интеграция вкладок заказа](order-tabs-integration)
+- [Backend API](backend-api/) — товары, заказы, опции и покупатели из PHP-кода
 
 ## Manager API и процессоры
 
-С **1.10+** большинство экранов менеджера ходит в **Manager REST API** (`Controllers\Api\Manager\*` через FastRoute). Старые **процессоры** (`MiniShop3\Processors\*`) остаются для:
+```mermaid
+flowchart TB
+  vue[Vue-экраны админки] --> mgrapi[Manager REST API]
+  shop[Фронтенд] --> webapi["Web API /api/v1"]
+  php["runProcessor, импорт, галерея"] --> proc[Процессоры]
+  mgrapi --> svc[Сервисный слой]
+  svc --> ev[События MODX]
+  vuecrud[Vue-CRUD производителя] --> db[(База)]
+```
 
-- legacy connector / `runProcessor()` из PHP;
-- утилит, где контроллер явно вызывает процессор (`RunsMs3Processors`: импорт, массовое обновление галереи);
-- части настроек, где события ещё привязаны к processor lifecycle.
+С **1.10+** экраны заказов, покупателей, настроек и утилит работают через **Manager REST API** (`Controllers\Api\Manager\*` на FastRoute). Карточка товара и категории остаются обычным экраном ресурса MODX. Vue там только во вкладках.
 
-Vue-CRUD (производители, доставки, оплаты и т.д.) **не** вызывает `Processors/Settings/Vendor/*` — плагины на `msOnVendorCreate` из админки не сработают. См. [События производителей](events/vendor).
+**Процессоры** (`MiniShop3\Processors\*`) остались в работе у:
 
-Headless витрина использует Web API (`/api/v1/*`), не процессоры.
+- прежнего коннектора и вызова `runProcessor()` из PHP;
+- утилит, где контроллер вызывает процессор явно: `ImportController` (импорт товаров) и `UtilitiesGalleryController` (массовые операции с галереей), оба через трейт `RunsMs3Processors`;
+- авторизации покупателя в Web API: вход, регистрация, выход, запрос и сброс пароля идут через `Processors\Api\Customer\*`.
+
+Остальные контроллеры Manager API процессоры не вызывают — они работают через сервисный слой.
+
+События при этом теряются не везде. Заказы, их статусы и позиции идут через сервисы, которые поднимают события сами: плагин на `msOnChangeOrderStatus` из админки сработает.
+
+Vue-CRUD справочников пишет в базу напрямую, минуя `Processors/Settings/Vendor/*`, поэтому плагины на CRUD-события производителя из админки не сработают. У доставок и оплат в `events.php` зарегистрированы события стоимости, не CRUD. У типов связей CRUD-событий нет. См. [События производителей](events/vendor).
+
+Headless-фронтенд работает через Web API (`/api/v1/*`). Процессоры там остались только в авторизации покупателя — плагины на её события из headless-клиента сработают.

@@ -143,7 +143,7 @@ The gallery of an unpublished product is rendered if you address it through `&pr
 :::
 
 ::: tip Viewing a page creates a folder in the media source
-The snippet initializes the media source on every call, and initialization creates the `{product id}/` folder even when there are no images and nothing to upload. On the storefront this means folders appear from ordinary catalogue views.
+The snippet initializes the media source on every call, and initialization creates the `{product id}/` folder even when there are no images and nothing to upload. On the frontend this means folders appear from ordinary catalogue views.
 :::
 
 ::: warning File URLs are written to the database on upload
