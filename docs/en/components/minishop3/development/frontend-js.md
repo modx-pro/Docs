@@ -203,10 +203,16 @@ const ms3 = {
     this.hooks = window.ms3Hooks
     this.message = window.ms3Message
 
-    // Tokens and API client
-    this.tokenManager = new TokenManager(this.config)
+    // Tokens and API client: the client is created first, the manager gets it
+    // through setApiClient(), and only then the token is requested
+    this.tokenManager = new TokenManager({ tokenName: this.config.tokenName || 'ms3_token' })
+    this.apiClient = new ApiClient({
+      baseUrl: this.config.actionUrl,
+      tokenManager: this.tokenManager,
+      ctx: this.config.ctx,
+    })
+    this.tokenManager.setApiClient(this.apiClient)
     await this.tokenManager.ensureToken()
-    this.apiClient = new ApiClient(this.config, this.tokenManager)
 
     // API modules
     this.cartAPI = new CartAPI(this.apiClient)
@@ -218,12 +224,19 @@ const ms3 = {
     this.orderUI = new OrderUI(this.orderAPI, this.hooks, this.message, this.config)
     this.customerUI = new CustomerUI(this.customerAPI, this.hooks, this.message, this.config)
     this.authUI = new AuthUI(this.customerAPI, this.hooks, this.message, this.config)
+    this.quantityUI = new QuantityUI(this.cartAPI, this.hooks, this.message, this.config)
+    this.productCardUI = new ProductCardUI(this.cartAPI, this.hooks, this.message, this.config)
 
     // Init
     this.cartUI.init()
     this.orderUI.init()
     this.customerUI.init()
     this.authUI.init()
+    this.quantityUI.init()
+    await this.productCardUI.init()
+
+    // Quantity controls are re-bound after every cart redraw
+    document.addEventListener('ms3:cart:updated', () => this.quantityUI.reinit())
 
     this.initFormHandler()
 
