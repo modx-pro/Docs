@@ -126,6 +126,14 @@ switch ($modx->event->name) {
 
 ### How it works
 
+```mermaid
+flowchart LR
+  plugins["Plugins"] --> collect["Collecting output()"]
+  collect --> check{"Any non-empty output?"}
+  check -->|yes| cancel["The operation is cancelled, the text goes to the customer"]
+  check -->|no| go["The operation continues"]
+```
+
 1. MiniShop3's `invokeEvent()` collects all plugin outputs
 2. If any output is non-empty, the operation is aborted
 3. The message is returned to the user (frontend or API response)
@@ -183,7 +191,19 @@ $values = $modx->event->returnedValues;
 $values['count'] = 5;
 ```
 
-## Utils::invokeEvent and EventGate
+## Utils::invokeEvent
+
+```mermaid
+flowchart TD
+  subgraph utils [Utils invokeEvent]
+    text["output with text"] --> fail["success false, the text lands in message"]
+    values["returnedValues"] --> data["The fields land in data"]
+  end
+  subgraph gate [EventGate invokeRaw]
+    cancel["output cancel or false"] --> stopped["isCancelled"]
+    channel["A named channel"] --> apply["applyReturnedArray"]
+  end
+``` and EventGate
 
 Most cart, order, cost and customer events go through `MiniShop3\Utils\Utils::invokeEvent()`, not raw `$modx->invokeEvent()`. Core clears `returnedValues` before the call and normalizes the response:
 
