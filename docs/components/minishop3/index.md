@@ -306,7 +306,7 @@ core/components/minishop3/
 │   ├── chunks/             # Чанки (шаблоны Fenom)
 │   ├── plugins/            # MODX плагины
 │   ├── tasks/              # Задачи Scheduler
-│   └── templates/          # Шаблоны страниц витрины
+│   └── templates/          # Шаблоны страниц фронтенда
 ├── lexicon/                # Языковые файлы (en, ru)
 ├── migrations/             # Миграции Phinx (включая сиды)
 ├── schema/                 # xPDO схема БД

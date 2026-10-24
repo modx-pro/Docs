@@ -105,7 +105,7 @@ Options appear only on products in bound categories. There are three ways to bin
 The "option ↔ category" link (`msCategoryOption`) has its own `caption` and `description`.
 :::
 
-If an option needs a different caption in this category, set it in the category options grid (inline edit in the "Caption (for category)" column) or in the "Add option" dialog. An empty field means the global caption is used. A filled one shows up in the manager on products of that category and on the storefront via `OptionLoaderService::loadForProduct` / `loadForProducts`.
+If an option needs a different caption in this category, set it in the category options grid (inline edit in the "Caption (for category)" column) or in the "Add option" dialog. An empty field means the global caption is used. A filled one shows up in the manager on products of that category and on the frontend via `OptionLoaderService::loadForProduct` / `loadForProducts`.
 
 **A product in several categories.** If the parent and the additional categories have different captions, this order applies:
 

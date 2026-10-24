@@ -4,7 +4,7 @@ description: Install MiniShop3, service pages, first product, and a test order
 ---
 # Quick start
 
-Install the package, create service pages, add a product, and place a test order on the storefront.
+Install the package, create service pages, add a product, and place a test order on the frontend.
 
 ## System requirements
 
@@ -113,7 +113,7 @@ Usually the thanks page needs only `msGetOrder` plus `msOrderTotal` in the heade
 
 Full list: [System settings](settings).
 
-`ms3_cart_page_id` and `ms3_order_page_id` drive “Go to cart” and “Checkout” links in storefront JS. Submit still redirects via `ms3_order_redirect_thanks_id` without them.
+`ms3_cart_page_id` and `ms3_order_page_id` drive “Go to cart” and “Checkout” links in frontend JS. Submit still redirects via `ms3_order_redirect_thanks_id` without them.
 
 ## Scheduler (optional)
 
@@ -153,11 +153,11 @@ The `/api/v1` group has CORS and rate limit. Docs: [Web API](development/web-api
 
 In **Extras → MiniShop3 → Settings** confirm at least one active delivery and one payment method. After install the resolver creates “Self pickup” (id 1) and “Cash” (id 1) with `first_name`, `last_name`, `email` rules for pickup.
 
-Without a delivery↔payment link, storefront checkout fails with a pair error.
+Without a delivery↔payment link, frontend checkout fails with a pair error.
 
 ## First test order
 
-1. Open the category on the storefront, add a product to the cart.
+1. Open the category on the frontend, add a product to the cart.
 2. Go to the cart, then checkout.
 3. Fill required fields for the selected delivery.
 4. Choose a payment compatible with that delivery.

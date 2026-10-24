@@ -301,7 +301,7 @@ $result = $submitHandler->submit($draft, $orderData, $token);
 
 ### Submit steps
 
-1. Event `msOnSubmitOrder`. Fields a plugin returned in `data['data']` are written to the order through `OrderFieldManager::add()` — so protected columns are dropped here as well, see [Fields the storefront may not change](/en/components/minishop3/development/web-api/checkout#protected-fields)
+1. Event `msOnSubmitOrder`. Fields a plugin returned in `data['data']` are written to the order through `OrderFieldManager::add()` — so protected columns are dropped here as well, see [Fields the frontend may not change](/en/components/minishop3/development/web-api/checkout#protected-fields)
 2. Check: cart not empty (`ms3_order_err_empty`)
 3. Both `delivery_id` and `payment_id` are set
 4. The payment method exists and is active (`ms3_order_err_payment_not_found`)
@@ -560,7 +560,7 @@ $result = $finalizeService->finalize($orderId, [
 ]);
 ```
 
-Finalize accepts the `skip_*` keys and works with an existing draft. It never calls the payment service — unlike `submit` on the storefront.
+Finalize accepts the `skip_*` keys and works with an existing draft. It never calls the payment service — unlike `submit` on the frontend.
 
 The `origin` parameter (`OrderOrigin`): `manager` (default), `storefront`, `integration`. With `manager`, `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder` also fire. The `from_manager` key in events is `true` only for `origin=manager`.
 
@@ -622,7 +622,7 @@ if (!$result['success']) {
 
 Events: `msOnBeforeCreateOrder` / `msOnCreateOrder` with `origin=integration` and **without** `from_manager`. Events `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder` are **not** fired.
 
-Differs from `POST /api/mgr/orders` (a manager creates an empty or partial order in the UI) and from `POST /api/v1/order/submit` on the storefront (needs a token and a cart).
+Differs from `POST /api/mgr/orders` (a manager creates an empty or partial order in the UI) and from `POST /api/v1/order/submit` on the frontend (needs a token and a cart).
 
 ## User resolution (OrderUserResolver)
 

@@ -15,7 +15,7 @@ The package has no separate "login only" or "register only" templates. The `ms3_
 1. Create an account resource (or two resources: login and registration).
 2. Call `msCustomer` uncached.
 3. Set the page IDs in system settings under namespace `minishop3`.
-4. Make sure the storefront loads the MS3 scripts ([Frontend JavaScript](/en/components/minishop3/development/frontend-js)).
+4. Make sure the frontend loads the MS3 scripts ([Frontend JavaScript](/en/components/minishop3/development/frontend-js)).
 
 ::: code-group
 
@@ -64,7 +64,7 @@ On success the script redirects via `ms3_customer_redirect_after_login` or reloa
 
 ### Auth providers
 
-`AuthManager::registerProvider()` lets you add your own login method (OAuth, SMS and so on) in PHP. The stock storefront only uses the password provider, through `AuthUI`. Provider registration example: [Customer Backend API](/en/components/minishop3/development/backend-api/customer).
+`AuthManager::registerProvider()` lets you add your own login method (OAuth, SMS and so on) in PHP. The stock frontend only uses the password provider, through `AuthUI`. Provider registration example: [Customer Backend API](/en/components/minishop3/development/backend-api/customer).
 
 ::: warning SMS verification
 The `SmsVerificationService` shipped with the package is a **stub**: `sendVerificationCode()` logs a warning and returns an error. There is no SMS login out of the box until you connect your own provider.

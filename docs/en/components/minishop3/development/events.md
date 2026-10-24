@@ -42,7 +42,7 @@ MiniShop3 runs on the MODX event system. A plugin steps into cart, order, produc
 | [msOnRemoveFromOrder](events/order#msonremovefromorder) | After removing field |
 | [msOnBeforeEmptyOrder](events/order#msonbeforeemptyorder) | Before clearing order draft |
 | [msOnEmptyOrder](events/order#msonemptyorder) | After clearing order draft |
-| [msOnSubmitOrder](events/order#msonsubmitorder) | Storefront order submit |
+| [msOnSubmitOrder](events/order#msonsubmitorder) | Frontend order submit |
 | [msOnBeforeMgrCreateOrder](events/order#msonbeforemgrcreateorder) | Before manager finalization |
 | [msOnMgrCreateOrder](events/order#msonmgrcreateorder) | After manager finalization |
 | [msOnBeforeCreateOrder](events/order#msonbeforecreateorder) | Before creating order |
@@ -251,8 +251,8 @@ flowchart TB
 | Action | Events in order |
 | --- | --- |
 | Clear draft (`order/clean`) | `msOnBeforeEmptyOrder` → field reset → `msOnEmptyOrder` |
-| Storefront total | cart/delivery/payment cost → `msOnBeforeGetOrderCost` → compose → `msOnGetOrderCost` (return any of the 4 amounts) |
-| Storefront submit | `msOnSubmitOrder` → … → `msOnBeforeCreateOrder` → `msOnCreateOrder` |
+| Frontend total | cart/delivery/payment cost → `msOnBeforeGetOrderCost` → compose → `msOnGetOrderCost` (return any of the 4 amounts) |
+| Frontend submit | `msOnSubmitOrder` → … → `msOnBeforeCreateOrder` → `msOnCreateOrder` |
 | Manager finalize | `msOnBeforeMgrCreateOrder` → `msOnBeforeCreateOrder` → `msOnCreateOrder` → `msOnMgrCreateOrder` |
 
 All names above are registered in MODX; the registration list is `_build/elements/events.php`.

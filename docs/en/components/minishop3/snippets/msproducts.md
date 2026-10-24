@@ -451,7 +451,7 @@ With `includeVendorFields`:
         {/if}
     </a>
 
-    {* Adding to the cart works through a form: the storefront script looks for ms3_action inside one *}
+    {* Adding to the cart works through a form: the frontend script looks for ms3_action inside one *}
     <form method="post" class="ms3_form" data-ms3-form>
         <input type="hidden" name="id" value="{$id}">
         <input type="hidden" name="count" value="1">

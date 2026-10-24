@@ -7,7 +7,7 @@ The catalog is the main store page that displays a list of products from a categ
 
 For SPA or a mobile client without msProducts use the public Web API: `GET /api/v1/product/list`, `GET /api/v1/category/list` / `tree`, `GET /api/v1/product/filters`. The catalog response goes through `ProductCatalogService` with a field allowlist. See [Web API: catalog](/en/components/minishop3/development/web-api/catalog).
 
-<!-- ![Storefront catalog](/components/minishop3/screenshots/fe-catalog.png) -->
+<!-- ![Frontend catalog](/components/minishop3/screenshots/fe-catalog.png) -->
 
 [![](https://file.modx.pro/files/e/4/2/e42014d3fca7e7073ef6e30d7709cff6s.jpg)](https://file.modx.pro/files/e/4/2/e42014d3fca7e7073ef6e30d7709cff6.png)
 

@@ -159,7 +159,7 @@ JS фронтенда использует `ms3_cart_page_id` и `ms3_order_page
 
 ```mermaid
 flowchart TB
-  cat[Категория на витрине]
+  cat[Категория на сайте]
   cart[msCart]
   order[msOrder]
   thanks[thanks ?msorder=]

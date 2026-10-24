@@ -32,10 +32,10 @@ The server does not accept the `ms3_token` query parameter as a way to authorize
 
 | Mode | How to send | When |
 | --- | --- | --- |
-| Same-site storefront | cookie `ms3_token` + `credentials: 'include'` | Browser on the same site |
+| Same-site frontend | cookie `ms3_token` + `credentials: 'include'` | Browser on the same site |
 | Nuxt BFF / mobile | `Authorization: Bearer` | Different origin or server proxy |
 
-Do not store the API token in `localStorage`: for a browser on the same origin the main way is the httpOnly `ms3_token` cookie. Storefront scripts: [Frontend JavaScript](/en/components/minishop3/development/frontend-js).
+Do not store the API token in `localStorage`: for a browser on the same origin the main way is the httpOnly `ms3_token` cookie. Frontend scripts: [Frontend JavaScript](/en/components/minishop3/development/frontend-js).
 
 The cookie inherits MODX session parameters: `session_cookie_domain`, `session_cookie_path`, `session_cookie_secure`, `session_cookie_samesite`.
 

@@ -109,7 +109,7 @@ Rule setup: [Deliveries → Validation](/en/components/minishop3/interface/setti
 3. On submit the server checks all required fields.
 4. On a submit error `OrderUI` sets the `data-ms3-error` attribute and the `ms3_field_error` class on the field. When a single field fails to autosave, it also adds `is-invalid` and writes the text into `.invalid-feedback`.
 
-The package does not hide fields on delivery change. `GET /api/v1/order/delivery/validation-rules` and `GET /api/v1/order/delivery/required-fields` do exist in the Web API, but the storefront never calls them. Form behaviour on delivery change is up to you.
+The package does not hide fields on delivery change. `GET /api/v1/order/delivery/validation-rules` and `GET /api/v1/order/delivery/required-fields` do exist in the Web API, but the frontend never calls them. Form behaviour on delivery change is up to you.
 
 ### Saved addresses
 
@@ -128,10 +128,10 @@ Clear address fields: `POST /api/v1/order/address/clean`.
 
 A field that neither the order nor the address has a column for (for example a consent checkbox `agreement`) goes into the draft and is stored in `msOrder.properties['_validated']`. On order-create events such fields are available as `customFields`.
 
-On the storefront the checkbox must send `input.checked` (`1` / `0`), not a static `value`. For consent use the `accepted` rule on the delivery.
+On the frontend the checkbox must send `input.checked` (`1` / `0`), not a static `value`. For consent use the `accepted` rule on the delivery.
 
 ::: tip A custom field named after an order column will not go through
-The internal columns are closed since 1.14.2-beta1: the server returns an error and the key is not stored in properties. The list is in [fields the storefront may not change](/en/components/minishop3/development/web-api/checkout#protected-fields).
+The internal columns are closed since 1.14.2-beta1: the server returns an error and the key is not stored in properties. The list is in [fields the frontend may not change](/en/components/minishop3/development/web-api/checkout#protected-fields).
 :::
 
 ## JavaScript API
