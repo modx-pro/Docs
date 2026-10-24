@@ -16,9 +16,9 @@ title: ms3Favorites
 | **resource_type** | Тип ресурсов: `products`, `resources`, `articles`, `pages`, `custom` | `products` |
 | **tpl** | Чанк карточки товара | `tplFavoritesItem` |
 | **emptyTpl** | Чанк пустого состояния | `tplFavoritesEmpty` |
-| **limit** | Макс. количество в выборке | из настройки `ms3favorites.max_items` (20) |
+| **limit** | Макс. количество в выборке. Пустое значение берёт `ms3favorites.max_items`. Явный `&limit` важнее настройки. Потолок 100 | из `ms3favorites.max_items` (20) |
 | **page** | Номер страницы. Работает и без `pdoPage`: сдвиг выборки `(page − 1) × limit` | 1 |
-| **offset** | Смещение выборки. Явный `offset` имеет приоритет над `page`; не задан — считается из `page`. При пагинации смещение передаёт pdoPage | — |
+| **offset** | Смещение выборки. Если параметр не передан или равен `0` при `page > 1`, смещение считается из `page`. Иначе берётся переданный `offset`. При пагинации смещение передаёт pdoPage | — |
 | **totalVar** | Плейсхолдер для общего количества | — |
 
 Параметр **ids** передаётся извне: из JS при вызове коннектора или из другого сниппета (`ms3FavoritesIds`). Для пагинации используйте **pdoPage** с `element=ms3Favorites`.

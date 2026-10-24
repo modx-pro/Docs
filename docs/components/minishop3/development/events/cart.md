@@ -3,7 +3,35 @@ title: События корзины
 ---
 # События корзины
 
-События для управления корзиной покупок: добавление, изменение, удаление товаров.
+Добавление, изменение и удаление товаров в корзине.
+
+Во все события этой страницы, помимо перечисленных параметров, приходит `controller` — его подставляет обёртка вызова.
+
+## Какие события могут прервать операцию
+
+```mermaid
+flowchart TD
+  output["output() непустой"] --> before["msOnBefore*"]
+  before --> stop["Запрос прерван, покупатель видит ошибку"]
+  output --> added["msOnAddToCart"]
+  added --> saved["Товар уже сохранён"]
+  saved --> err["Запрос всё равно вернёт ошибку"]
+  output --> done["change, remove, empty"]
+  done --> ignore["Ответ не читается"]
+  output --> getCart["msOnGetCart и msOnGetStatusCart"]
+  getCart --> patch["Только подмена данных"]
+```
+
+`$modx->event->output(...)` останавливает работу не везде: ядро читает ответ плагина только у части событий.
+
+| Событие | Реакция на `output()` |
+| --- | --- |
+| Все `msOnBefore*` | Операция прерывается, покупатель получает ошибку |
+| `msOnAddToCart` | Товар уже сохранён, но запрос всё равно вернёт ошибку |
+| `msOnChangeInCart`, `msOnChangeOptionInCart`, `msOnRemoveFromCart`, `msOnEmptyCart` | Игнорируется: операция уже завершена успешно |
+| `msOnGetCart`, `msOnGetStatusCart` | Только подмена данных, не прерывание |
+
+Проверки размещайте в парных `msOnBefore*`: там, где ответ игнорируется, ошибка плагина пропадёт незаметно для покупателя.
 
 ## msOnBeforeGetCart
 
@@ -18,8 +46,6 @@ title: События корзины
 
 ### Прерывание операции
 
-Можно отменить получение корзины:
-
 ```php
 <?php
 switch ($modx->event->name) {
@@ -28,7 +54,7 @@ switch ($modx->event->name) {
         $controller = $scriptProperties['controller'];
         $draft = $scriptProperties['draft'];
 
-        // Например, запретить получение корзины для определённых пользователей
+        // Запретить получение корзины для выбранного пользователя
         if ($modx->user->get('id') == 123) {
             $modx->event->output('Доступ запрещён');
             return;
@@ -41,7 +67,7 @@ switch ($modx->event->name) {
 
 ## msOnGetCart
 
-Вызывается **после** получения содержимого корзины. Позволяет модифицировать данные перед возвратом.
+Вызывается **после** получения содержимого корзины.
 
 ### Параметры
 
@@ -60,7 +86,7 @@ switch ($modx->event->name) {
         $controller = $scriptProperties['controller'];
         $data = $scriptProperties['data'];
 
-        // Добавляем дополнительные данные к каждому товару
+        // Дополнительные поля к каждой строке корзины
         foreach ($data as $key => &$item) {
             $product = $modx->getObject(\MiniShop3\Model\msProduct::class, $item['product_id']);
             if ($product) {
@@ -69,7 +95,7 @@ switch ($modx->event->name) {
             }
         }
 
-        // Возвращаем изменённые данные
+        // Вернуть изменённый список через returnedValues
         $values = &$modx->event->returnedValues;
         $values['data'] = $data;
         break;
@@ -80,7 +106,7 @@ switch ($modx->event->name) {
 
 ## msOnBeforeAddToCart
 
-Вызывается **перед** добавлением товара в корзину. Позволяет проверить или модифицировать параметры добавления.
+Вызывается **перед** добавлением товара в корзину.
 
 ### Параметры
 
@@ -128,12 +154,12 @@ switch ($modx->event->name) {
 
         $values = &$modx->event->returnedValues;
 
-        // Минимальное количество — 2 штуки
+        // Минимальное количество: 2 штуки
         if ($count < 2) {
             $values['count'] = 2;
         }
 
-        // Добавить метку источника в опции
+        // Метка источника в опциях
         $options['source'] = 'promo_landing';
         $values['options'] = $options;
         break;
@@ -144,14 +170,24 @@ switch ($modx->event->name) {
 
 ## msOnAddToCart
 
-Вызывается **после** успешного добавления товара в корзину — товар уже сохранён и черновик пересчитан.
+```mermaid
+flowchart TD
+  add["add()"] --> before["msOnBeforeAddToCart"]
+  before --> exists{"Ключ уже в корзине?"}
+  exists -->|нет| onAdd["msOnAddToCart"]
+  exists -->|да| change["change()"]
+  change --> beforeChange["msOnBeforeChangeInCart"]
+  beforeChange --> onChange["msOnChangeInCart"]
+```
+
+Вызывается **после** успешного добавления товара в корзину. Товар уже сохранён и черновик пересчитан.
 
 ::: warning Может провалить уже выполненный запрос
-Хотя товар к этому моменту уже сохранён, обработчик всё ещё может вызвать `$modx->event->output(...)` — в этом случае `add()` вернёт ошибку клиенту, даже несмотря на то, что состояние корзины уже изменилось.
+Товар к этому моменту сохранён, но плагин всё ещё может вызвать `$modx->event->output(...)`. Тогда `add()` вернёт покупателю ошибку, хотя корзина уже изменена.
 :::
 
-::: tip Не срабатывает при повторном добавлении того же товара
-Если ключ товар+опции уже есть в корзине, `add()` делегирует в `change()` — сработают `msOnBeforeChangeInCart`/`msOnChangeInCart`, а не `msOnBeforeAddToCart`/`msOnAddToCart`.
+::: tip Не срабатывает повторное событие добавления
+Если ключ товар+опции уже есть в корзине, `msOnBeforeAddToCart` всё равно вызывается. `output()` на нём запрещает и увеличение количества. Дальше `add()` передаёт работу `change()`, срабатывают `msOnBeforeChangeInCart` и `msOnChangeInCart`, а `msOnAddToCart` нет. Количество суммируется: 2 единицы к имеющимся 3 дадут `count = 5`.
 :::
 
 ### Параметры
@@ -174,7 +210,7 @@ switch ($modx->event->name) {
         $count = $scriptProperties['count'];
         $productKey = $scriptProperties['product_key'];
 
-        // Логирование добавления
+        // Лог добавления
         $modx->log(modX::LOG_LEVEL_INFO, sprintf(
             '[Cart] Товар добавлен: %s (ID: %d), кол-во: %d, ключ: %s',
             $product->get('pagetitle'),
@@ -182,9 +218,6 @@ switch ($modx->event->name) {
             $count,
             $productKey
         ));
-
-        // Отправка события в аналитику
-        // analytics()->track('add_to_cart', [...]);
         break;
 }
 ```
@@ -212,7 +245,7 @@ switch ($modx->event->name) {
         $productKey = $scriptProperties['product_key'];
         $count = $scriptProperties['count'];
 
-        // Запретить изменение определённых товаров
+        // Запретить изменение количества у промо-товара
         if (strpos($productKey, 'promo') !== false) {
             $modx->event->output('Количество промо-товаров нельзя изменить');
             return;
@@ -229,8 +262,8 @@ switch ($modx->event->name) {
     case 'msOnBeforeChangeInCart':
         $count = $scriptProperties['count'];
 
-        // Ограничение максимума
         $values = &$modx->event->returnedValues;
+        // Ограничение максимума
         if ($count > 50) {
             $values['count'] = 50;
         }
@@ -290,7 +323,7 @@ switch ($modx->event->name) {
     case 'msOnBeforeChangeOptionsInCart':
         $options = $scriptProperties['options'];
 
-        // Запретить смену цвета на "gold" (эксклюзивный)
+        // Запретить цвет gold
         if (isset($options['color']) && $options['color'] === 'gold') {
             $modx->event->output('Цвет Gold недоступен');
             return;
@@ -299,14 +332,35 @@ switch ($modx->event->name) {
 }
 ```
 
+### Модификация данных
+
+Опции можно подменить. Ядро прочитает их из ответа, если это массив:
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnBeforeChangeOptionsInCart':
+        $options = $scriptProperties['options'];
+
+        // Нормализовать регистр значений
+        $options = array_map('mb_strtolower', $options);
+
+        $values = &$modx->event->returnedValues;
+        $values['options'] = $options;
+        break;
+}
+```
+
+Подменённые опции участвуют в расчёте `product_key`, поэтому ключ строки корзины изменится вместе с ними.
+
 ---
 
 ## msOnChangeOptionInCart
 
 Вызывается **после** изменения опций товара в корзине.
 
-::: tip Не срабатывает при коллизии ключей
-Если новая комбинация опций совпадает с уже существующей строкой корзины, код удаляет текущую строку и делегирует в `change()` — сработают `msOnBeforeChangeInCart`/`msOnChangeInCart`, а не это событие.
+::: tip Не срабатывает при совпадении ключей
+Если новая комбинация опций совпадает с уже существующей строкой корзины, ядро удаляет текущую строку и передаёт работу `change()`. Сработают `msOnBeforeChangeInCart`/`msOnChangeInCart`, а не это событие. Количества двух строк складываются.
 :::
 
 ### Параметры
@@ -358,8 +412,7 @@ switch ($modx->event->name) {
     case 'msOnBeforeRemoveFromCart':
         $productKey = $scriptProperties['product_key'];
 
-        // Запретить удаление обязательного товара
-        // (например, услуги доставки, добавленной автоматически)
+        // Запретить удаление служебной позиции, которую добавило дополнение
         if ($productKey === 'ms_delivery_service') {
             $modx->event->output('Этот товар нельзя удалить');
             return;
@@ -392,9 +445,6 @@ switch ($modx->event->name) {
         $modx->log(modX::LOG_LEVEL_INFO,
             "Товар удалён из корзины: {$productKey}"
         );
-
-        // Уведомление в аналитику
-        // analytics()->track('remove_from_cart', [...]);
         break;
 }
 ```
@@ -417,7 +467,7 @@ switch ($modx->event->name) {
 <?php
 switch ($modx->event->name) {
     case 'msOnBeforeEmptyCart':
-        // Запретить очистку корзины в определённое время
+        // Запретить очистку корзины ночью
         $hour = (int)date('G');
         if ($hour >= 23 || $hour < 6) {
             $modx->event->output('Очистка корзины недоступна в ночное время');
@@ -447,8 +497,9 @@ switch ($modx->event->name) {
     case 'msOnEmptyCart':
         $modx->log(modX::LOG_LEVEL_INFO, 'Корзина очищена');
 
-        // Сбросить промокод в сессии
-        unset($_SESSION['ms3']['promocode']);
+        // Своих ключей вроде промокода в ядре MiniShop3 нет. Их приносят
+        // дополнения, например ms3PromoCode.
+        unset($_SESSION['myshop']['promo']);
         break;
 }
 ```
@@ -457,7 +508,7 @@ switch ($modx->event->name) {
 
 ## msOnGetStatusCart
 
-Вызывается при расчёте статуса (итогов) корзины. Позволяет модифицировать итоговые значения.
+Вызывается при расчёте статуса (итогов) корзины.
 
 ### Параметры
 
@@ -470,13 +521,15 @@ switch ($modx->event->name) {
 
 ```php
 $status = [
-    'total_count' => 5,        // Общее количество товаров
+    'total_count' => 5,        // Суммарное количество единиц товара
     'total_cost' => 15000,     // Общая стоимость
-    'total_weight' => 2500,    // Общий вес (граммы)
+    'total_weight' => 12.5,    // Общий вес в единицах ms3_weight_unit (по умолчанию кг)
     'total_discount' => 1500,  // Общая скидка
-    'total_positions' => 3,    // Количество позиций
+    'total_positions' => 3,    // Количество позиций (строк корзины)
 ];
 ```
+
+Других ключей в `status` нет: массив целиком собирает `CartItemManager::calculateStatus()`.
 
 ### Модификация данных
 
@@ -486,10 +539,10 @@ switch ($modx->event->name) {
     case 'msOnGetStatusCart':
         $status = $scriptProperties['status'];
 
-        // Добавить бонусные баллы
+        // Бонусные баллы
         $status['bonus_points'] = floor($status['total_cost'] / 100);
 
-        // Добавить информацию о бесплатной доставке
+        // Порог бесплатной доставки
         $status['free_delivery'] = $status['total_cost'] >= 5000;
         $status['free_delivery_diff'] = max(0, 5000 - $status['total_cost']);
 
@@ -501,10 +554,9 @@ switch ($modx->event->name) {
 
 ### Вывод дополнительной информации
 
-После модификации статуса данные доступны на фронтенде:
+После модификации статуса ключи доступны в чанке. Классы разметки задаёт сайт.
 
 ```fenom
-{* В чанке корзины *}
 {if $status.free_delivery}
     <div class="free-delivery">Бесплатная доставка!</div>
 {else}

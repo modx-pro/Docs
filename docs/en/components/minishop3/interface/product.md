@@ -88,7 +88,7 @@ The tab is fully Vue. The universal `ProductOptionField` component supports all 
 
 Options are grouped by `option_group_id` (`msOptionGroup`) and shown in vertical tabs on the left. If there is only one group, the tab is hidden and fields are listed directly.
 
-**Per-category caption / description.** If the option ↔ category link has its own `caption` (see [Settings → Options](settings/options#per-category-caption-description-override)), the product form shows that caption — the same override used on the storefront.
+**Per-category caption / description.** If the option ↔ category link has its own `caption` (see [Settings → Options](settings/options#per-category-caption-description-override)), the product form shows that caption — the same override used on the frontend.
 
 **Saving.** Values are sent in POST as `options-{key}` (single) or `options-{key}` with a JSON array (multi). The `MiniShop3\Processors\Product\Update` processor collects everything into the `options` key in `beforeSet`, `Utils::decodeOptionValue()` expands JSON arrays, and `afterSave` calls `OptionSyncService::saveProductOptions($productId, $options, removeOther: true)` — keys missing from POST are removed from `msProductOption`.
 

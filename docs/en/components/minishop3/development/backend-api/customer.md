@@ -5,26 +5,41 @@ description: Programmatic work with customers — authentication, registration, 
 
 # Customer API
 
-Programmatic interface for working with MiniShop3 customers from PHP.
-
 In MiniShop3, a customer is a **separate entity** from `modUser`:
 
 - **msCustomer** — customer profile (email, phone, password, order stats)
 - **msCustomerToken** — authentication and verification tokens
 - **msCustomerAddress** — saved delivery addresses
 
-Link to `modUser` is optional (field `user_id`). A customer can exist without a MODX user.
+The `modUser` link is optional (field `user_id`) — a customer can exist without a MODX user.
 
 ## Customer controller
 
-High-level interface for working with customers from snippets and plugins.
+High-level interface for snippets and plugins.
+
+::: warning Some methods return the result in an envelope
+`getFields()`, `set()`, `add()`, `generateToken()` and `updateToken()` return the envelope `['success' => bool, 'message' => string, 'data' => array]` — the same `Utils::success()` / `Utils::error()` shape the Web API uses. The values you need are in `data`; with an empty token `success` is `false`.
+
+The remaining methods return the value directly:
+
+| Method | Returns |
+| --- | --- |
+| `getObject()`, `getByToken()` | `msCustomer` or `null` |
+| `create()` | `msCustomer` or `null` |
+| `addAddress()` | `bool` |
+| `getAddresses()` | array of addresses |
+| `getOrCreate()` | `int` |
+| `validate()` | the value or an array of errors |
+
+:::
 
 ```php
 $ms3 = $modx->services->get('ms3');
 
 // Get current customer data (from session token)
-$fields = $ms3->customer->getFields();
-// ['id' => 5, 'email' => 'user@example.com', 'first_name' => 'John', ...]
+$response = $ms3->customer->getFields();
+// ['success' => true, 'message' => '', 'data' => ['id' => 5, 'email' => 'user@example.com', ...]]
+$fields = $response['data'];
 
 // Get msCustomer object
 $customer = $ms3->customer->getObject();
@@ -95,16 +110,19 @@ $result = $ms3->customer->validate('email', 'user@example.com');
 
 ```php
 // Generate new token
-$data = $ms3->customer->generateToken();
-// ['token' => 'abc123...', 'lifetime' => 86400]
+$response = $ms3->customer->generateToken();
+// ['success' => true, 'message' => '', 'data' => ['token' => 'abc123...', 'lifetime' => 86400000]]
+$token = $response['data']['token'];
 
-// Refresh existing token
-$data = $ms3->customer->updateToken($currentToken);
+// Refresh existing token (generates a new one when the argument is empty)
+$response = $ms3->customer->updateToken($currentToken);
 ```
+
+`lifetime` is the milliseconds until expiry: `ms3_customer_token_ttl` seconds multiplied by 1000. The transport package creates the setting with 86400 (24 hours), so a fresh token reports about `86400000` ([issue #848](https://github.com/modx-pro/MiniShop3/issues/848)).
 
 ## Authentication (AuthManager)
 
-`AuthManager` implements a strategy with pluggable authentication providers.
+`AuthManager` authenticates a customer through pluggable providers.
 
 ```php
 $authManager = $modx->services->get('ms3_auth_manager');
@@ -125,11 +143,15 @@ if ($customer) {
 }
 ```
 
-`AuthManager` checks `is_active` and `is_blocked` before authenticating.
+`AuthManager` checks `is_active` and `is_blocked` — not before the providers run, but right after one of them has found the customer. A blocked or inactive customer never gets a token, even with the correct password.
 
 ### Pluggable providers
 
-By default `PasswordAuthProvider` (email + password) is registered. You can add your own:
+`PasswordAuthProvider` (email + password) is registered by default. `authenticate()` goes through the providers and asks each one whether it handles the given credentials (`supports()`).
+
+A matching provider does not end the search. If its own `authenticate()` returns `null` — a wrong password, say — the next provider gets its turn. Only one case stops the loop early: the provider found the customer, but that customer is inactive or blocked. Then `authenticate()` returns `null` immediately, and `getLastAuthFailure()` says why: `inactive`, `blocked`, `invalid_credentials`, or `none` after a success. The difference matters, because `blocked` and `inactive` must not increment the failed-attempt counter — the `Api\Customer\Login` processor relies on that.
+
+You can add your own provider:
 
 ```php
 use MiniShop3\Controllers\Auth\AuthProviderInterface;
@@ -162,8 +184,6 @@ class TelegramAuthProvider implements AuthProviderInterface
 $authManager->registerProvider(new TelegramAuthProvider($modx));
 ```
 
-When `authenticate()` is called, the manager iterates providers and uses the first whose `supports()` returns `true`.
-
 ### Token management
 
 ```php
@@ -193,8 +213,11 @@ $deleted = $authManager->cleanupExpiredTokens();
 | `refresh` | `msCustomerToken::TYPE_REFRESH` | Session refresh token | No |
 | `magic_link` | `msCustomerToken::TYPE_MAGIC_LINK` | Passwordless login link | Yes |
 | `email_verification` | `msCustomerToken::TYPE_EMAIL_VERIFICATION` | Email verification | Yes |
+| `password_reset` | `msCustomerToken::TYPE_PASSWORD_RESET` | Password reset | Yes |
 
 One-time tokens are marked as used (`used_at`) after first use.
+
+The password reset token is the exception: `markAsUsed()` never touches it. After a successful password change, `AuthManager::revokeTokens()` is called without a type and revokes **every** token of that customer — active sessions on other devices end as well.
 
 ### Blocking on failed attempts
 
@@ -203,7 +226,7 @@ One-time tokens are marked as used (`used_at`) after first use.
 $authManager->handleFailedLogin($customer);
 // Increments failed_login_attempts
 // When ms3_customer_max_login_attempts (default 5) is reached
-// blocks for ms3_customer_block_duration seconds (default 3600)
+// blocks for ms3_customer_block_duration seconds (default 300)
 ```
 
 ## Registration (RegisterService)
@@ -240,8 +263,21 @@ if ($result['success']) {
 
 ```php
 $result = $registerService->validatePassword('weak');
-// ['valid' => false, 'message' => 'Password must be at least 8 characters']
+// ['valid' => false, 'message' => ms3_customer_err_password_too_short lexicon entry]
 ```
+
+::: warning The message keeps the `{length}` placeholder
+The code does pass the value to the lexicon (`['length' => $minLength]`), but the shipped `ms3_customer_err_password_too_short` entry uses a `{length}` placeholder, and `modLexicon` substitutes only `[[+length]]`. So `message` comes back with the placeholder intact: "Password must be at least {length} characters long".
+
+Until that is fixed, read the length from the setting and substitute it yourself:
+
+```php
+$minLength = (int) $modx->getOption('ms3_password_min_length', null, 8);
+$message = str_replace('{length}', (string) $minLength, $result['message']);
+```
+
+Or redefine the entry in your own language pack with `[[+length]]` — then the substitution works.
+:::
 
 | Setting | Default | Description |
 | --- | --- | --- |
@@ -273,9 +309,20 @@ $result = $verification->resendVerificationEmail($customer);
 
 Setting `ms3_email_verification_token_ttl` (default 86400) — verification token lifetime in seconds.
 
+### Customer Web API endpoints — `/api/v1/customer/*`
+
+Controller: `CustomerProfileController`. These endpoints appeared in 1.10.x / 1.11.0.
+
+| Method | Path | Description |
+| --- | --- | --- |
+| `POST` | `/api/v1/customer/add` | Updates a single profile field: `key` + `value`. Since 1.11.0 any `msCustomer` column from the xPDO map is allowed (Object Extension included), except the 18 fields listed in `CustomerPublicDto::SYSTEM_NON_EDITABLE_FIELDS`: `id`, `user_id`, `customer_group_id`, `token`, `password`, `email_verified_at`, the blocking flags and counters, the order aggregates and the service timestamps. `first_name`, `last_name`, `email` and `phone` go through Rakit validation; other values are normalized by the `phptype` from the field metadata. Changing the email resets `email_verified_at`. |
+| `POST` | `/api/v1/customer/changeAddress` | Picks a saved address for the order draft. Takes `address_hash`. |
+| `GET` | `/api/v1/customer/email/verify` | Confirms the email with the token from the verification email. Parameters: `token`, `html=1` (an HTML redirect instead of JSON), `format=json`. By default redirects to the site with `ms3_email_verified=1\|0`. Custom URL — the `ms3_email_verification_url` setting, success URL — `ms3_email_verification_success_url`. |
+| `POST` | `/api/v1/customer/email/resend-verification` | Resends the verification email to the authenticated customer. The service allows one send per 5 minutes. |
+
 ## Rate limiting (RateLimiter)
 
-Service to protect against brute-force. Uses MODX cache.
+Protects against brute-force. Uses the MODX cache.
 
 ```php
 $limiter = $modx->services->get('ms3_rate_limiter');
@@ -335,11 +382,11 @@ $addressManager->delete($addressId, $customerId);
 
 ### Address deduplication
 
-Address hash is MD5 of `city|street|building|room` (lowercased). Adding an address with an existing hash does not create a duplicate.
+The address hash is MD5 of `city|street|building|room` in lowercase. An address with an existing hash is not created again.
 
 ## Duplicate check (CustomerDuplicateChecker)
 
-Used when creating customers to prevent duplicates.
+Called when a customer is created.
 
 ```php
 $checker = $modx->services->get('ms3_customer_duplicate_checker');
@@ -372,7 +419,7 @@ Setting `ms3_customer_duplicate_fields` (JSON) defines which fields to check. De
 
 ## Customer factory (CustomerFactory)
 
-Creates a customer from order data. Used when finalizing an order from the manager.
+Creates a customer from order data when an order is finalized in the manager.
 
 ```php
 $factory = $modx->services->get('ms3_customer_factory');
@@ -438,7 +485,7 @@ If `ms3_customer_sync_create_moduser` = true, also creates `modUser` + `modUserP
 | --- | --- | --- | --- |
 | `customer_id` | integer | 0 | Customer ID |
 | `token` | string | '' | Token string (128 chars, unique) |
-| `type` | enum | 'api' | Type: api, refresh, magic_link, email_verification |
+| `type` | enum | 'api' | Type: api, refresh, magic_link, email_verification, password_reset |
 | `expires_at` | datetime | — | Expiry |
 | `created_at` | datetime | now | Created at |
 | `used_at` | datetime | null | Used at (for one-time tokens) |
@@ -448,27 +495,33 @@ If `ms3_customer_sync_create_moduser` = true, also creates `modUser` + `modUserP
 | Setting | Default | Description |
 | --- | --- | --- |
 | `ms3_customer_max_login_attempts` | 5 | Login attempts before block |
-| `ms3_customer_block_duration` | 3600 | Block duration (seconds) |
-| `ms3_customer_api_token_ttl` | 86400 | API token TTL (seconds) |
-| `ms3_customer_require_email_verification` | true | Require email verification |
+| `ms3_customer_block_duration` | 300 | Block duration (seconds) |
+| `ms3_customer_token_ttl` | 86400 | Session token TTL (seconds) |
+| `ms3_customer_require_email_verification` | false | Require email verification |
 | `ms3_customer_send_welcome_email` | true | Send welcome email |
-| `ms3_customer_auto_login_after_register` | false | Auto-login after register |
+| `ms3_customer_auto_login_after_register` | true | Auto-login after register |
 | `ms3_customer_auto_register_on_order` | true | Auto-register on checkout |
-| `ms3_customer_auto_login_on_order` | false | Auto-login on checkout |
+| `ms3_customer_auto_login_on_order` | true | Auto-login on checkout |
 | `ms3_customer_require_privacy_consent` | true | Require privacy consent |
-| `ms3_customer_duplicate_fields` | `["email","phone"]` | Fields for duplicate check |
+| `ms3_customer_duplicate_fields` | `["email", "phone"]` | Fields for duplicate check |
 | `ms3_customer_sync_create_moduser` | false | Create modUser when creating customer |
-| `ms3_customer_sync_user_group` | '' | MODX group for new users |
+| `ms3_customer_sync_user_group` | 0 | ID of the MODX group for new users |
 | `ms3_password_min_length` | 8 | Min password length |
 | `ms3_password_reset_token_ttl` | 3600 | Password reset token TTL |
 | `ms3_email_verification_token_ttl` | 86400 | Verification token TTL |
+
+::: warning A twin setting sits in the manager
+The same area of the manager holds `ms3_customer_api_token_ttl`, and its value is the same — but no line of code reads it. The working setting is `ms3_customer_token_ttl` from the table above ([issue #797](https://github.com/modx-pro/MiniShop3/issues/797)).
+
+The default is `86400` (24 hours): the transport package creates the setting with that value, and the code falls back to the same number when the row is missing from the database.
+:::
 
 ## Events
 
 | Event | When fired |
 | --- | --- |
 | `msOnBeforeCreateCustomer` / `msOnCreateCustomer` | Customer creation |
-| `msOnBeforeUpdateCustomer` / `msOnUpdateCustomer` | Update from manager |
+| `msOnBeforeUpdateCustomer` / `msOnUpdateCustomer` | The `Customer/Update` processor; the built-in manager never calls it ([#847](https://github.com/modx-pro/MiniShop3/issues/847)) |
 | `msOnBeforeAddToCustomer` / `msOnAddToCustomer` | Field change via controller |
 | `msOnBeforeValidateCustomerValue` / `msOnValidateCustomerValue` | Field value validation |
 | `msOnBeforeGetOrderCustomer` / `msOnGetOrderCustomer` | Find/create on checkout |

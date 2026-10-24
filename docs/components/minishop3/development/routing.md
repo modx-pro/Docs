@@ -3,19 +3,19 @@ title: API Router
 ---
 # API Router
 
-MiniShop3 использует библиотеку [FastRoute](https://github.com/nikic/FastRoute) для маршрутизации API-запросов. Компонент предоставляет два отдельных API с различными механизмами авторизации.
+MiniShop3 маршрутизирует API через библиотеку [FastRoute](https://github.com/nikic/FastRoute). Два API, две схемы авторизации.
 
 ## Архитектура
 
 ### Два типа API
 
-| Параметр | Manager API | Web API |
+| Свойство | Manager API | Web API |
 | --- | --- | --- |
 | **Префикс** | `/api/mgr/*` | `/api/v1/*` |
-| **Назначение** | Административная панель MODX | Фронтенд магазина |
+| **Назначение** | Админка MODX | Фронтенд магазина |
 | **Точка входа** | `connector.php` | `assets/.../api.php` |
 | **Авторизация** | MODX сессии + HTTP_MODAUTH | Токены MS3TOKEN |
-| **Middleware** | AuthMiddleware, PermissionMiddleware | TokenMiddleware, CorsMiddleware, RateLimitMiddleware |
+| **Middleware** | AuthMiddleware, PermissionMiddleware, AnyPermissionMiddleware | ServiceCheckMiddleware, TokenMiddleware, CorsMiddleware, RateLimitMiddleware |
 | **Файл роутов** | `config/routes/manager.php` | `config/routes/web.php` |
 
 ### Структура файлов
@@ -29,11 +29,11 @@ core/components/minishop3/
 │   ├── ms3.routes.d/
 │   │   ├── manager/example-addon.php.dist # Пример для аддонов (Manager)
 │   │   └── web/example-addon.php.dist     # Пример для аддонов (Web)
-│   └── routes_manager.custom.example.php  # Пример кастомных роутов
+│   └── routes_manager.custom.example.php  # Пример файла со своими роутами
 
 core/config/
-├── ms3_routes_manager.custom.php          # Кастомные Manager роуты
-├── ms3_routes_web.custom.php              # Кастомные Web роуты
+├── ms3_routes_manager.custom.php          # Свои Manager-роуты, создаёт установка
+├── ms3_routes_web.custom.php              # Свои Web-роуты, создаёте сами
 └── ms3.routes.d/                          # Модульные роуты аддонов
     ├── manager/                           # Manager API фрагменты
     └── web/                               # Web API фрагменты
@@ -121,7 +121,7 @@ $router->group('/api/mgr/catalog', function($router) use ($modx) {
 
 ### Контроллеры
 
-Для сложной логики рекомендуется использовать контроллеры:
+Сложную логику выносят в контроллер:
 
 ```php
 $router->group('/api/mgr/orders', function($router) use ($modx) {
@@ -149,7 +149,7 @@ $router->group('/api/mgr/orders', function($router) use ($modx) {
 
 ## Response
 
-Все эндпоинты API возвращают JSON-ответы через класс `MiniShop3\Router\Response`:
+Обработчики роутов возвращают JSON через класс `MiniShop3\Router\Response`:
 
 ```php
 use MiniShop3\Router\Response;
@@ -182,28 +182,36 @@ Response::error($message, $statusCode, $errors);
 {
   "success": false,
   "message": "Validation failed",
+  "code": 422,
   "errors": {
     "name": "Field is required"
-  }
+  },
+  "error_code": "validation_failed"
 }
 ```
+
+Ключи `code` и `error_code` есть в любом ответе об ошибке, даже когда `errors` пустой. `data` добавляется только там, где его передали.
 
 ### HTTP коды ответов
 
 | Код | Описание | Использование |
 | --- | --- | --- |
 | 200 | OK | Успешный запрос |
-| 400 | Bad Request | Ошибка валидации |
+| 201 | Created | Объект создан: адреса покупателя |
+| 400 | Bad Request | Битый запрос без карты полей |
 | 401 | Unauthorized | Не авторизован |
 | 403 | Forbidden | Нет прав доступа |
 | 404 | Not Found | Роут или ресурс не найден |
-| 405 | Method Not Allowed | Метод не разрешён |
+| 405 | Method Not Allowed | Метод не разрешён. Сюда же попадает preflight `OPTIONS`, если в стеке роута нет `CorsMiddleware` |
+| 409 | Conflict | Конфликт состояния: нехватка остатка при правке состава заказа |
+| 422 | Unprocessable Entity | Ошибка валидации с картой полей в `errors` |
 | 429 | Too Many Requests | Превышен лимит запросов |
 | 500 | Internal Server Error | Внутренняя ошибка |
+| 503 | Service Unavailable | Сервис `ms3` не поднялся |
 
 ## Middleware
 
-Middleware выполняются последовательно перед обработчиком роута. Если middleware возвращает `Response`, выполнение прерывается.
+Middleware выполняются до обработчика роута, в том порядке, в котором перечислены. Если middleware возвращает `Response`, цепочка обрывается: остальные middleware и обработчик не выполняются.
 
 ### Интерфейс
 
@@ -224,7 +232,7 @@ interface MiddlewareInterface
 
 #### AuthMiddleware
 
-Проверяет авторизацию пользователя MODX. Для контекста `mgr` дополнительно проверяет токен `HTTP_MODAUTH`.
+Проверяет авторизацию пользователя MODX. Для контекста `mgr` ещё проверяет токен `HTTP_MODAUTH`.
 
 ```php
 use MiniShop3\Router\Middleware\AuthMiddleware;
@@ -236,11 +244,6 @@ $router->get('/api/mgr/secure', function($params) use ($modx) {
     new AuthMiddleware($modx, 'mgr')  // 'mgr' или 'web'
 ]);
 ```
-
-**Проверки:**
-
-- Наличие авторизованного пользователя `$modx->user`
-- Для `mgr`: валидность токена `HTTP_MODAUTH`
 
 #### PermissionMiddleware
 
@@ -265,12 +268,41 @@ $router->post('/api/mgr/products', function($params) use ($modx) {
 - `msorder_view` — просмотр карточки клиента
 - `msorder_save` — изменение заказов и клиентов, мутации позиций заказа
 - `msorder_remove` — удаление заказов, клиентов, массовое удаление
+- `msorder_inventory_override` — правка состава заказа в обход нехватки остатка (с 1.14.3-beta1)
+
+::: warning Право на правку в минус выдаётся отдельно
+При включённом учёте остатков (`ms3_inventory_enabled`) правка состава заказа сверяет резерв с итоговым количеством и отказывает, если остатка не хватает: ответ `409` с ключом `ms3_err_inventory_short`. Если в запросе пришёл `force`, а права на это нет, ответ `403`. В обоих случаях в `data` приходят `product_id`, `available`, `required` и `can_override` — последний показывает, поможет ли повтор с `force`.
+
+`msorder_inventory_override` позволяет провести такую правку всё равно — остаток уходит в минус. Право есть в шаблоне политики, но **в самой политике по умолчанию не выдано**, поэтому после обновления его нужно назначить явно. Пользователь с `sudo` получает его автоматически, как и любое другое право MODX.
+:::
+
+::: tip Откуда эти права берутся у пользователя
+Все они лежат в политике доступа `miniShopManagerPolicy`, которую создаёт установка. Сама политика ничего не даёт, пока не выдана группе пользователей. С 1.14.2-beta1 установка и обновление выдают её всем группам, у которых уже есть доступ к контексту `mgr`, — добавочной записью с `authority 9999`, так что собственные права группы остаются главнее.
+
+Группа, созданная после установки, политику не получит: резолвер работает только в момент установки или обновления. Подробности — в [быстром старте](/components/minishop3/quick-start#install-creates).
+:::
+
+#### AnyPermissionMiddleware
+
+Пускает запрос, если у пользователя есть **хотя бы одно** право из списка. Нужен там, где точную проверку делает контроллер: пакетные действия над товарами категории проверяют право на каждое действие отдельно.
+
+```php
+use MiniShop3\Router\Middleware\AnyPermissionMiddleware;
+
+$router->post('/multiple', $handler, [
+    new AnyPermissionMiddleware($modx, ['msproduct_save', 'msproduct_publish', 'msproduct_delete'])
+]);
+```
+
+#### ServiceCheckMiddleware
+
+Проверяет, что сервис `ms3` поднялся. Если нет — отвечает `503` с `error_code: internal_error`, не доходя до обработчика. Стоит в стеке Web API перед остальными.
 
 #### TokenMiddleware
 
 Проверяет токен покупателя для Web API и при необходимости создаёт гостевой токен.
 
-Порядок определения токена: `Authorization: Bearer` → заголовок `MS3TOKEN` (устаревший) → httpOnly cookie `ms3_token` → `$_REQUEST` → session. Query `token` / `ms3_token` снимаются и не принимаются.
+Порядок определения токена: `Authorization: Bearer` → заголовок `MS3TOKEN` (устаревший) → httpOnly cookie `ms3_token` → `$_REQUEST` → session. Query-параметр `ms3_token` middleware удаляет из запроса; `token` в query остаётся, но и не авторизует — им пользуется подтверждение e-mail.
 
 ```php
 use MiniShop3\Middleware\TokenMiddleware;
@@ -282,13 +314,15 @@ $router->group('/api/v1/cart', function($router) use ($modx) {
 }, [$tokenMiddleware]);
 ```
 
-Исключение — маршруты из `publicRoutes` (например, logout и `token/get`): на них гостевой токен не создаётся. Каталог и health в `web.php` работают без этого middleware, а для `token/get` он подключён в режиме optional.
+В самом middleware есть список `publicRoutes` — пятнадцать префиксов и шаблон галереи товара. Это каталог, доставки, оплаты, вебхуки, `/health`, а также `/customer/token/get` и `/customer/logout`. Путь из списка проходит без гостевого токена и без 401. Отдельного режима `optional` в коде нет: поведение определяет попадание пути в этот список.
+
+На практике список работает на двух путях: `GET /customer/token/get` и `POST /customer/logout` — только на этих публичных путях middleware и стоит. Каталог, health и вебхуки в `web.php` его вообще не подключают.
 
 Подробнее: [Авторизация Web API](/components/minishop3/development/web-api/auth).
 
 #### CorsMiddleware
 
-Настраивает CORS заголовки для кросс-доменных запросов.
+Настраивает заголовки CORS для запросов с другого домена.
 
 ```php
 use MiniShop3\Middleware\CorsMiddleware;
@@ -302,11 +336,11 @@ $corsMiddleware = new CorsMiddleware([
 ]);
 ```
 
-Системная настройка: `ms3_cors_allowed_origins`. Пусто = same-origin; `*` = любой origin без credentials; список доменов нужен для cookie с другого origin. См. [CORS](/components/minishop3/development/web-api/cors).
+Системная настройка: `ms3_cors_allowed_origins`. Пусто = same-origin. `*` = любой origin без credentials. Список доменов нужен для cookie с другого origin. См. [CORS](/components/minishop3/development/web-api/cors).
 
 #### RateLimitMiddleware
 
-Ограничивает количество запросов для защиты от злоупотреблений.
+Ограничивает число запросов.
 
 ```php
 use MiniShop3\Middleware\RateLimitMiddleware;
@@ -385,18 +419,16 @@ $router->get('/api/mgr/logged-endpoint', function($params) use ($modx) {
 
 ### Порядок выполнения middleware
 
-Middleware выполняются в порядке указания:
+Порядок в массиве — он же порядок выполнения:
 
 ```php
 $router->get('/api/mgr/endpoint', $handler, [
-    new CorsMiddleware(),        // 1. Сначала CORS
-    new RateLimitMiddleware(),   // 2. Проверка лимита
-    new AuthMiddleware($modx),   // 3. Авторизация
-    new PermissionMiddleware(),  // 4. Права доступа
+    new CorsMiddleware(),                               // 1. Сначала CORS
+    new RateLimitMiddleware(),                          // 2. Проверка лимита
+    new AuthMiddleware($modx),                          // 3. Авторизация
+    new PermissionMiddleware($modx, 'msproduct_save'),  // 4. Право доступа
 ]);
 ```
-
-При возврате `Response` из middleware, остальные middleware и обработчик **не выполняются**.
 
 ## Карта роутов
 
@@ -411,7 +443,7 @@ $router->get('/api/mgr/endpoint', $handler, [
 
 #### Справочники (`/references`) {#references}
 
-CRUD справочников (право `view_document`). Обеспечивает автодополнение и выбор значений в формах менеджера.
+Чтение справочников, право `view_document`. Все восемь роутов группы — `GET`: они обслуживают автодополнение и выбор значений в формах админки.
 
 | Метод | Роут | Описание |
 | --- | --- | --- |
@@ -426,15 +458,15 @@ CRUD справочников (право `view_document`). Обеспечива
 
 #### Поля модели (`/models/{alias}/fields`)
 
-Получение полей модели по `alias`. Используется формами товара/заказа для выбора конфигурации полей.
+Формы товара и заказа берут отсюда конфигурацию полей.
 
-| Метод | Роут | Описание | Право |
-| --- | --- | --- | --- |
-| GET | `/{alias}/fields` | Получить поля модели по `alias` | `view_document` |
+| Метод | Роут | Описание |
+| --- | --- | --- |
+| GET | `/{alias}/fields` | Поля модели по `alias`. Отдельного права нет, достаточно сессии mgr |
 
-#### Дополнительные поля (`/extra-fields`)
+#### Свои поля (`/extra-fields`)
 
-CRUD дополнительных полей для заказов и товаров. Чтение — без `mssetting_save`, запись — с этим правом.
+CRUD своих полей для заказов и товаров. Чтение — без `mssetting_save`, запись — с этим правом.
 
 | Метод | Роут | Описание |
 | --- | --- | --- |
@@ -463,7 +495,7 @@ CRUD опций настроек магазина. Право `mssetting_save`.
 
 #### Группы опций (`/option-groups`)
 
-Группировка опций вместо прежнего способа на основе `modCategory`. Право `mssetting_save`.
+Группировка опций вместо прежнего способа на `modCategory`. Право `mssetting_save`.
 
 | Метод | Роут | Описание |
 | --- | --- | --- |
@@ -472,12 +504,12 @@ CRUD опций настроек магазина. Право `mssetting_save`.
 | GET | `/{id}` | Получить группу опций по ID |
 | PUT | `/{id}` | Обновить группу опций |
 | DELETE | `/{id}` | Удалить группу опций |
-| POST | `/bulk` | Массовое удаление |
+| DELETE | `/bulk` | Массовое удаление |
 | PUT | `/positions` | Обновить позиции (сортировка) |
 
 #### Группы покупателей (`/customer-groups`)
 
-Связь с MODX группами пользователей для ACL каталога. Право `msorder_list` (чтение), `msorder_save` (запись).
+Связь с группами пользователей MODX для ACL каталога. Чтение: `msorder_list`. Запись: `msorder_save`.
 
 | Метод | Роут | Описание | Право |
 | --- | --- | --- | --- |
@@ -489,17 +521,29 @@ CRUD опций настроек магазина. Право `mssetting_save`.
 
 #### Опции категории (`/categories/{category_id}/options`)
 
-Управление опциями конкретной категории.
+Опции конкретной категории. Право на всю группу — `mscategory_save`.
 
 | Метод | Роут | Описание |
 | --- | --- | --- |
 | GET | `/` | Получить список опций категории |
 | POST | `/` | Создать опцию категории |
 | POST | `/sort` | Сортировка опций категории |
-| POST | `/bulk` | Массовые операции |
+| POST | `/bulk` | Массовые операции с опциями категории |
 | POST | `/duplicate` | Дублирование опции |
 | PUT | `/{option_id}` | Обновить опцию категории |
 | DELETE | `/{option_id}` | Удалить опцию категории |
+
+#### Товары категории (`/categories/{id}/products`)
+
+| Метод | Роут | Описание | Право |
+| --- | --- | --- | --- |
+| GET | `/{id}/products` | Список товаров категории | `view_document` |
+| GET | `/{id}/products/filters` | Конфигурация фильтров | `view_document` |
+| POST | `/{id}/products/sort` | Сортировка | `msproduct_save` |
+| DELETE | `/{id}/products/bulk` | Массовое удаление | `msproduct_delete` |
+| POST | `/{id}/products/multiple` | Пакетные действия. Маршрут пускает любое право мутации товара, точную проверку делает контроллер | см. `CategoryProductActionPermissions` |
+| PUT | `/{id}/products/{productId}/data` | Правка данных товара | `msproduct_save` |
+| POST | `/{id}/products/{productId}/publish` | Публикация | `msproduct_publish` |
 
 #### Конфигурация (`/config`)
 
@@ -514,7 +558,7 @@ CRUD опций настроек магазина. Право `mssetting_save`.
 
 #### Конфигурация гридов (`/grid-config`)
 
-CRUD для конфига колонок административных гридов. Чтение — `view_document`, запись — `mssetting_save`.
+CRUD колонок административных гридов. Чтение: `view_document`. Запись: `mssetting_save`.
 
 | Метод | Роут | Описание |
 | --- | --- | --- |
@@ -524,7 +568,7 @@ CRUD для конфига колонок административных гр�
 | PUT | `/{grid_key}/field/{field_name}` | Обновить колонку |
 | DELETE | `/{grid_key}/{field_name}` | Удалить колонку |
 
-**Известные `grid_key` в MS3 1.14.x:** `orders`, `order_products`, `customers`, `vendors`, `category-products`, `deliveries`.
+**Конфигурация в базе есть у шести гридов:** `orders`, `order_products`, `customers`, `vendors`, `category-products`, `deliveries` — их колонки заводят сид-миграции. Грид платежей запрашивает ключ `payments`, но сида для него нет: ответ приходит пустым, и грид рисует встроенные колонки. В списке гридов в настройках доступны пять ключей, без `deliveries` и `payments`.
 
 ##### Ответ `GET /grid-config/{grid_key}`
 
@@ -543,12 +587,12 @@ CRUD для конфига колонок административных гр�
 | Поле | Тип | Описание |
 | --- | --- | --- |
 | `columns` | `array` | Колонки грида с конфигурацией (тип, видимость, фильтрация, редактор) |
-| `direct_filter_keys` | `string[]` | Ключи фильтров, которые контроллер ждёт как **прямые** параметры запроса (без префикса `filter_`). Остальные отправляют с префиксом. Источник истины — сервер: фронт читает список отсюда, поэтому новый фильтр не нужно дублировать на клиенте. Появилось в MiniShop3 1.12.0. |
+| `direct_filter_keys` | `string[]` | Ключи фильтров, которые контроллер ждёт как **прямые** параметры запроса (без префикса `filter_`). Остальные отправляют с префиксом. Источник истины — сервер: клиент читает список отсюда, поэтому новый фильтр не нужно дублировать в его коде. Появилось в MiniShop3 1.12.0. |
 | `editor_references` | `array<{key,path}>` | **Только для `grid_key=category-products`.** Список допустимых ключей справочников для выпадающего списка в combo-редакторе колонки. Каждая запись — пара ключа и пути к эндпоинту справочника. Используется в интерфейсе настройки колонок. Появилось в MiniShop3 1.12.0. |
 
 ##### Контракт фильтров (`direct_filter_keys`)
 
-Фронт решает, как сериализовать значение фильтра:
+Клиент решает, как сериализовать значение фильтра:
 
 ```js
 // Псевдокод composable useGridFilterParams
@@ -561,13 +605,15 @@ function addFilterParam(params, key, value) {
 }
 ```
 
-Поэтому при добавлении прямого фильтра на сервере **обязательно** дописывайте его ключ в константу `DIRECT_FILTER_KEYS` соответствующего контроллера. Иначе фронт отправит фильтр с префиксом и фильтрация не сработает.
+Поэтому при добавлении прямого фильтра на сервере **обязательно** дописывайте его ключ в константу `DIRECT_FILTER_KEYS` соответствующего контроллера. Иначе клиент отправит фильтр с префиксом и фильтрация не сработает.
+
+Для нового грида одной константы мало: `GridConfigController` отдаёт `direct_filter_keys` только тем ключам, что перечислены в его списке провайдеров — сейчас там заказы и покупатели. У заказов сама константа лежит в `ManagerOrderListService`, а контроллер на неё ссылается.
 
 #### Заказы (`/orders`)
 
 Чтение и запись разделены на две группы middleware.
 
-**Чтение** — право `msorder_list`:
+**Чтение**, право `msorder_list`:
 
 | Метод | Роут | Описание |
 | --- | --- | --- |
@@ -578,11 +624,11 @@ function addFilterParam(params, key, value) {
 | GET | `/{id}/products` | Товары заказа |
 | GET | `/{id}/logs` | История изменений |
 
-**Запись** — право `msorder_save`:
+**Запись**, право `msorder_save`:
 
 | Метод | Роут | Описание |
 | --- | --- | --- |
-| POST | (корень) | Создать заказ из менеджера |
+| POST | (корень) | Создать заказ из админки |
 | DELETE | `/bulk` | Массовое удаление |
 | POST | `/{id}/finalize` | Финализация черновика |
 | POST | `/{id}/recalculate-cost` | Пересчёт стоимости |
@@ -592,14 +638,14 @@ function addFilterParam(params, key, value) {
 | PUT | `/{id}/products/{product_id}` | Обновить позицию |
 | DELETE | `/{id}/products/{product_id}` | Удалить позицию |
 
-**Отгрузки заказа** — право `msorder_save`:
+**Отгрузки заказа:**
 
-| Метод | Роут | Описание |
-| --- | --- | --- |
-| GET | `/{id}/shipment` | Получить данные отгрузки заказа |
-| PUT | `/{id}/shipment` | Сохранить/обновить отгрузку заказа |
+| Метод | Роут | Описание | Право |
+| --- | --- | --- | --- |
+| GET | `/{id}/shipment` | Получить данные отгрузки заказа | `msorder_list` |
+| PUT | `/{id}/shipment` | Сохранить/обновить отгрузку заказа | `msorder_save` |
 
-**Справочники для форм заказа** (без отдельного PermissionMiddleware, сессия mgr):
+**Справочники для форм заказа** (без отдельного PermissionMiddleware, достаточно сессии mgr):
 
 | Метод | Роут | Описание |
 | --- | --- | --- |
@@ -609,7 +655,7 @@ function addFilterParam(params, key, value) {
 
 #### Поля моделей (`/model-fields`)
 
-Метаданные полей моделей для динамических форм. Чтение — без специального права, запись — право `mssetting_save`.
+Метаданные полей моделей для динамических форм. Чтение без специального права, запись: `mssetting_save`.
 
 **Чтение (метаданные):**
 
@@ -624,9 +670,24 @@ function addFilterParam(params, key, value) {
 
 | Метод | Роут | Описание | Право |
 | --- | --- | --- | --- |
-| GET | `/visible/{model}` | Видимые поля модели | `msorder_list` или `msorder_view` или `msproduct_save` |
-| GET | `/combo-options/{model}` | Combo-options модели | `msorder_list` или `msorder_view` или `msproduct_save` |
-| GET | `/combo-options/{model}/{field_name}` | Combo-options конкретного поля | `msorder_list` или `msorder_view` или `msproduct_save` |
+| GET | `/visible/{model}` | Видимые поля модели | любое из списка ниже |
+| GET | `/combo-options/{model}` | Combo-options модели | любое из списка ниже |
+| GET | `/combo-options/{model}/{field_name}` | Combo-options конкретного поля | любое из списка ниже |
+
+`AnyPermissionMiddleware` на этих трёх GET: `msorder_list`, `msorder_view`, `msorder_save`, `msproduct_save`, `mscategory_save`, `mssetting_list`, `mssetting_view`, `mssetting_save`, `view_document`.
+
+**Запись**, право `mssetting_save`:
+
+| Метод | Роут | Описание |
+| --- | --- | --- |
+| POST | `/sections` | Создать секцию |
+| PUT | `/sections/ranks` | Порядок секций |
+| PUT | `/sections/{id}` | Обновить секцию |
+| DELETE | `/sections/{id}` | Удалить секцию |
+| POST | (корень) | Создать поле |
+| PUT | `/ranks` | Порядок полей |
+| PUT | `/{id}` | Обновить поле |
+| DELETE | `/{id}` | Удалить поле |
 
 #### Покупатели (`/customers`)
 
@@ -718,6 +779,9 @@ CRUD типов связей товаров. Право `mssetting_save`.
 | POST | `/` | Создать тип связей |
 | DELETE | `/bulk` | Массовое удаление типов связей |
 | GET | `/types` | Получить типы связей (алиас для обратной совместимости) |
+| GET | `/{id}` | Получить тип связи |
+| PUT | `/{id}` | Обновить тип связи |
+| DELETE | `/{id}` | Удалить тип связи |
 
 #### Данные товара (`/product-data`)
 
@@ -725,6 +789,8 @@ CRUD типов связей товаров. Право `mssetting_save`.
 
 | Метод | Роут | Описание |
 | --- | --- | --- |
+| GET | `/{id}` | Данные товара |
+| PUT | `/{id}` | Сохранить данные товара |
 | GET | `/{id}/categories/tree` | Дерево категорий (`ms3_product_category_tree`) |
 | GET | `/{id}/links` | Список связей |
 | POST | `/{id}/links` | Добавить связь `{ slave, link }` |
@@ -753,13 +819,19 @@ CRUD типов связей товаров. Право `mssetting_save`.
 | POST | `/start` | Запуск импорта | `msproduct_save` |
 | GET | `/progress/{import_id}` | Прогресс импорта | `msproduct_save` |
 
+#### Галерея (`/utilities/gallery`)
+
+| Метод | Роут | Описание | Право |
+| --- | --- | --- | --- |
+| POST | `/update` | Массовые операции с галереей | `msproductfile_generate` |
+
 ### Web API (`/api/v1/*`)
 
 Полная таблица путей: [Web API → Карта эндпоинтов](/components/minishop3/development/web-api/endpoints).
 
 Руководства: [auth](/components/minishop3/development/web-api/auth), [catalog](/components/minishop3/development/web-api/catalog), [cart](/components/minishop3/development/web-api/cart), [checkout](/components/minishop3/development/web-api/checkout), [customer](/components/minishop3/development/web-api/customer).
 
-## Кастомизация роутов
+## Свои роуты
 
 ### Добавление своих роутов
 
@@ -803,7 +875,7 @@ $router->group('/api/mgr/my-module', function($router) use ($modx) {
 
 ### Переопределение системных роутов
 
-Пользовательские роуты загружаются **после** системных и переопределяют их:
+Свои роуты загружаются **после** системных и перекрывают их:
 
 ```php
 <?php
@@ -823,7 +895,9 @@ $router->get('/api/mgr/health', function() use ($modx) {
 
 ### Интеграция со сторонними компонентами
 
-Сторонний компонент может добавлять свои роуты через файл конфигурации:
+Сторонний компонент добавляет роуты тем же файлом — но так делают только при ручной правке сайта. Распространяемый аддон кладёт свой файл в `ms3.routes.d/`, см. раздел ниже.
+
+<!-- EXAMPLE? три CRUD-обработчика на 35 строк повторяют пример из «Добавления своих роутов»; механизм показывает уже первый из них -->
 
 ```php
 <?php
@@ -871,12 +945,26 @@ $router->group('/api/mgr/promocodes', function($router) use ($modx) {
 
 ## Модульные роуты для аддонов (`ms3.routes.d`)
 
-Файлы `ms3_routes_*.custom.php` подходят для ручной кастомизации, но **не для аддонов** — если два компонента пишут в один файл, при установке/удалении возникают конфликты.
+```mermaid
+flowchart TB
+  subgraph web [Web API]
+    w1[web.php] --> w2[ms3_routes_web.custom.php]
+    w2 --> w3["ms3.routes.d/web"]
+    w3 --> wb["build() диспетчера"]
+  end
+  subgraph mgr [Manager API]
+    m1[manager.php] --> m2[ms3_routes_manager.custom.php]
+    m2 --> m3["ms3.routes.d/manager"]
+    m3 --> mb["build() диспетчера"]
+  end
+```
 
-Для сторонних компонентов предусмотрена директория `core/config/ms3.routes.d/` — каждый аддон создаёт свой файл, конфликтов нет.
+Файлы `ms3_routes_*.custom.php` подходят для ручной правки сайта, но **не для аддонов**. Если два компонента пишут в один файл, при установке и удалении возникают конфликты.
 
-::: tip Аналогия
-Паттерн повторяет `ms3.services.d/` для [сервисов](/components/minishop3/development/services).
+Для сторонних компонентов есть директория `core/config/ms3.routes.d/`. Каждый аддон создаёт свой файл, конфликтов нет.
+
+::: tip Тот же приём есть у сервисов
+Каталог `ms3.services.d/` для [сервисов](/components/minishop3/development/services) устроен так же.
 :::
 
 ### Структура
@@ -891,25 +979,25 @@ core/config/ms3.routes.d/
     └── 50-myadmin.php
 ```
 
-Файлы загружаются в **алфавитном порядке**. Используйте числовой префикс для управления приоритетом (`01-`, `50-`, `99-`).
+Файлы загружаются в **алфавитном порядке**. Приоритет задаёт числовой префикс (`01-`, `50-`, `99-`).
 
 ### Порядок загрузки
 
 **Web API (`api.php`):**
 
 1. `config/routes/web.php` — системные роуты
-2. `core/config/ms3_routes_web.custom.php` — ручные кастомизации
+2. `core/config/ms3_routes_web.custom.php` — ручные правки
 3. `core/config/ms3.routes.d/web/*.php` — аддоны
 4. `build()` диспетчера
 
 **Manager API (`connector.php` → `Processors\Api\Router`):**
 
 1. `config/routes/manager.php` — системные роуты
-2. `core/config/ms3_routes_manager.custom.php` — ручные кастомизации
+2. `core/config/ms3_routes_manager.custom.php` — ручные правки
 3. `core/config/ms3.routes.d/manager/*.php` — аддоны
 4. `build()` диспетчера
 
-Каждый следующий уровень может переопределять роуты предыдущего по ключу `METHOD:PATTERN`.
+Каждый следующий уровень перекрывает роуты предыдущего по ключу `METHOD:PATTERN`.
 
 ### Пример: Web API роуты аддона доставки
 
@@ -966,7 +1054,7 @@ $router->group('/api/mgr/mydelivery', function ($router) use ($modx) {
 
 ### Установка и удаление
 
-В resolver аддона:
+В резолвере аддона:
 
 ```php
 <?php
@@ -991,11 +1079,11 @@ copy(
 @unlink(MODX_CORE_PATH . 'config/ms3.routes.d/manager/50-mydelivery.php');
 ```
 
-Каждый аддон удаляет только свой файл — другие аддоны не затрагиваются.
+Каждый аддон удаляет только свой файл, чужие не трогает.
 
 ### Обработка ошибок
 
-Если файл роутов содержит синтаксическую ошибку или выбрасывает исключение, он логируется и пропускается — **остальные файлы загружаются нормально**:
+Файл с синтаксической ошибкой или исключением пропускается, причина уходит в журнал. **Остальные файлы загружаются как обычно:**
 
 ```
 [MiniShop3 Router] Failed to load routes file /path/to/50-broken.php: syntax error...
@@ -1008,14 +1096,14 @@ copy(
 | **Для кого** | Разработчик сайта | Авторы аддонов |
 | **Файлов** | Один на тип API | По файлу на аддон |
 | **Конфликты** | Возможны при нескольких аддонах | Нет |
-| **Установка/удаление** | Нужно редактировать вручную | Атомарный: создать/удалить файл |
-| **Создаётся** | При установке MiniShop3 (файл-пример) | Аддон через resolver |
+| **Установка/удаление** | Править вручную | Атомарно: создать или удалить файл |
+| **Создаётся** | Manager-файл создаёт установка MiniShop3 из примера. Web-файл она не создаёт: заготовки в пакете нет, сделайте файл сами | Аддон, через резолвер |
 
 ## Системные настройки
 
 | Настройка | По умолчанию | Описание |
 | --- | --- | --- |
-| `ms3_cors_allowed_origins` | `["*"]` | Разрешённые домены для CORS |
+| `ms3_cors_allowed_origins` | пустая строка | Разрешённые домены для CORS. Пусто = same-origin |
 | `ms3_rate_limit_max_attempts` | `60` | Лимит запросов |
 | `ms3_rate_limit_decay_seconds` | `60` | Период сброса лимита (сек) |
 
@@ -1058,7 +1146,7 @@ $router->get('/api/mgr/debug', function($params) use ($modx) {
 
 **405 Method Not Allowed:**
 
-- Используется неправильный HTTP метод (GET вместо POST и т.д.)
+- Выбран не тот HTTP-метод: GET вместо POST и так далее
 
 **429 Too Many Requests:**
 

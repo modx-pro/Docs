@@ -5,21 +5,15 @@ title: Notification center
 
 <!-- ![Notification center](/components/minishop3/screenshots/mgr-notifications.png) -->
 
-Order event notifications are managed via **Extras → MiniShop3 → Notifications**.
+Open **Extras → MiniShop3 → Notifications**. Here you set who gets a message on an order status change, through which channel and from which template.
 
-Here you configure which notifications to send, to whom, through which channels (email, Telegram, etc.), and with which template when an order is created or its status changes.
-
-## Purpose
-
-The notification center is a single place to manage the store notification chain:
+## Typical records
 
 - Email to the customer when an order is created.
 - Email to the manager about a new order.
-- Customer notification when the order moves to Paid, Shipped, Delivered, etc.
+- Customer notification when the order moves to Paid, Shipped or Delivered.
 - Duplicate notification to a Telegram channel for managers.
 - Any combination of "event → status → recipient → channel".
-
-Each notification is a separate record. You can configure multiple notifications for one event (for example, email to the customer and Telegram to the manager at the same time).
 
 ## Notification fields
 
@@ -30,26 +24,31 @@ Each notification is a separate record. You can configure multiple notifications
 | `recipient_type` | string | Recipient: `customer` or `manager` |
 | `channel` | string | Delivery channel: `email`, `telegram`, etc. |
 | `enabled` | bool | Enabled / disabled |
-| `subject` | string | Email subject (for email; supports Fenom) |
-| `template` | string | Chunk name for the message body. Empty = channel default template |
-| `delay` | int | Send delay in seconds. Requires Scheduler |
+| `subject` | string | Email subject. Email only, takes order placeholders |
+| `template` | string | Chunk name for the message body. Empty: the email is **not sent**; Telegram and SMS build a default message |
+| `delay` | int | Send delay in seconds. Works only with the `ms3_use_scheduler` setting on and Scheduler installed |
 | `position` | int | Send order when multiple notifications exist for one event |
+| `config` | JSON | Internal channel setting. Empty by default, not editable in the form — code only |
 
 ## Events
 
-The current version supports:
+The record is picked by event and `status_id`.
 
-| Event | ID | When it fires |
+| Event | ID | Works now |
 | --- | --- | --- |
-| Order created | `order_created` | Customer places an order (frontend) or manager finalizes a draft |
-| Order status changed | `order_status_changed` | Order moves from one status to another |
+| Order status changed | `order_status_changed` | Yes |
+| Order created | `order_created` | No — the option is in the form, but nothing is sent for it |
 
-For "status change" you can additionally limit `status_id` — then the notification fires only when transitioning to that status. Leave empty to send on any status change.
+::: warning order_created
+You can pick `order_created` in the form, but notifications with it are **not sent** — neither on a frontend form submit nor on draft finalization. Tracking: [MiniShop3#811](https://github.com/modx-pro/MiniShop3/issues/811). Until the bug is closed, configure new order alerts through `order_status_changed` and the `status_id` you need.
+:::
 
 ## Recipients
 
-- **Customer** (`customer`) — receives the notification at contacts from the order (email, phone, Telegram chat_id if set).
-- **Manager** (`manager`) — receives the notification at contacts defined in channel system settings (for example, `ms3_email_managers` for email, Telegram bot chat ID for Telegram).
+| Recipient | Where contacts come from |
+| --- | --- |
+| Customer (`customer`) | From the order: email, phone, Telegram chat_id if set |
+| Manager (`manager`) | From channel system settings: `ms3_email_manager`, `ms3_telegram_manager` (Telegram), `ms3_phone_manager` (SMS) |
 
 ## Channels
 
@@ -57,47 +56,62 @@ For "status change" you can additionally limit `status_id` — then the notifica
 
 Default channel. Uses MODX SMTP settings.
 
-System setting parameters:
+System settings:
 
-- `ms3_email_from` — sender address.
-- `ms3_email_managers` — manager addresses, comma-separated.
+- `ms3_email_manager` — manager addresses, comma-separated. Empty — `emailsender` is used.
+- `emailsender` (MODX core setting) — sender address; the sender name comes from `site_name`. The store has no separate "from" setting.
 
-For the email body you can specify a chunk name in `template` — for example, `tpl.msEmail.order.new`. If empty, the channel default template is used.
+The email subject (`subject`) takes order placeholders in three shapes:
 
-The email subject (`subject`) supports Fenom syntax; you can use order placeholders:
-
-```
+```fenom
+Order #{num} — status change
 Order #{$num} — status change
+Order #[[+num]] — status change
 ```
+
+All three are equivalent. Before 1.14.2-beta1 the plain `{num}` form combined with any Fenom construct on the same line produced an empty subject — for instance `Order #{num} / {$status_name}`.
 
 ### Telegram
 
-Channel for sending messages in Telegram (bot → customer by chat_id or bot → manager channel/chat).
+The bot writes to the customer by `chat_id` or to a manager channel (chat).
 
-Parameters (system settings):
+System settings:
 
 - `ms3_telegram_bot_token` — bot token from `@BotFather`.
-- `ms3_telegram_managers_chat_id` — manager chat/channel ID.
+- `ms3_telegram_manager` — manager chat IDs, comma-separated.
 
-For customer notifications the order must include `telegram_chat_id` (via a custom field or Telegram bot authorization). Without it the channel cannot deliver to the customer.
+The channel writes to a customer only when the order has `telegram_chat_id` — a custom field or Telegram bot authorization. Without it the customer gets nothing.
 
 ### SMS and custom channels
 
-An SMS channel skeleton exists in code. Any component can register its own channel — see the development section [Notification events](../development/events/notifications.md) and the `msOnRegisterNotificationChannels` event. Channels registered by third-party code appear automatically in the form dropdown.
+An SMS channel skeleton exists in code. Any extra registers its own channel through the `msOnRegisterNotificationChannels` event, see [Notification events](../development/events/notifications.md). Registered channels appear in the form list.
 
 ## Message templates
 
-The `template` field holds a MODX chunk name rendered through Fenom. Available placeholders:
+The `template` field holds a MODX chunk name; Fenom renders its body.
 
-- `{$order}` — order field array (`num`, `cost`, `status_id`, etc.).
-- `{$customer}` — customer data.
-- `{$products}` — order line items array.
-- `{$status_name}`, `{$old_status_name}` — for status change events.
-- `{$shop_name}` — store name from a system setting.
+| Placeholder | Contents |
+| --- | --- |
+| `{$order}` | Order fields: `num`, `cost`, `status_id` and so on. Without `token` and `idempotency_key`, `uuid` is there |
+| `{$customer}` | The customer's public fields and their custom fields. No password, no token |
+| `{$address}` | Order address fields |
+| `{$delivery}`, `{$payment}` | Delivery method and payment method. Five fields only: `id`, `name`, `description`, `price`, `logo` |
+| `{$products}` | Order line items |
+| `{$total}` | Totals with formatted sums |
+| `{$status_name}`, `{$old_status_name}` | Order statuses, status change event only |
+| `{$site_name}` | Store name (the `site_name` setting) |
+
+::: warning Customer data in a template is text, not markup
+MODX tags and Fenom constructs that end up in an order comment, a name or an address are not executed in the email — before 1.14.2-beta1 they were parsed on the server. The shipped chunks escape customer fields, and your own chunks should do the same, or a customer can slip their own link or image into the email a manager reads:
+
+```fenom
+<td>{$address.comment | e}</td>
+```
+:::
 
 Minimal chunk example `tpl.msEmail.order.new`:
 
-```
+```fenom
 <h1>Thank you for order #{$order.num}</h1>
 <p>Total: {$order.cost}</p>
 <ul>
@@ -107,13 +121,13 @@ Minimal chunk example `tpl.msEmail.order.new`:
 </ul>
 ```
 
-If the chunk is not specified or not found, the channel uses its default template.
+No chunk: the email is not sent, Telegram and SMS build a default message from the lexicon. Chunk set but missing: sending fails with an error in the MODX log.
 
 ## Send delay
 
-The `delay` field (in seconds) defers sending. Useful for scenarios like "24 hours after payment — thank you for your order" or "7 days after delivery — request a review".
+The `delay` field (in seconds) defers sending: an email 24 hours after payment, or 7 days after delivery.
 
-Delayed sending requires the **Scheduler** component installed and configured: the notification is queued as a deferred task and sent on schedule. Without Scheduler the parameter is ignored and the notification is sent immediately.
+Delay works only with the **`ms3_use_scheduler` system setting on** and **Scheduler** installed: the notification is queued and sent on schedule. With the setting off (the default) or without Scheduler, `delay` is ignored and the notification is sent immediately.
 
 ## Multiple notifications per event
 
@@ -123,9 +137,9 @@ Typical setup for a new order:
 
 | Position | Event | Status | Recipient | Channel | Subject / Template |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `order_created` | — | customer | email | "Thank you for order #{$num}" / `tpl.msEmail.order.thanks` |
-| 2 | `order_created` | — | manager | email | "New order #{$num}" / `tpl.msEmail.order.new.manager` |
-| 3 | `order_created` | — | manager | telegram | — / `tpl.msTelegram.order.new` |
+| 1 | `order_status_changed` | "New" ID | customer | email | "Thank you for order #{$num}" / `tpl.msEmail.order.thanks` |
+| 2 | `order_status_changed` | "New" ID | manager | email | "New order #{$num}" / `tpl.msEmail.order.new.manager` |
+| 3 | `order_status_changed` | "New" ID | manager | telegram | — / `tpl.msTelegram.order.new` |
 
 ## Grid filters
 
@@ -146,17 +160,25 @@ Filters apply on **Apply** and reset on **Clear**.
 
 ## Related sections
 
-- [System settings](../settings.md) — `ms3_email_from`, `ms3_email_managers`, `ms3_telegram_bot_token`, `ms3_telegram_managers_chat_id`, etc.
-- Order status directory — defines available `status_id` values for binding. Configured in the manager (**MiniShop3 → Settings → Statuses**).
+- [System settings](../settings.md) — `ms3_email_manager`, `ms3_telegram_bot_token`, `ms3_telegram_manager`, `ms3_use_scheduler`, etc.
+- Order status directory — defines available `status_id` values for binding. Configured in the admin area (**MiniShop3 → Settings → Statuses**).
 - [Notification events](../development/events/notifications.md) — plugin subscriptions, custom channel registration.
 
 ## FAQ
 
 **Emails are not sent.**
-Check: system setting `ms3_email_from`, MODX SMTP settings, MODX error log (channel send errors are logged with `[ms3] Notification error`), **Enabled** status on the record in the Notification center.
 
-**Notification went to the customer's old email, not the one from the order form.**
-Known behavior in the current channel implementation: the message may go to `msCustomer` contacts instead of the email from the order form.
+Check:
+
+- the `template` field is filled: without a chunk the email channel sends nothing;
+- the `emailsender` sender setting and MODX SMTP settings;
+- the MODX error log: a channel send error is logged with `[ms3] Notification error`;
+- the **Enabled** flag on the record in the Notification center.
+
+**The email went to an address other than the one from the order form.**
+
+The email from the order address (`msOrderAddress`) is taken first. The `msCustomer` email is used only when that field is empty.
 
 **I want a custom delivery channel (for example, push to a mobile app).**
+
 You need a plugin on `msOnRegisterNotificationChannels` that registers a channel class implementing `ChannelInterface`. See [notification events](../development/events/notifications.md).

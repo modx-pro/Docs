@@ -3,16 +3,16 @@ title: Сервисный слой
 ---
 # Сервисный слой
 
-MiniShop3 использует сервисный слой, чтобы отделить бизнес-логику от моделей xPDO.
+Бизнес-логика MiniShop3 живёт в сервисах, а не в моделях xPDO.
 
 ## Архитектурный паттерн
 
 ### Принцип разделения
 
-В классическом подходе (который использовался в miniShop2) бизнес-логика размещалась непосредственно в моделях:
+В miniShop2 логика лежала в моделях:
 
 ```php
-// miniShop2 - "толстые" модели
+// miniShop2 — «толстые» модели
 class msProduct extends modResource
 {
     public function duplicate($options = []) { /* 200+ строк логики */ }
@@ -21,19 +21,17 @@ class msProduct extends modResource
 }
 ```
 
-В MiniShop3 модели отвечают только за работу с базой данных (xPDO ORM), а вся бизнес-логика вынесена в сервисы:
+В MiniShop3 часть логики уходит в сервисы. На модели остаётся то, чего MODX ждёт от `modResource`: `duplicate()`, `getPrice()`, `getWeight()`, работа с изображениями.
 
 ```php
-// MiniShop3 - "тонкие" модели + сервисы
 class msProduct extends modResource
 {
-    // Только xPDO связи и базовые операции с БД
+    public function duplicate(array $options = []) { /* копия товара */ }
 }
 
 class ProductService
 {
-    public function duplicate($product, $options) { /* логика */ }
-    public function processForDisplay($product) { /* логика */ }
+    public function processForDisplay(\MiniShop3\Model\msProduct $product): void { /* подготовка к выводу */ }
 }
 ```
 
@@ -47,23 +45,39 @@ class ProductService
 | Размер файлов | 1000+ строк | 100-300 строк |
 
 ::: info Компромисс с архитектурой MODX
-Архитектура MODX повсеместно использует бизнес-логику в моделях (`modResource`, `modUser` и др.). Поскольку некоторые модели MiniShop3 расширяют классы MODX (`msProduct extends modResource`), они обязаны следовать аналогичным паттернам.
+Архитектура MODX держит бизнес-логику в моделях (`modResource`, `modUser` и др.). Часть моделей MiniShop3 расширяет классы MODX (`msProduct extends modResource`) и следует тому же шаблону.
 
-Поэтому модели MiniShop3 содержат ссылки на сервисы для вызова методов бизнес-логики — это прагматичный компромисс для совместимости с экосистемой MODX.
+Поэтому модели MiniShop3 содержат ссылки на сервисы и вызывают через них бизнес-логику. Это компромисс ради совместимости с MODX.
 :::
 
 ## DI-контейнер
 
-MiniShop3 использует встроенный DI-контейнер MODX (`$modx->services`) для регистрации и получения сервисов.
+Сервисы регистрируются и получаются через `$modx->services`.
 
 ### Регистрация сервисов
 
-Все сервисы регистрируются через `ServiceRegistry` при инициализации компонента:
+```mermaid
+flowchart TD
+  boot["bootstrap.php кладёт в контейнер один ключ ms3"] --> plug["Плагин на OnMODXInit запрашивает ms3"]
+  plug --> ctor["Конструктор MiniShop3 вызывает ServiceRegistry::register()"]
+  ctor --> merge["Слияние конфигураций: встроенные, ms3.services.php, ms3.services.d"]
+  merge --> keys["Ключи ms3_* заведены в контейнере"]
+  keys --> lazy["Объект создаётся при первом get()"]
+  lazy --> use["Сниппет, плагин или контроллер получает сервис"]
+```
+
+Регистрация идёт в два шага:
+
+1. `bootstrap.php` компонента добавляет в контейнер единственный ключ: `ms3`.
+2. Конструктор `MiniShop3` вызывает `ServiceRegistry::register()`, и тогда появляются остальные ключи.
+
+Второй шаг происходит сам: плагин компонента на событии `OnMODXInit` получает `ms3` в начале каждого запроса. К моменту работы сниппета, плагина или контроллера ключи уже на месте. Получать `ms3` ради них не нужно.
 
 ```php
-// bootstrap.php
-$serviceRegistry = new \MiniShop3\ServiceRegistry($modx);
-$serviceRegistry->register();
+// bootstrap.php — только точка входа
+$modx->services->add('ms3', function ($c) use ($modx) {
+    return new MiniShop3\MiniShop3($modx);
+});
 ```
 
 ### Получение сервисов
@@ -82,7 +96,7 @@ $ms3->order->submit();
 
 ### Ленивая загрузка
 
-Сервисы создаются только при первом обращении:
+Сервис создаётся при первом `get()`. Повторный вызов отдаёт тот же объект:
 
 ```php
 // Сервис ещё не создан
@@ -101,7 +115,7 @@ $service2 = $modx->services->get('ms3_order_service');
 
 ### Соглашение об именовании
 
-Все сервисы MiniShop3 используют префикс `ms3_`:
+Ключи сервисов MiniShop3 начинаются с `ms3_`:
 
 ```php
 'ms3_order_service'      // OrderService
@@ -110,13 +124,11 @@ $service2 = $modx->services->get('ms3_order_service');
 'ms3_product_image'      // ProductImageService
 ```
 
-Это предотвращает конфликты с другими компонентами MODX.
+Префикс отделяет их от сервисов других компонентов.
 
 ## Карта сервисов
 
 ### Контроллеры (Controllers)
-
-Контроллеры — это высокоуровневые сервисы, управляющие основными сущностями магазина.
 
 | Ключ | Класс | Назначение |
 | --- | --- | --- |
@@ -142,12 +154,12 @@ $customer = $ms3->customer->getFields();
 
 | Ключ | Класс | Назначение |
 | --- | --- | --- |
-| `ms3_product_service` | `Services\Product\ProductService` | Конвертация ресурса в товар, дубликаты, `OnDocFormSave` |
+| `ms3_product_service` | `Services\Product\ProductService` | Конвертация ресурса в товар, соседние товары, подготовка к выводу |
 | `ms3_product_data_service` | `Services\Product\ProductDataService` | Работа с данными товара |
 | `ms3_product_image` | `Services\Product\ProductImageService` | Изображения, превью (`preview_file_id`) |
 | `ms3_product_catalog` | `Services\Product\ProductCatalogService` | Каталог Web API (список разрешённых полей) |
 | `ms3_product_import` | `Services\Product\Import\ProductImportService` | Импорт CSV |
-| `ms3_product_category_tree` | `Services\Product\ProductCategoryTreeService` | Дерево категорий товара в менеджере |
+| `ms3_product_category_tree` | `Services\Product\ProductCategoryTreeService` | Дерево категорий товара в админке |
 | `ms3_product_link_service` | `Services\Product\ProductLinkService` | Связи товара (mgr Vue-вкладка) |
 | `ms3_product_facets` | `Services\Product\ProductFacetService` | Фасеты каталога |
 | `ms3_product_gallery_public` | `Services\Product\ProductGalleryPublicService` | Публичная галерея (get/list/images) |
@@ -168,7 +180,7 @@ $imageService = $modx->services->get('ms3_product_image');
 | `ms3_rate_limiter` | `Services\Customer\RateLimiter` | Ограничение частоты запросов |
 | `ms3_customer_address_manager` | `Services\Customer\CustomerAddressManager` | Управление адресами покупателя |
 | `ms3_customer_field_manager` | `Services\Customer\CustomerFieldManager` | Поля профиля покупателя |
-| `ms3_customer_order` | `Services\Customer\CustomerOrderService` | Заказы покупателя на витрине |
+| `ms3_customer_order` | `Services\Customer\CustomerOrderService` | Заказы покупателя на фронтенде |
 | `ms3_customer_order_resolver` | `Services\Customer\CustomerOrderResolver` | Привязка заказа к покупателю при оформлении |
 | `ms3_customer_duplicate_checker` | `Services\CustomerDuplicateChecker` | Проверка дубликатов |
 | `ms3_customer_factory` | `Services\CustomerFactory` | Фабрика покупателей |
@@ -184,14 +196,43 @@ $customer = $authManager->authenticate([
 // Создание токена
 $token = $authManager->createToken($customer, 'api', 86400);
 
-// Регистрация провайдера аутентификации
-$authManager->registerProvider(new SmsAuthProvider($modx));
+// Регистрация своего провайдера. Готового класса для SMS в пакете нет.
+$authManager->registerProvider(new CodeAuthProvider($modx));
+```
+
+```php
+use MiniShop3\Controllers\Auth\AuthProviderInterface;
+use MiniShop3\Model\msCustomer;
+use MODX\Revolution\modX;
+
+class CodeAuthProvider implements AuthProviderInterface
+{
+    public function __construct(private modX $modx)
+    {
+    }
+
+    public function authenticate(array $credentials): ?msCustomer
+    {
+        // Здесь своя проверка кода. Провайдера аутентификации по SMS в пакете нет.
+        return null;
+    }
+
+    public function getName(): string
+    {
+        return 'code';
+    }
+
+    public function supports(array $credentials): bool
+    {
+        return isset($credentials['phone'], $credentials['code']);
+    }
+}
 ```
 
 ### Сервисы заказа (Order)
 
 ::: info Архитектура фасада
-Контроллер `Order.php` является **фасадом** — он сохраняет все публичные методы для обратной совместимости, но делегирует логику в специализированные сервисы. Это позволяет переопределять отдельные части логики без модификации всего контроллера.
+Контроллер `Order.php` служит **фасадом**. Он сохраняет все публичные методы для обратной совместимости и делегирует логику в специализированные сервисы. Отдельную часть логики можно заменить, не трогая весь контроллер.
 :::
 
 | Ключ | Класс | Назначение |
@@ -206,10 +247,10 @@ $authManager->registerProvider(new SmsAuthProvider($modx));
 | `ms3_order_log` | `Services\Order\OrderLogService` | Логирование изменений заказа |
 | `ms3_order_status` | `Services\Order\OrderStatusService` | Смена статуса + уведомления |
 | `ms3_order_finalize` | `Services\Order\OrderFinalizeService` | Финализация заказа (валидация, создание клиента) |
-| `ms3_programmatic_order` | `Services\Order\ProgrammaticOrderService` | Создание заказа без витринной сессии для компонентов и cron (`idempotency_key`) |
+| `ms3_programmatic_order` | `Services\Order\ProgrammaticOrderService` | Создание заказа без сессии на фронтенде — для компонентов и cron (`idempotency_key`) |
 | `ms3_order_number_generator` | `Services\Order\OrderNumberGenerator` | Нумерация заказов |
 | `ms3_manager_order_cost_recalculator` | `Services\Order\ManagerOrderCostRecalculator` | Пересчёт в карточке заказа (mgr) |
-| `ms3_manager_order_list` | `Services\Order\ManagerOrderListService` | Список заказов в менеджере |
+| `ms3_manager_order_list` | `Services\Order\ManagerOrderListService` | Список заказов в админке |
 | `ms3_manager_order_mutation` | `Services\Order\ManagerOrderMutationService` | Мутации заказа в mgr |
 | `ms3_manager_order_presenter` | `Services\Order\ManagerOrderPresenter` | Презентация карточки заказа |
 | `ms3_manager_order_products` | `Services\Order\ManagerOrderProductsService` | Позиции заказа в mgr |
@@ -228,7 +269,9 @@ $draftManager->attachCustomer($draft, $customerId);
 // Расчёт стоимости (нужны orderData из toArray и token)
 $orderData = $draftManager->toArray($draft);
 $total = $costCalculator->getTotalCost($draft, $orderData, $token);
-// ['cost' => …, 'cart_cost' => …, 'delivery_cost' => …, 'payment_cost' => …]
+// ['success' => true, 'message' => …, 'data' => ['cost' => …, 'cart_cost' => …,
+//   'delivery_cost' => …, 'payment_cost' => … и итоги корзины]]
+$cost = $total['data']['cost'];
 
 // Логирование
 $logService = $modx->services->get('ms3_order_log');
@@ -242,7 +285,7 @@ $logService->addEntry(
 ### Сервисы корзины (Cart)
 
 ::: info Архитектура фасада
-Контроллер `Cart.php` также является **фасадом**. Он использует `OrderDraftManager` для общих операций с черновиками (корзина и заказ используют одну модель `msOrder`).
+Контроллер `Cart.php` тоже служит **фасадом**. Он использует `OrderDraftManager` для общих операций с черновиками. Корзина и заказ используют одну модель `msOrder`.
 :::
 
 | Ключ | Класс | Назначение |
@@ -254,8 +297,9 @@ $logService->addEntry(
 ```php
 $itemManager = $modx->services->get('ms3_cart_item_manager');
 
-// Добавление товара
-$result = $itemManager->addItem($draft, $productId, $count, $options);
+// Добавление товара: объект msProduct и уже посчитанный productKey
+$product = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
+$result = $itemManager->addItem($draft, $product, $count, $options, $productKey);
 
 // Изменение количества
 $itemManager->updateItemCount($draft, $key, $newCount);
@@ -283,7 +327,7 @@ OrderFieldManager    — поля заказа (Order-specific)
 | `ms3_delivery_catalog` | `Services\Delivery\DeliveryCatalogService` | Публичный каталог доставок (Web API) |
 | `ms3_payment_service` | `Services\Payment\PaymentService` | Способы оплаты |
 | `ms3_payment_catalog` | `Services\Payment\PaymentCatalogService` | Публичный каталог оплат (Web API) |
-| `ms3_payment_link_resolver` | `Services\Payment\PaymentLinkResolver` | URL оплаты: в письмах по `ms3_payment_link_statuses`, в `msGetOrder` по параметру `payStatus` |
+| `ms3_payment_link_resolver` | `Services\Payment\PaymentLinkResolver` | URL оплаты: в письмах по `ms3_payment_link_statuses` (настройки в поставке нет, создаёте сами), в `msGetOrder` по параметру `payStatus` |
 | `ms3_payment_lifecycle` | `Services\Payment\PaymentLifecycleService` | Жизненный цикл оплаты → статусы заказа |
 | `ms3_shipment_lifecycle` | `Services\Shipment\ShipmentLifecycleService` | Отгрузки и трекинг (`ms3_shipments` через `PdoShipmentStore`) |
 
@@ -297,7 +341,7 @@ OrderFieldManager    — поля заказа (Order-specific)
 | `ms3_domain_events` | `Services\Events\DomainEventBridge` | Мост событий домена |
 | `ms3_webhook_dispatcher` | `Services\Events\NullWebhookDispatcher` | Диспетчер outbound webhooks (по умолчанию null-реализация) |
 
-### Extra fields и поля моделей
+### Свои поля и поля моделей
 
 | Ключ | Класс | Назначение |
 | --- | --- | --- |
@@ -313,7 +357,7 @@ OrderFieldManager    — поля заказа (Order-specific)
 | --- | --- | --- |
 | `ms3_category_service` | `Services\Category\CategoryService` | Работа с категориями |
 | `ms3_category_catalog` | `Services\Category\CategoryCatalogService` | Публичный каталог категорий (Web API) |
-| `ms3_category_tree` | `Services\Category\CategoryTreeService` | Дерево для Web API / менеджера |
+| `ms3_category_tree` | `Services\Category\CategoryTreeService` | Дерево для Web API / админки |
 | `ms3_category_option_service` | `Services\Category\CategoryOptionService` | Опции категорий |
 | `ms3_category_product_scope` | `Services\Category\CategoryProductScopeService` | Доп. категории товара для msProducts |
 | `ms3_category_products_list` | `Services\Category\CategoryProductsListService` | Грид товаров категории |
@@ -356,13 +400,20 @@ OrderFieldManager    — поля заказа (Order-specific)
 
 ## Замена сервисов
 
-MiniShop3 позволяет заменять стандартные сервисы своими реализациями через конфигурационные файлы.
+```mermaid
+flowchart BT
+  core[Встроенные классы] --> main["ms3.services.php"]
+  main --> addons["ms3.services.d по алфавиту"]
+  addons --> win["Побеждает последний ключ ms3_*"]
+```
+
+Штатный сервис заменяют файлом конфигурации.
 
 ### Приоритет загрузки
 
-1. **Встроенные классы** — базовые реализации компонента
-2. **Основной конфиг** — `core/config/ms3.services.php`
-3. **Конфиги компонентов** — `core/config/ms3.services.d/*.php` (в алфавитном порядке)
+1. **Встроенные классы**: базовые реализации компонента
+2. **Основной конфиг**: `core/config/ms3.services.php`
+3. **Конфиги компонентов**: `core/config/ms3.services.d/*.php` (в алфавитном порядке)
 
 Каждый следующий уровень переопределяет предыдущий.
 
@@ -382,19 +433,19 @@ cp core/components/minishop3/config/ms3.services.example.php \
 // core/config/ms3.services.php
 
 return [
-    // Кастомная корзина с промокодами
+    // Своя корзина с промокодами
     'ms3_cart' => [
         'class' => \MyProject\Controllers\PromoCart::class,
         'interface' => null,
     ],
 
-    // Кастомный обработчик оформления заказа (интеграция с CRM)
+    // Свой обработчик оформления заказа (интеграция с CRM)
     'ms3_order_submit_handler' => [
         'class' => \MyProject\Services\CRMOrderSubmitHandler::class,
         'interface' => null,
     ],
 
-    // Кастомный сервис доставки (СДЭК)
+    // Свой сервис доставки (СДЭК)
     'ms3_delivery_service' => [
         'class' => \MyProject\Services\CdekDeliveryService::class,
         'interface' => null,
@@ -470,7 +521,42 @@ if (!$result['success']) {
 Пользовательский класс **должен**:
 
 1. **Существовать** и быть доступным через автозагрузчик
-2. **Наследовать** базовый класс MiniShop3
+2. **Наследовать** базовый класс MiniShop3 — но только у сервисов без объявленного интерфейса
+
+У сервисов, для которых в конфигурации указан `interface` (`ms3_inventory`, `ms3_order_lifecycle_ports`, `ms3_webhook_dispatcher`), наследование не нужно: достаточно реализовать интерфейс с нуля. Проверка идёт по `is_a()`, и ветка с наследованием в этом случае не выполняется. Своя реализация склада от `ProductStockInventory` не наследуется — так сделано и в примере из поставки.
+
+Пример для склада — свой класс реализует интерфейс и ничего не наследует:
+
+```php
+// core/config/ms3.services.php
+return [
+    'ms3_inventory' => [
+        'class' => \MyCompany\Warehouse\WmsInventory::class,
+        'interface' => \MiniShop3\Services\Inventory\InventoryServiceInterface::class,
+    ],
+];
+```
+
+```php
+namespace MyCompany\Warehouse;
+
+use MiniShop3\Services\Inventory\InventoryServiceInterface;
+
+class WmsInventory implements InventoryServiceInterface
+{
+    public function getAvailable(InventoryKey $key): float { /* запрос в WMS */ }
+    public function assertAvailable(InventoryKey $key, float $qty): void { /* проверка */ }
+    public function reserve(InventoryKey $key, float $qty, InventoryContext $ctx, bool $notify = true): void { }
+    public function release(InventoryKey $key, float $qty, InventoryContext $ctx, bool $notify = true): void { }
+    public function commit(InventoryKey $key, float $qty, InventoryContext $ctx): void { }
+}
+```
+
+Тот же приём у `ms3_order_lifecycle_ports` (`OrderLifecyclePortsInterface`) и `ms3_webhook_dispatcher` (`WebhookDispatcherInterface`). Готовые закомментированные заготовки лежат в `core/components/minishop3/config/ms3.services.example.php`.
+
+::: warning Указывайте `interface` в своём конфиге
+Слияние конфигураций заменяет значение целиком. Если в `ms3.services.php` оставить у такого сервиса `'interface' => null`, валидатор потребует наследовать стандартный класс и отвергнет честную реализацию интерфейса. Переносите строку `interface` в свой конфиг вместе с `class`.
+:::
 
 ```php
 <?php
@@ -494,7 +580,7 @@ class PromoCart extends Cart
 
     public function applyPromoCode(string $code): array
     {
-        // Кастомная логика промокодов
+        // Своя логика промокодов
         $_SESSION['promo_code'] = $code;
         return $this->success('Промокод применён');
     }
@@ -503,13 +589,13 @@ class PromoCart extends Cart
 
 ### Валидация классов
 
-ServiceRegistry автоматически проверяет:
+ServiceRegistry проверяет:
 
-- **Существование класса** — `class_exists()`
-- **Наследование** — `is_subclass_of($className, $baseClass)`
-- **Интерфейсы** — `class_implements()` (если указано)
+- **Существование класса**: `class_exists()`
+- **Интерфейс**, если он объявлен у сервиса: `is_a($className, $interface, true)`
+- **Наследование** — только когда интерфейса нет: `is_subclass_of($className, $baseClass)`
 
-При ошибке валидации подставляется стандартный класс, в лог пишется запись:
+Не прошла проверка — ServiceRegistry подставляет стандартный класс и пишет в журнал:
 
 ```
 [MiniShop3 ServiceRegistry] Class 'MyProject\Cart' must extend MiniShop3\Controllers\Cart\Cart, using fallback
@@ -517,7 +603,7 @@ ServiceRegistry автоматически проверяет:
 
 ## Расширение сторонними компонентами
 
-Если вы разрабатываете компонент, расширяющий MiniShop3, используйте директорию `ms3.services.d/` для бесконфликтной интеграции.
+Если вы разрабатываете компонент, расширяющий MiniShop3, кладите конфиг в `ms3.services.d/`. Тогда файлы не перезаписывают друг друга.
 
 ### Структура
 
@@ -529,11 +615,7 @@ core/config/ms3.services.d/
 └── 99-override.php       # Финальные переопределения (приоритет 99)
 ```
 
-### Преимущества
-
-- **Нет конфликтов** — каждый компонент в своём файле
-- **Управление приоритетом** — через имена файлов (алфавитный порядок)
-- **Независимая установка** — компоненты не перезаписывают конфиги друг друга
+Каждый компонент в своём файле. Порядок задаёт имя файла (алфавит, числовой префикс).
 
 ### Пример конфига компонента
 
@@ -565,14 +647,20 @@ ServiceRegistry логирует все загруженные конфиги:
 <?php
 namespace MyProject\Services;
 
-use MiniShop3\Services\Delivery\DeliveryService;
+use MiniShop3\Model\msDelivery;
 use MiniShop3\Model\msOrder;
+use MiniShop3\Controllers\Delivery\DeliveryProviderInterface;
+use MiniShop3\Services\Delivery\DeliveryService;
 
 class CustomDeliveryService extends DeliveryService
 {
-    public function calculateCost(msOrder $order): float
-    {
-        $baseCost = parent::calculateCost($order);
+    public function calculateDeliveryCost(
+        msDelivery $delivery,
+        ?DeliveryProviderInterface $controller,
+        msOrder $order,
+        float $cost = 0.0
+    ): float {
+        $baseCost = parent::calculateDeliveryCost($delivery, $controller, $order, $cost);
 
         // Бесплатная доставка от 5000 руб
         if ($order->get('cart_cost') >= 5000) {
@@ -591,28 +679,17 @@ class CustomDeliveryService extends DeliveryService
 
 ### Интеграция с внешней CRM
 
+`OrderService` не перехватывает сохранение заказа. Публичные методы: `paymentCommissionBase`, `clampComputedTotal`, `aggregateProductsTotals`, `updateProducts`, `getOrderStatistics`. Отправку во внешнюю систему вешайте на [смену статуса](events/status).
+
 ```php
 <?php
 namespace MyProject\Services;
 
-use MiniShop3\Services\Order\OrderService;
 use MiniShop3\Model\msOrder;
 
-class CRMOrderService extends OrderService
+class CRMSync
 {
-    public function handleOrderSave(msOrder $order, ?bool $cacheFlag = null): bool
-    {
-        $result = parent::handleOrderSave($order, $cacheFlag);
-
-        // Отправка в CRM при смене статуса
-        if ($order->isDirty('status_id')) {
-            $this->syncToCRM($order);
-        }
-
-        return $result;
-    }
-
-    protected function syncToCRM(msOrder $order): void
+    public function syncToCRM(msOrder $order): void
     {
         $client = new \GuzzleHttp\Client();
         $client->post('https://crm.example.com/api/orders', [
@@ -663,7 +740,8 @@ class TelegramAuthProvider implements AuthProviderInterface
             return null;
         }
 
-        // Поиск или создание покупателя
+        // Поиск покупателя по своему полю. Колонки telegram_id у msCustomer нет:
+        // добавьте её через «Свои поля» покупателя или миграцию своего аддона
         return $this->modx->getObject(msCustomer::class, [
             'telegram_id' => $credentials['telegram_id']
         ]);
@@ -686,17 +764,27 @@ $authManager->registerProvider(new TelegramAuthProvider($modx));
 
 ## Системные настройки
 
-| Настройка | По умолчанию | Описание |
+В транспортном пакете этих ключей нет. `ServiceRegistry` берёт путь из опции, а если она пустая, подставляет запасной:
+
+| Опция | Запасной путь | Когда пишется DEBUG |
 | --- | --- | --- |
-| `ms3_services_config` | `core/config/ms3.services.php` | Путь к основному конфигу |
-| `ms3_services_addons_dir` | `core/config/ms3.services.d/` | Директория конфигов компонентов |
+| `ms3_services_config` | `{core_path}config/ms3.services.php` | Опция задана, файла по ней нет |
+| `ms3_services_addons_dir` | `{core_path}config/ms3.services.d/` | Опция задана, каталога по ней нет |
+
+Эти две записи появляются, только если опция задана, а файла или каталога по ней нет. На штатной установке опции пустые, поэтому их не будет.
+
+Третью запись, `No addon configs found in: …`, вы увидите и на штатной установке: каталог `ms3.services.d/` создаёт установщик, и пока в нём нет ни одного файла аддона, строка пишется на каждый запрос.
+
+Отсутствие файла или каталога по этим путям ошибкой не считается: `ServiceRegistry` просто идёт дальше.
 
 ## Устранение проблем
 
 ### Сервис не найден
 
+Контейнер MODX бросает исключение `MODX\Revolution\Services\NotFoundException`:
+
 ```
-Service 'ms3_my_service' not found
+Dependency not found with key ms3_my_service.
 ```
 
 **Решения:**
@@ -704,6 +792,11 @@ Service 'ms3_my_service' not found
 1. Убедитесь, что `ServiceRegistry::register()` вызывается при инициализации
 2. Проверьте правильность ключа сервиса (с префиксом `ms3_`)
 3. Проверьте, что класс существует и доступен автозагрузчику
+4. Посмотрите в журнал MODX: если там строка `No factory registered for service`, ключ не из списка встроенных — такой сервис не регистрируется вовсе
+
+::: warning Новый ключ через конфигурацию не добавить
+`ServiceRegistry` заводит только те ключи, для которых в коде есть фабрика, — те же 83, что перечислены выше. Конфигурацией подменяется **класс существующего** сервиса; незнакомый ключ в `ms3.services.php` или `ms3.services.d/*.php` будет пропущен с записью в журнал. Свой сервис аддон кладёт прямо в контейнер MODX: `$modx->services->add('mypackage_service', …)`.
+:::
 
 ### Пользовательский класс не применяется
 
@@ -721,7 +814,7 @@ Service 'ms3_my_service' not found
 
 Если два компонента переопределяют один сервис, применится тот, чей файл загружается последним (по алфавиту).
 
-**Решение:** Используйте числовые префиксы для управления порядком:
+**Решение:** задайте порядок числовыми префиксами:
 
-- `10-base-component.php` — загрузится первым
-- `90-override-component.php` — загрузится последним и победит
+- `10-base-component.php` загрузится первым
+- `90-override-component.php` загрузится последним и победит

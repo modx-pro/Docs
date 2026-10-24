@@ -8,6 +8,29 @@ Headless API for programmatic interaction with MiniShop3 without DOM binding.
 
 ## Architecture
 
+```mermaid
+flowchart TB
+  ms3["ms3.js — entry point, auto-initialisation"]
+
+  subgraph ui ["UI Layer — DOM bindings for SSR"]
+    CartUI[CartUI.js]
+    OrderUI[OrderUI.js]
+    CustomerUI[CustomerUI.js]
+  end
+
+  subgraph core ["API Core — headless core"]
+    ApiClient[ApiClient.js]
+    TokenManager[TokenManager.js]
+    Hooks[hooks.js]
+    CartAPI[CartAPI.js]
+    OrderAPI[OrderAPI.js]
+    CustomerAPI[CustomerAPI.js]
+  end
+
+  ms3 --> ui
+  ui --> core
+```
+
 MiniShop3 uses a two-layer architecture:
 
 ```mermaid
@@ -138,7 +161,7 @@ const response = await ms3.cartAPI.get()
 // response:
 {
   success: true,
-  message: "ms3_cart_get_success",
+  message: "Cart data retrieved",
   data: {
     cart: {
       // Object where key is product_key
@@ -224,19 +247,27 @@ Change product quantity.
 | `render` | array | Tokens for rendering |
 
 ```javascript
-await ms3.cartAPI.change('ms5d41d8cd98f00b204e9800998ecf8427e', 5)
+await ms3.cartAPI.change('ms43ce202fd27c84c28230cc771328e37f', 5)
 ```
 
 :::tip product_key
 Each product in the cart has a unique `product_key`. Same product with different options — different keys.
 :::
 
+#### changeOption(productKey, options, render)
+
+Change the options of a line. A new set of options changes the line key: the server returns the new one in `data.product_key` and the old one in `data.old_product_key`.
+
+```javascript
+await ms3.cartAPI.changeOption('ms43ce202fd27c84c28230cc771328e37f', { color: 'Pink' })
+```
+
 #### remove(productKey, render)
 
 Remove product from cart.
 
 ```javascript
-await ms3.cartAPI.remove('ms5d41d8cd98f00b204e9800998ecf8427e')
+await ms3.cartAPI.remove('ms43ce202fd27c84c28230cc771328e37f')
 ```
 
 #### clean(render)
@@ -420,7 +451,55 @@ Remove address.
 await ms3.customerAPI.deleteAddress(5)
 ```
 
-## Hook system
+#### add(key, value)
+
+Write a single customer field. `POST /api/v1/customer/add`.
+
+```javascript
+await ms3.customerAPI.add('phone', '+7 900 123-45-67')
+```
+
+#### changeAddress(key, value)
+
+Change the address in the order form. Hook context: `{ key, value }`, and `response` after the answer.
+
+```javascript
+await ms3.customerAPI.changeAddress('address_hash', 'addr_123')
+```
+
+#### login(email, password)
+
+`POST /api/v1/customer/login`. Two arguments, not an object.
+
+```javascript
+await ms3.customerAPI.login('ivan@example.com', 'secret')
+```
+
+#### register(data)
+
+`POST /api/v1/customer/register`.
+
+#### setDefaultAddress(id)
+
+`PUT /api/v1/customer/addresses/{id}/set-default`.
+
+#### getOrders(params)
+
+`GET /api/v1/customer/orders`. Query parameters: `limit`, `offset`, `status`.
+
+#### getOrder(orderId)
+
+`GET /api/v1/customer/orders/{orderId}`.
+
+#### cancelOrder(orderId)
+
+`POST /api/v1/customer/orders/{orderId}/cancel`.
+
+#### resendVerificationEmail()
+
+`POST /api/v1/customer/email/resend-verification`.
+
+## Hook system {#hooks}
 
 Hooks let you extend behavior without changing source code.
 

@@ -4,105 +4,94 @@ description: Integration with Scheduler for background tasks
 ---
 # Scheduler integration
 
-MiniShop3 integrates with the [Scheduler](https://modstore.pro/packages/utilities/scheduler) component for background task execution. Scheduler lets you defer resource-heavy operations and run them asynchronously.
+MiniShop3 runs background tasks through the [Scheduler](https://modstore.pro/packages/utilities/scheduler) component.
 
 ## Requirements
 
-- **Scheduler 1.8.0+** — for recurring task support
-- Older versions work but without automatic task restart
+Scheduler 1.8.0 or higher. Tasks also work on older versions, but recurring ones are not restarted automatically.
 
 ## Enabling integration
 
-Integration is off by default. To enable:
+1. Install the Scheduler component and configure cron for it — see [Installation and run setup](../../scheduler/installation#cron).
+2. Enable the `ms3_use_scheduler` setting: **System → System Settings → minishop3**.
 
-1. Install the Scheduler component
-2. Configure a cron job for Scheduler (see Scheduler docs)
-3. Enable setting `ms3_use_scheduler`:
+::: warning The setting only governs notifications
+`ms3_use_scheduler` is read in a single place — when deciding whether to send a notification right away or queue it. It does not affect the other tasks:
+
+- **notifications** go to the background only with the setting on and Scheduler installed;
+- **import** is queued by a switch in the import form, regardless of the setting;
+- **token and draft cleanup** runs on schedule; the setting neither enables nor disables it. The tasks are registered by the MiniShop3 installer, and only when Scheduler is already in place: otherwise the resolver exits silently and no schedule appears. If Scheduler came second, upgrade MiniShop3 again or create the tasks by hand.
+:::
+
+<!-- MEDIA: screenshot-admin | must | Системные настройки, пространство имён `minishop3`, список отфильтрован по ключу `ms3_use_scheduler`: видна строка настройки с названием, описанием и значением «Да». | На стенде открыть системные настройки, выбрать пространство имён `minishop3`, в поиске ввести `ms3_use_scheduler`, включить настройку. -->
+In code the setting is changed through the `modSystemSetting` object:
 
 ```php
-$modx->setOption('ms3_use_scheduler', true);
+$setting = $modx->getObject(\MODX\Revolution\modSystemSetting::class, 'ms3_use_scheduler');
+$setting->set('value', 1);
+$setting->save();
 ```
 
-Or in the manager: **System → System Settings → minishop3 → ms3_use_scheduler**
+::: warning setOption() does not save the setting
+`$modx->setOption('ms3_use_scheduler', true)` changes the value only in memory for the current request — nothing reaches the database. Scheduler tasks run in a separate cron process and will never see such a value.
+:::
 
 ## Built-in tasks
 
-MiniShop3 registers these tasks on install:
+MiniShop3 registers four tasks on install:
+
+| Task | Type | Interval | File |
+| --- | --- | --- | --- |
+| `ms3_cleanup_tokens` | recurring | `+1 week` | `elements/tasks/cleanupTokens.php` |
+| `ms3_cleanup_drafts` | recurring | `+1 day` | `elements/tasks/cleanupDrafts.php` |
+| `ms3_csv_import` | one-time | — | `elements/tasks/csvImport.php` |
+| `ms3_send_notification` | one-time | — | `elements/tasks/sendNotification.php` |
+
+The interval is a string for the PHP `strtotime()` function, stored verbatim in the task's `interval` field. After a successful run Scheduler passes it to `strtotime()` and schedules the next one. If the string does not parse or resolves to a time in the past, `Invalid interval` lands in the MODX Error Log and the recurring task is never scheduled again.
 
 ### ms3_cleanup_tokens
 
-Cleans up expired customer auth tokens.
-
-| Parameter | Value |
-| --- | --- |
-| **Type** | Recurring |
-| **Interval** | 1 week |
-| **File** | `elements/tasks/cleanupTokens.php` |
-
-Removes rows from `ms3_customer_tokens` where the token has expired. Prevents stale data buildup.
+Removes expired rows from the customer auth token table `ms3_customer_tokens`.
 
 ### ms3_cleanup_drafts
 
-Cleans up old order drafts.
-
-| Parameter | Value |
-| --- | --- |
-| **Type** | Recurring |
-| **Interval** | 1 day |
-| **File** | `elements/tasks/cleanupDrafts.php` |
-
 Deletes orders with "Draft" status older than the period set in `ms3_delete_drafts_after`.
 
-**Period setting:**
+The period is any string PHP `strtotime()` understands: `-1 day`, `-2 weeks`, `-1 month`, `-1 year`. An empty value — the shipped default — disables auto-deletion.
 
 ```php
-// Delete drafts older than 2 weeks
-$modx->setOption('ms3_delete_drafts_after', '-2 weeks');
-
-// Delete drafts older than 1 month
-$modx->setOption('ms3_delete_drafts_after', '-1 month');
-
-// Disable auto-delete (empty value)
-$modx->setOption('ms3_delete_drafts_after', '');
+$setting = $modx->getObject(\MODX\Revolution\modSystemSetting::class, 'ms3_delete_drafts_after');
+$setting->set('value', '-2 weeks');
+$setting->save();
 ```
-
-::: tip Value format
-The setting accepts any value valid for PHP `strtotime()`: `-1 day`, `-2 weeks`, `-1 month`, `-1 year`, etc.
-:::
 
 ### ms3_csv_import
 
-Background product import from CSV.
+Imports products from CSV. The mode is a human decision: the import form carries a "synchronous or background" switch, and the background mode queues the task in Scheduler.
 
-| Parameter | Value |
-| --- | --- |
-| **Type** | One-time |
-| **Interval** | — |
-| **File** | `elements/tasks/csvImport.php` |
-
-Used for large CSV imports. When the sync import limit (`ms3_import_sync_limit`) is exceeded, the job is queued in Scheduler automatically.
+The `ms3_import_sync_limit` setting (300 rows by default) does not drive that choice directly: once the file holds more rows, the form reveals the mode switch, and without Scheduler installed it shows a warning that the file is too large for a synchronous pass. The import itself is never queued until the switch is set.
 
 **Script properties:**
 
 ```php
 $scriptProperties = [
-    'file' => 'path/to/file.csv',  // Path to CSV
-    'mapping' => [...],             // Column mapping
-    'options' => [...],             // Import options
+    'file' => 'path/to/file.csv',  // Path relative to MODX_BASE_PATH
+    'mapping' => [...],            // Columns mapped to product fields
+    'fields' => [...],             // Previous mapping format, kept for compatibility
+    'update' => false,             // Update existing products
+    'key' => 'article',            // Field used to find an existing product
+    'delimiter' => ';',            // Column delimiter
+    'skip_header' => false,        // Skip the first row
+    'debug' => false,              // Verbose log instead of writing to the database
+    'import_id' => 'import_...',   // Run identifier, set by the processor
 ];
 ```
 
 ### ms3_send_notification
 
-Deferred notification sending.
+Sends notifications without blocking the main request. Useful for slow channels — Telegram, for one.
 
-| Parameter | Value |
-| --- | --- |
-| **Type** | One-time |
-| **Interval** | — |
-| **File** | `elements/tasks/sendNotification.php` |
-
-Sends notifications asynchronously so the main request is not blocked. Useful for slow channels (Telegram, SMS).
+A notification is queued when both conditions hold: the `ms3_use_scheduler` setting is on and the `scheduler` service is registered. Otherwise it is sent right away, in the same request. The delay comes from the notification's own settings (the "Delay" field for a status and recipient type); with a zero delay the run is scheduled at `+1 second`.
 
 **Script properties:**
 
@@ -110,48 +99,83 @@ Sends notifications asynchronously so the main request is not blocked. Useful fo
 $scriptProperties = [
     'notification_class' => 'MiniShop3\Notifications\Order\StatusChangedNotification',
     'order_id' => 123,
-    'channel' => 'telegram',
-    'recipient_type' => 'manager',  // customer or manager
-    'recipient' => [...],
-    'notification_data' => [...],
+    'channel' => 'telegram',         // channel name: email or telegram
+    'recipient_type' => 'manager',   // customer or manager
+    'recipient' => [...],            // recipient data for the channel
+    'notification_data' => [...],    // snapshot of the notification data
 ];
+```
+
+The task rebuilds the notification from the class name. For `StatusChangedNotification` it takes the status ids out of `notification_data` (`new_status.id`, `old_status.id`) and loads the status objects again; if the new status is missing from the database, the task writes a line into the MODX error log and returns `false` — but the Scheduler run is still marked successful: the run status depends only on whether the task added an error through `addError()`. Look for such cases in the MODX log, not in the list of runs. Draft cleanup behaves the same way.
+
+**Channels.** Two are registered out of the box: `email` and `telegram`. There is also `SmsChannel`, but it is an abstract base: it cannot be registered as is — extend it and implement `sendSms()` for your provider. A custom channel is registered by a plugin on the `msOnRegisterNotificationChannels` event, which receives a `manager` parameter:
+
+```php
+$manager = $modx->getOption('manager', $scriptProperties);
+$manager->registerChannel(new \MyPackage\Notifications\SmsChannel($modx));
 ```
 
 ## Monitoring tasks
 
+```mermaid
+flowchart TB
+  q["schedule or Schedule a run"] --> s0["0 waiting"]
+  s0 --> cron[Cron pass]
+  cron --> s1["1 running"]
+  s1 --> s2["2 success"]
+  s1 --> s3["3 failure"]
+  s2 --> rec{Recurring}
+  rec -->|yes| nxt["New run after interval"]
+  rec -->|no| stop[End]
+```
+
 ### Via manager
 
-Go to **Extras → Scheduler** to view:
-
-- Registered tasks
-- Scheduled runs
-- Execution history
+**Extras → Scheduler** — three tabs: Tasks (the registered ones), Scheduled Runs and Historic Runs.
 
 ### Via API
+
+A task has no method returning its last run — runs are read with a query against `sTaskRun`:
 
 ```php
 /** @var \Scheduler $scheduler */
 $scheduler = $modx->services->get('scheduler');
 
-// Get task
 $task = $scheduler->getTask('minishop3', 'ms3_cleanup_tokens');
 
-// Get last run
-$lastRun = $task->getLastRun();
+$c = $modx->newQuery('sTaskRun');
+$c->where(['task' => $task->get('id')]);
+$c->sortby('executedon', 'DESC');
+$c->limit(1);
+
+/** @var \sTaskRun|null $lastRun */
+$lastRun = $modx->getObject('sTaskRun', $c);
+
 if ($lastRun) {
-    echo "Status: " . $lastRun->get('status');
-    echo "Completed: " . $lastRun->get('completed');
+    echo $lastRun->get('status');          // 0 scheduled, 1 executing, 2 success, 3 failure
+    echo $lastRun->get('executedon');      // run timestamp
+    echo $lastRun->get('processing_time'); // duration in seconds
+    echo $lastRun->get('message');         // message from the task
+
+    if ($lastRun->hasErrors()) {
+        print_r($lastRun->get('errors'));
+    }
 }
 ```
+
+The status numbers match the `sTaskRun::STATUS_SCHEDULED`, `STATUS_EXECUTING`, `STATUS_SUCCESS` and `STATUS_FAILURE` constants.
 
 ## Running tasks manually
 
 ### Via manager
 
-1. Go to **Extras → Scheduler → Tasks**
-2. Find the task (namespace: minishop3)
-3. Click **Schedule Run**
+1. Open **Extras → Scheduler → Tasks**.
+2. Find the task (namespace: minishop3).
+3. Pick **Schedule new run** from the context menu.
 
+The run goes into the queue. A single cron pass takes as many runs as the Scheduler setting `scheduler.tasks_per_run` allows — one by default, so with a non-empty queue a run may wait for several passes.
+
+<!-- MEDIA: screenshot-admin | nice | Scheduler: список задач с отфильтрованным пространством имён `minishop3`, на экране видны все вкладки интерфейса; у одной из задач открыто контекстное меню с пунктом «Запланировать запуск». Вторым кадром — окно, которое открывается после выбора пункта. | На стенде открыть Scheduler через меню «Дополнения», вызвать контекстное меню на `ms3_cleanup_tokens`. Окно снять, не сохраняя запуск. -->
 ### Via PHP
 
 ```php
@@ -161,14 +185,18 @@ $scheduler = $modx->services->get('scheduler');
 // Get task
 $task = $scheduler->getTask('minishop3', 'ms3_cleanup_tokens');
 
-// Schedule run
+// Queue a run — the next cron pass picks it up
 $task->schedule('+1 minute');
 
-// Or run immediately (synchronous)
-$task->runNow();
+// Tasks that take parameters receive them as the second argument
+$task->schedule('+1 minute', ['import_id' => 'import_123']);
 ```
 
+There is no synchronous run: `schedule()` only queues the run, and the Scheduler cron script executes it.
+
 ## Creating custom tasks
+
+Task types, passing data and the rules for returning a result are covered in the Scheduler docs: [Creating a task](../../scheduler/create-a-task) and [Task development](../../scheduler/task-development). Below is only what concerns tasks living next to MiniShop3.
 
 ### Registering a task
 
@@ -182,7 +210,7 @@ $task->fromArray([
     'class_key' => 'sFileTask',
     'namespace' => 'mypackage',
     'reference' => 'my_custom_task',
-    'content' => 'elements/tasks/myTask.php',  // Relative to core/components/mypackage/
+    'content' => 'elements/tasks/myTask.php',  // Relative to the namespace core path
     'description' => 'My custom MiniShop3 task',
     'recurring' => true,
     'interval' => '+1 hour',
@@ -194,6 +222,8 @@ $task->schedule('+1 minute');
 ```
 
 ### Task file
+
+Scheduler includes the file and gives it four variables: `$modx`, `$task`, `$run` and `$scriptProperties` (data from the second argument of `schedule()`). The returned value becomes the run result.
 
 ```php
 <?php
@@ -214,35 +244,51 @@ try {
     $modx->log(modX::LOG_LEVEL_INFO, "[myTask] Completed successfully");
     return true;
 } catch (\Exception $e) {
-    $run->addError($e->getMessage());
+    $run->addError('exception', ['error' => $e->getMessage()]);
     return false;
 }
 ```
+
+The first argument of `addError()` is the error type; details go in the array passed as the second argument. That call is what decides the fate of the run: a run is marked as failed when it holds at least one error record. Returning `false` on its own does not change the status — the returned value lands in the `message` field. More on this in [Logging errors in Scheduler](../../scheduler/task-development#errors).
 
 ## Related settings
 
 | Setting | Default | Description |
 | --- | --- | --- |
-| `ms3_use_scheduler` | `false` | Enable Scheduler integration |
-| `ms3_delete_drafts_after` | | Draft retention period (strtotime format) |
-| `ms3_import_sync_limit` | `300` | Sync import row limit |
+| `ms3_use_scheduler` | `false` | Send notifications through the Scheduler queue |
+| `ms3_delete_drafts_after` | empty | Draft retention period, `strtotime()` format |
+| `ms3_import_sync_limit` | `300` | Row count past which the import form offers the background mode |
+| `ms3_status_draft` | `1` | The status the cleanup task uses to pick drafts |
+
+On the Scheduler side, task behaviour is shaped by `scheduler.tasks_per_run`, `scheduler.recurring_on_failure` and the failure email settings.
 
 ## Troubleshooting
 
 ### Tasks not running
 
-1. **Check cron:** Scheduler needs cron configured
-2. **Check permissions:** Task files must be readable by the web server
-3. **Check logs:** Scheduler logs to MODX Error Log
+Check:
+
+- whether cron for Scheduler is configured — [how to set it up](../../scheduler/installation#cron);
+- whether the web server can read the task files;
+- what Scheduler writes to the MODX Error Log.
+
+With a long queue a run waits for its pass: by default cron takes one task at a time (`scheduler.tasks_per_run`).
 
 ### Recurring tasks not restarting
 
-- Requires Scheduler 1.8.0 or higher
-- Check the `recurring` field in task settings
+Most often the previous run ended with an error: after a failure the next run is not scheduled and `stopped due to failure` goes into the log. To keep the cycle going through errors, enable the Scheduler setting `scheduler.recurring_on_failure` — it is off by default.
+
+What else is worth checking:
+
+- the Scheduler version — 1.8.0 or higher is required;
+- the `recurring` field in task settings;
+- the `interval` value — a string that does not parse produces `Invalid interval` and stops the cycle.
 
 ### Task errors
 
-Task logs are available in:
+Task logs:
 
-- MODX Error Log (`core/cache/logs/error.log`)
-- Scheduler → Task Runs → select run → View Errors
+- MODX Error Log (`core/cache/logs/error.log`);
+- the Historic Runs tab in Scheduler — each run shows its message and error list.
+
+Error records live in the run's `errors` field: an array where every record carries `type` (the first argument of `addError()`), `timestamp` and the details you passed.

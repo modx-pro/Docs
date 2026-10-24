@@ -17,7 +17,7 @@ title: Поля товара
 - группы по секциям
 - подписи и xtype виджетов
 
-Новую колонку в `ms3_product_data` создают в [Дополнительных полях](/components/minishop3/interface/utilities/extra-fields). После создания дополнительного поля строка появляется здесь автоматически.
+Новую колонку в `ms3_product_data` создают в разделе [«Свои поля»](/components/minishop3/interface/utilities/extra-fields). После создания поля строка появляется здесь автоматически.
 
 ## Интерфейс
 

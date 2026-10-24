@@ -35,7 +35,7 @@ title: Товар
 | Дополнительно | `additional` | `tags`, `new`, `favorite`, `popular` |
 
 ::: tip Настройка
-Секции и поля: [Утилиты → Поля товара (админка)](utilities/product-fields). Новое поле в БД: [Cookbook extra fields](/components/minishop3/manager/extra-fields/cookbook), пример [Оптовая цена](/components/minishop3/manager/examples/product-extra-field).
+Секции и поля: [Утилиты → Поля товара (админка)](utilities/product-fields). Новое поле в БД: [Cookbook своих полей](/components/minishop3/manager/extra-fields/cookbook), пример [Оптовая цена](/components/minishop3/manager/examples/product-extra-field).
 :::
 
 ### Галерея
@@ -75,7 +75,7 @@ Vue-вкладка `ProductCategoriesTab`. Дерево: `GET /api/mgr/product-d
 
 Интерфейс группирует опции по `option_group_id` (`msOptionGroup`) и показывает их в вертикальных табах слева. Если группа одна — таб не показывается, поля идут списком.
 
-**Свой caption / description для категории.** Если у связки «опция ↔ категория» задан свой `caption` (см. [Настройки → Свойства товаров](settings/options#per-category-caption-description-override)), в форме товара отображается именно он. Это то же значение, которое уходит на витрину.
+**Свой caption / description для категории.** Если у связки «опция ↔ категория» задан свой `caption` (см. [Настройки → Свойства товаров](settings/options#per-category-caption-description-override)), в форме товара отображается именно он. Это то же значение, которое уходит на фронтенд.
 
 **Сохранение.** Значения попадают в POST как `options-{key}` (single) или `options-{key}` с JSON-массивом (multi). Процессор `MiniShop3\Processors\Product\Update` в `beforeSet` собирает всё в ключ `options`. `Utils::decodeOptionValue()` разворачивает JSON-массив. `afterSave` вызывает `OptionSyncService::saveProductOptions($productId, $options, removeOther: true)`. Ключи, отсутствующие в POST, из `msProductOption` удаляются.
 
@@ -340,7 +340,7 @@ PUT /api/mgr/product-data/{product_id}
 
 ### Секция SEO
 
-Секция `seo` уже в сиде и по умолчанию без полей. Перенесите в неё нужные поля из `main` / `additional` или extra fields модели `msProductData`.
+Секция `seo` уже в сиде и по умолчанию без полей. Перенесите в неё нужные поля из `main` / `additional` или свои поля модели `msProductData`.
 
 `longtitle` и `description` живут на вкладке «Документ» (`ms3_product_main_fields`), не в `product_data`.
 
@@ -379,7 +379,7 @@ if ($page === 'product_update' || $page === 'product_create') {
 ## Связанные страницы
 
 - [Утилиты: Поля товара](utilities/product-fields) — настройка отображения полей
-- [Утилиты: Дополнительные поля](utilities/extra-fields) — создание новых полей
+- [Утилиты: Свои поля](utilities/extra-fields) — создание новых полей
 - [Утилиты: Поля модели](utilities/model-fields) — управление полями из БД
 - [Галерея товара](gallery) — система изображений
 - [Системные настройки](../settings) — все настройки компонента

@@ -12,7 +12,7 @@ Customer account and profile. Auth flows: [Authorization](auth).
 | Method | Path | Notes |
 | --- | --- | --- |
 | `GET` | `/customer/me` | `authenticated`, `customer`, token meta |
-| `POST` | `/customer/token/refresh` | Rotation |
+| `POST` | `/customer/token/refresh` | Rotates a guest token too |
 | `POST` | `/customer/logout` | optional token |
 | `POST` | `/customer/login` | no middleware |
 | `POST` | `/customer/register` | no middleware |
@@ -27,7 +27,7 @@ Customer account and profile. Auth flows: [Authorization](auth).
 | `POST` | `/customer/add` | Quick single field |
 | `POST` | `/customer/changeAddress` | Address into order draft |
 
-Profile fields are trimmed by allowlist / validation on the server. Invalid or guest token without a customer → authorization error.
+The server trims profile fields by an allowlist. A guest token gets an authorization error on `profile`, `add` and `changeAddress`, while `me` and `token/refresh` succeed for a guest.
 
 ## Addresses
 
@@ -40,6 +40,8 @@ Profile fields are trimmed by allowlist / validation on the server. Invalid or g
 | `DELETE` | `/customer/addresses/{id}` |
 | `PUT` | `/customer/addresses/{id}/set-default` |
 
+`POST` answers 201. `name`, `city` and `street` are required — without them the response is 422 `validation_failed`.
+
 ## Account orders
 
 | Method | Path |
@@ -51,6 +53,16 @@ Profile fields are trimmed by allowlist / validation on the server. Invalid or g
 Submitted customer orders, not the `/order/get` draft.
 
 ## Email
+
+```mermaid
+flowchart TD
+  verify["GET email/verify?token="] --> format{"format=json?"}
+  format -->|yes| json["JSON"]
+  format -->|no| html{"html=1?"}
+  html -->|no| json
+  html -->|yes, success| ok["302 to the success URL or site_url?ms3_email_verified=1"]
+  html -->|yes, failure| fail["302 to site_url?ms3_email_verified=0"]
+```
 
 | Method | Path | Notes |
 | --- | --- | --- |

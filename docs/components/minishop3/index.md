@@ -56,7 +56,7 @@ items: [
           { text: 'Галерея', link: 'interface/utilities/gallery' },
           { text: 'Импорт', link: 'interface/utilities/import' },
           { text: 'Поля товара', link: 'interface/utilities/product-fields' },
-          { text: 'Дополнительные поля', link: 'interface/utilities/extra-fields' },
+          { text: 'Свои поля', link: 'interface/utilities/extra-fields' },
           { text: 'Колонки гридов', link: 'interface/utilities/grid-columns' },
           { text: 'Поля модели', link: 'interface/utilities/model-fields' },
         ],
@@ -64,13 +64,13 @@ items: [
     ],
   },
   {
-    text: 'Cookbook менеджера',
+    text: 'Cookbook админки',
     link: 'manager/',
     items: [
       { text: 'Обзор', link: 'manager/' },
       { text: 'Поле в заказе', link: 'manager/examples/order-custom-field' },
       { text: 'Поле у товара', link: 'manager/examples/product-extra-field' },
-      { text: 'Дополнительные поля', link: 'manager/extra-fields/cookbook' },
+      { text: 'Свои поля', link: 'manager/extra-fields/cookbook' },
       { text: 'Поля модели', link: 'manager/model-fields/cookbook' },
       { text: 'Поля товара', link: 'manager/product-fields/cookbook' },
       { text: 'Колонки грида', link: 'manager/grid-config/cookbook' },
@@ -115,7 +115,7 @@ items: [
           { text: 'Уведомления', link: 'development/events/notifications' },
           { text: 'Импорт', link: 'development/events/import' },
           { text: 'msProducts', link: 'development/events/msproducts' },
-          { text: 'Менеджер', link: 'development/events/manager' },
+          { text: 'Админка', link: 'development/events/manager' },
         ],
       },
       {
@@ -185,7 +185,7 @@ flowchart TB
   mgr --> mgrApi --> core
 ```
 
-- **Web API** — `api.php` (`/api/v1/*`) для витрины и headless: корзина, заказ, ЛК, каталог, delivery/payment. [Документация](/components/minishop3/development/web-api/)
+- **Web API** — `api.php` (`/api/v1/*`) для фронтенда и headless: корзина, заказ, ЛК, каталог, delivery/payment. [Документация](/components/minishop3/development/web-api/)
 - **Service Container** — зависимости через DI-контейнер MODX
 - **Vue 3 + PrimeVue** — современный интерфейс админки через [VueTools](/components/vuetools/)
 - **Современный фронтенд** — без jQuery, нативный JavaScript
@@ -237,8 +237,8 @@ MiniShop3 использует следующие PHP библиотеки (вк
 
 Стандартный способ установки через менеджер пакетов MODX с подключёнными репозиториями:
 
-1. Перейдите в **Extras → Installer**
-2. Нажмите **Download Extras**
+1. Перейдите в **Пакеты → Установщик**
+2. Нажмите **Загрузить пакеты**
 3. Установите **[VueTools](/components/vuetools/)** (если ещё не установлен)
 4. Найдите **MiniShop3** в списке доступных пакетов
 5. Нажмите **Download** и затем **Install**
@@ -251,8 +251,8 @@ MiniShop3 использует следующие PHP библиотеки (вк
 
 1. Скачайте транспортный пакет со страницы [релизов GitHub](https://github.com/modx-pro/MiniShop3/releases)
 2. Загрузите файл `.transport.zip` в `/core/packages/` вашего сайта
-3. Перейдите в **Extras → Installer**
-4. Нажмите **Search locally for packages**
+3. Перейдите в **Пакеты → Установщик**
+4. Нажмите **Искать пакеты локально**
 5. Найдите MiniShop3 в списке и нажмите **Install**
 
 ### Способ 3: Установка из исходников (для разработчиков)
@@ -284,7 +284,7 @@ cd ..
 php _build/build.php
 ```
 
-После установки перейдите в **Extras → MiniShop3** для настройки магазина.
+После установки перейдите в **Пакеты → MiniShop3** для настройки магазина.
 
 Подробное руководство по первоначальной настройке — на странице [Быстрый старт](quick-start).
 
@@ -306,7 +306,7 @@ core/components/minishop3/
 │   ├── chunks/             # Чанки (шаблоны Fenom)
 │   ├── plugins/            # MODX плагины
 │   ├── tasks/              # Задачи Scheduler
-│   └── templates/          # Шаблоны страниц витрины
+│   └── templates/          # Шаблоны страниц фронтенда
 ├── lexicon/                # Языковые файлы (en, ru)
 ├── migrations/             # Миграции Phinx (включая сиды)
 ├── schema/                 # xPDO схема БД

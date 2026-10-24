@@ -5,7 +5,7 @@ description: "MiniShop3 Web API overview: api.php, envelope, and middleware"
 
 # Web API
 
-Storefront and headless entry point:
+Frontend and headless entry point:
 
 ```text
 /assets/components/minishop3/api.php?route=/api/v1/{path}
@@ -17,12 +17,24 @@ Manager API (`connector.php`) is not documented on this page.
 
 ## Envelope
 
-**Success:**
+With an empty `route` the server answers 400 before the router runs:
+
+```json
+{
+  "success": false,
+  "message": "Route parameter is required",
+  "code": 400
+}
+```
+
+A router response carries `success`, `message` and `data`. An error adds `code`, `errors` and `error_code`.
+
+**Success.** `message` is most often `null`: the catalog and account controllers do not pass it. An empty string arrives where the calling code passed `''` — `GET /customer/token/get`, for one. Cart and order routes return the lexicon entry of the operation: `GET /cart/get` answers with `Cart data retrieved`.
 
 ```json
 {
   "success": true,
-  "message": "",
+  "message": null,
   "data": {}
 }
 ```
@@ -42,6 +54,19 @@ Manager API (`connector.php`) is not documented on this page.
 The `errors` key is always present in error bodies (often `null`). `error_code` is resolved on the server. Details: [Errors](errors).
 
 ## Middleware
+
+```mermaid
+flowchart TD
+  req["api.php?route="] --> cors["CORS"]
+  cors --> limit["RateLimit"]
+  limit --> service["ServiceCheck"]
+  service --> token{"TokenMiddleware?"}
+  token -->|no: catalog, health, login| handler["Handler"]
+  token -->|yes, no token| mint["Guest token and cookie"]
+  token -->|optional: token/get, logout| skip["No mint, no 401"]
+  mint --> handler
+  skip --> handler
+```
 
 | Order | Middleware | Purpose |
 | --- | --- | --- |

@@ -8,7 +8,7 @@ title: Способы оплаты
 ## Для владельца магазина
 
 1. Создайте способ оплаты: название, описание, логотип, активность.
-2. Привяжите его к нужным [доставкам](/components/minishop3/interface/settings/deliveries). Без связки покупатель не сможет выбрать пару на витрине.
+2. Привяжите его к нужным [доставкам](/components/minishop3/interface/settings/deliveries). Без связки покупатель не сможет выбрать пару на фронтенде.
 3. Для оплаты «при получении» оставьте поле `class` пустым. Заказ получит выбранный `payment_id`.
 4. Для онлайн-оплаты установите платёжное дополнение из каталога (например [msp3YooKassa](/components/msp3yookassa/), [mspTBank](/components/msptbank/), [msp3Sberbank](/components/msp3sberbank/)) и укажите класс обработчика в поле `class`, как в инструкции пакета.
 5. Проверьте переход после оплаты: `ms3_order_success_page_id` и страницу «Спасибо» с `msGetOrder`.
@@ -41,7 +41,7 @@ title: Способы оплаты
 
 ## Обработчики платежей
 
-Встроенных обработчиков нет: онлайн-оплату даёт платёжное дополнение из каталога или собственный класс. Класс наследуется от абстрактной `Payment` и указывается в карточке способа оплаты; готовые шлюзы описаны в документации дополнений. Обязательны только `send()` и `receive()`:
+Встроенных обработчиков нет: онлайн-оплату даёт платёжное дополнение из каталога или собственный класс. Класс наследуется от абстрактной `Payment` и указывается в карточке способа оплаты; готовые платёжные сервисы описаны в документации дополнений. Обязательны только `send()` и `receive()`:
 
 ```php
 <?php
@@ -78,7 +78,7 @@ class MyPayment extends Payment
 MyComponent\Payment\MyPayment
 ```
 
-Секреты шлюза задают в `properties` (JSON) карточки оплаты:
+Секреты платёжного сервиса задают в `properties` (JSON) карточки оплаты:
 
 ```json
 {
@@ -92,13 +92,13 @@ MyComponent\Payment\MyPayment
 
 ## Уведомления об оплате (webhook / callback)
 
-В ядре MiniShop3 **нет** готового `payment/handler.php`. URL уведомлений задаёт платёжное дополнение (например `webhook.php` / `callback.php` в `assets/components/{ns}/`). Смотрите документацию конкретного шлюза ([msp3YooKassa](/components/msp3yookassa/), [mspTBank](/components/msptbank/) и т.д.).
+В ядре MiniShop3 **нет** готового `payment/handler.php`. URL уведомлений задаёт платёжное дополнение (например `webhook.php` / `callback.php` в `assets/components/{ns}/`). Смотрите документацию конкретного платёжного сервиса ([msp3YooKassa](/components/msp3yookassa/), [mspTBank](/components/msptbank/) и т.д.).
 
 Класс оплаты реализует `send()` и приём уведомления, по полученному уведомлению он меняет статус заказа. Ссылка на оплату в письмах и `msGetOrder` строится через `PaymentLinkResolver`.
 
 ```mermaid
 flowchart TB
-  OrderDraft[Черновик_заказа] --> SetPayment[payment_id_витрина_или_API]
+  OrderDraft[Черновик_заказа] --> SetPayment[payment_id_фронтенд_или_API]
   SetPayment --> SendMethod[PaymentProvider_send]
   SendMethod --> PaymentLink[payment_link_у_провайдера]
   PaymentLink --> Redirect[Страница_оплаты_или_ms3_order_success_page_id]
@@ -120,7 +120,7 @@ flowchart TB
 GET /api/v1/order/get
 ```
 
-В `data.order` лежат поля заказа, в том числе `delivery_id` / `payment_id` и `address_*`. Смена способа: `POST /api/v1/order/add` или `POST /api/v1/order/set` с телом-обёрткой `{"fields": {"payment_id": 2}}`. Витрина на Fenom может отображать выбор через `msOrder`.
+В `data.order` лежат поля заказа, в том числе `delivery_id` / `payment_id` и `address_*`. Смена способа: `POST /api/v1/order/add` или `POST /api/v1/order/set` с телом-обёрткой `{"fields": {"payment_id": 2}}`. Фронтенд на Fenom может отображать выбор через `msOrder`.
 
 ### Стоимость оплаты
 
