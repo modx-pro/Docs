@@ -5,7 +5,7 @@ description: "MiniShop3 Web API overview: api.php, envelope, and middleware"
 
 # Web API
 
-Storefront and headless entry point:
+Frontend and headless entry point:
 
 ```text
 /assets/components/minishop3/api.php?route=/api/v1/{path}

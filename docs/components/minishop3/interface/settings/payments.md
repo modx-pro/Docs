@@ -98,7 +98,7 @@ MyComponent\Payment\MyPayment
 
 ```mermaid
 flowchart TB
-  OrderDraft[Черновик_заказа] --> SetPayment[payment_id_витрина_или_API]
+  OrderDraft[Черновик_заказа] --> SetPayment[payment_id_фронтенд_или_API]
   SetPayment --> SendMethod[PaymentProvider_send]
   SendMethod --> PaymentLink[payment_link_у_провайдера]
   PaymentLink --> Redirect[Страница_оплаты_или_ms3_order_success_page_id]

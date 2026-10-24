@@ -20,7 +20,7 @@ A short path like `Gallery\Upload` with a `processors_path` option does not work
 ::: warning A processor checks its permission wherever you call it from
 Almost every MS3 processor declares a `$permission` (`msproductfile_save` for `Gallery\Upload`), and `ModelProcessor::checkPermissions()` boils down to `$modx->hasPermission($this->permission)`. The check runs inside `run()`, **before** `process()` — a PHP call is no exception.
 
-So a storefront snippet, where no manager permissions are in play, gets a refusal rather than a result: `isError()` is true and the message is `permission_denied_processor` with the permission name. When the operation has to run on behalf of a visitor, call a service (`$ms3->product`, `ProductImageService` and the rest) instead of a processor — services check no permissions, which makes the check your responsibility.
+So a frontend snippet, where no manager permissions are in play, gets a refusal rather than a result: `isError()` is true and the message is `permission_denied_processor` with the permission name. When the operation has to run on behalf of a visitor, call a service (`$ms3->product`, `ProductImageService` and the rest) instead of a processor — services check no permissions, which makes the check your responsibility.
 :::
 
 ## Manager API vs processors
@@ -28,7 +28,7 @@ So a storefront snippet, where no manager permissions are in play, gets a refusa
 | Layer | When to use |
 | --- | --- |
 | `Controllers\Api\Manager\*` | Vue manager UI (orders, customers, settings) |
-| `Controllers\Api\Web\*` | Storefront, SPA, mobile apps |
+| `Controllers\Api\Web\*` | Frontend, SPA, mobile apps |
 | `MiniShop3\Processors\*` | `runProcessor()` from PHP, legacy connector, utilities with `RunsMs3Processors` |
 
 Processor groups:

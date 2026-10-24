@@ -70,9 +70,9 @@ Every `/order/*` path goes through `TokenMiddleware` with token auto-mint.
 
 A draft usually holds `delivery_id`, `payment_id`, `address_*`, and contact fields. The exact set depends on the delivery rules. The storefront script calls `order/add` for a single field, not `order/set`.
 
-### Fields the storefront may not change {#protected-fields}
+### Fields the frontend may not change {#protected-fields}
 
-Since 1.14.2-beta1 the internal draft columns are closed for storefront writes. Before that `/order/add` accepted any key backed by a column of the same name: a visitor holding their own cart token could set someone else's `customer_id` or zero out `cost`.
+Since 1.14.2-beta1 the internal draft columns are closed for frontend writes. Before that `/order/add` accepted any key backed by a column of the same name: a visitor holding their own cart token could set someone else's `customer_id` or zero out `cost`.
 
 | Object | Closed columns |
 | --- | --- |
@@ -117,4 +117,4 @@ flowchart LR
 4. `GET /order/cost`
 5. `POST /order/submit`
 
-A Fenom storefront can build the form with `msOrder`; headless clients use the lists above. See [Examples](examples).
+A Fenom frontend can build the form with `msOrder`; headless clients use the lists above. See [Examples](examples).

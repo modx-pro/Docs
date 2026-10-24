@@ -442,7 +442,7 @@ MODX отдаёт готовый HTML раньше, чем выполнится 
         {/if}
     </a>
 
-    {* Добавление в корзину — только формой: скрипт витрины ищет ms3_action внутри формы *}
+    {* Добавление в корзину — только формой: скрипт фронтенда ищет ms3_action внутри формы *}
     <form method="post" class="ms3_form" data-ms3-form>
         <input type="hidden" name="id" value="{$id}">
         <input type="hidden" name="count" value="1">

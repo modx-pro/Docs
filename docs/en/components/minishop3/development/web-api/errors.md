@@ -64,7 +64,7 @@ In TypeScript, type the response as a union: success | error with `error_code` a
 
 ## A closed draft field
 
-Since 1.14.2-beta1 the internal columns of the order draft are closed for storefront writes. An attempt returns the `ms3_err_field_protected` lexicon entry: `POST /order/add` answers 400 with `business_rule`, `POST /order/set` answers 422 with `validation_failed` and the key in `errors`. `POST /order/remove` answers 404 `ms3_err_field_nf` on such a key, and `POST /order/submit` drops it silently.
+Since 1.14.2-beta1 the internal columns of the order draft are closed for frontend writes. An attempt returns the `ms3_err_field_protected` lexicon entry: `POST /order/add` answers 400 with `business_rule`, `POST /order/set` answers 422 with `validation_failed` and the key in `errors`. `POST /order/remove` answers 404 `ms3_err_field_nf` on such a key, and `POST /order/submit` drops it silently.
 
 The list of closed columns and how to extend it: see [checkout](checkout#protected-fields).
 

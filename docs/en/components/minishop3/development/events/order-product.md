@@ -8,7 +8,7 @@ Adding, updating and removing order line items.
 ::: info Context
 Since 1.12 the manager edits lines via the **Manager API** (`OrdersController`: `POST/PUT/DELETE …/orders/{id}/products/…`), not the older processors. Parameters include `msOrder` and `msOrderProduct`.
 
-For storefront cart events see [Cart events](cart).
+For frontend cart events see [Cart events](cart).
 :::
 
 ::: info A second source of msOnBeforeCreateOrderProduct / msOnCreateOrderProduct

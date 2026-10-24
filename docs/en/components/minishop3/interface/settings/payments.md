@@ -10,7 +10,7 @@ Managed via **Extras → MiniShop3 → Settings → Payments**.
 ## For the store owner
 
 1. Create a payment method: name, description, logo, active flag.
-2. Link it to the needed [deliveries](/en/components/minishop3/interface/settings/deliveries). Without a link the customer cannot pick the pair on the storefront.
+2. Link it to the needed [deliveries](/en/components/minishop3/interface/settings/deliveries). Without a link the customer cannot pick the pair on the frontend.
 3. For pay-on-delivery leave the `class` field empty. The order simply stores the selected `payment_id`.
 4. For online payment install a payment extra from the catalog (for example [msp3YooKassa](/en/components/msp3yookassa/), [mspTBank](/en/components/msptbank/), [msp3Sberbank](/components/msp3sberbank/)) and set the handler class in `class` as in that package's docs.
 5. Check the post-payment redirect: `ms3_order_success_page_id` and the Thanks page with `msGetOrder`.
@@ -194,7 +194,7 @@ Draft:
 GET /api/v1/order/get
 ```
 
-`data.order` holds order fields, including `delivery_id` / `payment_id` and `address_*`. Change method: `POST /api/v1/order/add` or `POST /api/v1/order/set` with keys `payment_id` / `delivery_id`. The Fenom storefront can render the choice via `msOrder`.
+`data.order` holds order fields, including `delivery_id` / `payment_id` and `address_*`. Change method: `POST /api/v1/order/add` or `POST /api/v1/order/set` with keys `payment_id` / `delivery_id`. The Fenom frontend can render the choice via `msOrder`.
 
 ### Payment cost
 

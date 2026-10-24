@@ -174,7 +174,7 @@ MiniShop3 is designed specifically for MODX Revolution 3.x and takes full advant
 
 ### Improved architecture
 
-- **Web API** — `api.php` (`/api/v1/*`) for storefront and headless: cart, checkout, account, catalog, delivery/payment. [Documentation](/en/components/minishop3/development/web-api/)
+- **Web API** — `api.php` (`/api/v1/*`) for frontend and headless: cart, checkout, account, catalog, delivery/payment. [Documentation](/en/components/minishop3/development/web-api/)
 - **Service Container** — dependencies via MODX DI container
 - **Vue 3 + PrimeVue** — modern Manager UI via [VueTools](/en/components/vuetools/)
 - **Modern frontend** — no jQuery, native JavaScript

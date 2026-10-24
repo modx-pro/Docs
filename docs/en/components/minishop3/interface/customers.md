@@ -29,11 +29,11 @@ A separate dialog works with customer addresses:
 | `PUT` | `/api/mgr/customers/{id}/addresses/{addressId}` |
 | `DELETE` | `/api/mgr/customers/{id}/addresses/{addressId}` |
 
-The customer sees the same addresses on the storefront: [Shipping addresses](/en/components/minishop3/frontend/customer-addresses).
+The customer sees the same addresses on the frontend: [Shipping addresses](/en/components/minishop3/frontend/customer-addresses).
 
 ## Link to orders
 
-An order has `customer_id`. In the orders grid you can show a customer column and open the card. On the storefront you can turn a guest into a customer at checkout if `ms3_customer_auto_register_on_order` is on.
+An order has `customer_id`. In the orders grid you can show a customer column and open the card. On the frontend you can turn a guest into a customer at checkout if `ms3_customer_auto_register_on_order` is on.
 
 ## Sync with modUser
 
