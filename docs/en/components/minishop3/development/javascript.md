@@ -451,6 +451,54 @@ Remove address.
 await ms3.customerAPI.deleteAddress(5)
 ```
 
+#### add(key, value)
+
+Write a single customer field. `POST /api/v1/customer/add`.
+
+```javascript
+await ms3.customerAPI.add('phone', '+7 900 123-45-67')
+```
+
+#### changeAddress(key, value)
+
+Change the address in the order form. Hook context: `{ key, value }`, and `response` after the answer.
+
+```javascript
+await ms3.customerAPI.changeAddress('address_hash', 'addr_123')
+```
+
+#### login(email, password)
+
+`POST /api/v1/customer/login`. Two arguments, not an object.
+
+```javascript
+await ms3.customerAPI.login('ivan@example.com', 'secret')
+```
+
+#### register(data)
+
+`POST /api/v1/customer/register`.
+
+#### setDefaultAddress(id)
+
+`PUT /api/v1/customer/addresses/{id}/set-default`.
+
+#### getOrders(params)
+
+`GET /api/v1/customer/orders`. Query parameters: `limit`, `offset`, `status`.
+
+#### getOrder(orderId)
+
+`GET /api/v1/customer/orders/{orderId}`.
+
+#### cancelOrder(orderId)
+
+`POST /api/v1/customer/orders/{orderId}/cancel`.
+
+#### resendVerificationEmail()
+
+`POST /api/v1/customer/email/resend-verification`.
+
 ## Hook system {#hooks}
 
 Hooks let you extend behavior without changing source code.
