@@ -12,7 +12,7 @@ Open **Extras → MiniShop3 → Settings → Payments**.
 1. Create a payment method: name, description, logo, and the active flag.
 2. Link it to the [deliveries](/en/components/minishop3/interface/settings/deliveries) you need. Without that link the customer cannot pick the pair on the storefront.
 3. For payment on delivery, leave `class` empty. The order stores the selected `payment_id`.
-4. For online payment, install a payment extra from the catalog (for example [msp3YooKassa](/en/components/msp3yookassa/), [mspTBank](/en/components/msptbank/), [msp3Sberbank](/en/components/msp3sberbank/)) and set the handler class in `class`, as that package's docs describe.
+4. For online payment, install a payment extra from the catalog (for example [msp3YooKassa](/en/components/msp3yookassa/), [mspTBank](/en/components/msptbank/), [msp3Sberbank](/components/msp3sberbank/)) and set the handler class in `class`, as that package's docs describe.
 5. Check the redirect after payment: `ms3_order_success_page_id` and the Thank-you page with `msGetOrder`.
 
 Surcharge in the `price` field:
