@@ -9,6 +9,19 @@ Besides the parameters listed below, every event on this page also receives `con
 
 ## Which events can abort the operation
 
+```mermaid
+flowchart TD
+  output["output() non-empty"] --> before["msOnBefore*"]
+  before --> stop["Request aborted, the customer sees an error"]
+  output --> added["msOnAddToCart"]
+  added --> saved["Product already saved"]
+  saved --> err["The request still returns an error"]
+  output --> done["change, remove, empty"]
+  done --> ignore["The response is not read"]
+  output --> getCart["msOnGetCart and msOnGetStatusCart"]
+  getCart --> patch["Data substitution only"]
+```
+
 `$modx->event->output(...)` does not stop the work everywhere: the core reads the plugin response only for some of the events.
 
 | Event | Reaction to `output()` |
@@ -18,7 +31,7 @@ Besides the parameters listed below, every event on this page also receives `con
 | `msOnChangeInCart`, `msOnChangeOptionInCart`, `msOnRemoveFromCart`, `msOnEmptyCart` | Ignored — the operation has already completed |
 | `msOnGetCart`, `msOnGetStatusCart` | Used only to substitute data, not to abort |
 
-These four after-events cannot return an error: the core calls them without reading the response. Put your checks into the paired `msOnBefore*`.
+Put checks in the paired `msOnBefore*` events. Where the response is ignored, a plugin error disappears and the customer never sees it.
 
 ## msOnBeforeGetCart
 
@@ -157,14 +170,24 @@ switch ($modx->event->name) {
 
 ## msOnAddToCart
 
-Fired **after** a product has been successfully added — it is already saved and the draft is recalculated.
+```mermaid
+flowchart TD
+  add["add()"] --> before["msOnBeforeAddToCart"]
+  before --> exists{"Key already in the cart?"}
+  exists -->|no| onAdd["msOnAddToCart"]
+  exists -->|yes| change["change()"]
+  change --> beforeChange["msOnBeforeChangeInCart"]
+  beforeChange --> onChange["msOnChangeInCart"]
+```
+
+Fired **after** a product has been successfully added. The product is already saved and the draft is recalculated.
 
 ::: warning Can fail an already completed request
 The product is saved by this point, yet the plugin can still call `$modx->event->output(...)` — `add()` then returns an error to the client although the cart has already changed.
 :::
 
 ::: tip Not fired when the same product is added again
-If the product+options key is already in the cart, `msOnBeforeAddToCart` still fires — an `output()` on it blocks the quantity increase as well. Only then does `add()` hand the work over to `change()`: `msOnBeforeChangeInCart` and `msOnChangeInCart` fire, while `msOnAddToCart` does not. The quantity is summed with what is already there: 2 units on top of 3 give `count = 5`, and that is the value the change events receive.
+If the product+options key is already in the cart, `msOnBeforeAddToCart` still fires. `output()` on it also blocks the quantity increase. Then `add()` hands the work to `change()`, `msOnBeforeChangeInCart` and `msOnChangeInCart` fire, and `msOnAddToCart` does not. Quantities are summed: 2 units added to the existing 3 give `count = 5`.
 :::
 
 ### Parameters

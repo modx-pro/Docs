@@ -7,23 +7,17 @@ Events for the notification system: sending, modifying, registering channels.
 
 ## Built-in channels
 
-MiniShop3 includes two notification channels out of the box:
-
 | Channel | Class | Description |
 | --- | --- | --- |
-| `email` | `EmailChannel` | Sends via MODX modMail |
-| `telegram` | `TelegramChannel` | Sends via Telegram Bot API |
-
-### Email channel
-
-Uses standard MODX modMail. Templates are configured via chunks.
+| `email` | `EmailChannel` | Sends via MODX modMail. Templates are set by chunks |
+| `telegram` | `TelegramChannel` | Sends via the Telegram Bot API |
 
 ### Telegram channel
 
-Sends messages via Telegram Bot API. Requires settings:
+The channel needs two system settings:
 
-- `ms3_telegram_bot_token` — bot token
-- `ms3_telegram_manager` — recipient Chat ID
+- `ms3_telegram_bot_token` is the bot token.
+- `ms3_telegram_manager` is the managers' Chat IDs, separated by commas.
 
 ::: warning Telegram limitation
 A Telegram bot cannot start a conversation. The customer must send the first message to the bot. So Telegram notifications only work for managers who have set their Chat ID in advance.
@@ -31,9 +25,9 @@ A Telegram bot cannot start a conversation. The customer must send the first mes
 
 ### Telegram notifications for customers
 
-You need the customer's consent for notifications and their Chat ID stored in the store profile.
+The built-in channel does not notify customers. You assemble that flow yourself. You need the customer's consent, a link to their Telegram account, and a stored Chat ID.
 
-#### Step 1: Add a field for Chat ID
+#### Step 1: Where the channel reads the Chat ID
 
 The channel looks for a Chat ID in two places, in this order:
 
@@ -161,26 +155,31 @@ Instead of your own bot, you can use third-party services (SendPulse, Unisender,
 
 ## msOnBeforeSendNotification
 
-Fired **before** sending a notification. Lets you modify the recipient, replace the channel list or cancel sending.
+```mermaid
+flowchart LR
+  address["msOrderAddress: email and phone"] --> customer["msCustomer: email and phone"]
+  customer --> profile["modUserProfile.extended: telegram_chat_id"]
+  profile --> recipient["recipient"]
+```
+
+Fired **before** sending a notification. You can change the recipient, replace the channel list, or cancel sending.
 
 ### Parameters
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `notification` | `Notification` | The notification object (an abstract class; the concrete subclass is e.g. `StatusChangedNotification`) |
-| `recipient` | `array` (by reference) | Recipient data — see the payload below |
-| `recipientType` | `string` | `customer` or `manager` |
-| `channels` | `string[]` (by reference) | Channel names, e.g. `['email', 'telegram']` |
+| `notification` | `Notification` | A concrete subclass of the abstract `Notification`, for example `StatusChangedNotification` |
+| `recipient` | `array` | Recipient data, see the structure below |
+| `recipientType` | `string` | Recipient type: `customer` or `manager` |
+| `channels` | `string[]` | Channel list, for example `['email', 'telegram']` |
 
 ### The `recipient` payload {#recipient}
 
 For a `customer` recipient (since 1.12.0) `recipient` is assembled by `OrderStatusService::getCustomerRecipient()`. Source priority:
 
 1. **`msOrderAddress`** of the order — the email and phone from the checkout form of **this particular** order.
-2. **`msCustomer`** — a fallback for email and phone, and the source of `telegram_chat_id` and of the `customer` array.
-3. **`modUserProfile`** — the last fallback for email, phone and Telegram when the first two are empty.
-
-The resulting `email` and `phone` are also copied into `recipient['customer']['email']` and `['phone']` — for plugins that read the contact from there.
+2. **`msCustomer`** is the fallback for email and phone, and the source of the `customer` array. An extra field `telegram_chat_id` arrives with that array when the field exists.
+3. **`modUserProfile`** is the last fallback for email and phone. For `telegram_chat_id` it is the primary source: the `extended` key on the user profile whose id is stored in `msOrder.user_id`.
 
 | Key | Type | Source | Description |
 | --- | --- | --- | --- |
@@ -230,7 +229,11 @@ switch ($modx->event->name) {
 
 ### Modifying via returnedValues
 
-You can also change `$recipient` and `$channels` by reference, but the explicit contract is the keys in `returnedValues`:
+Change the recipient and the channel list with the `recipient` and `channels` keys in `returnedValues`. Editing `$recipient` and `$channels` by reference also works, and the keys make the change explicit.
+
+::: tip Why a reference works here and not on the other pages
+`NotificationManager` passes these two parameters as explicit references (`'recipient' => &$recipient`), so the change reaches the caller. That is an exception. Events that go through `Utils::invokeEvent` build parameters with `array_merge()`, and the reference is lost there. See the [plugin guide](./plugins-guide).
+:::
 
 ```php
 <?php
@@ -328,7 +331,7 @@ Fired when registering notification channels. Lets you add your own channels.
 `NotificationManager::registerChannel()` takes a `ChannelInterface` object, not a callback.
 
 ::: tip SMS already has a base class
-The package ships an abstract `MiniShop3\Notifications\Channels\SmsChannel`: it already reports the channel name `sms`, pulls the phone number from the recipient, the customer or the address, and normalises it. The channel is not registered by default — extend it and implement the single `sendSms(string $phone, SmsMessage $message): bool` method for your provider instead of writing a channel from scratch. Only `EmailChannel` and `TelegramChannel` are registered out of the box.
+The package ships an abstract `MiniShop3\Notifications\Channels\SmsChannel`. It already reports the channel name `sms`, reads the phone from the recipient, the customer or the address, and normalises it. The channel is not registered by default. Extend it and implement `sendSms(string $phone, SmsMessage $message): bool` for your provider.
 :::
 
 ```php
@@ -383,52 +386,5 @@ class SmsChannel implements ChannelInterface
         // Call your SMS API
         return true;
     }
-}
-```
-
----
-
-## Full example: notification analytics
-
-```php
-<?php
-/**
-
- * Plugin: Notification analytics
- * Events: msOnBeforeSendNotification, msOnAfterSendNotification
-
- */
-
-switch ($modx->event->name) {
-
-    case 'msOnBeforeSendNotification':
-        $notification = $scriptProperties['notification'];
-
-        // Remember the start time to measure the duration
-        $modx->eventData['notification_start'] = microtime(true);
-        break;
-
-    case 'msOnAfterSendNotification':
-        $notification = $scriptProperties['notification'];
-        $recipient = $scriptProperties['recipient'];
-        $results = $scriptProperties['results'];
-
-        $startTime = $modx->eventData['notification_start'] ?? microtime(true);
-        $duration = round((microtime(true) - $startTime) * 1000, 2);
-
-        foreach ($results as $channelName => $success) {
-            $modx->log(
-                $success ? modX::LOG_LEVEL_INFO : modX::LOG_LEVEL_ERROR,
-                sprintf(
-                    '[Notification] %s → %s (%s): %s in %sms',
-                    $notification::class,
-                    $recipient['email'] ?? $recipient['phone'] ?? 'unknown',
-                    $channelName,
-                    $success ? 'ok' : 'fail',
-                    $duration
-                )
-            );
-        }
-        break;
 }
 ```
