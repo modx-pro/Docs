@@ -7,11 +7,14 @@ description: "A list of miniShop3 product ids, comma-separated in the inspector.
 
 Version: **Pro**, capability `minishop3`.
 
-The type does not appear in the new-field dialog, even when miniShop3 is installed. The descriptor lists capability `minishop3`, but `ProFeatureProvider` does not grant it.
-
-The inspector accepts ids separated by commas. Section data stores a string array.
+The inspector accepts ids separated by commas. Section data stores a string array. The type appears in the new-field dialog when miniShop3 is available: the `MiniShop3` service exists, or the `components/minishop3` directory is present. `ProFeatureProvider` then adds capability `minishop3`.
 
 Built-in shop sections, for example [comparison](../sections/product_comparison), store products in [multirelation](multirelation). This type does not put a price or an add-to-cart button into the chunk.
+
+## Similar types
+
+- [product](product) for one id
+- [multirelation](multirelation) for several links of an arbitrary class
 
 ## Schema
 
@@ -46,8 +49,3 @@ Built-in shop sections, for example [comparison](../sections/product_comparison)
 ```
 
 :::
-
-## Similar types
-
-- [product](product) for one id
-- [multirelation](multirelation) for several links of an arbitrary class

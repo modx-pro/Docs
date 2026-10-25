@@ -7,19 +7,18 @@ description: Output rows from a PageBuilder resource data table
 
 Returns rows from a resource **data table** (manager **Tables** tab). Output: JSON or a Fenom chunk.
 
-## Purpose
-
-Custom table markup in a template, widget, or chunk. Pro section [data_table](../sections/data_table) uses built-in chunk `pagebuilder_data_table`. Use this snippet when you write the markup yourself.
+Write your own markup in a template, widget, or chunk. Pro section [data_table](../sections/data_table) already uses built-in chunk `pagebuilder_data_table`.
 
 ## Where to call
 
-Template, chunk, or another section via a snippet field. The table must exist on the same or specified `resource_id`.
+- Template, chunk, or another section via a snippet field
+- The table must exist on the same or specified `resource_id`
 
 ## Parameters
 
 | Parameter | Default | Description |
 | --- | --- | --- |
-| `resource_id` | `0` | Resource ID. A passed `0` does not resolve the current page: the response is empty (`[]` or an empty string). Pass the page id for the current page |
+| `resource_id` | `0` | Resource ID. `0` means the current resource. The response stays empty (`[]` or an empty string) only when no resource can be resolved |
 | `table_key` | empty | Table key on the resource |
 | `table_id` | `0` | Database table ID instead of `table_key` |
 | `limit` | `20` | Max rows (1–100) |
@@ -49,9 +48,18 @@ Example `filters`:
 
 Operators: `eq`, `contains`, `in`, `gt`, `lt`, `gte`, `lte`, `between`, `empty`, `not_empty`. Details: [System settings → Tabular resource data](../settings#tabular-resource-data).
 
-Event `pbOnBeforeTableGetList` receives `table`, `query`, and `criteria`. `criteria` is passed by reference, but `DataTableRowQuery::fetch()` builds its own criteria from `query` and does not read the `criteria` array. Writing those arguments from a plugin does not filter rows. `pbOnTableRowSave` passes `data` by reference, and that value is stored on the row. The list event runs from the snippet and from `mgr/datatable/rows/list`.
+Event `pbOnBeforeTableGetList` receives `table`, `query`, and `criteria` by reference:
+
+- The row query reads `search`, `filters`, `page`, and `limit` from `query`
+- Pairs from `criteria` other than `table_id` go into the where clause
+- After the plugin, `table_id` is written again: a plugin cannot switch the table
+- The list event runs from the snippet and from `mgr/datatable/rows/list`
+
+`pbOnTableRowSave` passes `data` by reference. That value is stored on the row.
 
 ## JSON
+
+Missing table → `[]`. Otherwise a JSON array of row objects (each row's `data`).
 
 ::: code-group
 
@@ -73,9 +81,9 @@ Event `pbOnBeforeTableGetList` receives `table`, `query`, and `criteria`. `crite
 
 :::
 
-Response: JSON array of row objects (each row's `data`). Missing table → `[]`.
-
 ## Chunk
+
+The chunk gets Fenom variables `rows` (array of row `data`) and `table` (table metadata).
 
 ::: code-group
 
@@ -98,8 +106,6 @@ Response: JSON array of row objects (each row's `data`). Missing table → `[]`.
 ```
 
 :::
-
-The chunk gets Fenom variables `rows` (array of row `data`) and `table` (table metadata). Package chunk: `pagebuilder_table_rows`.
 
 ## See also
 

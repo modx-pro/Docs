@@ -1,6 +1,6 @@
 ---
 title: "hidden"
-description: "Hidden string: stored in section data, the inspector still shows the label"
+description: "Hidden string: stored in section data, the inspector shows no label"
 ---
 
 # Field hidden
@@ -11,7 +11,7 @@ Version: **Free**.
 
 ## Why this type
 
-The value is saved and reaches the chunk. In the editor the input is `type="hidden"`, and the field label stays. The default is set in JSON or in the manager. Set `active: false` to remove the field from the inspector entirely.
+The value is saved and reaches the chunk. The inspector shows only an `input type="hidden"`, with no label and no field wrapper. The default is set in JSON or in the manager. `active: false` removes the field entirely.
 
 ## When to use
 
@@ -46,8 +46,6 @@ String in the section data.
 
 ## Section data {#output-in-section-data}
 
-Key `token` in the section data:
-
 ```json
 {
   "token": "sku-001"
@@ -80,6 +78,8 @@ For fields with `name` that are stored in the section data:
 | `default` | any | Initial value for a new section | yes |
 | `active` | bool | `false` hides the field in the inspector | yes |
 | `required` | — | For `hidden`, the publish required check does not run | — |
+
+The inspector does not draw the label, `width`, or `description` for this type. `tab` still groups the field with its neighbors.
 
 See [fields overview](overview#obshchie-svoystva-polya).
 

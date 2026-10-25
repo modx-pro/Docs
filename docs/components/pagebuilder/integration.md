@@ -15,11 +15,9 @@ description: Панель управления PageBuilder, права, моде
 
 - **Типы секций** (право `pagebuilder_manage_types`): UI-типы, скрытие и восстановление встроенных JSON-типов
 - **Корзина** (Pro, флаг `basket`): глобальная корзина удалённых секций и строк таблиц
-- настройки вкладок Collections при включённых `pagebuilder_collections_*`
+- Настройки вкладок Collections при включённых `pagebuilder_collections_*`
 
-Списка ресурсов с секциями и перехода к редактору вкладки **Секции** в CMP нет. Редактор — вкладка ресурса (VueTools).
-
-Редактор на форме ресурса и в панели управления использует один Vue-бандл через **VueTools**. Точка входа API менеджера:
+Списка ресурсов с секциями и перехода к редактору вкладки **Секции** в CMP нет. Редактор на форме ресурса и в панели управления использует один Vue-бандл через **VueTools**. Точка входа API менеджера:
 
 `assets/components/pagebuilder/connector.php`
 
@@ -37,9 +35,9 @@ description: Панель управления PageBuilder, права, моде
 | `publishedon` / `publishedby` | Время и пользователь публикации |
 | `editedon` / `editedby` | Последнее изменение черновика |
 
-`modResource.content` PageBuilder не перезаписывает. SEO-поля ресурса (pagetitle, description) используются как обычно.
+`modResource.content` PageBuilder не перезаписывает.
 
-Корзина на странице хранит удалённые секции в `document.trash`. При сохранении черновика с непустыми `trashedSectionIds` срабатывают `pbOnBeforeTrash` / `pbOnAfterTrash`. Плагин на `pbOnAfterSave` может читать `record.draft.trash`. Глобальное восстановление и окончательное удаление — connector Pro (`mgr/basket/*`).
+Корзина на странице хранит удалённые секции в `document.trash`. При сохранении черновика с непустыми `trashedSectionIds` срабатывают `pbOnBeforeTrash` и `pbOnAfterTrash`. Штатный плагин на `pbOnAfterSave` записывает эти секции в `pb_basket_items`. Свой плагин на том же событии может читать `record.draft.trash`. Глобальное восстановление и окончательное удаление идут через connector Pro (`mgr/basket/*`).
 
 Табличные данные ресурса хранятся в отдельных таблицах `pb_*` (вкладка «Таблицы»).
 
@@ -53,9 +51,7 @@ description: Панель управления PageBuilder, права, моде
 
 ## События {#sobytiya}
 
-При установке дополнение регистрирует 21 событие `pbOn*` в MODX. Двадцать первое: `pbOnAfterMediaCrop`. Подпишите плагин в **Система → События** или используйте статический плагин из состава пакета.
-
-Исключение: **`pbOnBeforeTableGetList`** и **`pbOnTableRowSave`** установщик не создаёт. Если нужны хуки табличных данных, добавьте события вручную и подпишите плагин.
+При установке и обновлении дополнение регистрирует 23 события `pbOn*` в MODX. Двадцать первое по-прежнему `pbOnAfterMediaCrop`. Следующие два: `pbOnBeforeTableGetList` и `pbOnTableRowSave`. Подпишите плагин в **Система → События** или используйте статический плагин из состава пакета.
 
 ### Регистрация при загрузке
 
@@ -77,7 +73,7 @@ description: Панель управления PageBuilder, права, моде
 | `pbOnBeforeTrash` | Перед корзиной, только если есть удалённые секции | `resourceId`, `sectionIds`, `document`, `userId` |
 | `pbOnAfterTrash` | После записи черновика с теми же id | `resourceId`, `sectionIds`, `record`, `userId` |
 
-`documentBag` это `PageDocumentBag`. Слушатель подменяет документ до `saveDraft`. `changes` это массив `DocumentChangeSet`: `addedSectionIds`, `removedSectionIds`, `trashedSectionIds`, `restoredSectionIds`, `updatedSectionIds`, `enabledSectionIds`, `disabledSectionIds`. События trash идут из того же `saveDraft`, отдельного действия корзины нет.
+`documentBag` это `PageDocumentBag`. Слушатель подменяет документ до `saveDraft`. `changes` это массив `DocumentChangeSet`: `addedSectionIds`, `removedSectionIds`, `trashedSectionIds`, `restoredSectionIds`, `updatedSectionIds`, `enabledSectionIds`, `disabledSectionIds`. События trash идут из того же `saveDraft`. Отдельного действия корзины нет.
 
 ### Копирование
 
@@ -108,13 +104,9 @@ description: Панель управления PageBuilder, права, моде
 
 ### Табличные данные ресурса
 
-::: warning Ручная регистрация
-События ниже **не** регистрируются при установке. Добавьте их в **Система → События**, если плагин должен на них реагировать.
-:::
-
 | Событие | Данные |
 | --- | --- |
-| `pbOnBeforeTableGetList` | `table`, `query`, `criteria` по ссылке. Выборка эти аргументы не читает |
+| `pbOnBeforeTableGetList` | `table`, `query` и `criteria` по ссылке. Выборка читает `search`, `filters`, `page`, `limit` и пары `criteria`, кроме `table_id` |
 | `pbOnTableRowSave` | `table`, `data` по ссылке, `row_id` |
 
 ### Рендер на фронте {#рендер-на-фронте}

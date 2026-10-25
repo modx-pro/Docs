@@ -5,7 +5,7 @@ description: "Media-объект изображения с alt и enrich metadat
 
 # Поле image
 
-Версия: **Free**. Кадрирование — capability `image-crop` (**Pro**).
+Версия: **Free**. Кадрирование: capability `image-crop` (**Pro**).
 
 <!-- ![image](/components/pagebuilder/screenshots/fields/image.jpg) -->
 
@@ -55,7 +55,7 @@ Media-объект. Кнопка Info правит `width`, `height`, `title`. �
 
 ## Данные секции {#vyvod-v-section-data}
 
-Ключ `photo` в данных секции после save enrich:
+После save enrich:
 
 ```json
 {
@@ -81,13 +81,13 @@ Media-объект. Кнопка Info правит `width`, `height`, `title`. �
 
 ## Отображаемый URL {#display-url}
 
-Модификатор `pb_image_src` и чанк `pagebuilder_partial_image` берут адрес так: `crops.default`, затем первый кадр с `url`, затем исходный `url`.
+Модификатор `pb_image_src`, чанк `pagebuilder_partial_image` и инспектор берут один порядок URL: `crops.default`, затем первый кадр с `url`, затем исходный `url`.
 
 ```fenom
 {$photo|pb_image_src}
 ```
 
-Инспектор выбирает иначе. Сначала ключ пресета из схемы `crops`, у которого уже есть `url`. Если кадр один, берёт его. Иначе `crops.default`, иначе исходный `url`. Несколько именованных кадров без `default` и без совпавшего пресета в инспекторе показывают исходный `url`. Модификатор на сайте берёт первый кадр.
+В превью менеджера относительный путь получает `base_url`, чтобы файл не искался внутри `/manager/`. `pb_image_src` этот префикс не добавляет. Адреса `http`, `https`, `//`, `data:` и `blob:` превью не меняет.
 
 ## Пример в chunk
 

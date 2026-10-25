@@ -7,9 +7,14 @@ description: "Список ID товаров miniShop3 через запятую
 
 Версия: **Pro**, capability `minishop3`.
 
-В инспекторе ID вводят через запятую в многострочном поле, в данных секции — массив строк. Зависимость `minishop3` в дескрипторе есть, но Pro capability не выдаётся: тип не попадает в диалог нового поля, даже с установленным miniShop3.
+В инспекторе ID вводят через запятую, в данных секции лежит массив строк. Тип появляется в диалоге нового поля, когда miniShop3 доступен: в сервисах есть `MiniShop3` или существует каталог `components/minishop3`. Тогда `ProFeatureProvider` добавляет capability `minishop3`.
 
 Готовые секции магазина, например [сравнение](../sections/product_comparison), хранят товары в [multirelation](multirelation). Этот тип цену и кнопку корзины в чанк не кладёт.
+
+## Похожие типы
+
+- [product](product) для одного ID
+- [multirelation](multirelation) для нескольких связей произвольного класса
 
 ## Настройка
 
@@ -23,8 +28,6 @@ description: "Список ID товаров miniShop3 через запятую
 
 ## Данные секции {#vyvod-v-section-data}
 
-Ключ `product_ids` — массив строк ID:
-
 ```json
 {
   "product_ids": ["12", "18", "24"]
@@ -33,7 +36,7 @@ description: "Список ID товаров miniShop3 через запятую
 
 ## Пример в chunk
 
-В chunk — массив строк ID, не объекты `{ id, pagetitle }`. Цикл — во вкладке Fenom; теги MODX массив секции не обходят: см. [обзор полей](overview#фронт-и-enrich).
+В чанке массив строк ID, не объекты `{ id, pagetitle }`. Цикл пишите во вкладке Fenom. Теги MODX массив секции не обходят: см. [обзор полей](overview#фронт-и-enrich).
 
 ::: code-group
 
@@ -48,8 +51,3 @@ description: "Список ID товаров miniShop3 через запятую
 ```
 
 :::
-
-## Похожие типы
-
-- [product](product) для одного ID
-- [multirelation](multirelation) для нескольких связей произвольного класса

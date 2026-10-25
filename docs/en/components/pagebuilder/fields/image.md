@@ -56,7 +56,7 @@ Media object. The Info button edits `width`, `height`, and `title`. Picking from
 
 ## Section data {#output-in-section-data}
 
-Key `photo` in the section data after save enrich:
+After save enrich:
 
 ```json
 {
@@ -82,13 +82,13 @@ Key `photo` in the section data after save enrich:
 
 ## Display URL {#display-url}
 
-The `pb_image_src` modifier and the `pagebuilder_partial_image` chunk pick the URL in this order: `crops.default`, then the first crop that has a `url`, then the original `url`.
+The `pb_image_src` modifier, the `pagebuilder_partial_image` chunk, and the inspector pick one URL order: `crops.default`, then the first crop that has a `url`, then the original `url`.
 
 ```fenom
 {$photo|pb_image_src}
 ```
 
-The inspector picks differently. First it uses a schema `crops` preset key that already has a `url`. If there is exactly one crop, it uses that crop. Otherwise it uses `crops.default`, then the original `url`. Several named crops without `default` and without a matching preset show the original `url` in the inspector. The modifier on the site uses the first crop.
+In the manager preview a relative path receives `base_url`, so the file is not looked up inside `/manager/`. `pb_image_src` does not add that prefix. Addresses that start with `http`, `https`, `//`, `data:`, or `blob:` stay unchanged.
 
 ## Chunk example
 
