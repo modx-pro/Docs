@@ -5,46 +5,32 @@ title: Import
 
 <!-- ![Utilities → Import](/components/minishop3/screenshots/mgr-import.png) -->
 
-Step-by-step wizard for importing products from CSV files.
+Step-by-step wizard for importing products from CSV.
 
 ## Purpose
 
-Bulk create and update products from CSV:
-
-- Automatic encoding detection (UTF-8, Windows-1251, KOI8-R)
-- Column-to-product-field mapping
-- Update by key field
-- TV fields, options (`option_*`), images into the gallery
+- Encoding detection (UTF-8, Windows-1251, KOI8-R)
+- Mapping columns to product fields
+- Update by a key field
+- TV fields, options (`option.*`), images into the gallery
 - Active **extra fields** (`msExtraField`) for `msProduct` / `msProductData`
 
 ## Step-by-step process
 
 ### Step 1: Upload file
 
-**Upload:**
-
-- Drag a CSV file into the upload area or click to select
-- Only `.csv` files are supported
-- Max size depends on server settings
+- Drag a CSV file into the upload area, or click to choose one
+- Only files with the `.csv` extension are accepted
+- The maximum size depends on the server settings
 
 **Settings:**
 
 | Parameter | Description | Default |
 | --- | --- | --- |
-| Delimiter | Column separator | `;` |
-| Skip header | First row is column names | Yes |
+| Delimiter | Column separator. Supported values are `;`, `,`, and `Tab` | `;` |
+| Skip header | The first row holds the column names | Yes |
 
-**Supported delimiters:**
-
-- `;` — semicolon (recommended)
-- `,` — comma
-- `Tab` — tab
-
-After upload you see:
-
-- row count
-- detected encoding
-- a warning if the file is large
+After upload you see the row count, the encoding, and a warning when the file is large.
 
 ::: info Encoding
 Windows-1251 files are converted to UTF-8 during processing.
@@ -52,78 +38,71 @@ Windows-1251 files are converted to UTF-8 during processing.
 
 ### Step 2: Field mapping
 
-Map each CSV column to a product field.
+Say which product field each CSV column fills.
 
-**Required fields:**
-
-- `pagetitle` — product name
-- `parent` — parent category ID
+**Required fields:** `pagetitle` (name), `parent` (category ID).
 
 **Mapping table:**
 
-| CSV column | → | Product field | Preview |
-| --- | --- | --- | --- |
-| A: "Name" | → | pagetitle | iPhone 15 |
-| B: "Category" | → | parent | 5 |
-| C: "Price" | → | price | 99990 |
+| CSV column | Product field | Preview |
+| --- | --- | --- |
+| A: "Name" | pagetitle | iPhone 15 |
+| B: "Category" | parent | 5 |
+| C: "Price" | price | 99990 |
 
-::: tip Auto-mapping
-The system maps columns by header names automatically. For example, column "name" maps to `pagetitle`.
+::: tip Automatic mapping
+The system maps columns by their headers. A column named "name" goes to `pagetitle`.
 :::
 
 **Update settings:**
 
 | Parameter | Description |
 | --- | --- |
-| Update existing | If a product is found by key — update it |
-| Lookup key | Field to find duplicates |
+| Update existing | If a product is found by the key, update it |
+| Lookup key | Field used to find duplicates |
 
-Available lookup keys:
+Lookup keys: `article` (better), `pagetitle`, `id`.
 
-- `article` — SKU (recommended)
-- `pagetitle` — name
-- `id` — resource ID
+### Extra fields
 
-### Extra fields and Object Extension
+`GET /api/mgr/import/fields` builds the column list for mapping:
 
-The mapping column list comes from `GET /api/mgr/import/fields`:
+1. The static catalog `config/import-fields.php` (resource, `msProductData`, options).
+2. Active `msExtraField` rows for `msProduct` and `msProductData` whose column already exists in the database (`column_exists`).
 
-1. Static catalog `config/import-fields.php` (resource, `msProductData`, options).
-2. Active `msExtraField` rows for models `msProduct` and `msProductData` whose column already exists in the DB (`column_exists`).
+Widget type `ms3-repeater` is **left out** of import. Repeater JSON rows are not mapped through CSV. Simple extra fields (`varchar`, `int`, `decimal`, `text`, …) and key-value fields (when the column exists) show up as ordinary product fields.
 
-Widget type `ms3-repeater` is **excluded** from import: repeater JSON rows are not mapped via CSV. Simple extra fields (`varchar`, `int`, `decimal`, `text`, …) and key-value (if the column exists) appear in the UI as regular product fields.
+A key of an extra field cannot override a reserved name from the static catalog.
 
-Reserved names from the static catalog cannot be overridden by an extra field key.
-
-Options still use the `option_` prefix in CSV or an explicit mapping to an option key.
+Options still use the `option.` prefix (a dot) in the CSV, or an explicit mapping to the option key.
 
 ### Step 3: Import
 
-**Summary before run:**
+**Summary before the run:**
 
 - File name
 - Row count
-- Mapped field count
+- Count of mapped fields
 
 **Import modes:**
 
 | Mode | Description |
 | --- | --- |
-| Synchronous | Import runs immediately, you wait for the response |
+| Synchronous | The import runs immediately and you wait for the response |
 | Asynchronous | The task goes to [Scheduler](/en/components/scheduler/) (large files) |
 
 ::: warning Large files
-For files over 300 rows use asynchronous mode via [Scheduler](/en/components/scheduler/).
+For files over 300 rows, use asynchronous mode through [Scheduler](/en/components/scheduler/).
 :::
 
 **Debug mode:**
 
 - Processes only the first row
-- Useful to verify mapping
+- Useful for checking that the mapping is right
 
 **Import results:**
 
-```
+```text
 Import complete!
 - Total processed: 150
 - Created: 120
@@ -148,7 +127,7 @@ Import complete!
 | `template` | Template ID |
 | `published` | Published (0/1) |
 | `deleted` | Deleted (0/1) |
-| `hidemenu` | Hide from menu (0/1) |
+| `hidemenu` | Hidden from the menu (0/1) |
 
 ### Product fields (msProductData)
 
@@ -160,7 +139,7 @@ Import complete!
 | `weight` | Weight |
 | `color` | Color |
 | `size` | Size |
-| `stock` | Stock (`remains` — CSV alias) |
+| `stock` | Stock (`remains` is the CSV alias) |
 | `vendor` | Vendor (name or ID) |
 | `made_in` | Country of origin |
 | `new` | New (0/1) |
@@ -171,9 +150,9 @@ Import complete!
 
 | Field | Description |
 | --- | --- |
-| `gallery` | Image path (relative to site root) |
-| `tv.{name}` | TV field by name (e.g. `tv.brand`) |
-| `option.{key}` | Product option (e.g. `option.color`) |
+| `gallery` | Image path (relative to the site root) |
+| `tv.{name}` | TV field by name (for example `tv.brand`) |
+| `option.{key}` | Product option (for example `option.color`) |
 
 ## CSV file format
 
@@ -187,15 +166,13 @@ Samsung Galaxy S24;5;SGS24;89990;99990;Samsung;assets/import/galaxy.jpg
 
 ### Recommendations
 
-- Use semicolon (`;`) as delimiter
-- First row — column headers
-- Quote text that contains delimiters
-- Leave cells empty for missing values
-- For gallery use path relative to site root
+- Quote text that contains the delimiter
+- Leave the cell empty for an empty value
+- For the gallery, use a path relative to the site root
 
 ### Multiple values
 
-For multiple images add several `gallery` columns:
+To upload several images, add several `gallery` columns:
 
 ```csv
 pagetitle;gallery;gallery;gallery
@@ -204,40 +181,40 @@ Product;img/1.jpg;img/2.jpg;img/3.jpg
 
 ## Troubleshooting
 
-### "Required field not specified" error
+### Error "Required field is not set"
 
-**Cause:** `pagetitle` or `parent` not mapped.
+**Cause:** `pagetitle` or `parent` is not mapped.
 
-**Fix:** Return to step 2 and map required fields.
+**What to do:** Go back to step 2 and map the required fields.
 
-### Products not created
+### Products are not created
 
 **Possible causes:**
 
-- Invalid `parent` (category ID)
+- `parent` points at a category ID that does not exist
 - No permission to create resources
 - Data validation errors
 
-**Fix:** Enable debug mode and check MODX logs.
+**What to do:** Turn on debug mode and check the MODX log.
 
 ### Wrong encoding
 
-**Symptom:** Cyrillic displays incorrectly.
+**Symptom:** Cyrillic looks wrong.
 
-**Fix:**
+**What to do:**
 
 - Save the file as UTF-8 without BOM
-- Or ensure detected encoding matches the file
+- Or make sure the detected encoding matches the file
 
-### Images not uploaded
+### Images are not uploaded
 
 **Check:**
 
-- Files exist at the specified path
-- Path is relative to site root
-- Read permissions on files
+- The files exist at the given path
+- The path is relative to the site root
+- The process can read the files
 
-For programmatic gallery upload use processor `MiniShop3\Processors\Gallery\Upload` (see [Product API](../../development/backend-api/product#gallery-images)).
+For a programmatic gallery upload, use the processor `MiniShop3\Processors\Gallery\Upload` (see [Product API](../../development/backend-api/product#images-gallery)).
 
 ## Programmatic use
 
@@ -248,12 +225,13 @@ For programmatic gallery upload use processor `MiniShop3\Processors\Gallery\Uplo
 | `MiniShop3\Processors\Utilities\Import\Fields` | Field list for mapping |
 | `MiniShop3\Processors\Utilities\Import\Upload` | CSV upload |
 | `MiniShop3\Processors\Utilities\Import\Preview` | Preview |
-| `MiniShop3\Processors\Utilities\Import\Import` | Run import |
+| `MiniShop3\Processors\Utilities\Import\Import` | Start the import |
 | `MiniShop3\Processors\Utilities\Import\Progress` | Progress |
+| `MiniShop3\Processors\Utilities\Import\SaveConfig` | Save field settings. Call it only through `runProcessor`. It has no REST route under `/import/*` |
 
 ### API endpoint
 
-```
+```http
 POST /api/mgr/import/start
 ```
 
@@ -274,8 +252,8 @@ POST /api/mgr/import/start
 
 ### Import events
 
-To extend functionality use [import events](../../development/events/import):
+Extend the import through [import events](../../development/events/import):
 
-- `msOnBeforeImport` — before import starts
-- `msOnImportRow` — on each row
-- `msOnAfterImport` — after import completes
+- `msOnBeforeImport`: before the start
+- `msOnImportRow`: on each row
+- `msOnAfterImport`: after it finishes
