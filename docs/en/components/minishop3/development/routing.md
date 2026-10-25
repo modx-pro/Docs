@@ -30,7 +30,7 @@ flowchart TB
 | **Purpose** | MODX manager | Store frontend |
 | **Entry point** | `connector.php` | `assets/.../api.php` |
 | **Authorization** | MODX session + HTTP_MODAUTH | MS3TOKEN tokens |
-| **Middleware** | AuthMiddleware, PermissionMiddleware | TokenMiddleware, CorsMiddleware, RateLimitMiddleware |
+| **Middleware** | AuthMiddleware, PermissionMiddleware, AnyPermissionMiddleware | ServiceCheckMiddleware, TokenMiddleware, CorsMiddleware, RateLimitMiddleware |
 | **Routes file** | `config/routes/manager.php` | `config/routes/web.php` |
 
 ### File structure
@@ -197,24 +197,32 @@ Response::error($message, $statusCode, $errors);
 {
   "success": false,
   "message": "Validation failed",
+  "code": 422,
   "errors": {
     "name": "Field is required"
-  }
+  },
+  "error_code": "validation_failed"
 }
 ```
+
+The keys `code` and `error_code` are present in every error response, even when `errors` is empty. `data` is added only where it was passed.
 
 ### HTTP status codes
 
 | Code | Description | Usage |
 | --- | --- | --- |
 | 200 | OK | Successful request |
-| 400 | Bad Request | Validation error |
+| 201 | Created | An object was created: customer addresses |
+| 400 | Bad Request | A broken request with no field map |
 | 401 | Unauthorized | Not authenticated |
 | 403 | Forbidden | No permission |
 | 404 | Not Found | Route or resource not found |
-| 405 | Method Not Allowed | Method not allowed |
+| 405 | Method Not Allowed | Method not allowed. An `OPTIONS` preflight lands here too when the route stack has no `CorsMiddleware` |
+| 409 | Conflict | A state conflict: not enough stock while editing the order lines |
+| 422 | Unprocessable Entity | Validation error with a field map in `errors` |
 | 429 | Too Many Requests | Rate limit exceeded |
 | 500 | Internal Server Error | Server error |
+| 503 | Service Unavailable | The `ms3` service did not start |
 
 ## Middleware
 
@@ -280,6 +288,13 @@ $router->post('/api/mgr/products', function($params) use ($modx) {
 - `msorder_view` — view customer card
 - `msorder_save` — edit orders and customers, order line mutations
 - `msorder_remove` — delete orders, customers, bulk delete
+- `msorder_inventory_override` — edit order lines past a stock shortage (since 1.14.3-beta1)
+
+::: warning The permission to go negative is granted separately
+With inventory tracking on (`ms3_inventory_enabled`), an edit of the order lines compares the reserve with the resulting quantity and refuses when there is not enough stock: a `409` with the key `ms3_err_inventory_short`. If the request sends `force` and the user has no permission for it, the answer is `403`. In both cases `data` contains `product_id`, `available`, `required` and `can_override`. The last one shows whether a repeat with `force` would help.
+
+`msorder_inventory_override` lets that edit through anyway, and the stock goes negative. The permission is in the policy template, but **it is not granted in the policy itself**, so after an update you assign it explicitly. A user with `sudo` receives it automatically, like any other MODX permission.
+:::
 
 ::: tip Where a user gets these permissions
 They all live in the `miniShopManagerPolicy` access policy created by the install. The policy grants nothing until it is assigned to a user group: since 1.14.2-beta1 install and upgrade assign it to every group that already has access to the `mgr` context, as an additional record with `authority 9999` — the group's own permissions still win.
@@ -347,10 +362,12 @@ Limits request rate to prevent abuse.
 
 ```php
 use MiniShop3\Middleware\RateLimitMiddleware;
+use MiniShop3\Services\RateLimit\RateLimitStoreFactory;
 
 $rateLimitMiddleware = new RateLimitMiddleware(
-    60,   // Max 60 requests
-    60    // Per 60 seconds
+    60,                                      // Max 60 requests
+    60,                                      // Per 60 seconds
+    RateLimitStoreFactory::fromModx($modx)   // Limit store (optional)
 );
 ```
 
@@ -652,6 +669,7 @@ Read and write are split into two middleware groups.
 | --- | --- | --- |
 | GET | `/statuses-dropdown` | Statuses with translations |
 | GET | `/deliveries-active` | Active deliveries for select |
+| GET | `/payments-active` | Active payment methods for select |
 
 #### Model field metadata (`/model-fields`)
 
@@ -687,6 +705,7 @@ Field metadata of the models, used by the dynamic forms. Reading needs no specia
 | POST | (root) | Create a field |
 | PUT | `/ranks` | Field order |
 | PUT | `/{id}` | Update a field |
+| DELETE | `/{id}` | Delete a field |
 
 #### Customers (`/customers`)
 
@@ -788,6 +807,8 @@ CRUD for the product link types. Permission `mssetting_save`.
 
 | Method | Route | Description |
 | --- | --- | --- |
+| GET | `/{id}` | Product data |
+| PUT | `/{id}` | Save product data |
 | GET | `/{id}/categories/tree` | Category tree (`ms3_product_category_tree`) |
 | GET | `/{id}/links` | Link list |
 | POST | `/{id}/links` | Add link `{ slave, link }` |
@@ -944,8 +965,8 @@ $router->group('/api/mgr/promocodes', function($router) use ($modx) {
 
 Third-party components use the `core/config/ms3.routes.d/` directory — each addon creates its own file, so there are no conflicts.
 
-::: tip Analogy
-The pattern mirrors `ms3.services.d/` for [services](/en/components/minishop3/development/services).
+::: tip The same approach exists for services
+The `ms3.services.d/` directory for [services](/en/components/minishop3/development/services) is arranged the same way.
 :::
 
 ### Structure
@@ -1078,13 +1099,13 @@ If a route file has a syntax error or throws an exception, it is logged and skip
 | **Files** | One per API type | One file per addon |
 | **Conflicts** | Possible with multiple addons | None |
 | **Install/uninstall** | Manual editing required | Atomic: create/delete file |
-| **Created by** | On ms3 install (example) | Addon via resolver |
+| **Created by** | The MiniShop3 install creates the manager file from the example. It does not create the web file: the package has no stub, so you create that file yourself | An add-on, through a resolver |
 
 ## System settings
 
 | Setting | Default | Description |
 | --- | --- | --- |
-| `ms3_cors_allowed_origins` | `["*"]` | CORS allowed origins |
+| `ms3_cors_allowed_origins` | empty string | Allowed CORS origins. Empty means same-origin |
 | `ms3_rate_limit_max_attempts` | `60` | Request limit |
 | `ms3_rate_limit_decay_seconds` | `60` | Limit window (seconds) |
 

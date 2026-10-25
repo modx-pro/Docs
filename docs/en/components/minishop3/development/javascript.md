@@ -8,34 +8,11 @@ Headless API for programmatic interaction with MiniShop3 without DOM binding.
 
 ## Architecture
 
+Two layers: UI for server markup, and a headless core.
+
 ```mermaid
 flowchart TB
   ms3["ms3.js — entry point, auto-initialisation"]
-
-  subgraph ui ["UI Layer — DOM bindings for SSR"]
-    CartUI[CartUI.js]
-    OrderUI[OrderUI.js]
-    CustomerUI[CustomerUI.js]
-  end
-
-  subgraph core ["API Core — headless core"]
-    ApiClient[ApiClient.js]
-    TokenManager[TokenManager.js]
-    Hooks[hooks.js]
-    CartAPI[CartAPI.js]
-    OrderAPI[OrderAPI.js]
-    CustomerAPI[CustomerAPI.js]
-  end
-
-  ms3 --> ui
-  ui --> core
-```
-
-MiniShop3 uses a two-layer architecture:
-
-```mermaid
-flowchart TB
-  ms3["ms3.js — entry point, auto-init"]
 
   subgraph ui ["UI Layer — DOM bindings for SSR"]
     CartUI[CartUI.js]
@@ -133,9 +110,9 @@ With standard loading the following are available:
 | `window.ms3Config` | Server config |
 
 ::: warning `ms3Config` can be switched off by a setting
-With `ms3_register_global_config = false` the object is not printed on the page. But the cart snippet registration is printed regardless and reaches for it without a check, so the console gets `ReferenceError: ms3Config is not defined`, and re-rendering of the cart and the totals widget stops working.
+With `ms3_register_global_config = false` the object is not printed on the page. The snippets `msCart` and `msOrderTotal` still print the line `ms3Config.render.cart.push(…)`. That line registers a render token and touches the object without a check. The console shows `ReferenceError: ms3Config is not defined`, and re-rendering of the cart and the totals widget stops.
 
-The setting is on by default. Turn it off only if you print the config yourself.
+The setting is on by default. Turn it off only when your own code prints the config.
 :::
 
 ```javascript
@@ -151,12 +128,13 @@ API for working with the cart.
 
 ### Methods
 
-#### get()
+#### get(params)
 
-Get cart contents.
+Get the cart contents. The only parameter is `include_thumbs`: with it, each line gets a `thumb` field.
 
 ```javascript
 const response = await ms3.cartAPI.get()
+const withThumbs = await ms3.cartAPI.get({ include_thumbs: 1 })
 
 // response:
 {
@@ -164,7 +142,7 @@ const response = await ms3.cartAPI.get()
   message: "Cart data retrieved",
   data: {
     cart: {
-      // Object where key is product_key
+      // Object where the key is product_key
       "ms43ce202fd27c84c28230cc771328e37f": {
         id: 10,
         product_id: 152248,
@@ -183,6 +161,22 @@ const response = await ms3.cartAPI.get()
         }
       }
     },
+    items: [
+      // The same lines as an array, with flat old_price, discount_price and discount_cost
+      {
+        product_key: "ms43ce202fd27c84c28230cc771328e37f",
+        product_id: 152248,
+        name: "Product name",
+        count: 2,
+        price: 148343,
+        cost: 296686,
+        weight: 2.508,
+        options: {},
+        old_price: 0,
+        discount_price: 0,
+        discount_cost: 0
+      }
+    ],
     status: {
       total_count: 9,
       total_cost: 1094850,
@@ -193,6 +187,8 @@ const response = await ms3.cartAPI.get()
   }
 }
 ```
+
+New code reads `items`: it is an array, the line order is predictable, and empty `options` arrive as an object. The `cart` key stays for older scripts.
 
 #### add(id, count, options, render)
 
@@ -350,21 +346,24 @@ Checkout.
 const response = await ms3.orderAPI.submit()
 
 if (response.success) {
+  // The built-in DefaultPayment puts payment_link (msorder is the order number),
+  // order_id and order_num. When the payment response has no data.redirect,
+  // submit adds redirect with msorder set to the order uuid.
   // response.data:
   {
+    payment_link: "https://shop.example/thanks?msorder=251015-1",
     order_id: 42,
-    redirect: "/shop/order-success?msorder=42"
+    order_num: "251015-1",
+    redirect: "/shop/order-success?msorder=8f3c-uuid"
   }
 
   window.location.href = response.data.redirect
 } else {
-  // response:
+  // Required fields: data is an array of names, lexicon ms3_order_err_requires
   {
     success: false,
-    message: "Fill required fields",
-    data: {
-      errors: ["first_name", "email", "phone"]
-    }
+    message: "Required fields are missing",
+    data: ["first_name", "email", "phone"]
   }
 }
 ```
@@ -399,7 +398,7 @@ const response = await ms3.orderAPI.getCost()
 API for working with authenticated customer data.
 
 :::warning Authorization required
-Most CustomerAPI methods require authentication. The exceptions are login, registration and password reset: those exist precisely for someone who has not signed in yet. Guest order data is stored through `OrderAPI.add()`.
+Most CustomerAPI methods require authentication. The exceptions in this class are `login` and `register`. There is no password reset in `CustomerAPI`: `AuthUI` shows that the action is unavailable on the site. The server routes still exist: `POST /api/v1/customer/forgot-password` and `POST /api/v1/customer/reset-password`. A guest's order data is stored through `OrderAPI.add()`.
 :::
 
 ### Methods
@@ -529,7 +528,7 @@ ms3Hooks.addHook('hookName', async (context) => {
 | `beforeChangeOptionCart` | `{ productKey, options }` | Before changing a line option |
 | `afterChangeOptionCart` | `{ productKey, options, response }` | After changing an option |
 | `beforeQuantityChange` | `{ productKey, count, form }` | Before a quantity change via the «+» and «−» buttons |
-| `afterQuantityChange` | `{ productKey, count, response }` | After a quantity change |
+| `afterQuantityChange` | `{ productKey, count, response, form }` | After a quantity change |
 
 #### Order
 
@@ -559,8 +558,8 @@ ms3Hooks.addHook('hookName', async (context) => {
 | `afterDeleteAddress` | `{ addressId, response }` | After deleting an address |
 | `beforeSetDefaultAddress` | `{ addressId }` | Before picking the default address |
 | `afterSetDefaultAddress` | `{ addressId, response }` | After picking the default address |
-| `beforeChangeAddressCustomer` | `{ addressId }` | Before switching the address in the order form |
-| `afterChangeAddressCustomer` | `{ addressId, response }` | After switching the address |
+| `beforeChangeAddressCustomer` | `{ key, value }` | Before changing the address in the order form |
+| `afterChangeAddressCustomer` | `{ key, value, response }` | After changing the address in the order form |
 | `beforeCancelOrder` | `{ orderId }` | Before the customer cancels an order |
 | `afterCancelOrder` | `{ orderId, response }` | After an order is cancelled |
 | `beforeResendVerificationEmail` | `{ button }` | Before resending the verification email |
@@ -765,7 +764,7 @@ const { cart, status, loading, addToCart, removeFromCart } = useCart()
     <div v-if="loading">Loading...</div>
 
     <div v-for="item in cart" :key="item.product_key" class="cart-item">
-      <span>{{ item.pagetitle }}</span>
+      <span>{{ item.name }}</span>
       <span>{{ item.count }} x {{ item.price }}</span>
       <button @click="removeFromCart(item.product_key)">Remove</button>
     </div>
@@ -934,14 +933,22 @@ All methods return a Promise with an object:
 
 ## Tokens and authorization
 
-MiniShop3 uses tokens to identify the cart session.
+```mermaid
+flowchart LR
+  first[First request] --> get["token/get or the cart"]
+  get --> cookie["httpOnly cookie ms3_token"]
+  cookie --> next["Requests with credentials same-origin"]
+  next --> rotate["Rotation on login and token/refresh"]
+```
+
+The token identifies the cart session.
 
 ### How it works
 
-1. On the first request the client gets a token (`GET /api/v1/customer/token/get`, or it is minted automatically on the first cart call)
-2. Since 1.6 the main browser approach is httpOnly cookie `ms3_token`, not `localStorage`
-3. Same-site requests use `credentials: 'include'`; headless can send `Authorization: Bearer`
-4. Rotation on login / `token/refresh`
+1. On the first request the client gets a token: `GET /api/v1/customer/token/get`, or the first call to the cart.
+2. Since 1.6 the token in the browser lives in the httpOnly cookie `ms3_token`, not in `localStorage`.
+3. The client sends requests with `credentials: 'same-origin'`, and the cookie goes along. Calls from another domain use `Authorization: Bearer`.
+4. On login and on `token/refresh` the token changes.
 
 Details: [Web API authorization](/en/components/minishop3/development/web-api/auth), [Frontend JavaScript](/en/components/minishop3/development/frontend-js).
 
