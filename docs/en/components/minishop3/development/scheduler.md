@@ -225,7 +225,7 @@ $task->schedule('+1 minute');
 
 ### Task file
 
-Scheduler includes the file and gives it four variables: `$modx`, `$task`, `$run` and `$scriptProperties` (data from the second argument of `schedule()`). The returned value becomes the run result.
+Scheduler loads the file through `include` and gives it four variables: `$modx`, `$task`, `$run` and `$scriptProperties` (data from the second argument of `schedule()`). The returned value becomes the run result.
 
 ```php
 <?php
