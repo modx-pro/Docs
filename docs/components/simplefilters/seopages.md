@@ -2,17 +2,20 @@
 
 ![](https://file.modx.pro/files/4/a/1/4a11e7cb12ae5b6a7cf228ff9e5b13d1.png)  
 
-Для корректной работы требуются следующие системные настройки:
+Механизм SEO-страниц работает только с индексной таблицей, поэтому должны быть запполнены следующие системные настройки:
 
-- **sf_seopages_aliases** - Алиасы фильтров для формирования SEO-страниц.
+- **sf_index_templates** - Шаблоны индексируемых ресурсов.
+- **sf_index_fields** - Поля ресурсов для индексации.
 - **sf_seopages_ids** - ID страниц для SEO-ссылок (отдельные страницы).
 - **sf_seopages_tpls** - ID шаблонов страниц для SEO-ссылок (например, категория товаров).
+- **sf_seopages_aliases** - Алиасы фильтров для формирования SEO-страниц.
 
 Для вывода значений в шаблоне должны присутствовать следующие плейсхолдеры:
 
-```
+```modx
 [[!+sf_seo_title]]
 [[!+sf_seo_description]]
+[[!+sf_seo_canonical]]
 [[!+sf_seo_h1]]
 [[!+sf_seo_breadcrumb]]
 [[!+sf_seo_content]]
@@ -47,22 +50,28 @@
 - **sf_seopages_aliases** : `{"ms_color":"color","ms_vendor_id":"brand"}`
 - **sf_seopages_tpls**: `4`
 
-Добавляем в HEAD плейсхолдеры `[[!+sf_seo_title]]` и `[[!+sf_seo_description]]` с указанием значений по умолчанию:
+Добавляем в HEAD плейсхолдеры `[[!+sf_seo_title]]`, `[[!+sf_seo_description]]` и `[[!+sf_seo_canonical]]` с указанием значений по умолчанию:
 
 ```
 <title>[[!+sf_seo_title:default=`[[*pagetitle]]`]]</title>
 <meta name="description" content="[[!+sf_seo_description:default=`[[*description]]`]]">
+<link rel="canonical" href="[[!+sf_seo_canonical:default=`[[~[[*id]]? &scheme=`full`]]`]]">
 ```
 
-Добавляем в шаблон плейсхолдер и класс на тег H1:
+Добавляем в шаблон плейсхолдеры и классы на H1 и содержимое:
 
-```
-<h1 class="sf_seo_h1">[[!+sf_seo_h1:default=`[[*pagetitle]]`]]</h1>
+```modx
+<h1 class="sf_seo_h1">
+    [[!+sf_seo_h1:default=`[[*pagetitle]]`]]
+</h1>
+<div class="sf_seo_content">
+    [[!+sf_seo_content:default=`[[*content]]`]]
+</div>
 ```
 
 В pdoCrumbs в **&tplCurrent** указываем чанк **sf_breadcrumb_current_tpl** (идет в комплекте)...
 
-```
+```modx
 [[pdoCrumbs?
 	&tplCurrent=`sf_breadcrumb_current_tpl`
 	...
@@ -71,7 +80,7 @@
 
 ...или в своем чанке ставим соответствующий плейсхолдер и класс:
 
-```
+```modx
 <li class="active sf_seo_breadcrumb">
     [[!+sf_seo_breadcrumb:default=`[[+menutitle]]`]]
 </li>
@@ -141,14 +150,14 @@
 При сохранении ресурса с шаблоном, ID которого указан в системной настройке **sf_index_templates**, система проверяет его значения для параметров, указанных в настройке **sf_seopages_aliases** и если присутствует новое, автоматически создаёт для него SEO-правило, заполняя обязательные поля **Фильтр**, **Значение** и **URI**.  
 Механизм работает только с индексной таблицей, поэтому записи для товаров там должны присутствовать.
 
-Для пакетного создания индексов, правил и страниц можно использовать консольные скрипты:
+Для пакетного создания индексов, правил и страниц можно вызывать различные методы в консоли:
 
 ```php
 <?php
 $sf = $modx->getService('Simplefilters');
-$sf->updateIndexAll(); // Индекс
-$sf->updateSeoRules(); // SEO-правила
-$sf->updateSeoPages($mode); // SEO-страницы. $mode = 'refresh' для предварительной очистки таблицы перед обновлением
+$sf->updateIndexAll(); // Обновление индекса
+$sf->updateSeoRules(); // Обновление SEO-правил
+$sf->updateSeoPages($mode); // Обновление SEO-страниц. $mode = 'refresh' для предварительной очистки таблицы перед обновлением
 ```
 
 ::: tip
