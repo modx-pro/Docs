@@ -27,12 +27,12 @@ Fired after the product list is loaded from the database, before processing. Int
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `rows` | `array` (reference) | Product rows, can be modified |
+| `rows` | `array` | Product rows. Changes apply only through `returnedValues['rows']`. A PHP reference does not survive at this level (see below) |
 | `productIds` | `array` | Array of product IDs `[1, 2, 3, ...]` |
 | `usePackages` | `array` | Requested packages `['ms3Variants', 'msBrands']` |
 | `scriptProperties` | `array` | All snippet call parameters |
 
-After the event, rows are updated from `returnedValues['rows']` via `EventGate::applyReturnedArray`.
+After the event the list rows are updated from `returnedValues['rows']` (`EventGate::applyReturnedArray`). A list in `rows` replaces the whole product array. An associative patch of one row goes through `msOnProductPrepare`.
 
 ### returnedValues
 
@@ -40,13 +40,14 @@ After the event, rows are updated from `returnedValues['rows']` via `EventGate::
 <?php
 switch ($modx->event->name) {
     case 'msOnProductsLoad':
+        $values = &$modx->event->returnedValues;
         $rows = $scriptProperties['rows'];
         foreach ($rows as $i => $row) {
             if (empty($row['price'])) {
                 $rows[$i]['price_hidden'] = true;
             }
         }
-        $modx->event->returnedValues = ['rows' => $rows];
+        $values['rows'] = $rows;
         break;
 }
 ```
@@ -118,17 +119,19 @@ Fired when preparing each product for output. Used to attach data loaded in `msO
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `row` | `array` (reference) | Product data, can be modified |
+| `row` | `array` | Product data. Changes apply only through `returnedValues['row']`. A PHP reference does not survive at this level (see below) |
 | `productId` | `int` | Product ID |
 | `idx` | `int` | Index of the product in the result set |
 
-After the event, the row is updated from `returnedValues['row']`.
+After the event the row is updated from `returnedValues['row']` (a patch or a full list replacement, as in import).
 
 ```php
 <?php
 switch ($modx->event->name) {
     case 'msOnProductPrepare':
-        $modx->event->returnedValues = ['row' => ['badge' => 'sale']];
+        $modx->event->returnedValues = [
+            'row' => ['badge' => 'sale'],
+        ];
         break;
 }
 ```

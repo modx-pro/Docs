@@ -140,15 +140,11 @@ switch ($modx->event->name) {
     case 'msOnVendorUpdate':
         $vendor = $scriptProperties['msVendor'];
 
-        $before = $modx->eventData['vendor_before'] ?? [];
-
-        if ($before['name'] !== $vendor->get('name')) {
-            $modx->log(modX::LOG_LEVEL_INFO, sprintf(
-                '[Vendor] Renamed: %s → %s',
-                $before['name'],
-                $vendor->get('name')
-            ));
-        }
+        $modx->log(modX::LOG_LEVEL_INFO, sprintf(
+            '[Vendor] Vendor updated: %s (ID: %d)',
+            $vendor->get('name'),
+            $vendor->get('id')
+        ));
         break;
 }
 ```
