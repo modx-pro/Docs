@@ -19,7 +19,7 @@ description: Вывод строк табличных данных ресурс�
 
 | Параметр | По умолчанию | Описание |
 | --- | --- | --- |
-| `resource_id` | `0` | ID ресурса. `0` = текущий |
+| `resource_id` | `0` | ID ресурса. Переданный `0` не подставляет текущую страницу: ответ пустой (`[]` или пустая строка). Для текущей страницы передайте её id |
 | `table_key` | пусто | Ключ таблицы на ресурсе |
 | `table_id` | `0` | ID таблицы в БД вместо `table_key` |
 | `limit` | `20` | Максимум строк (1–100) |
@@ -49,7 +49,7 @@ description: Вывод строк табличных данных ресурс�
 
 Операторы: `eq`, `contains`, `in`, `gt`, `lt`, `gte`, `lte`, `between`, `empty`, `not_empty`. Подробнее: [Системные настройки → Табличные данные](../settings#табличные-данные-ресурса).
 
-Запрос строк меняет событие `pbOnBeforeTableGetList`: ему передают `table`, `query` и `criteria`, причём `criteria` передаётся ссылкой. Событие вызывается на каждый запрос строк, и из сниппета, и из менеджерского процессора.
+Событие `pbOnBeforeTableGetList` получает `table`, `query` и `criteria`. `criteria` передаётся ссылкой, но `DataTableRowQuery::fetch()` строит свой критерий из `query` и массив `criteria` не читает. Запись в эти аргументы из плагина строки не фильтрует. `pbOnTableRowSave` передаёт `data` ссылкой, и это значение дальше записывается в строку. Событие списка вызывается и из сниппета, и из `mgr/datatable/rows/list`.
 
 ## JSON
 
@@ -59,6 +59,7 @@ description: Вывод строк табличных данных ресурс�
 
 ```modx
 [[!PageBuilderTableRows?
+  &resource_id=`[[*id]]`
   &table_key=`offices`
   &limit=`50`
 ]]
@@ -66,6 +67,7 @@ description: Вывод строк табличных данных ресурс�
 
 ```fenom
 {'!PageBuilderTableRows' | snippet : [
+  'resource_id' => $_modx->resource.id,
   'table_key' => 'offices',
   'limit' => 50
 ]}
@@ -81,6 +83,7 @@ description: Вывод строк табличных данных ресурс�
 
 ```modx
 [[!PageBuilderTableRows?
+  &resource_id=`[[*id]]`
   &table_key=`offices`
   &return=`chunk`
   &tpl=`my_table_rows`
@@ -89,6 +92,7 @@ description: Вывод строк табличных данных ресурс�
 
 ```fenom
 {'!PageBuilderTableRows' | snippet : [
+  'resource_id' => $_modx->resource.id,
   'table_key' => 'offices',
   'return' => 'chunk',
   'tpl' => 'my_table_rows'

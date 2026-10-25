@@ -19,7 +19,7 @@ Template, chunk, or another section via a snippet field. The table must exist on
 
 | Parameter | Default | Description |
 | --- | --- | --- |
-| `resource_id` | `0` | Resource ID. `0` = current |
+| `resource_id` | `0` | Resource ID. A passed `0` does not resolve the current page: the response is empty (`[]` or an empty string). Pass the page id for the current page |
 | `table_key` | empty | Table key on the resource |
 | `table_id` | `0` | Database table ID instead of `table_key` |
 | `limit` | `20` | Max rows (1–100) |
@@ -28,7 +28,7 @@ Template, chunk, or another section via a snippet field. The table must exist on
 
 ### Filtering and pagination
 
-Same keys as embed tables and `mgr/datatable/rows/list`:
+Every key works in the snippet. The manager processor `mgr/datatable/rows/list` accepts only `page`, `limit`, `search`, and `filters`. Context and UTM filters are not sent to it.
 
 | Parameter | Default | Description |
 | --- | --- | --- |
@@ -47,7 +47,9 @@ Example `filters`:
 {"price": {"op": "gte", "value": "100"}}
 ```
 
-Operators: `eq`, `contains`, `in`, `gte`, `lte`, `between`, `empty`, `not_empty`. Details: [System settings → Tabular resource data](../settings#tabular-resource-data).
+Operators: `eq`, `contains`, `in`, `gt`, `lt`, `gte`, `lte`, `between`, `empty`, `not_empty`. Details: [System settings → Tabular resource data](../settings#tabular-resource-data).
+
+Event `pbOnBeforeTableGetList` receives `table`, `query`, and `criteria`. `criteria` is passed by reference, but `DataTableRowQuery::fetch()` builds its own criteria from `query` and does not read the `criteria` array. Writing those arguments from a plugin does not filter rows. `pbOnTableRowSave` passes `data` by reference, and that value is stored on the row. The list event runs from the snippet and from `mgr/datatable/rows/list`.
 
 ## JSON
 
@@ -55,6 +57,7 @@ Operators: `eq`, `contains`, `in`, `gte`, `lte`, `between`, `empty`, `not_empty`
 
 ```modx
 [[!PageBuilderTableRows?
+  &resource_id=`[[*id]]`
   &table_key=`offices`
   &limit=`50`
 ]]
@@ -62,6 +65,7 @@ Operators: `eq`, `contains`, `in`, `gte`, `lte`, `between`, `empty`, `not_empty`
 
 ```fenom
 {'!PageBuilderTableRows' | snippet : [
+  'resource_id' => $_modx->resource.id,
   'table_key' => 'offices',
   'limit' => 50
 ]}
@@ -77,6 +81,7 @@ Response: JSON array of row objects (each row's `data`). Missing table → `[]`.
 
 ```modx
 [[!PageBuilderTableRows?
+  &resource_id=`[[*id]]`
   &table_key=`offices`
   &return=`chunk`
   &tpl=`my_table_rows`
@@ -85,6 +90,7 @@ Response: JSON array of row objects (each row's `data`). Missing table → `[]`.
 
 ```fenom
 {'!PageBuilderTableRows' | snippet : [
+  'resource_id' => $_modx->resource.id,
   'table_key' => 'offices',
   'return' => 'chunk',
   'tpl' => 'my_table_rows'

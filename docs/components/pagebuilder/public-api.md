@@ -248,7 +248,7 @@ curl -s "${BASE}?action=web/catalog/list&context_key=web&api_key=${KEY}"
 
 Отдельного endpoint таблиц нет. Строки таблиц отдаёт сниппет [PageBuilderTableRows](snippets/PageBuilderTableRows) или datasource в секции.
 
-`QueryPolicy` ограничивает datasource-запросы секций в менеджере. Ключи `sql`, `php`, `snippet`, `class` отклоняются. К query-параметрам `api.php` он не применяется. Размер страницы списка каталога не больше 100.
+`QueryPolicy` ограничивает datasource-запросы секций в менеджере. Ключи `sql`, `php`, `snippet`, `class` отклоняются. К query-параметрам `api.php` он не применяется. Лимит 100 относится к datasource-запросу и к REST `GET /pages`. Список `web/catalog/list` отдаёт все определения без постраничной нарезки.
 
 ## CORS
 

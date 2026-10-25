@@ -53,7 +53,7 @@ description: Панель управления PageBuilder, права, моде
 
 ## События {#sobytiya}
 
-При установке дополнение регистрирует 20 событий `pbOn*` в MODX. Подпишите плагин в **Система → События** или используйте статический плагин из состава пакета.
+При установке дополнение регистрирует 21 событие `pbOn*` в MODX. Двадцать первое: `pbOnAfterMediaCrop`. Подпишите плагин в **Система → События** или используйте статический плагин из состава пакета.
 
 Исключение: **`pbOnBeforeTableGetList`** и **`pbOnTableRowSave`** установщик не создаёт. Если нужны хуки табличных данных, добавьте события вручную и подпишите плагин.
 
@@ -94,7 +94,7 @@ description: Панель управления PageBuilder, права, моде
 
 | Событие | Когда | Данные |
 | --- | --- | --- |
-| `pbOnLibraryItemSave` | После записи элемента Library | параметры из `LibraryService` (id, payload) |
+| `pbOnLibraryItemSave` | После записи элемента Library | `id`, `name`, `item` |
 
 ### Каталог и поля
 
@@ -114,7 +114,7 @@ description: Панель управления PageBuilder, права, моде
 
 | Событие | Данные |
 | --- | --- |
-| `pbOnBeforeTableGetList` | `table`, `query`, `criteria` по ссылке |
+| `pbOnBeforeTableGetList` | `table`, `query`, `criteria` по ссылке. Выборка эти аргументы не читает |
 | `pbOnTableRowSave` | `table`, `data` по ссылке, `row_id` |
 
 ### Рендер на фронте {#рендер-на-фронте}
@@ -137,11 +137,21 @@ description: Панель управления PageBuilder, права, моде
 
 ```php
 <?php
+
+use PageBuilder\Section\SectionDefinition;
+
 switch ($modx->event->name) {
     case 'pbOnRegisterSectionDefinitions':
         /** @var \PageBuilder\Section\SectionRegistry $registry */
         $registry = $modx->event->params['registry'];
-        $registry->registerFromFile($modx->getOption('core_path') . 'components/mypackage/sections/custom.json');
+        $path = $modx->getOption('core_path') . 'components/mypackage/sections/custom.json';
+        $payload = json_decode((string) file_get_contents($path), true);
+        if (!is_array($payload)) {
+            break;
+        }
+        $payload['source'] = 'code';
+        $payload['readOnly'] = true;
+        $registry->register(SectionDefinition::fromArray($payload));
         break;
 }
 ```

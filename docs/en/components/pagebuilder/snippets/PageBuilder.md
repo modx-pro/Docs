@@ -98,7 +98,9 @@ Disable globally: `pagebuilder_load_frontend_css = 0`. Per call: `` &load_css=`0
 
 MODX partition: `pagebuilder/{resourceId}`, key `render/{context}/{resourceId}/{publishedRevision}[/{typeHash}]`. Cleared on publish/unpublish. Render errors are not cached.
 
-Events `pbOnBeforeRenderDocument` and `pbOnBeforeRenderSection` run only on cache miss:
+The cache is skipped entirely when the document has UTM rules, `conditions`, a section with `cacheable: false`, or a type with `runtimeContext: true` (`contact_form`, `form_builder`, `quiz`, `dynamic_list`, `filterable_grid`). On that document the events run on every request.
+
+Events `pbOnBeforeRenderDocument` and `pbOnBeforeRenderSection` run on a cache miss. Disable the cache for one call:
 
 ::: code-group
 
@@ -111,6 +113,17 @@ Events `pbOnBeforeRenderDocument` and `pbOnBeforeRenderSection` run only on cach
 ```
 
 :::
+
+```mermaid
+flowchart TB
+    A[PageBuilder call] --> B{"UTM, conditions, cacheable:false, or runtimeContext?"}
+    B -->|"yes"| C["cache skipped: events on every request"]
+    B -->|"no"| D{"use_cache = 1?"}
+    D -->|"no"| E["on render: pbOnBeforeRenderDocument, pbOnBeforeRenderSection"]
+    D -->|"yes"| F{"Cache present?"}
+    F -->|"miss"| E
+    F -->|"hit"| G["HTML from cache: no events"]
+```
 
 ## Skipped sections
 

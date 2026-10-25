@@ -74,11 +74,21 @@ JSON: `pagebuilderpro/sections/`. Chunk: `pagebuilderpro_{key}`. По умолч
 
 ```php
 <?php
+
+use PageBuilder\Section\SectionDefinition;
+
 switch ($modx->event->name) {
     case 'pbOnRegisterSectionDefinitions':
         /** @var \PageBuilder\Section\SectionRegistry $registry */
         $registry = $modx->event->params['registry'];
-        $registry->registerFromFile($modx->getOption('core_path') . 'components/mypackage/sections/custom.json');
+        $path = $modx->getOption('core_path') . 'components/mypackage/sections/custom.json';
+        $payload = json_decode((string) file_get_contents($path), true);
+        if (!is_array($payload)) {
+            break;
+        }
+        $payload['source'] = 'code';
+        $payload['readOnly'] = true;
+        $registry->register(SectionDefinition::fromArray($payload));
         break;
 }
 ```
@@ -131,7 +141,7 @@ Pro: `pb_library_items`, `pb_section_events`, `pb_page_templates`. Таблиц�
 
 ### Кеш отрисовки
 
-Раздел кеша: `pagebuilder/{resourceId}`. Сбрасывается при publish и unpublish. Кеш не используется при проверке видимости по UTM во время запроса, при `use_cache=0` и при ошибках отрисовки.
+Раздел кеша: `pagebuilder/{resourceId}`. Сбрасывается при publish и unpublish. Кеш не пишется и не читается, если на документе есть UTM-правила, `conditions`, тип с `cacheable: false` или `runtimeContext: true`, а также при `use_cache=0` и при ошибке отрисовки.
 
 ### PHP-сервис
 
@@ -150,7 +160,7 @@ Plugin на `pbOnRegisterFeatureProviders` регистрирует свой `Fe
 
 События boot, save и отрисовки: [Менеджер и события](integration#sobytiya).
 
-В `pbOnBeforeSave` расширения могут заменить документ до записи черновика или публикации через `PageDocumentBag`. `DocumentChangeSet` отдельно фиксирует enable/disable секции (без ложного «update» при чистом тумблере).
+В `pbOnBeforeSave` расширения могут заменить документ до записи черновика через `PageDocumentBag`. Публикация этот объект не принимает. `DocumentChangeSet` отдельно фиксирует enable/disable секции (без ложного «update» при чистом тумблере).
 
 ## Public API
 

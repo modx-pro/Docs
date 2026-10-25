@@ -55,7 +55,7 @@ Details: [PageBuilder Pro](pro). Storefront sections require **miniShop3**.
 
 ## Events {#events}
 
-On install the extra registers 20 `pbOn*` events in MODX. Subscribe a plugin under **System → Events** or use the static plugin from the package.
+On install the extra registers 21 `pbOn*` events in MODX. The twenty-first is `pbOnAfterMediaCrop`. Subscribe a plugin under **System → Events** or use the static plugin from the package.
 
 Exception: **`pbOnBeforeTableGetList`** and **`pbOnTableRowSave`** are not created by the installer. Add events manually if your plugin should react.
 
@@ -88,6 +88,16 @@ Exception: **`pbOnBeforeTableGetList`** and **`pbOnTableRowSave`** are not creat
 | `pbOnBeforeCopySections` | `sourceResourceId`, `targetResourceId`, `userId` |
 | `pbOnAfterCopySections` | + `record` |
 
+### Library (Pro, runtime)
+
+::: warning Manual registration
+The installer does not create `pbOnLibraryItemSave`. Add the event under **System → Events** if you need a plugin.
+:::
+
+| Event | When | Data |
+| --- | --- | --- |
+| `pbOnLibraryItemSave` | After a Library item is stored | `id`, `name`, `item` |
+
 ### Catalog and fields
 
 | Event | Data |
@@ -106,7 +116,7 @@ Events below are **not** registered on install. Add them under **System → Even
 
 | Event | Data |
 | --- | --- |
-| `pbOnBeforeTableGetList` | `table`, `query`, `criteria` by reference |
+| `pbOnBeforeTableGetList` | `table`, `query`, `criteria` by reference. The row query does not read these arguments |
 | `pbOnTableRowSave` | `table`, `data` by reference, `row_id` |
 
 ### Frontend render {#frontend-render}
@@ -121,11 +131,21 @@ Example section registration in a plugin:
 
 ```php
 <?php
+
+use PageBuilder\Section\SectionDefinition;
+
 switch ($modx->event->name) {
     case 'pbOnRegisterSectionDefinitions':
         /** @var \PageBuilder\Section\SectionRegistry $registry */
         $registry = $modx->event->params['registry'];
-        $registry->registerFromFile($modx->getOption('core_path') . 'components/mypackage/sections/custom.json');
+        $path = $modx->getOption('core_path') . 'components/mypackage/sections/custom.json';
+        $payload = json_decode((string) file_get_contents($path), true);
+        if (!is_array($payload)) {
+            break;
+        }
+        $payload['source'] = 'code';
+        $payload['readOnly'] = true;
+        $registry->register(SectionDefinition::fromArray($payload));
         break;
 }
 ```

@@ -76,11 +76,21 @@ Register from plugin:
 
 ```php
 <?php
+
+use PageBuilder\Section\SectionDefinition;
+
 switch ($modx->event->name) {
     case 'pbOnRegisterSectionDefinitions':
         /** @var \PageBuilder\Section\SectionRegistry $registry */
         $registry = $modx->event->params['registry'];
-        $registry->registerFromFile($modx->getOption('core_path') . 'components/mypackage/sections/custom.json');
+        $path = $modx->getOption('core_path') . 'components/mypackage/sections/custom.json';
+        $payload = json_decode((string) file_get_contents($path), true);
+        if (!is_array($payload)) {
+            break;
+        }
+        $payload['source'] = 'code';
+        $payload['readOnly'] = true;
+        $registry->register(SectionDefinition::fromArray($payload));
         break;
 }
 ```
@@ -135,7 +145,7 @@ Page document format:
 
 ### Render cache
 
-Cache partition: `pagebuilder/{resourceId}`. Cleared on publish and unpublish. Cache is not used when checking UTM visibility during the request, with `use_cache=0`, or on render errors.
+Cache partition: `pagebuilder/{resourceId}`. Cleared on publish and unpublish. Cache is neither written nor read when the document has UTM rules, `conditions`, a type with `cacheable: false`, or `runtimeContext: true`. The same applies to `use_cache=0` and to a render error.
 
 ### PHP service
 
@@ -154,7 +164,7 @@ Plugin on `pbOnRegisterFeatureProviders` registers your `FeatureProvider` alongs
 
 Boot, save, and render events: [Manager and events](integration#events).
 
-In `pbOnBeforeSave` extensions can replace the document before draft or publish write via `PageDocumentBag`. `DocumentChangeSet` separately records section enable/disable (no false "update" on a pure toggle).
+In `pbOnBeforeSave` extensions can replace the document before the draft write via `PageDocumentBag`. Publish does not accept that object. `DocumentChangeSet` separately records section enable/disable (no false "update" on a pure toggle).
 
 ## Public API (Headless)
 
