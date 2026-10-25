@@ -16,13 +16,13 @@ Result: the page shows cards with a photo, a price, and an Add to cart button. m
 ## Steps
 
 1. Add a `products_grid` section.
-2. In **Catalog root** pick a category. The field is required.
+2. In **Catalog parent** pick a category. The data key is `parent` and is required.
 3. Set **Limit** and sort: `menuindex`, `popular`, `new`, `price_asc`, `price_desc`. An unknown value sorts as `menuindex`.
 4. **Save** the resource.
 
 ## Example fields
 
-**Catalog root** `101` (an example, use your category). **Limit** `6`. An empty limit becomes 12 in the chunk. **Sort** `price_asc`. For a "often bought" block use `popular`.
+**Catalog parent** `101` (an example, use your category). **Limit** `6`. An empty limit becomes 12 in the chunk. **Sort** `price_asc`. For an "often bought" block use `popular`. PageBuilder maps `popular` to `Data.popular` and `new` to `Data.new`.
 
 An empty category prints lexicon `pagebuilder_fe_listing_empty_products` ("No products in this category yet."). The section has `"cacheable": false`, so the page HTML cache does not freeze the listing.
 
@@ -30,7 +30,7 @@ A narrow strip uses `products_carousel`. A hand-picked SKU list uses `curated_pr
 
 ## What to check
 
-The site shows cards from the category you picked. Changing `sortby` to `price_asc` lists products by ascending price. An empty category prints the lexicon string, not a blank block.
+Changing `sortby` to `price_asc` lists products by ascending price. An empty category prints the lexicon string, not a blank block.
 
 ## Rollback
 

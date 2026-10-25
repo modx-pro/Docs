@@ -13,7 +13,11 @@ description: "FetchIt вызывает обработчик секции form_bu
 2. Проверяет CSRF и honeypot.
 3. Пишет outbox в транзакции.
 
-Письмо попадает в outbox, только если в схеме непустой `email`. Webhook попадает в outbox, только если `webhook` непустой. Отправка webhook идёт лишь на URL `https://`. После commit ошибка отправки JSON успеха не меняет.
+Письмо всегда попадает в outbox. Получатель равен полю `email` схемы. Пустое поле отправляет на `emailsender`.
+
+Webhook попадает в outbox, только если `webhook` непустой. Отправка идёт только на URL `https://`.
+
+После commit ошибка отправки JSON успеха не меняет.
 
 Заявки в БД не хранятся. Нужна capability `forms`.
 
@@ -41,7 +45,7 @@ flowchart LR
 | `nospam` | Honeypot. Заполненное поле отвечает success и письмо не шлёт |
 | `pageId` | Необязательный id ресурса со страницы формы. Имеет приоритет над `resource_id` в свойствах FetchIt |
 
-`resource_id` страницы, где искать секцию (тот же порядок, что у [PageBuilderContactForm](PageBuilderContactForm) и [PageBuilderQuiz](PageBuilderQuiz)):
+`resource_id` страницы, где искать секцию. Тот же порядок, что у [PageBuilderContactForm](PageBuilderContactForm) и [PageBuilderQuiz](PageBuilderQuiz):
 
 | Источник | Приоритет |
 | --- | --- |
