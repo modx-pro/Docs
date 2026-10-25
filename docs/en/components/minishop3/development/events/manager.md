@@ -31,6 +31,7 @@ Fired when MiniShop3 manager pages load. Lets you add your own CSS and JavaScrip
 | `customers` | Customer list (Vue) | `controllers/mgr/customers.class.php` |
 | `settings` | Component settings | `controllers/mgr/settings.class.php` |
 | `notifications` | Notifications | `controllers/mgr/notifications.class.php` |
+| `utilities` | Utilities | `controllers/mgr/utilities.class.php` |
 
 ::: info How the pages differ
 The MS3 screens reached from the component menu are built entirely on Vue, through a dedicated `addVueModule` and without ExtJS wrappers: `orders`, `order`, `customers`, `settings`, `notifications`, `utilities`.

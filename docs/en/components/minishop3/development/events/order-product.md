@@ -28,8 +28,9 @@ Fired **before** persisting a new line (Manager API).
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `msOrderProduct` | `msOrderProduct` | New line (not in DB yet) |
+| `object` | `msOrderProduct` | The same line as `msOrderProduct` (MS2-style alias) |
 | `msOrder` | `msOrder` | Parent order |
-| `mode` | `int` | `modSystemEvent::MODE_NEW` |
+| `mode` | `string` | `modSystemEvent::MODE_NEW` (the value `'new'`) |
 
 ### Aborting the operation
 
@@ -66,8 +67,9 @@ Fired **after** a successful `save()`. A plugin error does not roll back the row
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `msOrderProduct` | `msOrderProduct` | Saved line |
+| `object` | `msOrderProduct` | The same line as `msOrderProduct` (MS2-style alias) |
 | `msOrder` | `msOrder` | Order |
-| `mode` | `int` | `modSystemEvent::MODE_NEW` |
+| `mode` | `string` | `modSystemEvent::MODE_NEW` (the value `'new'`) |
 
 ### Example
 
@@ -106,9 +108,10 @@ Fired **before** `save()` on an updated line.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `msOrderProduct` | `msOrderProduct` | Line with new field values |
+| `msOrderProduct` | `msOrderProduct` | Line with the new field values (the object is already mutated, the old values are not in the event parameters) |
+| `object` | `msOrderProduct` | The same line as `msOrderProduct` (MS2-style alias) |
 | `msOrder` | `msOrder` | Order |
-| `mode` | `int` | `modSystemEvent::MODE_UPD` |
+| `mode` | `string` | `modSystemEvent::MODE_UPD` (the value `'upd'`) |
 
 ### Aborting the operation
 
@@ -118,20 +121,17 @@ switch ($modx->event->name) {
     case 'msOnBeforeUpdateOrderProduct':
         $orderProduct = $scriptProperties['msOrderProduct'];
 
+        // The object already holds the NEW count. The old value is not among
+        // the event parameters (it is not saved to the database yet).
         $newCount = $orderProduct->get('count');
-        $oldCount = $orderProduct->getPrevious('count');
+        $productId = $orderProduct->get('product_id');
 
-        if ($newCount > $oldCount) {
-            $diff = $newCount - $oldCount;
-            $productId = $orderProduct->get('product_id');
-
-            $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
-            if ($msProduct) {
-                $stock = $msProduct->get('stock') ?? 0;
-                if ($diff > $stock) {
-                    $modx->event->output('Not enough stock to increase quantity');
-                    return;
-                }
+        $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
+        if ($msProduct) {
+            $stock = $msProduct->get('stock') ?? 0;
+            if ($newCount > $stock) {
+                $modx->event->output('Not enough stock for the requested quantity');
+                return;
             }
         }
         break;
@@ -149,8 +149,9 @@ Fired **after** a successful `save()`. A plugin error does not roll back the cha
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `msOrderProduct` | `msOrderProduct` | Updated line |
+| `object` | `msOrderProduct` | The same line as `msOrderProduct` (MS2-style alias) |
 | `msOrder` | `msOrder` | Order |
-| `mode` | `int` | `modSystemEvent::MODE_UPD` |
+| `mode` | `string` | `modSystemEvent::MODE_UPD` (the value `'upd'`) |
 
 ### Example
 
@@ -160,20 +161,17 @@ switch ($modx->event->name) {
     case 'msOnUpdateOrderProduct':
         $orderProduct = $scriptProperties['msOrderProduct'];
 
-        $newCount = $orderProduct->get('count');
-        $oldCount = $orderProduct->getPrevious('count');
+        // The event does not pass the count from before the change
+        // (there is no snapshot of the old row). Sync the external system
+        // with the CURRENT, already saved, line.
+        $productId = $orderProduct->get('product_id');
+        $count = $orderProduct->get('count');
 
-        if ($newCount != $oldCount) {
-            $diff = $newCount - $oldCount;
-            $productId = $orderProduct->get('product_id');
-
-            $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
-            if ($msProduct) {
-                $stock = $msProduct->get('stock') ?? 0;
-                $msProduct->set('stock', $stock - $diff);
-                $msProduct->save();
-            }
-        }
+        $modx->log(modX::LOG_LEVEL_INFO, sprintf(
+            '[OrderProduct] Product #%d in the order, current quantity: %d',
+            $productId,
+            $count
+        ));
         break;
 }
 ```
@@ -189,6 +187,7 @@ Fired **before** `remove()`. The API rejects deleting the last line — HTTP 400
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `msOrderProduct` | `msOrderProduct` | Line to remove |
+| `object` | `msOrderProduct` | The same line as `msOrderProduct` (MS2-style alias) |
 | `msOrder` | `msOrder` | Order |
 | `id` | `int` | `msOrderProduct` id |
 
@@ -198,6 +197,7 @@ Fired **before** `remove()`. The API rejects deleting the last line — HTTP 400
 <?php
 switch ($modx->event->name) {
     case 'msOnBeforeRemoveOrderProduct':
+        $orderProduct = $scriptProperties['msOrderProduct'];
         /** @var \MiniShop3\Model\msOrder $order */
         $order = $scriptProperties['msOrder'];
 
@@ -220,6 +220,7 @@ Fired **after** a successful `remove()`. A plugin error does not restore the row
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `msOrderProduct` | `msOrderProduct` | Removed line (still in xPDO memory) |
+| `object` | `msOrderProduct` | The same line as `msOrderProduct` (MS2-style alias) |
 | `msOrder` | `msOrder` | Order |
 | `id` | `int` | Removed line id |
 
@@ -240,6 +241,12 @@ switch ($modx->event->name) {
             $msProduct->set('stock', $stock + $count);
             $msProduct->save();
         }
+
+        $modx->log(modX::LOG_LEVEL_INFO, sprintf(
+            '[OrderProduct] Removed product #%d from the order, returned: %d',
+            $productId,
+            $count
+        ));
         break;
 }
 ```
@@ -251,46 +258,54 @@ switch ($modx->event->name) {
 ```php
 <?php
 /**
- * Plugin: Order line stock control
- * Events: msOnBeforeCreateOrderProduct, msOnBeforeUpdateOrderProduct,
- *         msOnCreateOrderProduct, msOnUpdateOrderProduct, msOnRemoveOrderProduct
+ * Plugin: Order line stock
+ * Events: msOnCreateOrderProduct, msOnUpdateOrderProduct, msOnRemoveOrderProduct
  */
 
 switch ($modx->event->name) {
 
-    case 'msOnBeforeCreateOrderProduct':
-    case 'msOnBeforeUpdateOrderProduct':
-        $orderProduct = $scriptProperties['msOrderProduct'];
-        $productId = $orderProduct->get('product_id');
-        $count = $orderProduct->get('count');
-
-        $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
-        if ($msProduct && $count > ($msProduct->get('stock') ?? 0)) {
-            $modx->event->output('Insufficient stock');
-            return;
-        }
-        break;
-
     case 'msOnCreateOrderProduct':
-    case 'msOnRemoveOrderProduct':
-        // Adjust stock after persistence (after errors are logged only)
-        adjustStock($modx, $scriptProperties['msOrderProduct'], $modx->event->name);
+        $orderProduct = $scriptProperties['msOrderProduct'];
+        updateStock($modx, $orderProduct->get('product_id'), -$orderProduct->get('count'));
         break;
 
     case 'msOnUpdateOrderProduct':
+        // The event does not pass the count from before the change, so an
+        // incremental stock calculation is impossible here. Only create and
+        // remove change the reserve directly.
         $orderProduct = $scriptProperties['msOrderProduct'];
-        $diff = $orderProduct->get('count') - $orderProduct->getPrevious('count');
-        if ($diff !== 0) {
-            adjustStockDelta($modx, $orderProduct->get('product_id'), -$diff);
-        }
+        $modx->log(modX::LOG_LEVEL_INFO, sprintf(
+            '[Stock] Order line changed, product #%d, current quantity: %d',
+            $orderProduct->get('product_id'),
+            $orderProduct->get('count')
+        ));
+        break;
+
+    case 'msOnRemoveOrderProduct':
+        $orderProduct = $scriptProperties['msOrderProduct'];
+        updateStock($modx, $orderProduct->get('product_id'), $orderProduct->get('count'));
         break;
 }
 
-function adjustStock($modx, $orderProduct, $eventName) {
-    // ...
-}
+/**
+ * Update product stock
+ */
+function updateStock($modx, $productId, $delta) {
+    $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
+    if ($msProduct) {
+        $stock = $msProduct->get('stock') ?? 0;
+        $newStock = max(0, $stock + $delta);
+        $msProduct->set('stock', $newStock);
+        $msProduct->save();
 
-function adjustStockDelta($modx, $productId, $delta) {
-    // ...
+        $modx->log(modX::LOG_LEVEL_INFO, sprintf(
+            '[Stock] Product #%d: %d %s %d = %d',
+            $productId,
+            $stock,
+            $delta >= 0 ? '+' : '-',
+            abs($delta),
+            $newStock
+        ));
+    }
 }
 ```
