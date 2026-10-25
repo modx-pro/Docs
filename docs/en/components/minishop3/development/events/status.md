@@ -112,7 +112,7 @@ flowchart TD
   save["Save status and inventory movements"] --> history["Write history"]
   history --> event["msOnChangeOrderStatus"]
   event --> notify["Notifications"]
-  event --> out{"output() is not empty?"}
+  notify --> out{"output() is not empty?"}
   out -->|yes| err["Error to the customer, status is not rolled back"]
   out -->|no| ok["Successful response"]
 ```

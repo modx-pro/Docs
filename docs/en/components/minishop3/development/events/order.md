@@ -122,6 +122,7 @@ Fired **before** validating a field value.
 | --- | --- | --- |
 | `key` | `string` | Field key |
 | `value` | `mixed` | Value to validate |
+| `orderData` | `array` | Snapshot of the current order fields (neighbouring values, for example `delivery_id` while validating `payment_id`) |
 
 ### Modifying data
 
