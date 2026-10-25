@@ -21,7 +21,7 @@ Options store product attributes (EAV): color, size, material, any key of your o
 
 ### Options tab
 
-- **Left:** MODX category tree (`class_key = msCategory`). Checkboxes are independent: checking a parent does not select its children. The context menu works on a branch (refresh, expand or collapse, select or clear selection), and there is a search by name.
+- **Left:** MODX category tree (`class_key = msCategory`). Checkboxes are independent: checking a parent does not select its children. The context menu works on a branch (refresh, expand, select), and there is a search by name.
 - **Right:** options grid. Filters: selected categories and group (`option_group_id`). Bulk actions: assign options to categories, delete.
 
 Create and edit dialog: form on the left (key, caption, description, type, `msOptionGroup` group, unit), category tree on the right for binding. For `combobox` / `comboMultiple` / `comboColors` there is a value editor with drag-and-drop ordering. For `comboColors`, a `ColorPicker` sits next to the hex field.
@@ -30,7 +30,7 @@ Create and edit dialog: form on the left (key, caption, description, type, `msOp
 
 The tab manages `msOptionGroup`: create, edit, delete, and reorder groups by dragging. Groups live in table `ms3_option_groups` (`name`, `description`, `sort_order`). This is not `modCategory`: categories from other packages no longer clutter the list.
 
-An option has an `option_group_id` field. Deleting a group only unlinks its options (`option_group_id = NULL`) — the options themselves stay.
+An option has an `option_group_id` field. Deleting a group only unlinks its options (`option_group_id = NULL`). The options themselves stay.
 
 ::: warning Breaking changes (v1.11)
 Existing groups are migrated during the upgrade. Two things you have to fix by hand:
@@ -89,15 +89,15 @@ Type is stored in `msOption.type` as `lowerCamelCase`. All 10 supported types:
 }
 ```
 
-`comboOptions` does not require a preset list. On the product card you type any text — Enter, a comma, or a click outside the field commits the value. Autocomplete takes values of the same key from **other products** via `/api/mgr/options/suggestions`.
+`comboOptions` does not require a preset list. On the product card you type any text. Enter, a comma, or a click outside the field commits the value. Autocomplete takes values of the same key from **other products** via `/api/mgr/options/suggestions`.
 
 ## Category binding
 
 Options appear only on products in bound categories. There are three ways to bind:
 
-- **In the option dialog** — check categories in the tree on the right.
-- **On the category card, Options tab** — add the option there.
-- **In the options grid** — select several options and click "Assign to categories".
+- **In the option dialog.** Check categories in the tree on the right.
+- **On the category card, Options tab.** Add the option there.
+- **In the options grid.** Select several options and click "Assign to categories".
 
 ### Per-category caption / description override {#per-category-caption-description-override}
 
@@ -111,7 +111,7 @@ If an option needs a different caption in this category, set it in the category 
 
 1. Product parent category (`msProduct.parent`)
 2. Lower `msCategoryOption.position`
-3. Lower `category_id` (stable tiebreak)
+3. Lower `category_id` (this decides when the positions are equal)
 
 ### Via PHP
 
@@ -153,7 +153,7 @@ $modx->services->get('ms3_option_service')->saveProductOptions(
 
 ### Getting values
 
-Standard path — via `OptionLoaderService`:
+The usual path is `OptionLoaderService`:
 
 ```php
 $loader = $modx->services->get('ms3_option_service')->getLoader();
@@ -272,11 +272,11 @@ All UI operations go through the Manager API (`/assets/components/minishop3/conn
 
 ## Option import
 
-When importing products from CSV, options are created automatically from columns with the `option.` prefix — a dot, not an underscore:
+When importing products from CSV, options are created automatically from columns with the `option.` prefix (a dot, not an underscore):
 
 | pagetitle | price | option.color | option.size |
 | --- | --- | --- | --- |
 | T-shirt | 1500 | Red | L |
 | T-shirt | 1500 | Blue | M |
 
-Options `color` and `size` are created automatically if missing. The default type is `textfield` — you can change it later in the UI.
+Options `color` and `size` are created on their own if they are missing. The default type is `textfield`. You can change it later in the interface.
