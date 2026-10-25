@@ -7,23 +7,26 @@ description: Output rows from a PageBuilder resource data table
 
 Returns rows from a resource **data table** (manager **Tables** tab). Output: JSON or a Fenom chunk.
 
-Write your own markup in a template, widget, or chunk. Pro section [data_table](../sections/data_table) already uses built-in chunk `pagebuilder_data_table`.
+Write markup in a template, widget, or chunk. Pro section [data_table](../sections/data_table) uses the package chunk `pagebuilder_data_table`.
 
 ## Where to call
 
-- Template, chunk, or another section via a snippet field
-- The table must exist on the same or specified `resource_id`
+Template, chunk, or a snippet field in another section. The table is on the current resource or on `resource_id`.
 
 ## Parameters
 
 | Parameter | Default | Description |
 | --- | --- | --- |
-| `resource_id` | `0` | Resource ID. `0` means the current resource. The response stays empty (`[]` or an empty string) only when no resource can be resolved |
+| `resource_id` | `0` | Resource ID. `0` = current resource |
 | `table_key` | empty | Table key on the resource |
-| `table_id` | `0` | Database table ID instead of `table_key` |
+| `table_id` | `0` | Database table ID. When greater than zero it wins over `table_key` |
 | `limit` | `20` | Max rows (1–100) |
 | `return` | `json` | `json` or `chunk` |
 | `tpl` | `pagebuilder_table_rows` | Chunk when `return=chunk` |
+
+The response stays empty (`[]` or an empty string) only when no resource can be resolved.
+
+When `table_id` is greater than zero, the snippet does not check that the table belongs to `resource_id`. A resource must still be resolved.
 
 ### Filtering and pagination
 
@@ -59,7 +62,9 @@ Event `pbOnBeforeTableGetList` receives `table`, `query`, and `criteria` by refe
 
 ## JSON
 
-Missing table → `[]`. Otherwise a JSON array of row objects (each row's `data`).
+Missing table → `[]`. Otherwise an array of records: `id`, `table_id`, `position`, `data`, `editedon`, `editedby`. Cell values live in `data`.
+
+`return=chunk` passes only `data` into the chunk. Any `return` value other than `json` renders the chunk.
 
 ::: code-group
 

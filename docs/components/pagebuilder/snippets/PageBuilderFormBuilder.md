@@ -9,11 +9,13 @@ description: "FetchIt вызывает обработчик секции form_bu
 
 ## Назначение
 
-1. Ищет секцию `form_builder` с тем же ключом схемы на странице ресурса: в опубликованном документе, если `publishedRevision > 0`, иначе в черновике.
+1. Ищет секцию `form_builder` с тем же ключом схемы. Берёт опубликованный документ, если `publishedRevision > 0`, иначе черновик.
 2. Проверяет CSRF и honeypot.
-3. Пишет outbox в транзакции, после commit отправляет письмо и webhook.
+3. Пишет outbox в транзакции.
 
-Submissions в БД не хранятся. Нужна capability `forms`.
+Письмо попадает в outbox, только если в схеме непустой `email`. Webhook попадает в outbox, только если `webhook` непустой. Отправка webhook идёт лишь на URL `https://`. После commit ошибка отправки JSON успеха не меняет.
+
+Заявки в БД не хранятся. Нужна capability `forms`.
 
 ```mermaid
 flowchart LR
@@ -26,7 +28,7 @@ flowchart LR
 
 ## Где вызывается
 
-Chunk `pagebuilderpro_form_builder` передаёт в `PageBuilderFetchIt` свойства `snippet` = `PageBuilderFormBuilder` и `form` = `pagebuilderpro_form_builder_fields`.
+Чанк `pagebuilderpro_form_builder` передаёт в `PageBuilderFetchIt` свойства `snippet` = `PageBuilderFormBuilder` и `form` = `pagebuilderpro_form_builder_fields`.
 
 ## Параметры
 
@@ -47,13 +49,15 @@ Chunk `pagebuilderpro_form_builder` передаёт в `PageBuilderFetchIt` с�
 | свойство `resource_id` в action FetchIt | 2 |
 | текущий ресурс MODX | 3 |
 
+Чанк передаёт в action ключи `form_key`, `form_csrf`, `successMessage` и `validationErrorMessage`. `form_csrf` в action важнее токена сессии.
+
 ### Ошибки
 
 | Ситуация | Ответ |
 | --- | --- |
 | Нет секции или схемы | `pagebuilder_fe_form_not_found` |
 | Нет capability `forms` | `pagebuilder_fe_form_unavailable` |
-| Слишком частые запросы | `Too many requests` |
+| Слишком частые запросы | `Too many requests.` |
 | Прямой вызов обработчика без [PageBuilderFetchIt](PageBuilderFetchIt) | JSON с `pagebuilder_fe_fetchit_unavailable` |
 | Отрисовка формы без FetchIt | Чанк показывает `pagebuilder_fe_form_unavailable`, см. [PageBuilderFetchIt](PageBuilderFetchIt) |
 

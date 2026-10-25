@@ -5,17 +5,19 @@ description: Сниппет PageBuilder — HTML опубликованных с
 
 # Сниппет PageBuilder
 
-Выводит **опубликованные** секции ресурса в HTML. Черновик на сайте не показывается: HTML-путь (`return_values=0`) отдаёт пустую строку, пока страницу не опубликовали. Секция выводится своим Fenom-chunk: Free — `pagebuilder_{key}`, Pro — `pagebuilderpro_{key}` (`data_table` → `pagebuilder_data_table`).
+Выводит **опубликованные** секции ресурса в HTML. Черновик на сайте не показывается. HTML-путь (параметр `return_values` не передан) отдаёт пустую строку, пока страницу не опубликовали.
+
+Чанк секции: Free `pagebuilder_{key}`, Pro `pagebuilderpro_{key}` (`data_table` → `pagebuilder_data_table`). Чанк `pagebuilder_data_table` ставится вместе с пакетом.
 
 ## Где вызывать
 
 - Шаблон страницы, собранной во вкладке **Секции**.
 - Поле content, если шаблон выводит `[[*content]]`.
-- Только некэшированный вызов (`[[!PageBuilder]]`). Без `!` HTML может устареть после публикации секций.
+- Некэшированный вызов (`[[!PageBuilder]]`). Без `!` HTML может устареть после публикации секций.
 
 ## Зависимости
 
-- Установленное дополнение **pagebuilder** (или **pagebuilderpro**).
+- Компонент **pagebuilder** или **pagebuilderpro**.
 - **pdoTools** 3.0+ для Fenom в чанках секций.
 - Опубликованный snapshot секций на ресурсе.
 
@@ -33,7 +35,9 @@ description: Сниппет PageBuilder — HTML опубликованных с
 | `wrap_page` | как `load_css` | Обёртка `<div class="pb-page">` |
 | `qa_css` | `0` | `1` → подключить `pagebuilder-qa.css`. Иначе CSS QA подключается сам, если на странице есть QA-секции |
 
-В properties сниппета нет `load_css`, `wrap_page` и `qa_css`, но код их поддерживает; `qa_css` действует только при `load_css=1`. См. [Системные настройки → Связь со сниппетом](../settings#связь-со-сниппетом).
+В properties сниппета нет `load_css`, `wrap_page` и `qa_css`, но вызов их принимает. `qa_css` действует только при включённом `load_css`. См. [Системные настройки → Связь со сниппетом](../settings#связь-со-сниппетом).
+
+Флаги `use_cache`, `load_css`, `wrap_page`, `qa_css` и `return_values` читают строку. Выключают `0`, `false`, `no`, `off` и пустая строка. Остальные значения включают. То же у настройки `pagebuilder_load_frontend_css`.
 
 ## Базовый вызов
 
@@ -50,8 +54,6 @@ description: Сниппет PageBuilder — HTML опубликованных с
 :::
 
 ## Фильтр по типам секций
-
-Только hero и CTA:
 
 ::: code-group
 
@@ -71,7 +73,7 @@ description: Сниппет PageBuilder — HTML опубликованных с
 
 ## return_values
 
-JSON для SEO-плагинов и headless-гибридов. Структура совпадает с полем `values` в [Public API](../public-api):
+JSON для SEO-плагинов. Структура совпадает с полем `values` в [Public API](../public-api):
 
 ::: code-group
 
@@ -85,15 +87,15 @@ JSON для SEO-плагинов и headless-гибридов. Структур�
 
 :::
 
-При `return_values=1` срабатывает событие `pbOnGetValues`, CSS и обёртка `pb-page` не подключаются. Источник данных — опубликованный snapshot, если `publishedRevision > 0`, иначе черновик.
+При `return_values=1` срабатывает событие `pbOnGetValues`. CSS и обёртка `pb-page` не подключаются. Источник: опубликованный snapshot, если `publishedRevision > 0`, иначе черновик. Если ресурс не определился, ответ пустая строка, в том числе при `return_values=1`.
 
 ## CSS и обёртка
 
 При `load_css=1` сниппет подключает frontend CSS (см. [Дизайн-система](../design-system)). Стили Pro и commerce включаются при флаге `pro`.
 
-Глобально отключить: `pagebuilder_load_frontend_css = 0`. На одном вызове: `` &load_css=`0` ``.
+Глобально отключить: `pagebuilder_load_frontend_css` = `0`. На одном вызове: ``&load_css=`0` ``.
 
-При `&wrap_page=1` плагин вставит CSS на `OnWebPagePrerender`, даже если `load_css=0`: он ищет в выводе `class="pb-page"` и на настройку не смотрит. Полностью без стилей — с `wrap_page=0`.
+При `&wrap_page=1` плагин вставит CSS на `OnWebPagePrerender`, даже если `load_css=0`. Он ищет в выводе `class="pb-page"` и на настройку не смотрит. Полностью без стилей: `wrap_page=0`.
 
 ```mermaid
 flowchart TB
@@ -105,9 +107,9 @@ flowchart TB
 
 ## Кеш HTML
 
-Кеш MODX: partition `pagebuilder/{resourceId}`, ключ `render/{context}/{resourceId}/{publishedRevision}[/{typeHash}]`. Сбрасывается при publish/unpublish, ошибки отрисовки в кеш не попадают.
+Кеш MODX: partition `pagebuilder/{resourceId}`, ключ `render/{context}/{resourceId}/{publishedRevision}[/{typeHash}]`. Сбрасывается при publish/unpublish. Ошибки отрисовки в кеш не попадают.
 
-Кеш обходится полностью, если у документа есть UTM-правила, `conditions`, секция с `cacheable: false` или тип с `runtimeContext: true` (`contact_form`, `form_builder`, `quiz`, `dynamic_list`, `filterable_grid`). На таком документе события вызываются на каждый запрос.
+Кеш обходится полностью, если у документа есть UTM-правила, `conditions` или секция с `cacheable: false`. То же для типа с `runtimeContext: true`: `contact_form`, `form_builder`, `quiz`, `dynamic_list`, `filterable_grid`. На таком документе события вызываются на каждый запрос.
 
 События `pbOnBeforeRenderDocument` и `pbOnBeforeRenderSection` вызываются при промахе кеша. Кеш отключается на один вызов:
 
@@ -136,7 +138,7 @@ flowchart TB
 
 ## Пропуск секций
 
-Секция с невыполненным `requires` (Pro, miniShop3) не попадает в HTML. Неизвестный тип логируется, блок пропускается.
+Секция с невыполненным `requires` (Pro, miniShop3) не попадает в HTML. Перед проверкой сниппет вызывает `pbOnCheckSectionRequirement`. Неизвестное требование логируется, и секция пропускается.
 
 ## См. также
 
