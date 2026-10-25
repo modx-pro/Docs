@@ -15,7 +15,6 @@ Requires PageBuilder Pro and miniShop3.
 
 ## Carousel instead of grid
 
-- Same products as grid, in carousel form
 - Saves homepage height
 - Optional autoplay
 
@@ -32,7 +31,7 @@ Requires PageBuilder Pro and miniShop3.
 
 ## Category and autoplay
 
-Category and limit like the grid. **Autoplay** and section JS on the front end.
+Category and limit like the grid. **Autoplay** and section JS on the front end. The type is marked `"cacheable": false`.
 
 ## Similar sections
 
@@ -45,13 +44,13 @@ Category and limit like the grid. **Autoplay** and section JS on the front end.
 | --- | --- |
 | key | `products_carousel` |
 | Layer | Pro |
-| Category | commerce (`commerce`) |
+| Category | Commerce (`commerce`) |
 | Chunk | `pagebuilderpro_products_carousel` |
 | Requires | pro, minishop3 |
 
 ## Inspector fields
 
-Fill these fields in the section inspector. Field types are documented in the [field types reference](../fields/types).
+Field types: [field types reference](../fields/types).
 
 ### Title (`title`)
 
@@ -79,7 +78,7 @@ Type [select](../fields/select#output-in-section-data). Optional. Dropdown with 
 
 ## Section data {#output-in-section-data}
 
-Example payload after save. Media, video, and map values may be enriched on output:
+Example payload after save:
 
 ```json
 {
