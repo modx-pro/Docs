@@ -300,7 +300,7 @@ switch ($modx->event->name) {
             unset($data['external_images']);
         }
 
-        // Main photo from `article` when the gallery is empty
+        // Main photo by article when the gallery is empty
         if (!empty($data['article']) && empty($gallery)) {
             $imagePath = "assets/images/products/{$data['article']}.jpg";
             if (file_exists(MODX_BASE_PATH . $imagePath)) {

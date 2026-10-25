@@ -37,31 +37,30 @@ The channel looks for a Chat ID in two places, in this order:
 ::: warning A column added by hand will not work
 `ALTER TABLE modx_ms3_customers ADD COLUMN telegram_chat_id …` looks like a shortcut, but only the keys of **active fields** registered through the utility reach the recipient payload. A column created outside it never shows up in `{$customer}` — the utility creates the column itself.
 
-Separately: `OrderStatusService` has a branch reading `extended` on `msCustomer` itself. The customer schema has no `extended` field, so that branch is dead — see [bug #900](https://github.com/modx-pro/MiniShop3/issues/900). Neither working source above is affected.
+There is a third path, and it does not work. `OrderStatusService` reads `extended` on `msCustomer` itself, and the customer schema has no such field. See [bug #900](https://github.com/modx-pro/MiniShop3/issues/900). It does not affect the two sources above.
 :::
 
-#### Step 2: Create a bot with Deep Linking
+#### Step 2: Bot with Deep Linking
 
-Use [Telegram Deep Linking](https://core.telegram.org/bots/features#deep-linking) to link the account:
+Link the Telegram account through [Deep Linking](https://core.telegram.org/bots/features#deep-linking):
 
 ```php
 <?php
-// Generate unique link for linking
+// Link: the customer id and a short token in the start parameter
 $customerId = $msCustomer->get('id');
 $token = hash('sha256', $customerId . $modx->getOption('ms3_snippet_token_secret'));
 $linkCode = base64_encode($customerId . ':' . substr($token, 0, 16));
 
-$botUsername = 'YourShopBot';
+$botUsername = 'YourShopBot'; // bot username without @
 $telegramLink = "https://t.me/{$botUsername}?start={$linkCode}";
 ```
 
 #### Step 3: Handle /start on the bot side
 
-The bot must handle the `start` parameter and save the Chat ID:
+The bot handles the `start` parameter and writes the Chat ID into `extended` of the linked user's profile:
 
 ```php
 <?php
-// Bot webhook handler (simplified)
 $update = json_decode(file_get_contents('php://input'), true);
 $message = $update['message'] ?? null;
 
@@ -71,13 +70,23 @@ if ($message && str_starts_with($message['text'], '/start ')) {
     [$customerId, $tokenPart] = explode(':', $decoded);
 
     $expectedToken = hash('sha256', $customerId . $modx->getOption('ms3_snippet_token_secret'));
+    // Compare the token tail from the link
     if (substr($expectedToken, 0, 16) === $tokenPart) {
+        // Save the Chat ID on the customer's profile
         $customer = $modx->getObject(\MiniShop3\Model\msCustomer::class, $customerId);
-        if ($customer) {
-            $customer->set('telegram_chat_id', $message['chat']['id']);
-            $customer->save();
-            // Send confirmation
-            sendTelegramMessage($message['chat']['id'], 'Notifications enabled');
+        $userId = $customer ? (int) $customer->get('user_id') : 0;
+        $profile = $userId
+            ? $modx->getObject(\MODX\Revolution\modUserProfile::class, ['internalKey' => $userId])
+            : null;
+        if ($profile) {
+            $extended = $profile->get('extended');
+            if (!is_array($extended)) {
+                $extended = [];
+            }
+            // The Chat ID is written to the profile extended field, not to msCustomer
+            $extended['telegram_chat_id'] = (string) $message['chat']['id'];
+            $profile->set('extended', $extended);
+            $profile->save();
         }
     }
 }
@@ -88,19 +97,20 @@ if ($message && str_starts_with($message['text'], '/start ')) {
 ```php
 <?php
 /**
-
  * Plugin: Telegram notifications to customers
  * Events: msOnChangeOrderStatus
-
  */
 
 switch ($modx->event->name) {
     case 'msOnChangeOrderStatus':
-        $order = $scriptProperties['order'];
-        $newStatus = $scriptProperties['status'];
+        $order = $scriptProperties['msOrder'];
+        $statusId = (int) $scriptProperties['status'];
 
+        // The order's customer
         $customer = $order->getOne('Customer');
-        if (!$customer) return;
+        if (!$customer) {
+            return;
+        }
 
         // Same order as the built-in channel: the linked user's profile first,
         // then the customer's own extra field
@@ -113,18 +123,28 @@ switch ($modx->event->name) {
         if ($chatId === '') {
             $chatId = (string) $customer->get('telegram_chat_id');
         }
-        if ($chatId === '') return;
+        if ($chatId === '') {
+            return; // The customer has not linked Telegram
+        }
 
-        $statusName = $modx->lexicon($newStatus->get('name'));
+        $status = $modx->getObject(\MiniShop3\Model\msOrderStatus::class, $statusId);
+        $statusName = $status ? $status->get('name') : (string) $statusId;
         $orderNum = $order->get('num');
-        $message = "Order #{$orderNum}\nStatus: {$statusName}";
+
+        $message = "Order #{$orderNum}\n";
+        $message .= "Status changed to: {$statusName}";
 
         $botToken = $modx->getOption('ms3_telegram_bot_token');
         $url = "https://api.telegram.org/bot{$botToken}/sendMessage";
+
         $ch = curl_init($url);
         curl_setopt_array($ch, [
             CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => ['chat_id' => $chatId, 'text' => $message, 'parse_mode' => 'HTML'],
+            CURLOPT_POSTFIELDS => [
+                'chat_id' => $chatId,
+                'text' => $message,
+                'parse_mode' => 'HTML',
+            ],
             CURLOPT_RETURNTRANSFER => true,
         ]);
         curl_exec($ch);
@@ -133,24 +153,22 @@ switch ($modx->event->name) {
 }
 ```
 
-#### Step 5: Link button in customer account
+#### Step 5: Link button in the customer account
 
-Add to the customer profile template:
+Show the link from step 2 in the account. Take the "already linked" flag from the same two sources as the channel (step 1).
+
+Add this to the customer profile template:
 
 ```fenom
-{if $customer.telegram_chat_id}
-    <div class="alert alert-success">
-        Telegram notifications enabled
-    </div>
+{if $telegramLinked}
+    <p>Telegram notifications are connected</p>
 {else}
-    <a href="{$telegramLink}" class="btn btn-primary" target="_blank">
-        Enable Telegram notifications
-    </a>
+    <a href="{$telegramLink}" target="_blank">Connect Telegram notifications</a>
 {/if}
 ```
 
 ::: tip Alternative
-Instead of your own bot, you can use third-party services (SendPulse, Unisender, etc.) that provide Telegram API and handle subscriptions.
+Instead of your own bot you can connect a mailing service (SendPulse, Unisender and others). They have a Telegram API, and they handle subscriptions.
 :::
 
 ## msOnBeforeSendNotification
@@ -200,7 +218,7 @@ Before 1.12.0 notifications went to the contacts stored on `msCustomer`, which c
 
 ### Aborting the operation
 
-Sending is cancelled by `$modx->event->output('cancel')` or `output(false)`. Any other text, and a plain `return`, do not cancel anything: `EventGate::isCancelled()` inspects the values plugins passed to `output()`. The event goes through `EventGate::invokeRaw()`, not `Utils::invokeEvent`.
+Sending is cancelled by `$modx->event->output('cancel')` or `output(false)`. Any other text, and a plain `return`, do not cancel anything: `EventGate::isCancelled()` inspects the values plugins passed to `output()`. The event goes through `EventGate::invokeRaw()`, not `Utils::invokeEvent()`.
 
 ```php
 <?php
@@ -260,7 +278,7 @@ Fired **after** the notification has been processed — once for all the selecte
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `notification` | `Notification` | The notification object (an abstract class; the concrete subclass is e.g. `StatusChangedNotification`) |
+| `notification` | `Notification` | A concrete subclass of the abstract `Notification`, for example `StatusChangedNotification` |
 | `recipient` | `array` | Recipient data — see [the `recipient` payload](#recipient) above |
 | `recipientType` | `string` | `customer` or `manager` |
 | `results` | `array<string,bool>` | The send result per channel, e.g. `['email' => true, 'telegram' => false]` |

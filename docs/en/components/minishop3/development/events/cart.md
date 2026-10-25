@@ -537,7 +537,7 @@ $status = [
 ];
 ```
 
-There are no other keys in `status` — the array is built entirely by `CartItemManager::calculateStatus()`. `total_count` sums the quantities of every row, `total_positions` counts the rows themselves.
+There are no other keys in `status`. `CartItemManager::calculateStatus()` builds the whole array.
 
 ### Modifying data
 
