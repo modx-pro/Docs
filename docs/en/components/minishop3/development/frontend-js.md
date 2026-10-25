@@ -6,20 +6,6 @@ description: Modular JavaScript architecture for the store frontend
 
 Modular JavaScript architecture for the store frontend.
 
-## Overview
-
-MiniShop3 uses a modular JavaScript architecture without jQuery. All modules are plain ES6+ and target modern browsers.
-
-**Features:**
-
-- Modular structure (core, ui, modules)
-- REST API client with httpOnly cookie tokenization
-- Hook system for extension
-- Centralized selectors with override
-- Automatic cart rendering
-- Promise-based confirmation dialogs
-- Events for integration
-
 ## Module structure
 
 ```
@@ -131,6 +117,7 @@ Centralized CSS/data-* selectors for all UI components. Selectors use data-attri
   orderCancel: '.ms3-order-cancel',
   addressSetDefault: '.set-default-address',
   addressDelete: '.delete-address',
+  resendVerificationEmail: '#resend-verification-email, [data-ms3-resend-verification]',
   authLoginForm: '#ms3-login-form',
   authRegisterForm: '#ms3-register-form',
   authForgotPassword: '#forgot-password-link'
@@ -202,10 +189,16 @@ const ms3 = {
     this.hooks = window.ms3Hooks
     this.message = window.ms3Message
 
-    // Tokens and API client
-    this.tokenManager = new TokenManager(this.config)
+    // Tokens and API client: the client is created first, the manager gets it
+    // through setApiClient(), and only then the token is requested
+    this.tokenManager = new TokenManager({ tokenName: this.config.tokenName || 'ms3_token' })
+    this.apiClient = new ApiClient({
+      baseUrl: this.config.actionUrl,
+      tokenManager: this.tokenManager,
+      ctx: this.config.ctx,
+    })
+    this.tokenManager.setApiClient(this.apiClient)
     await this.tokenManager.ensureToken()
-    this.apiClient = new ApiClient(this.config, this.tokenManager)
 
     // API modules
     this.cartAPI = new CartAPI(this.apiClient)
@@ -217,12 +210,19 @@ const ms3 = {
     this.orderUI = new OrderUI(this.orderAPI, this.hooks, this.message, this.config)
     this.customerUI = new CustomerUI(this.customerAPI, this.hooks, this.message, this.config)
     this.authUI = new AuthUI(this.customerAPI, this.hooks, this.message, this.config)
+    this.quantityUI = new QuantityUI(this.cartAPI, this.hooks, this.message, this.config)
+    this.productCardUI = new ProductCardUI(this.cartAPI, this.hooks, this.message, this.config)
 
     // Init
     this.cartUI.init()
     this.orderUI.init()
     this.customerUI.init()
     this.authUI.init()
+    this.quantityUI.init()
+    await this.productCardUI.init()
+
+    // Quantity controls are re-bound after every cart redraw
+    document.addEventListener('ms3:cart:updated', () => this.quantityUI.reinit())
 
     this.initFormHandler()
 
@@ -238,8 +238,12 @@ Passed from the server via snippets:
 
 ```javascript
 window.ms3Config = {
-  apiUrl: '/assets/components/minishop3/api.php',
+  actionUrl: '/assets/components/minishop3/api.php',
+  connectorUrl: '/assets/components/minishop3/connector.php',
+  ctx: 'web',                 // Page context key
   tokenName: 'ms3_token',
+  currencySymbol: '$ ',          // From the shop settings
+  currencyPosition: 'after',  // before or after, ms3_currency_position
 
   // Selector overrides
   selectors: {
@@ -255,6 +259,8 @@ window.ms3Config = {
   }
 }
 ```
+
+The component prints the first six keys itself when `ms3_register_global_config` is on. `currencySymbol` and `currencyPosition` are read by `OrderUI.formatPrice()` — frontend sums rely on them. `render.cart` and `selectors` are printed empty: snippets and your own code fill them.
 
 ### Ready event
 
@@ -312,17 +318,20 @@ class TokenManager {
   }
 
   async ensureToken() {
-    // Token is in httpOnly cookie — JS cannot read it directly.
-    // If cookie is missing, requests a new token from the server
-    return this.fetchNewToken()
+    // Token is in httpOnly cookie — JS cannot read it directly
+    if (this.tokenInitialized) return
+
+    await this.fetchNewToken()
   }
 
   async fetchNewToken() {
     const response = await fetch(
       `${this.config.apiUrl}?route=/api/v1/customer/token/get`
     )
-    const data = await response.json()
-    return data.success ? data.data?.token : null
+    const result = await response.json()
+    if (result.success) {
+      this.tokenInitialized = true  // Returns nothing: Promise<void>
+    }
   }
 }
 ```
@@ -338,25 +347,46 @@ class ApiClient {
     this.tokenManager = tokenManager
   }
 
-  async request(method, route, data = null) {
-    const url = new URL(this.baseUrl, window.location.origin)
-    url.searchParams.set('route', route)
+  async request(method, route, data = null, isRetry = false) {
+    const url = this.buildUrl(route)
 
-    const options = {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      credentials: 'same-origin'  // Sends httpOnly cookie
+    const headers = {
+      Accept: 'application/json',
+      'X-Requested-With': 'XMLHttpRequest',
     }
 
-    if (data && method !== 'GET') {
-      options.body = JSON.stringify(data)
+    const options = { method, headers, credentials: 'same-origin' }
+
+    // A body only for POST, PATCH and PUT; FormData goes as is
+    if (data && ['POST', 'PATCH', 'PUT'].includes(method)) {
+      if (data instanceof FormData) {
+        options.body = data
+      } else {
+        headers['Content-Type'] = 'application/json'
+        options.body = JSON.stringify(data)
+      }
     }
 
     const response = await fetch(url.toString(), options)
-    return response.json()
+    const result = await response.json()
+
+    // A 401 with a token error: refresh the token and repeat the request once
+    if (!isRetry && response.status === 401 && this.isTokenError(result)) {
+      await this.tokenManager.fetchNewToken()
+      return this.request(method, route, data, true)
+    }
+
+    return result
+  }
+
+  isTokenError(result) {
+    if (!result || result.success) return false
+    return ['ms3_err_token', 'ms3_err_token_invalid', 'ms3_err_token_expired'].includes(result.message)
+  }
+
+  // The Web API puts the payload in data, legacy processors used object
+  static getPayload(result) {
+    return result ? (result.data ?? result.object ?? null) : null
   }
 
   get(route) { return this.request('GET', route) }
@@ -377,14 +407,17 @@ class CartAPI {
     this.api = apiClient
   }
 
-  async get() {
-    return this.api.get('/api/v1/cart/get')
+  // include_thumbs=1 adds a thumb field to every line
+  async get(params = {}) {
+    let endpoint = '/api/v1/cart/get'
+    if (params.include_thumbs) endpoint += '?include_thumbs=1'
+    return this.api.get(endpoint)
   }
 
-  async add(id, count = 1, options = {}, renderTokens = null) {
-    return this.api.post('/api/v1/cart/add', {
-      id, count, options, render: renderTokens
-    })
+  async add(id, count = 1, options = {}, render = null) {
+    const data = { id, count, options }
+    if (render) data.render = JSON.stringify(render)
+    return this.api.post('/api/v1/cart/add', data)
   }
 
   async change(key, count, renderTokens = null) {
@@ -504,9 +537,7 @@ class CartUI {
   }
 
   init() {
-    this.initQuantityButtons()  // +/- buttons
-    this.initQuantityInputs()    // Quantity inputs
-    this.initOptionSelects()    // Option selects
+    this.initOptionSelects()    // Option selects: a delegated change listener
   }
 
   async handleAdd(id, count = 1, options = {}) {
@@ -550,8 +581,6 @@ class CartUI {
       }
     }
 
-    // Re-init handlers
-    setTimeout(() => this.init(), 100)
   }
 
   dispatchCartUpdated(data) {
@@ -561,6 +590,10 @@ class CartUI {
   }
 }
 ```
+
+The `+`/`−` buttons and the quantity inputs belong to a separate class, `QuantityUI` (`initButtons()`, `initInputs()`): `CartUI.init()` does not touch them. Handlers are not re-bound after a redraw — `initOptionSelects()` listens for `change` on the document, and `QuantityUI` re-binds on the `ms3:cart:updated` event.
+
+When a token in `ms3Config.render.cart` has no selector, or the element is not found, `renderCart()` tries the fallbacks: `#ms3oc-cart-live`, `#msb-test-cart`, `#msCart`, `[data-ms-cart]`, `.msCart`. The substitution happens only when exactly one such node exists in the document — otherwise one cart markup would land inside another.
 
 ### OrderUI
 
@@ -575,6 +608,7 @@ class OrderUI {
   }
 
   initRegularInput(input) {
+    // Without a parent div the handler returns silently
     input.addEventListener('change', async () => {
       const response = await this.handleAdd(input.name, input.value)
 
@@ -619,6 +653,7 @@ class CustomerUI {
     })
     this.initOrderCancel()
     this.initAddressManagement()
+    this.initResendVerification()  // Resend the e-mail confirmation
   }
 
   // Profile update
@@ -653,7 +688,7 @@ class CustomerUI {
         const confirmMessage = btn.dataset.confirm
 
         const confirmed = await ms3Confirm(confirmMessage, {
-          confirmClass: 'danger'
+          confirmClass: 'btn-danger'
         })
         if (!confirmed) return
 
@@ -715,56 +750,49 @@ class AuthUI {
   }
 
   init() {
-    this.initLoginForm()
-    this.initRegisterForm()
+    const loginForm = document.querySelector(this.selectors.authLoginForm)
+    if (loginForm) {
+      loginForm.addEventListener('submit', e => this.handleLogin(e))
+    }
+
+    const registerForm = document.querySelector(this.selectors.authRegisterForm)
+    if (registerForm) {
+      registerForm.addEventListener('submit', e => this.handleRegister(e))
+    }
+
+    const forgotLink = document.querySelector(this.selectors.authForgotPassword)
+    if (forgotLink) {
+      forgotLink.addEventListener('click', e => this.handleForgotPassword(e))
+    }
+
+    this.initTabSupport()
   }
 
-  async handleLogin(formData) {
-    const hookData = { formData }
+  // The argument is the submit event, not the form
+  async handleLogin(event) {
+    event.preventDefault()
+    const data = this.serializeForm(event.target)
+
+    const hookData = { email: data.email }
     await this.hooks.runHooks('beforeLogin', hookData)
     if (hookData.cancel) return
 
-    const response = await this.customer.login({
-      email: formData.get('email'),
-      password: formData.get('password')
-    })
+    const result = await this.customer.login(data.email, data.password)
+    await this.hooks.runHooks('afterLogin', { email: data.email, response: result })
 
-    await this.hooks.runHooks('afterLogin', { response })
-
-    if (response.success) {
-      this.message.success(response.message)
-      window.location.href = response.data?.redirect_url || window.location.href
+    if (result.success) {
+      this.showMessage('login-messages', this.t('ms3_customer_login_success'), 'success')
+      setTimeout(() => this.handleRedirect(ApiClient.getPayload(result)), 1000)
     } else {
-      this.showFormErrors('login', response)
-    }
-  }
-
-  async handleRegister(formData) {
-    const hookData = { formData }
-    await this.hooks.runHooks('beforeRegister', hookData)
-    if (hookData.cancel) return
-
-    const response = await this.customer.register({
-      email: formData.get('email'),
-      password: formData.get('password'),
-      password_confirm: formData.get('password_confirm'),
-      first_name: formData.get('first_name'),
-      last_name: formData.get('last_name'),
-      phone: formData.get('phone'),
-      privacy_accepted: formData.get('privacy_accepted') ? true : false
-    })
-
-    await this.hooks.runHooks('afterRegister', { response })
-
-    if (response.success) {
-      this.message.success(response.message)
-      window.location.href = response.data?.redirect_url || window.location.href
-    } else {
-      this.showFormErrors('register', response)
+      this.showMessage('login-messages', result.message || this.t('ms3_err_unknown'), 'danger')
     }
   }
 }
 ```
+
+`handleRegister(event)` works the same way but writes into the `register-messages` block and validates the form on the client before the request: `email` and `password` filled in, `password` equal to `password_confirm`, `privacy_accepted` ticked. After a successful registration the redirect through `handleRedirect()` happens only when the payload carries a `token` (after 1500 ms); otherwise the script switches to the login tab and resets the form after 2000 ms.
+
+Login and registration errors go into the block next to the form (`showMessage()`), not into a popup. A toast is raised only on a network failure.
 
 **Auth chunk:** `tpl.msCustomer.unauthorized` contains login and registration forms with tabs (Bootstrap). An inline script exports lexicon keys into `window.ms3Lexicon`:
 
@@ -794,7 +822,7 @@ async function ms3Confirm(message, options = {}) → Promise<boolean>
 | --- | --- | --- |
 | `confirmText` | "Confirm" / "Подтвердить" | Confirm button text |
 | `cancelText` | "Cancel" / "Отмена" | Cancel button text |
-| `confirmClass` | `primary` | Button CSS class (primary, danger) |
+| `confirmClass` | `btn-primary` | The whole class of the confirm button: it is applied as `btn {confirmClass} ms3-confirm-ok` |
 
 **Example:**
 
@@ -805,7 +833,7 @@ if (!ok) return
 
 // Red button (destructive action)
 const ok = await ms3Confirm('Delete this address?', {
-  confirmClass: 'danger'
+  confirmClass: 'btn-danger'
 })
 ```
 
@@ -1033,11 +1061,15 @@ window.ms3Message = {
 ```javascript
 // Cart update
 document.addEventListener('ms3:cart:updated', (e) => {
-  console.log('Cart updated:', e.detail)
+  // detail does not always arrive — clearing the order dispatches it empty
+  const status = e.detail && e.detail.status
+  if (!status) {
+    return
+  }
 
   const counter = document.querySelector('.cart-counter')
   if (counter) {
-    counter.textContent = e.detail.total_count || 0
+    counter.textContent = status.total_count
   }
 })
 ```
@@ -1062,44 +1094,6 @@ MiniShop3 automatically handles forms with class `.ms3_form` (or `[data-ms3-form
   <input type="hidden" name="ms3_action" value="order/submit">
   <button type="submit">Checkout</button>
 </form>
-```
-
-### Routing
-
-```javascript
-// From ms3.js
-
-initFormHandler() {
-  document.querySelectorAll('.ms3_form').forEach(form => {
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault()
-
-      const entity = form.dataset.ms3Entity
-      const method = form.dataset.ms3Method
-      const formData = new FormData(form)
-
-      switch (`${entity}/${method}`) {
-        case 'cart/add':
-          await this.cartUI.handleAdd(
-            formData.get('id'),
-            formData.get('count'),
-            this.extractOptions(formData)
-          )
-          break
-
-        case 'order/submit':
-          await this.orderUI.handleSubmit()
-          break
-
-        case 'customer/profile':
-          await this.customerUI.handleProfileUpdate(formData)
-          break
-
-        // ...
-      }
-    })
-  })
-}
 ```
 
 ## Extension and customization
@@ -1209,7 +1203,7 @@ getLexicon(key) {
 }
 ```
 
-### Additional modules
+## Additional modules
 
 ### order-addresses.js
 
@@ -1228,7 +1222,7 @@ The module fills the form fields when an address is selected. Details: [Checkout
 
 ### Built-in afterSendRequest hook
 
-`hooks.js` registers `afterSendRequest`: after any API request, ~100 ms later `cartUI.init()` runs to re-bind handlers on the updated DOM. Keep this in mind for custom partial cart updates.
+`hooks.js` registers a handler for `afterSendRequest` that calls `cartUI.init()` 100 ms later. Nothing ever runs it: there is no `runHooks('afterSendRequest')` call anywhere in the code. A handler of your own on that name will not run either — there is no working replacement, so call `ms3.refresh()` after a partial cart update of your own.
 
 ### change-option
 

@@ -58,13 +58,13 @@ curl -s https://example.com/api/v1/resources \
 
 ## Scopes
 
-Шаблон `{object}.{action}`: `resources.read`, `chunks.read`, `products.read`, `preview`, `*`.
+Шаблон `{object}.{action}`: `resources.read`, `chunks.read`, `products.read`, `preview`, `fields.{field}`, `*`.
 
 Нет scope → `403` `scope_denied`. Нет учётных данных на защищённом маршруте → `401` `token_required`.
 
 ## Preview
 
-`?preview=true` отдаёт неопубликованное при `view_unpublished` (сессия) или scope `preview` (key/token). Anonymous preview запрещён.
+`?preview=true` отдаёт неопубликованное при scope `preview` (key/token) или праве `view_unpublished` (сессия). Достаточно одного из двух: ACL пользователя, создавшего ключ, в проверку не входит. Anonymous preview запрещён.
 
 ## Цепочка
 

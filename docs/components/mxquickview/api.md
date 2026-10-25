@@ -11,17 +11,19 @@ title: API и интерфейсы
 
 | Параметр | По умолчанию | Описание |
 | --- | --- | --- |
-| `modalSize` | непустое свойство перекрывает `mxquickview_modal_size` (в transport `modal-lg`) | Классы `modal-sm`, `modal-lg`, `modal-xl` только для `native` и `bootstrap` |
+| `modalSize` | непустое свойство перекрывает `mxquickview_modal_size` (в transport `modal-lg`) | Классы `modal-sm`, `modal-lg`, `modal-xl` только для `native` и `bootstrap`. В `native` значение переводится в класс `qv-modal__box--sm/lg/xl` (неизвестное значение даёт `--lg`), в `bootstrap` подставляется в `modal-dialog` |
 | `mouseoverDelay` | непустое свойство перекрывает `mxquickview_mouseover_delay` | Задержка наведения в мс. Пустая строка свойства = «не задано»: читается настройка (по умолчанию 300) |
-| `modalLibrary` | `native` | `native`, `bootstrap`, `fancybox` (`bootstrap5` alias). Нет `window.bootstrap.Modal` или нет `#mxqv-bootstrap-modal` → `native`. Нет Fancybox API (`Fancybox.show`) → `native` |
+| `modalLibrary` | `native` | `native`, `bootstrap`, `fancybox` (`bootstrap5` alias). Нет `window.bootstrap.Modal` или нет `#mxqv-bootstrap-modal` → `native`. Нет Fancybox API (`Fancybox.show`) → `native`. Проверка повторяется при каждом открытии: если API пропал уже после инициализации, компонент переключается на `native` |
 | `debug` | `mxquickview_debug`, если параметр не передан | Лог `[mxqv]` в консоли. В карточке сниппета в панели управления поля нет, работает через `scriptProperties` |
 | `loadingText` | лексикон `mxqv_loading` | Текст загрузки в modal/selector. Не в свойствах transport сниппета, только `scriptProperties` |
-| `fancyboxCss` | `mxquickview_fancybox_css`, если параметр не задан или пустой | URL/путь к CSS Fancybox. Дальше файлы поставки или CDN |
+| `fancyboxCss` | `mxquickview_fancybox_css`, если параметр не задан или пустой | URL/путь к CSS Fancybox. Непустое значение используется как есть, без проверки существования файла. Пусто — поиск в `vendor/fancybox/`, затем CDN `@fancyapps/ui` |
 | `fancyboxJs` | то же | JS Fancybox |
 | `bootstrapCss` | то же | CSS Bootstrap для `modalLibrary=bootstrap` |
 | `bootstrapJs` | то же | JS Bootstrap |
 
 ### data-атрибуты триггера
+
+Читаются с элемента, на который повешен быстрый просмотр.
 
 | Атрибут | Описание |
 | --- | --- |
@@ -36,6 +38,48 @@ title: API и интерфейсы
 | `data-mxqv-context` | Ключ контекста (несколько языков или сайтов) |
 | `data-mxqv-parent` | Контейнер списка для loop |
 | `data-mxqv-loop` | `true` — собрать соседние триггеры для prev/next (только клик, не mouseover) |
+
+### data-атрибуты разметки компонента
+
+Их ставит сам компонент или чанк, вручную задавать не нужно.
+
+| Атрибут | Где появляется | Описание |
+| --- | --- | --- |
+| `data-mxqv-nav` | разметка `native` и `bootstrap` | Кнопка навигации, значение `prev` или `next`. На границах списка кнопка скрывается |
+| `data-mxqv-close` | разметка `native` и `bootstrap` | Кнопка закрытия |
+| `data-mxqv-fancybox-title` | заголовок внутри `.mxqv-fancybox-content` | Заголовок окна Fancybox |
+| `data-mxqv-variants` | чанк товара, `.qv-product` | Флаг наличия вариантов, обрабатываются значения `true`, `1`, `yes`, `on` |
+| `data-mxqv-variants-json` | чанк товара, `.qv-product` | JSON массива вариантов для пересчёта цены на клиенте |
+| `data-mxqv-price` | чанк товара | Элемент, в который пишется текущая цена выбранного варианта |
+| `data-mxqv-ms3-render-token` | коннектор, `.mxqv-ms3-render` | Токен рендера MiniShop3, переносится в `ms3Config.render.cart` |
+| `data-mxqv-ms3-render-selector` | коннектор, `.mxqv-ms3-render` | CSS selector контейнера корзины, необязательный |
+
+### Плейсхолдеры чанков поставки
+
+`mxqv_product` (карточка товара)
+
+| Плейсхолдер | Источник |
+| --- | --- |
+| `id` | поле ресурса |
+| `pagetitle` | поле ресурса |
+| `article` | поле `msProductData` (артикул MiniShop3) |
+| `description` | `msProductData.description` либо поле ресурса |
+| `price` | `msProductData.price` |
+| `old_price` | `msProductData.old_price` |
+| `thumb` | `msProductData.thumb`, иначе картинка-заглушка MiniShop3 |
+| `assets_url` | системная настройка `assets_url` |
+| `has_variants` | `true` или `false`, зависит от ms3Variants |
+| `variants_html` | разметка выбора варианта от `msProductVariants` |
+| `variants_json` | JSON вариантов: `id`, `sku`, `price`, `old_price`, `count`, `file_id`, `options` |
+
+`mxqv_resource` (страница, статья, новость)
+
+| Плейсхолдер | Источник |
+| --- | --- |
+| `id` | поле ресурса |
+| `pagetitle` | поле ресурса |
+| `introtext` | поле ресурса |
+| `content` | поле ресурса |
 
 ### Примеры вызова
 
@@ -69,8 +113,8 @@ title: API и интерфейсы
 - `<script>window.mxqvConfig = ...</script>`
 - `<script src="...mxqv.min.js?v=filemtime" defer></script>` (если `mxqv.min.js` нет, запасной `mxqv.js`)
 - разметку нативной модалки (`#mxqv-modal-backdrop`, `#mxqv-modal`)
-- при `modalLibrary=bootstrap` — контейнер `#mxqv-bootstrap-modal` и Bootstrap из `bootstrapCss/bootstrapJs` или файлы в `assets/components/mxquickview/vendor/bootstrap/`. Если не найдено, CDN `bootstrap`
-- при `modalLibrary=fancybox` — Fancybox из `fancyboxCss/fancyboxJs` или файлы в `assets/components/mxquickview/vendor/fancybox/`. Если не найдено, CDN `@fancyapps/ui`
+- при `modalLibrary=bootstrap` — контейнер `#mxqv-bootstrap-modal` и Bootstrap. Путь берётся из `bootstrapCss/bootstrapJs` (или системных настроек) как есть; значение по умолчанию указывает на файлы в `assets/components/mxquickview/vendor/bootstrap/`. Только при пустом значении идёт поиск файла в `vendor/bootstrap/`, затем CDN `bootstrap@5.3.2`
+- при `modalLibrary=fancybox` — Fancybox. Путь берётся из `fancyboxCss/fancyboxJs` (или системных настроек) как есть; значение по умолчанию указывает на файлы в `assets/components/mxquickview/vendor/fancybox/`. Только при пустом значении идёт поиск файла в `vendor/fancybox/`, затем CDN `@fancyapps/ui`
 
 ## CSS переменные нативной модалки
 
@@ -201,17 +245,23 @@ title: API и интерфейсы
 
 ### Клавиатура (modal открыта)
 
-- **Escape**: закрывает только `modalLibrary=native`.
-- **← / →**: prev/next в списке loop (как кнопки `[data-mxqv-nav]`), только `native`/`bootstrap`.
+- **Escape**: обрабатывается компонентом только при `modalLibrary=native`. В `bootstrap` окно закрывает сам Bootstrap, в `fancybox` — Fancybox.
+- **← / →**: prev/next в списке loop. Проверяются только факт открытой модалки и индекс, поэтому работают во всех режимах, включая `fancybox`.
+
+### Кнопки prev/next
+
+Кнопки `[data-mxqv-nav="prev|next"]` есть только в разметке `native` и `bootstrap`. В `fancybox` `updateNavButtons()` не выполняется, кнопок нет; переключение остаётся на клавишах ← / →.
 
 ### Маркеры msCart / ms3 render
 
-После отрисовки `msCart` в HTML может быть скрытый `<span class="mxqv-ms3-render">` с:
+После отрисовки `msCart` в HTML добавляется скрытый `<span class="mxqv-ms3-render">` с:
 
 - `data-mxqv-ms3-render-token` — токен для `ms3Config.render.cart`
-- `data-mxqv-ms3-render-selector` — опциональный CSS selector контейнера корзины
+- `data-mxqv-ms3-render-selector` — необязательный CSS selector контейнера корзины
 
-JS переносит token в `window.ms3Config.render.cart` без inline-script.
+Маркер появляется только при работающем сервисе MiniShop3 `ms3_token_service` с методом `generateSnippetToken`. Без него `msCart` отрисуется, но токен в `ms3Config.render.cart` не попадёт.
+
+JS переносит token в `window.ms3Config.render.cart` без inline-script. Если у контейнера, в который вставлен ответ, нет `id`, компонент генерирует его сам: `mxqv-ms3-cart-{timestamp}-{random}`, и этот `id` подставляется в `selector` записи рендера.
 
 ## Пример запроса
 

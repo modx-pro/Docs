@@ -20,7 +20,7 @@ Namespace: **yandexmapslocator**. В БД ключи с префиксом `yand
 | `yandexmapslocator_default_latitude` | text | `55.751244` | Центр, широта |
 | `yandexmapslocator_default_longitude` | text | `37.618423` | Центр, долгота |
 | `yandexmapslocator_cluster` | boolean | Да | Кластеризация маркеров |
-| `yandexmapslocator_default_radius` | number | `50` | Радиус поиска, км (если у сниппета `radius=0`) |
+| `yandexmapslocator_default_radius` | number | `50` | Радиус поиска, км, если у сниппета `radius=0`. Режет выдачу при любом гео-origin: координаты из `latitude` / `longitude`, геолокация или `address` после геокода. Описание настройки в пакете упоминает только `sortby=distance`, но код применяет радиус независимо от сортировки |
 | `yandexmapslocator_distance_unit` | list | `km` | Единица расстояния: `km` или `m` |
 | `yandexmapslocator_default_balloon_image` | text | *(пусто)* | Запасная картинка балуна |
 | `yandexmapslocator_marker_icon_size` | text | `32,32` | Размер своей иконки маркера, px |
@@ -63,6 +63,16 @@ Pro читает ключ `yandexmapslocator_tv_timezone` (имя TV пояса)
 | `yandexmapslocator_api_trust_proxy` | boolean | Нет | Доверять `X-Forwarded-For` для лимита запросов |
 
 С `127.0.0.1`, `::1` и системной `debug` лимит запросов не режет.
+
+Значение лимита общее, но счётчики разные. В ключ счётчика входит имя бакета (`rate/{бакет}/{ip}/{минута}`), поэтому лимит задаётся отдельно для REST и отдельно для `search.php`: это два независимых счётчика, и запрос к одному не тратит лимит другого. Имя бакета видно в ключе кеша:
+
+| Бакет | Кто тратит | Значение берётся из |
+|-------|------------|---------------------|
+| `locations` | REST `locations` | `yandexmapslocator_api_list_rate_limit` |
+| `search` | `search.php` Free | `yandexmapslocator_api_list_rate_limit` |
+| `geocode` | REST `geocode` и любой запрос с `address` | `yandexmapslocator_api_geocode_rate_limit` |
+
+Поэтому запрос к `search.php` с `address` съедает две квоты: `search` и `geocode`.
 
 Подробнее: [Безопасность API](pro/api-security).
 

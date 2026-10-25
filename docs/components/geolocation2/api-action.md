@@ -15,6 +15,19 @@ URL:
 
 При `geolocation2_debug = 1` подробности могут попадать в MODX error log.
 
+```mermaid
+flowchart TD
+  A[Запрос в action.php] --> B{Заголовок X-Requested-With = XMLHttpRequest?}
+  B -->|нет| Z[JSON: Invalid request]
+  B -->|да| C{action}
+  C -->|GET state| D[Состояние из сессии без изменений]
+  C -->|GET data| E[HTML gl_data: город из запроса или из сессии]
+  C -->|GET search| F[Поиск по name_ru и name_en, limit 1-100]
+  C -->|POST save, confirm, dismiss| G{csrf валиден?}
+  G -->|нет| Z2[JSON: сессия устарела]
+  G -->|да| H[city_id и confirmed пишутся в сессию]
+```
+
 ## CSRF
 
 POST (`save`, `confirm`, `dismiss`) требуют поле `csrf` из плейсхолдера `gl2_csrf` (сессия). Токен выставляет сниппет модалки и отдаёт `action=state`.

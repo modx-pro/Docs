@@ -29,7 +29,7 @@ switch ($modx->event->name) {
 }
 ```
 
-После обработчиков реестр замораживается. Поздняя регистрация выбрасывает `RegistryFrozenException`.
+После обработчиков реестр и коллекция маршрутов замораживаются (`ExtensionApi::freeze()`). Поздний `registerObject` или `registerRelation` бросает `RegistryFrozenException`, поздний `registerEndpoint` бросает `RuntimeException` с текстом `Route collection is frozen`.
 
 ## Методы ExtensionApi
 
@@ -38,6 +38,7 @@ switch ($modx->event->name) {
 | `registerObject(ObjectDefinition)` | xPDO-класс под публичным именем |
 | `registerRelation(string $object, RelationDefinition)` | Связь для `include=` |
 | `registerEndpoint(...)` | Свой маршрут с обработчиком |
+| `registry()` | Доступ к зарегистрированным определениям |
 
 ## ObjectDefinition
 
@@ -55,7 +56,9 @@ ObjectDefinition::create('locations')
     ->contexts(['web']);
 ```
 
-Флаги: `readable`, `creatable`, `updatable`, `deletable`, `hiddenFields`, `protectedFields`, `immutableFields`, `requiredFields`, `searchable`, `primaryKey`, `contexts`.
+Флаги: `readable`, `creatable`, `updatable`, `deletable`, `searchable`, `hiddenFields`, `protectedFields`, `immutableFields`, `requiredFields`, `primaryKey`, `contexts`, `contextAccessGated`.
+
+`contextAccessGated` отключает проверку списка `contexts` и переключает контроль доступа на проверку ACL по ключу контекста конкретной записи. Так помечен core-объект `contexts`.
 
 ## События цепочки
 

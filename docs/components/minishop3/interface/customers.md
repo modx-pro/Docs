@@ -1,6 +1,6 @@
 ---
 title: Клиенты
-description: Справочник покупателей msCustomer в менеджере MiniShop3
+description: Справочник покупателей msCustomer в админке MiniShop3
 ---
 # Клиенты
 
@@ -29,11 +29,11 @@ description: Справочник покупателей msCustomer в мене�
 | `PUT` | `/api/mgr/customers/{id}/addresses/{addressId}` |
 | `DELETE` | `/api/mgr/customers/{id}/addresses/{addressId}` |
 
-Те же адреса покупатель видит на витрине: [Адреса доставки](/components/minishop3/frontend/customer-addresses).
+Те же адреса покупатель видит на фронтенде: [Адреса доставки](/components/minishop3/frontend/customer-addresses).
 
 ## Связь с заказами
 
-У заказа есть `customer_id`. В гриде заказов можно показать колонку покупателя и перейти к карточке. На витрине гостя можно превратить в покупателя при оформлении, если включён `ms3_customer_auto_register_on_order`.
+У заказа есть `customer_id`. В гриде заказов можно показать колонку покупателя и перейти к карточке. На фронтенде гостя можно превратить в покупателя при оформлении, если включён `ms3_customer_auto_register_on_order`.
 
 ## Синхронизация с modUser
 

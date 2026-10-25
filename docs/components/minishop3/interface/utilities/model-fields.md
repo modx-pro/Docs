@@ -10,12 +10,12 @@ title: Поля модели
 Правите подписи, виджеты и секции существующих полей; данные в таблицах не меняются.
 
 ::: info Не путать с page-fields
-[Поля товара](/components/minishop3/interface/utilities/product-fields) (`ms3_product_fields`, `page_key=product_data`) настраивают только вкладку «Свойства товара» на карточке товара. [Дополнительные поля](/components/minishop3/interface/utilities/extra-fields) создают новые колонки в БД. Cookbook: [Поля модели](/components/minishop3/manager/model-fields/cookbook).
+[Поля товара](/components/minishop3/interface/utilities/product-fields) (`ms3_product_fields`, `page_key=product_data`) настраивают только вкладку «Свойства товара» на карточке товара. [Свои поля](/components/minishop3/interface/utilities/extra-fields) создают новые колонки в БД. Cookbook: [Поля модели](/components/minishop3/manager/model-fields/cookbook).
 :::
 
-## Отличие от дополнительных полей
+## Отличие от своих полей
 
-| Характеристика | Поля модели | Дополнительные поля |
+| Характеристика | Поля модели | Свои поля |
 | --- | --- | --- |
 | Источник | Существующие поля в БД | Новые поля |
 | Создание колонок | Нет | Да (ALTER TABLE) |

@@ -10,7 +10,7 @@ The package ships output snippets and (in Pro) form handlers. Namespace for chun
 | Snippet | Purpose |
 | --- | --- |
 | [PageBuilder](PageBuilder) | HTML of published sections for current or given resource |
-| [PageBuilderResource](PageBuilderResource) | Sections from another resource (`resource_id` required) |
+| [PageBuilderResource](PageBuilderResource) | Sections from another resource (`resource_id`, `0` = current resource) |
 | [PageBuilderSitemap](PageBuilderSitemap) | XML sitemap for pages with published sections |
 | [PageBuilderUtmSession](PageBuilderUtmSession) | UTM from query string into session for section visibility rules |
 | [PageBuilderUtmUrl](PageBuilderUtmUrl) | UTM from control panel registry appended to arbitrary URL |
@@ -46,7 +46,7 @@ Quiz, lead form, and form builder: add the `quiz`, `contact_form`, or `form_buil
 | Sitemap | `[[!PageBuilderSitemap]]` | `{'!PageBuilderSitemap' \| snippet}` |
 | UTM to session | `[[!PageBuilderUtmSession]]` | `{'!PageBuilderUtmSession' \| snippet}` |
 | URL with UTM | `` [[!PageBuilderUtmUrl? &url=`/contacts/`]] `` | `{'!PageBuilderUtmUrl' \| snippet : ['url' => '/contacts/']}` |
-| Table rows | `` [[!PageBuilderTableRows? &table_key=`prices`]] `` | `{'!PageBuilderTableRows' \| snippet : ['table_key' => 'prices']}` |
+| Table rows | `` [[!PageBuilderTableRows? &resource_id=`[[*id]]` &table_key=`prices`]] `` | `{'!PageBuilderTableRows' \| snippet : ['resource_id' => $_modx->resource.id, 'table_key' => 'prices']}` |
 
 ## Caching
 

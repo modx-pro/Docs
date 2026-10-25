@@ -78,6 +78,7 @@ Type [repeater](../fields/repeater#section-data-output). Required.
 | Field | Rule |
 | --- | --- |
 | `title` | Required |
+| `description` | textarea, not required. The chunk prints it under the step title |
 | `type` | `single` (radio), `multi` (checkbox), `text`, `info` |
 | `required` | Empty required step blocks Next and submit. Ignored for `info` |
 | `options` | For `single` / `multi`: `label`, `image`, `price_delta` (counts toward total only in `pricing`) |

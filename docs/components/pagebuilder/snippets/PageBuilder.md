@@ -107,7 +107,7 @@ flowchart TB
 
 Кеш MODX: partition `pagebuilder/{resourceId}`, ключ `render/{context}/{resourceId}/{publishedRevision}[/{typeHash}]`. Сбрасывается при publish/unpublish, ошибки отрисовки в кеш не попадают.
 
-Кеш обходится полностью, если у документа есть UTM- или condition-правила секций либо секция с `cacheable:false`: на таком документе события вызываются на каждый запрос.
+Кеш обходится полностью, если у документа есть UTM-правила, `conditions`, секция с `cacheable: false` или тип с `runtimeContext: true` (`contact_form`, `form_builder`, `quiz`, `dynamic_list`, `filterable_grid`). На таком документе события вызываются на каждый запрос.
 
 События `pbOnBeforeRenderDocument` и `pbOnBeforeRenderSection` вызываются при промахе кеша. Кеш отключается на один вызов:
 
@@ -125,7 +125,7 @@ flowchart TB
 
 ```mermaid
 flowchart TB
-    A[Вызов PageBuilder] --> B{"Есть UTM- или condition-правила либо cacheable:false?"}
+    A[Вызов PageBuilder] --> B{"Есть UTM, conditions, cacheable:false или runtimeContext?"}
     B -->|"да"| C["кеш обходится: события на каждый запрос"]
     B -->|"нет"| D{"use_cache = 1?"}
     D -->|"нет"| E["при отрисовке: pbOnBeforeRenderDocument, pbOnBeforeRenderSection"]

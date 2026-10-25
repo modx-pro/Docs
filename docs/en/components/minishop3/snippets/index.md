@@ -14,7 +14,7 @@ MiniShop3 provides a set of snippets for building the store frontend. All snippe
 | [msOrder](msorder) | Checkout form |
 | [msGetOrder](msgetorder) | Order information |
 | [msGallery](msgallery) | Product image gallery |
-| [msOptions](msoptions) | Options for product filtering |
+| [msOptions](msoptions) | Output of specific product options by their keys |
 | [msProductOptions](msproductoptions) | Specific product characteristics |
 | [msCustomer](mscustomer) | Customer account |
 | [msOrderTotal](msordertotal) | Order total summary |

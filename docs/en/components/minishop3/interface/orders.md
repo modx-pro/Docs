@@ -16,11 +16,11 @@ Filter summary (status counts, totals) loads separately: `GET /api/mgr/orders/st
 
 ### Create order from manager
 
-The “Create order” button calls `POST /api/mgr/orders` — an empty or partially filled order without the storefront. Then add lines and finalize. Events: `msOnBeforeMgrCreateOrder`, `msOnMgrCreateOrder`.
+The “Create order” button calls `POST /api/mgr/orders` — an empty or partially filled order without the frontend. Then add lines and finalize. Events: `msOnBeforeMgrCreateOrder`, `msOnMgrCreateOrder`.
 
 ### Drafts
 
-Until the customer clicks Submit on the storefront, the DB holds an order with draft status (`ms3_status_draft`). System setting `ms3_order_show_drafts` controls whether drafts appear in the grid by default.
+Until the customer clicks Submit on the frontend, the DB holds an order with draft status (`ms3_status_draft`). System setting `ms3_order_show_drafts` controls whether drafts appear in the grid by default.
 
 The toolbar has a “Show drafts” toggle. The browser stores the choice in `localStorage` (`ms3_orders_show_drafts`) and sends `show_drafts` to the API.
 
@@ -36,7 +36,7 @@ The `OrderView` card holds tabs: items, customer, delivery and payment, comments
 
 Change `status_id` in the form. Save goes as `PUT /api/mgr/orders/{id}`. A status change can trigger emails and Telegram per [Notification center](/en/components/minishop3/interface/notifications) rules.
 
-Turn a draft into a real order with the finalize button: `POST /api/mgr/orders/{id}/finalize`. That is not the same path as storefront submit.
+Turn a draft into a real order with the finalize button: `POST /api/mgr/orders/{id}/finalize`. That is not the same path as frontend submit.
 
 ### Order extra fields
 

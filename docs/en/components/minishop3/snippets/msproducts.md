@@ -451,7 +451,7 @@ With `includeVendorFields`:
         {/if}
     </a>
 
-    {* Adding to the cart works through a form: the storefront script looks for ms3_action inside one *}
+    {* Adding to the cart works through a form: the frontend script looks for ms3_action inside one *}
     <form method="post" class="ms3_form" data-ms3-form>
         <input type="hidden" name="id" value="{$id}">
         <input type="hidden" name="count" value="1">
@@ -465,7 +465,7 @@ With `includeVendorFields`:
 The script intercepts the submit of a form carrying the `ms3_form` class or the `data-ms3-form` attribute and reads the `ms3_action` field. A button with attributes instead of a form does nothing and reports no error — the product simply is not added. The stock chunk `ms3_products_row.tpl` is a complete working example.
 :::
 
-## Integration with external packages
+## Integration with external packages {#integration-with-external-packages}
 
 External packages (ms3Variants, msBrands and others) add their own data to products through events — MiniShop3 core code stays untouched.
 

@@ -17,7 +17,7 @@ Pro сниппет не подменяет: те же параметры, плю
 | `limit` | `0` | Лимит (0: без ограничения) |
 | `offset` | `0` | Смещение |
 | `radius` | `0` | Радиус, км (0 → `yandexmapslocator_default_radius`) |
-| `sortby` | `pagetitle` | `pagetitle`, `distance`, `menuindex`, `id`, … |
+| `sortby` | `pagetitle` | `pagetitle`, `distance`, `menuindex`, `createdon`, `id`. Всё, что не в списке, приводится к `pagetitle` |
 | `sortdir` | `ASC` | `ASC` или `DESC` |
 | `tpl` | `yandexmapslocator.store` | Чанк одной точки |
 | `tplOuter` | `yandexmapslocator.outer` | Обёртка |
@@ -72,7 +72,9 @@ Pro сниппет не подменяет: те же параметры, плю
 | `{$category}` | Категория |
 | `{$context_key}` | Контекст ресурса |
 | `{$balloon_image}`, `{$marker_icon}` | Медиа |
-| `{$distance}`, `{$distance_km}`, `{$distance_m}` | Число и строки в км / м |
+| `{$distance}` | Число, км. `null`, если расстояние не считали |
+| `{$distance_km}` | Строка с единицами: «0.4 км». Пусто, если расстояние не считали |
+| `{$distance_m}` | Строка с единицами: «400 м». Пусто, если расстояние не считали |
 | `{$distance_formatted}` | Расстояние в единице `distance_unit` |
 | `{$timezone}`, `{$amenities}`, `{$brand}` | **Pro:** из extra точки |
 | `{$ms3_product_ids}` | **Pro:** ID товаров. `{$ms3_product_id}` только если заполнен прежний TV |
@@ -81,6 +83,29 @@ Pro сниппет не подменяет: те же параметры, плю
 Иконка маршрута в чанке пакета: `{$_modx->config['assets_url']}components/yandexmapslocator/img/yandex-navigator.svg`.
 
 Lexicon: `{'yandexmapslocator_route' | lexicon}`.
+
+## Плейсхолдеры чанка обёртки (`tplOuter`)
+
+| Переменная | Тип | Куда уходит в чанке `yandexmapslocator.outer` |
+|------------|-----|---------------------------------------------|
+| `{$search}` | string | Готовый HTML формы: результат рендера `tplSearch` |
+| `{$stores}` | string | Готовый HTML точек или заглушки `tplEmpty` |
+| `{$parents}` | string | ID родителей из критериев. В чанке ставит `data-yml-parents` |
+| `{$is_empty}` | boolean | Выдача пуста. В чанке ставит `data-yml-empty` |
+| `{$map_config}` | string | JSON конфига карты. В чанке это тело `<script data-yml-config>` |
+| `{$stores_json}` | string | JSON массива точек. В чанке это тело `<script data-yml-stores>` |
+| `{$assets_url}` | string | Корень файлов пакета. В чанке идёт в `css/locator.css` и `js/locator.js` |
+| `{$assets_version}` | string | Версия пакета. В чанке идёт в query-строку обоих файлов как `?v=` |
+
+В `{$search}` форма собрана с одним плейсхолдером: `{$address}` из критериев, чтобы поле поиска держало введённый адрес. URL для запроса JS берёт из `{$map_config}` (`searchUrl` или `apiUrl`), отдельного плейсхолдера для него нет.
+
+## Плейсхолдер чанка ошибки (`tplError`)
+
+| Переменная | Описание |
+|------------|----------|
+| `{$error}` | Текст исключения. Сниппет логирует его как `[YandexMapsLocator] …` и отдаёт вместо локатора |
+
+Чанк `yandexmapslocator.error` отдаёт его в `<p class="yml-locator__alert" role="alert">`.
 
 ## Примеры
 

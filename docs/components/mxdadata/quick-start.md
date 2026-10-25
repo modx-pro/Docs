@@ -21,15 +21,17 @@ flowchart LR
 |------------|--------|
 | MODX Revolution | 3.0.3+ |
 | PHP | 8.2+ |
+| Расширения PHP | `curl`, `mbstring`, `openssl` |
 | MiniShop3 | пакет `minishop3` ≥ 1.0.0 |
 | Учётная запись [DaData](https://dadata.ru/) | Token и Secret из кабинета |
-| VueTools | В `requires` транспорта для Vue-админки. Сниппеты на сайте без него |
+| VueTools | ≥ 1.1.1, в `requires` транспорта для Vue-админки. Сниппеты на сайте без него |
 
 ## Шаг 1: Установка пакета
 
-1. **Extras → Installer** — найдите **mxDadata** (ModStore) или установите собранный транспорт
-2. Убедитесь, что установлен **MiniShop3**
-3. **Настройки → Очистить кэш**
+1. **Extras → Installer → Управлять репозиториями** — убедитесь, что подключён **modstore.pro**. Транспорт зашифрован, без провайдера установка падает с `Package provider not found`.
+2. **Extras → Installer** — найдите **mxDadata** (ModStore) или установите собранный транспорт
+3. Убедитесь, что установлен **MiniShop3**
+4. **Настройки → Очистить кэш**
 
 После установки создаются:
 
@@ -46,7 +48,7 @@ flowchart LR
 1. [dadata.ru](https://dadata.ru/) — регистрация / вход
 2. [Профиль → информация](https://dadata.ru/profile/#info) — **API Key** (Token) и **Secret**
 3. В MODX: **Настройки → Системные настройки** (`mxdadata`) или **Extras → mxDadata → Настройки** — **`mxdadata_api_token`**, **`mxdadata_api_secret`**
-4. **Extras → mxDadata → Dashboard → Подключение → Тест соединения** — при успехе подтверждение в интерфейсе
+4. **Extras → mxDadata → Обзор → Подключение → Тест соединения** — при успехе подтверждение в интерфейсе
 
 Token используется для Suggest. Secret — для **Clean** (нормализация) и **Party** (юрлица), в том числе в плагине заказа.
 

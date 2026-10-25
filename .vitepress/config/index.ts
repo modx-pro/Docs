@@ -13,6 +13,8 @@ import { withMermaid } from 'vitepress-plugin-mermaid'
 import { modstore, modxpro, telegram } from '../../docs/icons.ts'
 import { coreMembers } from '../../docs/authors.ts'
 import { normalize } from '../theme/utils.ts'
+import { documentTitle } from '../theme/seo-snippet.ts'
+import { buildSeoHead, pageDescription } from './seo-head.ts'
 
 const SITE_HOST = 'https://docs.modx.pro/'
 const SITE_TITLE = 'docs.modx.pro'
@@ -204,7 +206,7 @@ export default withMermaid(
   },
 
   transformHead({ pageData }) {
-    const title = pageData.title + SITE_TITLE_SEPARATOR + SITE_TITLE
+    const title = documentTitle(pageData.title, pageData.titleTemplate)
     const image = pageData?.component
       ? SITE_HOST + 'og/' + getComponentSlug(pageData.component) + '.png?v=' + getOgImageVersion({
           v: OG_CACHE_VERSION,
@@ -233,18 +235,19 @@ export default withMermaid(
       ['meta', { name: 'twitter:image', content: image }],
     ]
 
-    if (pageData.description) {
-      output.push(
-        ['meta', { property: 'og:description', content: pageData.description }],
-        ['meta', { name: 'twitter:description', content: pageData.description }],
-      )
-    }
+    const description = pageDescription(pageData)
+    output.push(
+      ['meta', { property: 'og:description', content: description }],
+      ['meta', { name: 'twitter:description', content: description }],
+    )
 
     if (pageData.component && author) {
       output.push(
         ['meta', { property: 'article:author', content: author }],
       )
     }
+
+    output.push(...buildSeoHead({ pageData, url, image }))
 
     return output
   },

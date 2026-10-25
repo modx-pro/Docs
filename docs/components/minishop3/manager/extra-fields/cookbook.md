@@ -1,21 +1,21 @@
 ---
-title: Cookbook дополнительных полей
-description: Создание extra fields, xtype, repeater и key-value для заказа и товара
+title: Cookbook своих полей
+description: Создание своих полей, xtype, repeater и key-value для заказа и товара
 ---
 
-# Cookbook дополнительных полей
+# Cookbook своих полей
 
-Extra field добавляет колонку в таблицу модели и виджет в Vue-форме. Справочник всех параметров: [Дополнительные поля](/components/minishop3/interface/utilities/extra-fields).
+Своё поле добавляет колонку в таблицу модели и виджет в Vue-форме. Справочник всех параметров: [Свои поля](/components/minishop3/interface/utilities/extra-fields).
 
-<!-- ![Утилита «Дополнительные поля»](/components/minishop3/screenshots/mgr-extra-fields.png) -->
+<!-- ![Утилита «Свои поля»](/components/minishop3/screenshots/mgr-extra-fields.png) -->
 
 ## Цель
 
-Вы выбираете модель, ключ и xtype. После миграции поле доступно в менеджере и (для `msProductData`) может попасть в импорт CSV.
+Вы выбираете модель, ключ и xtype. После миграции поле доступно в админке и (для `msProductData`) может попасть в импорт CSV.
 
 ## Когда использовать
 
-| Задача | Extra field |
+| Задача | Своё поле |
 | --- | --- |
 | Новая колонка «оптовая цена» на товаре | да |
 | Комментарий менеджера на заказе | да |
@@ -61,11 +61,11 @@ Extra field добавляет колонку в таблицу модели и 
 | `ms3-combo-autocomplete` | Autocomplete по API |
 | `ms3-combo-options` | Опция товара |
 
-Тип «текстовый редактор» в UI extra fields пока нет. Следите за [issue #610](https://github.com/modx-pro/MiniShop3/issues/610).
+Типа «текстовый редактор» в UI своих полей пока нет. Следите за [issue #610](https://github.com/modx-pro/MiniShop3/issues/610).
 
 ## Кейс: select на товаре
 
-1. **Утилиты → Дополнительные поля** → класс **msProductData**.
+1. **Утилиты → Свои поля** → класс **msProductData**.
 2. Ключ `supply_type`, xtype `ms3-combo-select`.
 3. В **select_options** — построчно, формат `значение==подпись` (именно так это читает UI, JSON не разбирается):
 

@@ -52,7 +52,7 @@ flowchart TB
 | Sitemap | `[[!PageBuilderSitemap]]` | `{'!PageBuilderSitemap' \| snippet}` |
 | UTM в сессию | `[[!PageBuilderUtmSession]]` | `{'!PageBuilderUtmSession' \| snippet}` |
 | URL с UTM | `` [[!PageBuilderUtmUrl? &url=`/contacts/`]] `` | `{'!PageBuilderUtmUrl' \| snippet : ['url' => '/contacts/']}` |
-| Строки таблицы | `` [[!PageBuilderTableRows? &table_key=`prices`]] `` | `{'!PageBuilderTableRows' \| snippet : ['table_key' => 'prices']}` |
+| Строки таблицы | `` [[!PageBuilderTableRows? &resource_id=`[[*id]]` &table_key=`prices`]] `` | `{'!PageBuilderTableRows' \| snippet : ['resource_id' => $_modx->resource.id, 'table_key' => 'prices']}` |
 
 ## Кеш
 

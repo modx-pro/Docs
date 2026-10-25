@@ -7,19 +7,18 @@ description: Output rows from a PageBuilder resource data table
 
 Returns rows from a resource **data table** (manager **Tables** tab). Output: JSON or a Fenom chunk.
 
-## Purpose
-
-Custom table markup in a template, widget, or chunk. Pro section [data_table](../sections/data_table) uses built-in chunk `pagebuilder_data_table`. Use this snippet when you write the markup yourself.
+Write your own markup in a template, widget, or chunk. Pro section [data_table](../sections/data_table) already uses built-in chunk `pagebuilder_data_table`.
 
 ## Where to call
 
-Template, chunk, or another section via a snippet field. The table must exist on the same or specified `resource_id`.
+- Template, chunk, or another section via a snippet field
+- The table must exist on the same or specified `resource_id`
 
 ## Parameters
 
 | Parameter | Default | Description |
 | --- | --- | --- |
-| `resource_id` | `0` | Resource ID. `0` = current |
+| `resource_id` | `0` | Resource ID. `0` means the current resource. The response stays empty (`[]` or an empty string) only when no resource can be resolved |
 | `table_key` | empty | Table key on the resource |
 | `table_id` | `0` | Database table ID instead of `table_key` |
 | `limit` | `20` | Max rows (1–100) |
@@ -28,7 +27,7 @@ Template, chunk, or another section via a snippet field. The table must exist on
 
 ### Filtering and pagination
 
-Same keys as embed tables and `mgr/datatable/rows/list`:
+Every key works in the snippet. The manager processor `mgr/datatable/rows/list` accepts only `page`, `limit`, `search`, and `filters`. Context and UTM filters are not sent to it.
 
 | Parameter | Default | Description |
 | --- | --- | --- |
@@ -47,14 +46,26 @@ Example `filters`:
 {"price": {"op": "gte", "value": "100"}}
 ```
 
-Operators: `eq`, `contains`, `in`, `gte`, `lte`, `between`, `empty`, `not_empty`. Details: [System settings → Tabular resource data](../settings#tabular-resource-data).
+Operators: `eq`, `contains`, `in`, `gt`, `lt`, `gte`, `lte`, `between`, `empty`, `not_empty`. Details: [System settings → Tabular resource data](../settings#tabular-resource-data).
+
+Event `pbOnBeforeTableGetList` receives `table`, `query`, and `criteria` by reference:
+
+- The row query reads `search`, `filters`, `page`, and `limit` from `query`
+- Pairs from `criteria` other than `table_id` go into the where clause
+- After the plugin, `table_id` is written again: a plugin cannot switch the table
+- The list event runs from the snippet and from `mgr/datatable/rows/list`
+
+`pbOnTableRowSave` passes `data` by reference. That value is stored on the row.
 
 ## JSON
+
+Missing table → `[]`. Otherwise a JSON array of row objects (each row's `data`).
 
 ::: code-group
 
 ```modx
 [[!PageBuilderTableRows?
+  &resource_id=`[[*id]]`
   &table_key=`offices`
   &limit=`50`
 ]]
@@ -62,6 +73,7 @@ Operators: `eq`, `contains`, `in`, `gte`, `lte`, `between`, `empty`, `not_empty`
 
 ```fenom
 {'!PageBuilderTableRows' | snippet : [
+  'resource_id' => $_modx->resource.id,
   'table_key' => 'offices',
   'limit' => 50
 ]}
@@ -69,14 +81,15 @@ Operators: `eq`, `contains`, `in`, `gte`, `lte`, `between`, `empty`, `not_empty`
 
 :::
 
-Response: JSON array of row objects (each row's `data`). Missing table → `[]`.
-
 ## Chunk
+
+The chunk gets Fenom variables `rows` (array of row `data`) and `table` (table metadata).
 
 ::: code-group
 
 ```modx
 [[!PageBuilderTableRows?
+  &resource_id=`[[*id]]`
   &table_key=`offices`
   &return=`chunk`
   &tpl=`my_table_rows`
@@ -85,6 +98,7 @@ Response: JSON array of row objects (each row's `data`). Missing table → `[]`.
 
 ```fenom
 {'!PageBuilderTableRows' | snippet : [
+  'resource_id' => $_modx->resource.id,
   'table_key' => 'offices',
   'return' => 'chunk',
   'tpl' => 'my_table_rows'
@@ -92,8 +106,6 @@ Response: JSON array of row objects (each row's `data`). Missing table → `[]`.
 ```
 
 :::
-
-The chunk gets Fenom variables `rows` (array of row `data`) and `table` (table metadata). Package chunk: `pagebuilder_table_rows`.
 
 ## See also
 

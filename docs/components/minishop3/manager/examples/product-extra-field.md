@@ -1,11 +1,11 @@
 ---
 title: Поле «Оптовая цена» у товара
-description: Пошагово — extra field на msProductData, раскладка вкладки «Данные» и колонка в гриде категории
+description: Пошагово — своё поле на msProductData, раскладка вкладки «Данные» и колонка в гриде категории
 ---
 
 # Поле «Оптовая цена» у товара
 
-Добавьте числовое extra field к данным товара и настройте, где оно появится в менеджере.
+Добавьте своё числовое поле к данным товара и настройте, где оно появится в админке.
 
 ## Цель
 
@@ -17,11 +17,11 @@ description: Пошагово — extra field на msProductData, расклад
 - Право `mssetting_save`
 - Право `msproduct_save` (чтение и запись вкладки «Данные»)
 
-## Шаг 1. Создайте extra field
+## Шаг 1. Создайте своё поле
 
-<!-- ![Утилита «Дополнительные поля»](/components/minishop3/screenshots/mgr-extra-fields.png) -->
+<!-- ![Утилита «Свои поля»](/components/minishop3/screenshots/mgr-extra-fields.png) -->
 
-1. **Extras → MiniShop3 → Утилиты → Дополнительные поля**.
+1. **Пакеты → MiniShop3 → Утилиты → Свои поля**.
 2. Класс **msProductData (Данные товара)**.
 3. **Создать поле**:
 
@@ -88,7 +88,7 @@ GET /api/mgr/extra-fields?class=MiniShop3\Model\msProductData
 
 ## Отличие от полей модели
 
-Для новой колонки в `ms3_products` берите extra fields, затем **Поля товара**. Extra field **создаёт колонку**, а [поля модели](/components/minishop3/manager/model-fields/cookbook) меняют форму заказа и других сущностей MiniShop3, но не вкладку «Данные» товара.
+Для новой колонки в `ms3_products` берите **Свои поля**, затем **Поля товара**. Своё поле **создаёт колонку**, а [поля модели](/components/minishop3/manager/model-fields/cookbook) меняют форму заказа и других сущностей MiniShop3, но не вкладку «Данные» товара.
 
 ## API appendix
 
@@ -103,8 +103,8 @@ GET /api/mgr/extra-fields?class=MiniShop3\Model\msProductData
 | Симптом | Что проверить |
 | --- | --- |
 | Поле в утилите, но не на вкладке | `visible` в **Поля товара**, перезагрузка страницы |
-| Нет в списке **Поля товара** | Запись в `ms3_product_fields` после POST extra field |
-| Колонка пустая в гриде | Тип **price** или **model**, имя совпадает с ключом extra field |
+| Нет в списке **Поля товара** | Запись в `ms3_product_fields` после POST своего поля |
+| Колонка пустая в гриде | Тип **price** или **model**, имя совпадает с ключом своего поля |
 | Ошибка миграции | Лог MODX, права на `core/components/minishop3/migrations` |
 
-См. [Cookbook extra fields](/components/minishop3/manager/extra-fields/cookbook), [Товар](/components/minishop3/interface/product).
+См. [Cookbook своих полей](/components/minishop3/manager/extra-fields/cookbook), [Товар](/components/minishop3/interface/product).
