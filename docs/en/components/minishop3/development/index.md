@@ -54,4 +54,4 @@ Events are not always lost. Orders, their statuses and lines go through services
 
 Vue CRUD for directories writes straight to the database and skips `Processors/Settings/Vendor/*`. Vendor CRUD plugins do not run from the manager. Deliveries and payments have cost events in `events.php`, not CRUD events. Link types have no CRUD events. See [Vendor events](events/vendor).
 
-The headless frontend calls the Web API (`/api/v1/*`). Login, registration, logout, forgot-password and reset-password delegate to `MiniShop3\Processors\Api\Customer\*`.
+The headless frontend uses the Web API (`/api/v1/*`). Processors there remain only for customer authentication, so plugins on those events fire from a headless client.
