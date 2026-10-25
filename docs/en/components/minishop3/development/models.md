@@ -30,7 +30,7 @@ $customer = $modx->getObject(msCustomer::class, ['email' => $email]);
 
 ## Model relations
 
-`getOne()` — for 1:1 and N:1, `getMany()` — for 1:N.
+`getOne()` is for 1:1 and N:1. `getMany()` is for 1:N.
 
 | Model | Alias | Type | Returns |
 | --- | --- | --- | --- |
@@ -39,14 +39,16 @@ $customer = $modx->getObject(msCustomer::class, ['email' => $email]);
 | `msProductData` | `Files` | 1:N | gallery files |
 | `msOrder` | `Address` | 1:1 | order address (`msOrderAddress`) |
 | `msOrder` | `Products` | 1:N | order line items |
-| `msOrder` | `msCustomer` | N:1 | the customer. That is the alias, not `Customer` |
+| `msOrder` | `Customer` | N:1 | the customer (`msCustomer`) |
 | `msCustomer` | `Tokens` | 1:N | auth tokens |
-| `msCustomerAddress` | `Customer` | N:1 | the customer — the reverse relation from an address |
-| `msCustomerToken` | `Customer` | N:1 | the customer — the reverse relation from a token |
+| `msCustomerAddress` | `Customer` | N:1 | the customer, the reverse relation from an address |
+| `msCustomerToken` | `Customer` | N:1 | the customer, the reverse relation from a token |
 
-`msCustomer` has no `Addresses` relation: addresses are read with a direct query to `msCustomerAddress` by `customer_id` — see [Working with a customer](#customer-example).
+`msCustomer` has no `Addresses` relation. Addresses are read with a direct query to `msCustomerAddress` by `customer_id`. See [Working with a customer](#customer-example).
 
 ## Schema file
+
+The XML schema describes models for the xPDO generator:
 
 ```
 core/components/minishop3/schema/minishop3.mysql.schema.xml
@@ -58,6 +60,10 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | `baseClass` | `xPDO\Om\xPDOObject` |
 | `platform` | `mysql` |
 | `version` | `3.0` |
+
+::: warning XML does not create the tables
+Table structure comes from the model maps in `src/Model/mysql/` and from Phinx migrations. XML is only for the model generator. It takes no part in installation, and in places it has already drifted from the map, for example on the uniqueness of the index on the customer last name. Check fields against the model map.
+:::
 
 ## Database tables
 
@@ -333,7 +339,7 @@ $orderProduct->fromArray([
     'price' => $price,
     'count' => $count,
     'cost' => $price * $count,
-    'options' => json_encode($options),
+    'options' => $options,
 ]);
 $orderProduct->save();
 ```
@@ -408,7 +414,7 @@ Models with a table of their own — `msOrder`, `msCustomer`, `msProductData` an
 
 ## Model architecture
 
-A model owns its table and relations, business logic lives in services — see [Service layer](/en/components/minishop3/development/services).
+A model owns its table and relations. Business logic lives in services. See [Service layer](/en/components/minishop3/development/services).
 
 The models never became fully "thin": `msProduct` and `msCategory` extend `modResource`, and MODX keeps business logic in models. So a model may call a service:
 
@@ -416,11 +422,13 @@ The models never became fully "thin": `msProduct` and `msCategory` extend `modRe
 // src/Model/msProductData.php
 class msProductData extends xPDOSimpleObject
 {
-    public function getPrice(array $data = []): float
+    public function getPrice($data = [])
     {
-        // Delegate to formatting service
-        $ms3 = $this->xpdo->services->get('ms3');
-        return $ms3->format->price($this->get('price'));
+        if (empty($data)) {
+            $data = $this->toArray();
+        }
+
+        return $this->getProductDataService()->getModifiedPrice($this, $data);
     }
 }
 ```
@@ -436,7 +444,7 @@ This allows:
 - Full PHP 8 type hints
 - Full control over model code
 
-**Important:** Do not run `buildModel()` — it will overwrite custom model methods.
+**Do not** run `buildModel()`. It overwrites methods that were added by hand.
 :::
 
 ### Model file structure
@@ -458,11 +466,12 @@ use MODX\Revolution\modResource;
 
 class msProduct extends modResource
 {
-    // Custom model methods
-    public function getPrice(): float
+    // Custom model methods. Do not override getPrice(): msProduct already has it
+    // with a different signature, and it runs the price through modifiers
+    public function getRawPrice(): float
     {
         $data = $this->getOne('Data');
-        return $data ? (float)$data->get('price') : 0.0;
+        return $data ? (float) $data->get('price') : 0.0;
     }
 }
 ```
@@ -476,7 +485,7 @@ namespace MiniShop3\Model\mysql;
 class msProduct extends \MiniShop3\Model\msProduct
 {
     public static $metaMap = [
-        'package' => 'MiniShop3\\Model\\',
+        'package' => 'MiniShop3\\Model',
         'version' => '3.0',
         'extends' => 'MODX\\Revolution\\modResource',
         'fields' => [
@@ -495,6 +504,7 @@ Phinx migrations change the database schema:
 core/components/minishop3/migrations/
 ├── 20251020000000_initial_schema.php
 ├── 20251021000000_seed_page_sections.php
+├── 20251022000000_seed_product_fields.php
 ├── 20251023000000_seed_order_statuses.php
 └── ...
 ```
