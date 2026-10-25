@@ -17,8 +17,7 @@ Fired when getting product price. Lets you modify the price on the fly.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `msProductData` | `msProductData` | Product data object |
-| `data` | `array` | Extra product data |
+| `data` | `array` | Product data. By default this is `toArray()` of the `msProductData` object (core fields: `price`, `article`, `weight`, `stock`, `vendor_id`, `tags`, `color`, `size`, and others), or an extended row when the caller passed its own `$data` (for example `ms3_products.php` passes the whole listing row, including its own fields) |
 | `price` | `float` | Current price |
 
 ### Modifying data (with chain support)
@@ -51,14 +50,15 @@ switch ($modx->event->name) {
     case 'msOnGetProductPrice':
         $price = $modx->eventData['msOnGetProductPrice']['price']
             ?? $scriptProperties['price'];
-        $productData = $scriptProperties['msProductData'];
+        $data = $scriptProperties['data'];
 
         if ($modx->user->isMember('VIP')) {
             $price = $price * 0.8; // -20%
         }
 
+        // Wholesale price when the extra field wholesale_price exists
         if ($modx->user->isMember('Wholesale')) {
-            $wholesalePrice = $productData->get('wholesale_price');
+            $wholesalePrice = $data['wholesale_price'] ?? 0;
             if ($wholesalePrice > 0) {
                 $price = $wholesalePrice;
             }
@@ -82,8 +82,9 @@ switch ($modx->event->name) {
 
         $rate = $modx->cacheManager->get('usd_rate') ?? 90;
 
-        $productData = $scriptProperties['msProductData'];
-        if ($productData->get('currency') === 'USD') {
+        // Convert a product priced in dollars when the extra field currency exists
+        $data = $scriptProperties['data'];
+        if (($data['currency'] ?? null) === 'USD') {
             $price = $price * $rate;
         }
 
@@ -104,8 +105,7 @@ Fired when getting product weight. Lets you modify weight on the fly.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `msProductData` | `msProductData` | Product data object |
-| `data` | `array` | Extra product data |
+| `data` | `array` | Product data. By default `toArray()` of the `msProductData` object, or an extended row when the caller passed its own `$data` |
 | `weight` | `float` | Current weight |
 
 ### Modifying data
@@ -136,11 +136,12 @@ switch ($modx->event->name) {
     case 'msOnGetProductWeight':
         $weight = $modx->eventData['msOnGetProductWeight']['weight']
             ?? $scriptProperties['weight'];
-        $productData = $scriptProperties['msProductData'];
+        $data = $scriptProperties['data'];
 
-        $length = $productData->get('length') ?? 0;
-        $width = $productData->get('width') ?? 0;
-        $height = $productData->get('height') ?? 0;
+        // Dimensions when the extra fields length, width and height exist
+        $length = $data['length'] ?? 0;
+        $width = $data['width'] ?? 0;
+        $height = $data['height'] ?? 0;
 
         if ($length > 0 && $width > 0 && $height > 0) {
             $volumeWeight = ($length * $width * $height) / 5000;
@@ -164,8 +165,7 @@ Fired when getting product fields. Lets you add or modify any fields.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `msProductData` | `msProductData` | Product data object |
-| `data` | `array` | Product fields array |
+| `data` | `array` | Product data. By default `toArray()` of the `msProductData` object, or an extended row when the caller passed its own `$data` |
 
 ### Modifying data
 
@@ -210,7 +210,6 @@ switch ($modx->event->name) {
     case 'msOnGetProductFields':
         $data = $modx->eventData['msOnGetProductFields']['data']
             ?? $scriptProperties['data'];
-        $productData = $scriptProperties['msProductData'];
 
         $reviewCount = $modx->getCount('msProductReview', [
             'product_id' => $data['id'],
