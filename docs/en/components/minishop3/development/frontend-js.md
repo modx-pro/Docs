@@ -151,7 +151,7 @@ const cancelBtns = document.querySelectorAll(this.selectors.orderCancel)
 
 ### Initialization
 
-The main `ms3` object is initialized automatically when `ms3.js` loads:
+The `ms3` object is created when `ms3.js` loads. Selectors are built from `getSelectors()` and `ms3Config.selectors`.
 
 ```javascript
 // assets/components/minishop3/js/web/ms3.js
@@ -296,7 +296,7 @@ The equivalent via DOM event is `document.dispatchEvent(new CustomEvent('ms3:ref
 
 **Important:** MS3 does **not** listen to third-party component events (`mfilter:contentLoaded`, `mse2_load.response`, etc.). The link is one-way: third-party component → MS3. This avoids coupling MS3 to every compatible component.
 
-The `detail` argument is reserved for future scoped refresh (`ms3.refresh({ scope: container })`) — unused for now, but included in the signature so future changes do not break the API.
+The `detail` argument of the method and of the event is unused. It stays in the signature for later.
 
 ## Core
 
@@ -307,14 +307,22 @@ Auth token management. The token is stored in the httpOnly cookie `ms3_token`, s
 ::: info httpOnly cookie
 As of version 1.6, the token is stored in an httpOnly cookie instead of localStorage. This improves security — the token is not accessible from JavaScript and is protected against XSS.
 
-The cookie is sent automatically by the browser with every request.
+The browser sends the cookie itself with every request.
 :::
+
+`ensureToken()` does not read the cookie. It requests `GET /api/v1/customer/token/get` with `credentials: 'same-origin'`. `init()` passes the `ApiClient` into the method through `setApiClient()`.
+
+The request goes out once per page lifetime. After a successful response the `tokenInitialized` flag is set, and the next `ensureToken()` returns immediately. The only way to force a new token is `fetchNewToken()`.
 
 ```javascript
 class TokenManager {
   constructor(config) {
-    this.config = config
     this.tokenName = config.tokenName || 'ms3_token'
+    this.apiClient = null
+  }
+
+  setApiClient(apiClient) {
+    this.apiClient = apiClient
   }
 
   async ensureToken() {
@@ -325,9 +333,19 @@ class TokenManager {
   }
 
   async fetchNewToken() {
-    const response = await fetch(
-      `${this.config.apiUrl}?route=/api/v1/customer/token/get`
-    )
+    if (!this.apiClient) {
+      console.error('TokenManager: ApiClient not set. Use setApiClient()')
+      return
+    }
+    const url = this.apiClient.buildUrl('/api/v1/customer/token/get')
+    const response = await fetch(url.toString(), {
+      method: 'GET',
+      credentials: 'same-origin',
+      headers: {
+        Accept: 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+    })
     const result = await response.json()
     if (result.success) {
       this.tokenInitialized = true  // Returns nothing: Promise<void>
@@ -338,13 +356,23 @@ class TokenManager {
 
 ### ApiClient
 
-HTTP client. The token is sent automatically via the httpOnly cookie:
+HTTP client. The token goes out by itself in the httpOnly cookie.
+
+`buildUrl()` puts the path into the `route` query and the context into `ctx`. It also parses a query string that was part of the path and moves those parameters across. `request()` sends the request with `credentials: 'same-origin'`. Methods: `get(route)`, `post(route, data)`, `put(route, data)`, `patch(route, data)`, `delete(route)`.
 
 ```javascript
 class ApiClient {
-  constructor(config, tokenManager) {
-    this.baseUrl = config.apiUrl || '/assets/components/minishop3/api.php'
+  constructor({ baseUrl, tokenManager, ctx }) {
+    this.baseUrl = baseUrl || '/assets/components/minishop3/api.php'
     this.tokenManager = tokenManager
+    this.ctx = ctx || 'web'
+  }
+
+  buildUrl(endpoint) {
+    const url = new URL(this.baseUrl, window.location.origin)
+    url.searchParams.set('route', endpoint)
+    url.searchParams.set('ctx', this.ctx)
+    return url
   }
 
   async request(method, route, data = null, isRetry = false) {
@@ -591,9 +619,40 @@ class CartUI {
 }
 ```
 
-The `+`/`−` buttons and the quantity inputs belong to a separate class, `QuantityUI` (`initButtons()`, `initInputs()`): `CartUI.init()` does not touch them. Handlers are not re-bound after a redraw — `initOptionSelects()` listens for `change` on the document, and `QuantityUI` re-binds on the `ms3:cart:updated` event.
+The `+`/`−` buttons and the quantity inputs belong to a separate class, `QuantityUI` (`initButtons()`, `initInputs()`). `CartUI.init()` does not touch them. The handlers survive a cart redraw on their own: `initOptionSelects()` listens for `change` on the document, and `QuantityUI` binds its handlers again on `ms3:cart:updated`.
 
-When a token in `ms3Config.render.cart` has no selector, or the element is not found, `renderCart()` tries the fallbacks: `#ms3oc-cart-live`, `#msb-test-cart`, `#msCart`, `[data-ms-cart]`, `.msCart`. The substitution happens only when exactly one such node exists in the document — otherwise one cart markup would land inside another.
+When a token in `ms3Config.render.cart` has no selector, or the element is not found, `renderCart()` tries the fallbacks: `#ms3oc-cart-live`, `#msb-test-cart`, `#msCart`, `[data-ms-cart]`, `.msCart`. The substitution happens only when exactly one such node exists in the whole document. Otherwise one cart's markup would land inside another.
+
+The package does not render markup for the first two identifiers. No chunk and no snippet outputs them. In practice the last three work, and `#ms3oc-cart-live` and `#msb-test-cart` are meant for markup you provide.
+
+::: tip Clearing the cart from an outside script
+A direct `cartAPI.clean()` call only performs the API request. It does not render and it does not fire `ms3:cart:updated`. For a full interface update (mini cart, counters, product cards) use `cartUI.handleClean()`:
+
+```javascript
+// Wrong: an API call with no UI update
+await ms3.cartAPI.clean()
+
+// Right: the full cycle, API plus rendering plus the event
+await ms3.cartUI.handleClean()
+```
+
+**Example: clear the cart after a successful form submit (FetchIt):**
+
+```javascript
+document.addEventListener('fetchit:success', async (e) => {
+    const { form, response } = e.detail
+    if (!form || form.id !== 'cart-modal-form') return
+    if (!response?.success || !ms3) return
+
+    try {
+        await ms3.cartUI.handleClean()
+    } catch (err) {
+        console.error('Cart clean error:', err)
+    }
+})
+```
+
+:::
 
 ### OrderUI
 
@@ -640,6 +699,10 @@ class OrderUI {
   }
 }
 ```
+
+::: warning A field without a wrapper is not saved
+Autosave looks for the nearest parent `div` of the field and writes the validation classes and the error text into it. A field without that parent is skipped in silence: no request goes out, and the console stays quiet. If your order form markup puts an `input` directly in the `form`, wrap it in a `div`.
+:::
 
 ### CustomerUI
 
@@ -853,15 +916,15 @@ window.ms3Lexicon.ms3_confirm_cancel = 'No'
 
 ### Declarative binding
 
-`data-ms3-confirm` on any element shows the dialog before the default action:
+The `data-ms3-confirm` attribute shows a dialog on click and cancels the default action. After confirmation the module does only one thing: it follows `href` when the element is a link.
 
 ```html
-<button data-ms3-confirm="Delete this address?"
-        data-address-id="5"
-        class="delete-address">
+<a href="/account/addresses/delete?id=5" data-ms3-confirm="Delete this address?">
     Delete
-</button>
+</a>
 ```
+
+On a button the attribute does nothing useful on its own. `preventDefault()` stops the form submit, and the module has nowhere to navigate. For buttons, call `ms3Confirm()` from your own handler. The built-in address-delete and order-cancel buttons do that.
 
 ## Hook system
 
@@ -1174,34 +1237,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
 ### ms3Lexicon
 
+Frontend scripts read translations from `window.ms3Lexicon`. The package fills it from one chunk, `tpl.msCustomer.unauthorized`, and only with eight authorization keys:
+
 ```javascript
 window.ms3Lexicon = {
-  'ms3_frontend_currency': 'USD',
-  'ms3_frontend_add_to_cart': 'Add to cart',
-  'ms3_customer_login_success': 'You are logged in',
-  'ms3_confirm_ok': 'Confirm',
-  'ms3_confirm_cancel': 'Cancel',
-  // ...
+  ms3_customer_err_login_required: 'Enter an email and a password',
+  ms3_customer_login_success: 'You are signed in',
+  ms3_customer_err_register_required: '…',
+  ms3_customer_err_password_mismatch: '…',
+  ms3_customer_err_privacy_required: '…',
+  ms3_customer_register_success: '…',
+  ms3_err_unknown: '…',
+  ms3_customer_password_recovery_not_available: '…',
 }
 ```
 
-### Usage in code
-
-```javascript
-// In UI modules (e.g. AuthUI, confirm.js)
-getLexicon(key) {
-  if (window.ms3Lexicon?.[key]) {
-    return window.ms3Lexicon[key]
-  }
-
-  const fallbacks = {
-    'ms3_customer_err_login_required': 'Enter email and password',
-    'ms3_customer_login_success': 'You are logged in'
-  }
-
-  return fallbacks[key] || key
-}
-```
+The other keys the code looks up, `ms3_confirm_ok`, `ms3_confirm_cancel`, and the labels on the site pages, are not sent by the package. Until you put them into `window.ms3Lexicon` yourself, the defaults hardcoded in the scripts are used.
 
 ## Additional modules
 
@@ -1220,21 +1271,17 @@ Saved address selection on checkout. The module is **not** included in the `ms3_
 
 The module fills the form fields when an address is selected. Details: [Checkout](/en/components/minishop3/frontend/order).
 
-### Built-in afterSendRequest hook
+### The afterSendRequest hook does not run
 
-`hooks.js` registers a handler for `afterSendRequest` that calls `cartUI.init()` 100 ms later. Nothing ever runs it: there is no `runHooks('afterSendRequest')` call anywhere in the code. A handler of your own on that name will not run either — there is no working replacement, so call `ms3.refresh()` after a partial cart update of your own.
+`hooks.js` registers a handler for `afterSendRequest` that calls `cartUI.init()` 100 ms later. Nothing runs it: there is no `runHooks('afterSendRequest')` call in the code. A handler of your own on that name will not run either. The hook has no replacement. After a partial cart update, call `ms3.refresh()`.
 
 ### change-option
 
-Change line options: `CartAPI.changeOption()` → `POST /api/v1/cart/change-option`. Hooks: `beforeChangeOptionCart` / `afterChangeOptionCart` (if wired in your build).
+Change line options: `CartAPI.changeOption()` goes to `POST /api/v1/cart/change-option`. The stock `CartUI.js` calls the hooks `beforeChangeOptionCart` and `afterChangeOptionCart`.
 
 ## Compatibility
 
-### Requirements
-
-- Modern browsers (ES6+)
-- No jQuery dependency
-- `fetch`, `Promise`, `async/await` support
+Modern browsers (ES6+), `fetch`, `Promise`, and `async/await` are required. jQuery is not.
 
 ## Related pages
 
