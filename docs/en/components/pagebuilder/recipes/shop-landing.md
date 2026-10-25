@@ -28,11 +28,15 @@ A page without a shop uses Free sections: [Landing](landing).
 
 Hero. Title `Catalog`. Button label `Browse categories`, Button URL pointing at the category page. Alignment `left`. The button renders only when both the label and the URL are set.
 
-`categories_row`. **Parent category** `101` (example). Children must be `msCategory` resources. **Limit** `6`. An empty limit becomes 8 in the chunk. No subcategories: lexicon `pagebuilder_fe_listing_empty_category` ("No subcategories in this category.").
+`categories_row`. **Parent category** `101` (example). Children must be resources of class `MiniShop3\Model\msCategory`. **Limit** `6`. An empty limit becomes 8 in the chunk.
 
-`products_grid`. **Catalog root** `101` (example). The field is required. **Limit** `6`. An empty limit becomes 12 in the chunk. **Sort** `price_asc` or `popular`. An unknown value sorts as `menuindex`. An empty category: `pagebuilder_fe_listing_empty_products` ("No products in this category yet."). The section has `"cacheable": false`.
+No subcategories: lexicon `pagebuilder_fe_listing_empty_category` ("No subcategories in this category.").
 
-`dynamic_list`. Provider `modx-resources`. Filter `parent`, operator `eq`, value `5` (parent id, an example). Sort by `publishedon`, direction `desc`. Query limit is at most 100. The chunk receives `items` and `total`. An empty result: `pagebuilder_fe_list_empty`.
+`products_grid`. **Catalog parent** `101` (example). The data key is `parent` and is required. **Limit** `6`. An empty limit becomes 12 in the chunk.
+
+**Sort** `price_asc` or `popular`. PageBuilder maps `popular` to `Data.popular`. An unknown value sorts as `menuindex`. An empty category: `pagebuilder_fe_listing_empty_products` ("No products in this category yet."). The section has `"cacheable": false`.
+
+`dynamic_list`. Provider `modx-resources`. Filter `parent`, operator `eq`, value `5` (parent id, an example). Sort by field `published`, direction `desc`. A query limit above 100 becomes 100. The chunk receives `items` and `total`. An empty result: `pagebuilder_fe_list_empty`.
 
 FAQ. Title `Delivery`. Two repeater rows: `question` and `answer`.
 
@@ -40,7 +44,7 @@ FAQ. Title `Delivery`. Two repeater rows: `question` and `answer`.
 
 ## What to check
 
-Subcategories are `msCategory` children of the parent you picked. Product cards show a photo, a price, and an Add to cart button. A newly published child resource shows up in the list without editing the section JSON. The form submits through FetchIt. Without FetchIt the section prints `pagebuilder_fe_form_unavailable`.
+Subcategories are `MiniShop3\Model\msCategory` children of the parent you picked. A newly published child resource shows up in the list without editing the section JSON. The form submits through FetchIt. Without FetchIt the section prints `pagebuilder_fe_form_unavailable`.
 
 ## Rollback
 

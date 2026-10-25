@@ -1,11 +1,15 @@
 ---
 title: UTM and visibility
-description: "A section renders only when the session has the campaign tag. UTM registry and the Visibility dialog. Pro layer"
+description: "A section renders only for a campaign tag from the query or the session. UTM registry and the Visibility dialog. Pro layer"
 ---
 
 # UTM and visibility
 
-Result: the block is in the HTML only when the session has the tag you set. The UTM registry requires PageBuilder Pro and capability `utm`. Rules that are already published still run in Free.
+Result: the block is in the HTML only when the UTM rule matches. The value comes from the query string, then from `$_SESSION['utm']`.
+
+The snippet and the plugin write the session only when a PHP session is already open. Reading the tag from `$_GET` does not depend on the session.
+
+The UTM registry requires PageBuilder Pro and capability `utm`. Rules that are already published still run in Free.
 
 ## Before you start
 
@@ -15,11 +19,11 @@ Result: the block is in the HTML only when the session has the tag you set. The 
 ## Steps
 
 1. In the control panel open the **UTM** tab and add a parameter. The field placeholder is <code v-pre>{{utm:key}}</code>. <!-- markdownlint-disable-line MD033 -->
-2. On the section open **Visibility** and set a `utm` rule. It reads `$_SESSION['utm']`.
+2. On the section open **Visibility** and set a `utm` rule. It checks `$_GET[parameter]` and `$_GET['utm_' . parameter]` first, then `$_SESSION['utm']`.
 3. Open the page with the tag in the address, then without it. The section is left out of the HTML when the rule fails.
 4. **Save** the resource.
 
-The same dialog sets a list of MODX contexts. In Pro, with the `conditions` flag, `settings.conditions` covers guest, logged-in, and GET checks.
+The same dialog sets a list of MODX contexts. In Pro, with the `conditions` flag, `settings.conditions` covers guest, logged-in, MODX context, and GET. The Context type does not replace the separate section context list (`settings.contexts`).
 
 ## Example fields
 
@@ -33,7 +37,7 @@ With the tag, the block is in the page source. Without the tag, the block is abs
 
 ## Rollback
 
-Clear the rule in the dialog and save the resource. Turning off the inspector button does not stop rules that are already stored.
+Clear the rule in the dialog and save the resource.
 
 ## See also
 

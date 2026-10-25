@@ -9,9 +9,17 @@ AJAX submit handler for the Pro [form_builder](../sections/form_builder) section
 
 ## Purpose
 
-Finds the `form_builder` section with the same schema key: the published document when `publishedRevision > 0`, otherwise the draft. Checks CSRF and the honeypot. Writes the outbox in a transaction.
+1. Finds the `form_builder` section with the same schema key. Uses the published document when `publishedRevision > 0`, otherwise the draft.
+2. Checks CSRF and the honeypot.
+3. Writes the outbox in a transaction.
 
-Mail is queued only when the schema `email` is not empty. A webhook is queued only when `webhook` is not empty, and it is sent only to an `https://` URL. A delivery error after commit does not change the success JSON. Submissions are not stored. Capability `forms` is required.
+Mail is always queued. The recipient is the schema `email`. An empty field sends to `emailsender`.
+
+A webhook is queued only when `webhook` is not empty. It is sent only to an `https://` URL.
+
+A delivery error after commit does not change the success JSON.
+
+Submissions are not stored. Capability `forms` is required.
 
 ## Where it is called
 
