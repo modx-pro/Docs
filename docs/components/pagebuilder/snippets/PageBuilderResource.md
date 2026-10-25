@@ -5,7 +5,7 @@ description: Сниппет PageBuilderResource — секции другого 
 
 # Сниппет PageBuilderResource
 
-Выводит секции другого ресурса: тот же PHP, что у [PageBuilder](PageBuilder), ресурс задаётся параметром `resource_id`.
+Выводит секции другого ресурса. Тот же PHP, что у [PageBuilder](PageBuilder). Ресурс задаётся параметром `resource_id`.
 
 ## Назначение
 
@@ -14,20 +14,22 @@ description: Сниппет PageBuilderResource — секции другого 
 
 ## Где вызывать
 
-Любой шаблон или chunk, где нужен HTML опубликованных секций **чужого** ресурса. Вызов некэшированный.
+Шаблон или чанк. Вызов некэшированный.
 
 ## Параметры
 
 | Параметр | По умолчанию | Описание |
 | --- | --- | --- |
-| `resource_id` | `0` | ID источника. `0` = текущий ресурс. Если ресурс не найден: HTML-путь — пустая строка, при `return_values=1` — JSON `{ "plainText": "", "sections": [] }` |
+| `resource_id` | `0` | ID источника. `0` = текущий ресурс |
 | `section_types` | пусто | Фильтр по ключам секций |
 | `return_values` | `0` | JSON вместо HTML (как у PageBuilder) |
 | `use_cache` | `1` | Кеш HTML |
 | `load_css` | из настройки | Frontend CSS |
 | `wrap_page` | как `load_css` | Обёртка `pb-page` |
 
-В properties перечислены только `resource_id` и `section_types`. Отметки обязательности у `resource_id` нет, только текст в описании. Остальные параметры работают как у PageBuilder; значение `0` означает текущий ресурс, сниппет без аргументов не падает.
+Если ресурс не определился, ответ пустая строка, в том числе при `return_values=1`. Если id есть, а записи PageBuilder нет, `return_values=1` отдаёт `{ "plainText": "", "sections": [] }`.
+
+В properties перечислены только `resource_id` и `section_types`. Отметки обязательности у `resource_id` нет. Остальные параметры работают как у PageBuilder. Сниппет без аргументов не падает.
 
 ## Пример: FAQ с страницы «О компании» на главной
 
