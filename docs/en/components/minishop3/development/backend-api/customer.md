@@ -122,7 +122,22 @@ $response = $ms3->customer->updateToken($currentToken);
 
 ## Authentication (AuthManager)
 
-`AuthManager` authenticates a customer through pluggable providers.
+`AuthManager` authenticates a customer through pluggable providers. It checks `is_active` and `is_blocked` after a provider has returned the customer. The login processor calls `handleFailedLoginByEmail()` only when the customer was not found or the password is wrong.
+
+```mermaid
+flowchart TB
+  cred[credentials] --> loop[Next provider]
+  loop --> supports{supports}
+  supports -->|no| loop
+  supports -->|yes| auth[provider authenticate]
+  auth -->|no customer| loop
+  loop -->|list exhausted| failed["null, invalid_credentials"]
+  failed --> lock["Login: handleFailedLoginByEmail"]
+  auth -->|msCustomer| access{active and not blocked}
+  access -->|no| denied["null, inactive or blocked: the attempt counter does not grow"]
+  access -->|yes| ok["Customer: last_login_at, attempt counter reset"]
+  ok --> session["establishCustomerSession: new token, session, cookie, draft"]
+```
 
 ```php
 $authManager = $modx->services->get('ms3_auth_manager');
@@ -203,7 +218,30 @@ $count = $authManager->revokeTokens($customer, 'api');
 
 // Clean expired tokens (for cron)
 $deleted = $authManager->cleanupExpiredTokens();
+
+// Sign in: a new token, a session, a cookie, and the cart draft moved across
+// (['token' => '...', 'expires_at' => '...'] or null)
+$session = $authManager->establishCustomerSession($customer);
+
+// Alias of the method above, kept so API calls stay readable
+$session = $authManager->establishApiSession($customer);
+
+// Sign out: revoke api tokens, clear the session and the cookie,
+// and issue a guest token instead (bool)
+$authManager->logoutCurrentCustomer();
+
+// Find a customer by email after normalizing the address (msCustomer or null)
+$customer = $authManager->findCustomerByEmail('user@example.com');
+
+// Increment the failed-attempt counter when the customer object is not at hand (void)
+$authManager->handleFailedLoginByEmail('user@example.com');
 ```
+
+::: info `establishApiSession()` does nothing of its own
+The method only calls `establishCustomerSession()`. The component has no separate API session distinct from the storefront session. Both are one token in `ms3_customer_tokens` plus a PHP session record.
+:::
+
+`establishCustomerSession()` always issues a **new** token, even when the customer has already signed in. That stops session fixation: the old token row is deleted, so a cookie planted in advance does not stay valid after login. The cart draft moves to the new token.
 
 ### Token types
 
@@ -226,7 +264,8 @@ The password reset token is the exception: `markAsUsed()` never touches it. Afte
 $authManager->handleFailedLogin($customer);
 // Increments failed_login_attempts
 // When ms3_customer_max_login_attempts (default 5) is reached
-// blocks for ms3_customer_block_duration seconds (default 300)
+// blocks for ms3_customer_block_duration seconds.
+// The installer writes 300. If the setting row is missing, the code uses 3600.
 ```
 
 ## Registration (RegisterService)
@@ -309,7 +348,7 @@ $result = $verification->resendVerificationEmail($customer);
 
 Setting `ms3_email_verification_token_ttl` (default 86400) — verification token lifetime in seconds.
 
-### Customer Web API endpoints — `/api/v1/customer/*`
+## Customer Web API — `/api/v1/customer/*`
 
 Controller: `CustomerProfileController`. These endpoints appeared in 1.10.x / 1.11.0.
 
@@ -322,7 +361,7 @@ Controller: `CustomerProfileController`. These endpoints appeared in 1.10.x / 1.
 
 ## Rate limiting (RateLimiter)
 
-Protects against brute-force. Uses the MODX cache.
+`RateLimiter` counts attempts in the MODX cache.
 
 ```php
 $limiter = $modx->services->get('ms3_rate_limiter');
@@ -439,6 +478,7 @@ If `ms3_customer_sync_create_moduser` = true, also creates `modUser` + `modUserP
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
 | `user_id` | integer | 0 | MODX user ID (optional) |
+| `customer_group_id` | integer | null | Customer group. The manager writes it through `PUT /api/mgr/customers/{id}` |
 | `first_name` | string | '' | First name |
 | `last_name` | string | '' | Last name |
 | `email` | string | '' | Email |
@@ -477,6 +517,9 @@ If `ms3_customer_sync_create_moduser` = true, also creates `modUser` + `modUserP
 | `floor` | string | null | Floor |
 | `room` | string | null | Apartment/office |
 | `comment` | text | null | Comment |
+| `createdon` | datetime | null | Created at |
+| `updatedon` | datetime | null | Updated at |
+| `active` | integer | 1 | The address is active |
 | `is_default` | integer | 0 | Default address |
 
 ## msCustomerToken fields
@@ -511,20 +554,63 @@ If `ms3_customer_sync_create_moduser` = true, also creates `modUser` + `modUserP
 | `ms3_email_verification_token_ttl` | 86400 | Verification token TTL |
 
 ::: warning A twin setting sits in the manager
-The same area of the manager holds `ms3_customer_api_token_ttl`, and its value is the same — but no line of code reads it. The working setting is `ms3_customer_token_ttl` from the table above ([issue #797](https://github.com/modx-pro/MiniShop3/issues/797)).
-
-The default is `86400` (24 hours): the transport package creates the setting with that value, and the code falls back to the same number when the row is missing from the database.
+The same section also has `ms3_customer_api_token_ttl`. No line of code reads it, although the value is the same. The working setting is `ms3_customer_token_ttl` from the table above ([issue #797](https://github.com/modx-pro/MiniShop3/issues/797)).
 :::
+
+Two more settings disagree between the installer and the fallback in code ([#898](https://github.com/modx-pro/MiniShop3/issues/898)):
+
+| Key | Installer | If the row is missing |
+| --- | --- | --- |
+| `ms3_customer_block_duration` | 300 | 3600 in `AuthManager::handleFailedLogin()` |
+| `ms3_customer_require_email_verification` | false | true in `RegisterService` and the registration processor |
+
+## Manager REST for customers
+
+The manager calls these routes, not `Processors\Customer\Update`. Editing a customer in the manager therefore does not fire `msOnBeforeUpdateCustomer`.
+
+| Method | Path | Permission |
+| --- | --- | --- |
+| `GET` | `/api/mgr/customers` | `msorder_list` |
+| `GET` | `/api/mgr/customers/{id}` | `msorder_view` |
+| `PUT` | `/api/mgr/customers/{id}` | `msorder_save` |
+| `DELETE` | `/api/mgr/customers/{id}` | `msorder_remove` |
+| `DELETE` | `/api/mgr/customers/bulk` | `msorder_remove` |
+| `GET` | `/api/mgr/customers/{id}/addresses` | `msorder_list` |
+| `POST` | `/api/mgr/customers/{id}/addresses` | `msorder_save` |
+| `PUT` | `/api/mgr/customers/{id}/addresses/{address_id}` | `msorder_save` |
+| `DELETE` | `/api/mgr/customers/{id}/addresses/{address_id}` | `msorder_remove` |
+
+Customer groups, `/api/mgr/customer-groups`:
+
+| Action | Permission |
+| --- | --- |
+| List | `msorder_list` |
+| Card | `msorder_view` |
+| Save | `msorder_save` |
+| Delete | `msorder_remove` |
+
+The processors for `runProcessor()` stay alongside.
+
+| Processor | Permission |
+| --- | --- |
+| `Customer\Get`, `Address\Get` | `msorder_view` |
+| both `GetList` | `msorder_list` |
+| both `Update` | `msorder_save` |
+| both `Remove` | `msorder_remove` |
+| `GetListCombobox`, `Multiple` | the class declares no permission of its own |
+
+`Customer\GetListCombobox` accepts an `id` parameter and, with `combo=1`, lifts the listed rows with a `FIELD()` expression. The value goes into SQL without a prepared expression, so since 1.14.2-beta1 the processor runs it through `IntArrayDecoder::decode()`. The result is a list of positive integers. Everything else is dropped. If you write your own combo processor with the same sort, repeat this step. Otherwise `id` becomes an SQL injection point.
 
 ## Events
 
 | Event | When fired |
 | --- | --- |
 | `msOnBeforeCreateCustomer` / `msOnCreateCustomer` | Customer creation |
-| `msOnBeforeUpdateCustomer` / `msOnUpdateCustomer` | The `Customer/Update` processor; the built-in manager never calls it ([#847](https://github.com/modx-pro/MiniShop3/issues/847)) |
-| `msOnBeforeAddToCustomer` / `msOnAddToCustomer` | Field change via controller |
+| `msOnBeforeUpdateCustomer` / `msOnUpdateCustomer` | The `Customer/Update` processor. The built-in manager does not call it ([#847](https://github.com/modx-pro/MiniShop3/issues/847)) |
+| `msOnBeforeAddToCustomer` / `msOnAddToCustomer` | Field change through the controller |
 | `msOnBeforeValidateCustomerValue` / `msOnValidateCustomerValue` | Field value validation |
-| `msOnBeforeGetOrderCustomer` / `msOnGetOrderCustomer` | Find/create on checkout |
-| `msOnBeforeAddCustomerAddress` / `msOnAddCustomerAddress` | Add address |
+| `msOnErrorValidateCustomerValue` | Field value validation failed |
+| `msOnBeforeGetOrderCustomer` / `msOnGetOrderCustomer` | Find or create during checkout |
+| `msOnBeforeAddCustomerAddress` / `msOnAddCustomerAddress` | Adding an address |
 
-Event parameter details: [Events](../events).
+Event parameters: [Events](../events).
