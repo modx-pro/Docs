@@ -5,13 +5,12 @@ description: "Embed a video by URL (YouTube, Vimeo, Rutube). Free layer."
 
 # Video
 
-Responsive iframe from a video link. Common hosts are supported. `VideoEmbedResolver` parses the URL on save. The section is part of Free.
+Responsive iframe from a video link. `VideoEmbedResolver` parses the URL on save. The section is part of Free.
 
 ![Video](/components/pagebuilder/screenshots/sections/video.jpg)
 
 ## URL instead of embed code
 
-- Paste URL instead of embed HTML in richtext
 - `VideoEmbedResolver` builds iframe for YouTube, Vimeo, Rutube
 - Responsive wrapper in chunk
 
@@ -40,14 +39,14 @@ Paste the full **Video URL** from the browser bar, not embed HTML. Section title
 | Parameter | Value |
 | --- | --- |
 | key | `video` |
-| Layer | Pro |
+| Layer | Free |
 | Category | media (`media`) |
-| Chunk | `pagebuilderpro_video` |
-| Requires | pro |
+| Chunk | `pagebuilder_video` |
+| Requires | — |
 
 ## Inspector fields
 
-Fill these fields in the section inspector. Field types are documented in the [field types reference](../fields/types).
+Field types: [field types reference](../fields/types).
 
 ### Title (`title`)
 
@@ -55,7 +54,7 @@ Type [text](../fields/text#output-in-section-data). Optional.
 
 ### Video URL (`video`)
 
-Type [video](../fields/video#output-in-section-data). Required. Video URL. Site output is embed via VideoEmbedResolver.
+Type [video](../fields/video#output-in-section-data). Required. Site output is embed via VideoEmbedResolver.
 
 ## Site output
 
@@ -70,7 +69,7 @@ Example payload after save. Media, video, and map values may be enriched on outp
   "title": "Section title",
   "video": {
     "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    "embed_url": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    "embed_url": "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ",
     "provider": "youtube"
   }
 }
@@ -78,7 +77,7 @@ Example payload after save. Media, video, and map values may be enriched on outp
 
 ## Chunk template
 
-Fenom chunk `pagebuilderpro_video`:
+Fenom chunk `pagebuilder_video`:
 
 ```fenom
 <section class="pb-section pb-section--video pb-video{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="video"{if $id} id="pb-{$id|escape}"{/if}>

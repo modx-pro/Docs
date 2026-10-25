@@ -17,7 +17,6 @@ Requires PageBuilder Pro and miniShop3.
 
 - Copy, background, CTA like hero but compact
 - Optional miniShop3 product tie-in
-- Seasonal promos between showcases
 
 ## Promo scenarios
 
@@ -32,7 +31,7 @@ Requires PageBuilder Pro and miniShop3.
 
 ## Copy, button, product
 
-Set copy and button. **Product** is optional: chunk may render a mini card.
+Set copy and button. **Product** is optional: the chunk can show a mini card. The type is marked `"cacheable": false`.
 
 ## Similar sections
 
@@ -45,13 +44,13 @@ Set copy and button. **Product** is optional: chunk may render a mini card.
 | --- | --- |
 | key | `promo_banner` |
 | Layer | Pro |
-| Category | commerce (`commerce`) |
+| Category | Commerce (`commerce`) |
 | Chunk | `pagebuilderpro_promo_banner` |
 | Requires | pro, minishop3 |
 
 ## Inspector fields
 
-Fill these fields in the section inspector. Field types are documented in the [field types reference](../fields/types).
+Field types: [field types reference](../fields/types).
 
 ### Title (`title`)
 
@@ -110,7 +109,7 @@ Example payload after save. Media, video, and map values may be enriched on outp
 Fenom chunk `pagebuilderpro_promo_banner`:
 
 ```fenom
-{set $promoBg = is_array($background) ? ($background.url ?: '') : ($background ?: '')}
+{set $promoBg = $background|pb_image_src}
 {set $productId = $pb_product_resource !: ($product_id !: 0)}
 {set $listing = ''}
 {if $productId}
