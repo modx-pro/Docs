@@ -14,7 +14,6 @@ case 'sfOnBeforeAddIndex':
 break;
 ```
 
-
 ## sfOnGetIds
 
 Вызывается после первоначального сбора ID выводимых ресурсов. Можно добавить ресурс, прописав его ID или полностью переписать набор.
@@ -25,7 +24,6 @@ case 'sfOnGetIds':
   $modx->event->returnedValues['data'] = $data; 
 break;
 ```
-
 
 ## sfOnBeforeCreateFilter
 
@@ -39,7 +37,6 @@ case 'sfOnBeforeCreateFilter':
   $modx->event->returnedValues['data'] = $data; 
 break;
 ```
-
 
 ## sfOnGetFilterValues
 
@@ -65,7 +62,6 @@ case 'sfOnGetFilterValues':
 break;
 ```
 
-
 ## sfOnBeforeCreateFilterRow
 
 Вызывается при создании строки (элемента фильтра). Можно заменить названия, значения и т. д. 
@@ -83,7 +79,6 @@ case 'sfOnBeforeCreateFilterRow':
 break;
 ```
 
-
 ## sfOnCheckResource
 
 Вызывается при проверке ресурса на соответствие значению выбранного фильтра. Приходит id ресурса, название фильтра и значение.  
@@ -99,7 +94,6 @@ case 'sfOnCheckResource':
   $modx->event->returnedValues['data'] = $data;
 break;
 ```
-
 
 ## sfOnBeforeCreateSeoRule
 
@@ -119,7 +113,6 @@ case 'sfOnBeforeCreateSeoRule':
 break;
 ```
 
-
 ## sfOnCheckSeoRule
 
 Вызывается при проверке SEO-правила на количество ресурсов, удовлетворяющих значению фильтра. Приходит массив `$data` с данными будущей страницы и самого правила.  
@@ -136,7 +129,6 @@ case 'sfOnBeforeCreateSeoRule':
   }
 break;
 ```
-
 
 ## sfOnGetSeoPage
 
@@ -157,7 +149,6 @@ case 'sfOnGetSeoPage':
   }
 break;
 ```
-
 
 ## sfOnCheckSeoPage
 
