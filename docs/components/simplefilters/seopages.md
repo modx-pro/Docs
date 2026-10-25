@@ -1,4 +1,6 @@
-После установки в меню появится приложение **simpleFilters**.
+# Приложение simpleFilters
+
+После установки в меню появится приложение **simpleFilters**:
 
 ![](https://file.modx.pro/files/4/a/1/4a11e7cb12ae5b6a7cf228ff9e5b13d1.png)  
 
