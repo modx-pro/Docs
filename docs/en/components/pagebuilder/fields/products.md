@@ -7,7 +7,9 @@ description: "A list of miniShop3 product ids, comma-separated in the inspector.
 
 Version: **Pro**, capability `minishop3`.
 
-The inspector accepts ids separated by commas. Section data stores a string array. Without miniShop3 the type is not offered for a new field.
+The type does not appear in the new-field dialog, even when miniShop3 is installed. The descriptor lists capability `minishop3`, but `ProFeatureProvider` does not grant it.
+
+The inspector accepts ids separated by commas. Section data stores a string array.
 
 Built-in shop sections, for example [comparison](../sections/product_comparison), store products in [multirelation](multirelation). This type does not put a price or an add-to-cart button into the chunk.
 
@@ -34,9 +36,7 @@ Built-in shop sections, for example [comparison](../sections/product_comparison)
 ::: code-group
 
 ```modx
-{foreach $product_ids as $id}
-  <span>{$id|escape}</span>
-{/foreach}
+[[+product_ids.0]]
 ```
 
 ```fenom

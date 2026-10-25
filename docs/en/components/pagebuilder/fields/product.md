@@ -7,9 +7,11 @@ description: "One miniShop3 product id. Capability minishop3. Pro layer."
 
 Version: **Pro**, capability `minishop3`.
 
-A string with the product id. Without miniShop3 the type is not offered for a new field.
+The type does not appear in the new-field dialog, even when miniShop3 is installed. The descriptor lists capability `minishop3`, but `ProFeatureProvider` does not grant it.
 
 Built-in shop sections store the product in [relation](relation) and [multirelation](multirelation), not in this type. The chunk does not receive a price or an add-to-cart button. For a miniShop3 card use [products grid](../sections/products_grid) or [product spotlight](../sections/product_spotlight).
+
+The value is a string with the product id.
 
 ## Schema
 

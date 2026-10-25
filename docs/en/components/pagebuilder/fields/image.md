@@ -5,14 +5,14 @@ description: "Image media object with alt and enrich metadata"
 
 # Field image
 
-Version: **Free**.
+Version: **Free**. Cropping needs capability `image-crop` (**Pro**).
 
 <!-- ![image](/components/pagebuilder/screenshots/fields/image.jpg) -->
 
 ## Why this type
 
 - After save, the object includes width, height, and file extension
-- Alt text and caption are set in the section schema
+- Alt text and caption are separate fields in the section schema. The media object's `title` is edited in Info
 - One image, not a list like [gallery](gallery)
 
 ## When to use
@@ -23,8 +23,7 @@ Version: **Free**.
 
 ## Tips
 
-- Several photos: use [gallery](gallery) (Pro)
-- In the chunk use `{$photo.url}`, not a file path as a plain string
+In the chunk use `{$photo.url}`, not a file path as a plain string.
 
 ## Similar types
 
@@ -39,15 +38,21 @@ Version: **Free**.
   "type": "image",
   "label": "Image",
   "description": "Recommended size 1920×1080",
+  "crops": {
+    "hero": { "name": "Hero", "size": "1600x900" },
+    "card": { "name": "Card", "ratio": "4x3" }
+  },
   "width": 50,
   "tab": "Content",
   "active": true
 }
 ```
 
+`crops` is optional. With Pro and `image-crop`, the inspector can crop. Named presets set the size. Without presets the frame is stored under `default`.
+
 ## Value
 
-Media object. The Info button edits width, height, and title. Picking from the browser fills size and filename.
+Media object. The Info button edits `width`, `height`, and `title`. Picking from the browser fills `size` and filename.
 
 ## Section data {#output-in-section-data}
 
@@ -72,6 +77,18 @@ Key `photo` in the section data after save enrich:
 ```
 
 - Fields `width`, `height`, and `size` are filled from disk when MODX can access the file.
+- Named frames live in `photo.crops.*` and do not overwrite the original `url`.
+- A plugin on `pbOnAfterMediaCrop` can append `crops.<key>.variants`. Those are smaller files next to the frame.
+
+## Display URL {#display-url}
+
+The `pb_image_src` modifier and the `pagebuilder_partial_image` chunk pick the URL in this order: `crops.default`, then the first crop that has a `url`, then the original `url`.
+
+```fenom
+{$photo|pb_image_src}
+```
+
+The inspector picks differently. First it uses a schema `crops` preset key that already has a `url`. If there is exactly one crop, it uses that crop. Otherwise it uses `crops.default`, then the original `url`. Several named crops without `default` and without a matching preset show the original `url` in the inspector. The modifier on the site uses the first crop.
 
 ## Chunk example
 
@@ -91,6 +108,14 @@ Key `photo` in the section data after save enrich:
 
 :::
 
+## Plugin after a crop {#crop-plugin}
+
+The `mgr/media/crop` processor fires `pbOnAfterMediaCrop` after it writes the file. The `result` parameter is `\PageBuilder\Media\MediaCropResult` (`url`, `width`, `height`, `path`, `sourcePath`). The core does not watermark or resize further. A plugin can edit the frame and put copy URLs into `variants`.
+
+The frame is not written over the original. It goes into a `pagebuilder-crops` directory next to the source: `assets/images/pagebuilder-crops/hero-<hash>.<extension>`. The file name is the source stem plus a hash of the geometry. `variants` files go in the same directory.
+
+In a template: `{$photo.crops.hero.variants.0.url ?: $photo.crops.hero.url}`.
+
 ## Common properties
 
 For fields with `name` that are stored in the section data:
@@ -98,13 +123,13 @@ For fields with `name` that are stored in the section data:
 | Key | Type | Role | CMP |
 | --- | --- | --- | --- |
 | `tab` | string | Group subtitle in the inspector | yes |
-| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `width` | 25, 33, 50, 66, 75, 100 | Field width as % of the row (flex). The CMP offers only these values | yes |
 | `description` | string | Hint under the label | yes |
 | `default` | any | Initial value for a new section | yes |
 | `active` | bool | `false` hides the field in the inspector | yes |
 | `required` | bool | Required on **publish** (draft still saves) | yes |
 
-- Also in schema: no `responsive`. Value is a media object, enrich on save.
+- Also in schema: `crops` (Pro, `image-crop`). No `responsive`. Value is a media object, enrich on save.
 
 See [fields overview](overview#obshchie-svoystva-polya).
 
