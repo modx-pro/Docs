@@ -12,10 +12,10 @@ description: Установка PageBuilder, права, вкладка «Сек
 | PHP | 8.2+ |
 | VueTools | 1.1.2+ |
 | pdoTools | 3.0+ |
-| PageBuilder (Free) | 1.0.15-beta |
-| PageBuilder Pro | 1.0.15-beta, требует `pagebuilder` ≥ 1.0.15 |
+| PageBuilder (Free) | 1.0.17-beta |
+| PageBuilder Pro | 1.0.17-beta, требует `pagebuilder` ≥ 1.0.17 |
 
-Пакеты **PageBuilder** (Free) и **PageBuilder Pro** ставятся из [modstore.pro](https://modstore.pro/extras/). Сообщение `Package provider not found` бывает только у шифрованного transport **Pro**, если провайдер не подключён. У текущего Free transport не зашифрован. Этой фразы при установке Free не будет.
+Пакеты **PageBuilder** (Free) и **PageBuilder Pro** ставятся из [modstore.pro](https://modstore.pro/extras/). Сообщение `Package provider not found` бывает только у шифрованного пакета **Pro**, если провайдер не подключён. У текущего Free пакет не зашифрован. Этой фразы при установке Free не будет.
 
 1. [Подключите ModStore](https://modstore.pro/info/connection).
 2. Установите **VueTools** и **pdoTools**, если их ещё нет на сайте.
@@ -41,7 +41,7 @@ description: Установка PageBuilder, права, вкладка «Сек
 | Ключ | Значение |
 | --- | --- |
 | `pagebuilder_resource_tab_enabled` | `1` |
-| `pagebuilder_resource_tab_parents` | пусто = все ресурсы, или ID родителей через запятую |
+| `pagebuilder_resource_tab_parents` | пусто = все ресурсы. Иначе id самого ресурса, прямого родителя или любого предка |
 
 Позицию вкладки задаёт `pagebuilder_resource_tab_index` (`0` первая и сразу открыта, `-1` последняя).
 
@@ -75,8 +75,8 @@ description: Установка PageBuilder, права, вкладка «Сек
 
 1. Откройте ресурс → вкладка **Секции**.
 2. Добавьте секцию (например Hero), заполните поля.
-3. Сохраните ресурс MODX (**Сохранить** в панели ресурса). Редактор проверяет обязательные поля, пишет черновик и публикует секции на сайт.
-4. Автосохранение во вкладке пишет только черновик. На сайте его нет, пока не сохраните ресурс.
+3. Нажмите **Сохранить** в панели ресурса. Редактор проверяет обязательные поля, пишет черновик и публикует секции.
+4. Автосохранение пишет только черновик. На сайте его нет, пока не сохраните ресурс.
 
 При `pagebuilder_fake_enabled = 1` в инспекторе появляется кнопка **Fake**: заполняет поля демо-данными для проверки вёрстки.
 

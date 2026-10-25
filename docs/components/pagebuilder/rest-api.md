@@ -5,7 +5,7 @@ description: "Read-only REST PageBuilder Pro: Bearer, scopes, GET /pages, ETag �
 
 # REST API v1 (Pro)
 
-Read-only выдача опубликованного контента. Нужны PageBuilder Pro и `pagebuilder_rest_api_enabled = 1`. Не заменяет Free [Public API](public-api). Запись страниц остаётся в менеджере и в [Agent API](agent-api).
+Только чтение опубликованного контента. Нужны PageBuilder Pro и `pagebuilder_rest_api_enabled = 1`. Не заменяет Free [Public API](public-api). Запись страниц остаётся в менеджере и в [Agent API](agent-api).
 
 ```text
 /assets/components/pagebuilder/api/v1.php?path=/pages/42
@@ -13,7 +13,7 @@ Read-only выдача опубликованного контента. Нужн
 
 ## Что выбрать
 
-1. Один фронт и ключ в server env: [Public API](public-api).
+1. Один фронт и ключ в переменных сервера: [Public API](public-api).
 2. Несколько приложений, отзыв токенов, scopes и `If-None-Match`: REST v1.
 3. Черновик или схемы полей из менеджера: [Agent API](agent-api), не этот транспорт.
 
@@ -36,7 +36,7 @@ Read-only выдача опубликованного контента. Нужн
 | Ключ | По умолчанию | Описание |
 | --- | --- | --- |
 | `pagebuilder_rest_api_enabled` | `0` | Включить транспорт |
-| `pagebuilder_rest_token_pepper` | пусто | Pepper для SHA-256. Пусто = `site_id` |
+| `pagebuilder_rest_token_pepper` | пусто | Pepper для SHA-256. Пусто = `site_id`. Если пуст и `site_id`, pepper равен `pagebuilder` |
 | `pagebuilder_rest_tokens` | `[]` | JSON токенов без секретов |
 | `pagebuilder_rest_throttle_per_minute` | `120` | Лимит запросов на prefix токена. `0` выключает лимит |
 
@@ -61,7 +61,9 @@ Scope `pages.read` открывает `GET /pages` и `GET /pages/{id-or-alias}`
 | `catalog.read` | `GET /health`, `GET /catalog/sections` |
 | `pages.read` | `GET /pages`, `GET /pages/{id-or-alias}` |
 
-`GET /pages` отдаёт опубликованные страницы с `publishedRevision > 0`. Тела document в списке нет.
+`GET /pages` отдаёт страницы с `publishedRevision > 0`. Тела document в списке нет.
+
+В выборку входят все такие страницы контекста, если ресурс опубликован, не удалён и доступен по policy `view`. Сортировка: `menuindex`, затем id ресурса. `offset` и `limit` режут этот список. `total` считает страницы до нарезки. Поиск `q` сужает и список, и `total`.
 
 | Query | Описание |
 | --- | --- |

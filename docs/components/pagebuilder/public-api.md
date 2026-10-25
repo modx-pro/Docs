@@ -1,11 +1,11 @@
 ---
 title: Public API
-description: Read-only JSON API для headless-фронта. Опубликованные секции без черновика
+description: JSON API только для чтения для внешнего фронта. Опубликованные секции без черновика
 ---
 
-# Public API (Headless)
+# Public API
 
-Read-only JSON для внешнего фронта (Next.js, Nuxt, React). Только **опубликованный** контент PageBuilder. Черновики и запись: [Agent API](agent-api) (Pro) или вкладка **Секции** на форме ресурса в менеджере.
+JSON только для чтения: внешний фронт (Next.js, Nuxt, React). Только **опубликованный** контент PageBuilder. Черновики и запись: [Agent API](agent-api) (Pro) или вкладка **Секции** на форме ресурса.
 
 Точка входа:
 
@@ -17,12 +17,12 @@ Read-only JSON для внешнего фронта (Next.js, Nuxt, React). То
 
 ## Включение
 
-Три ключа в namespace `pagebuilder`:
+Ключи в namespace `pagebuilder`:
 
 | Ключ | По умолчанию | Описание |
 | --- | --- | --- |
 | `pagebuilder_public_api_enabled` | `0` | Включить API |
-| `pagebuilder_public_api_key` | пусто | API-ключ. Пусто: без ключа (только dev) |
+| `pagebuilder_public_api_key` | пусто | API-ключ. Пусто: без ключа (только для разработки) |
 | `pagebuilder_public_api_cors_origins` | `*` | Разрешённые origins для браузера |
 
 После смены ключей очистите кэш сайта, если MODX не подхватил настройки сразу.
@@ -40,7 +40,7 @@ PAGEBUILDER_API_KEY=your-secret-key
 
 Если задан `pagebuilder_public_api_key`, передайте ключ так:
 
-- заголовок `X-PageBuilder-Api-Key: <key>` (предпочтительно: ключ не попадает в access-логи)
+- заголовок `X-PageBuilder-Api-Key: <key>` (ключ не попадает в логи доступа)
 - query `api_key=<key>`
 
 MODX дополнительно проверяет:
@@ -53,7 +53,7 @@ MODX дополнительно проверяет:
 
 ## Формат ответа
 
-Тот же envelope, что у connector менеджера:
+Та же оболочка, что у connector менеджера:
 
 ```json
 {
@@ -74,7 +74,7 @@ MODX дополнительно проверяет:
 | 400 | `resource_id or alias is required.` | Нет идентификатора |
 | 400 | `Invalid action.` | Неизвестный `action=` |
 
-## Endpoints
+## Запросы
 
 ### `web/health/ping`
 
@@ -172,7 +172,7 @@ curl -s -H "X-PageBuilder-Api-Key: ${KEY}" \
 }
 ```
 
-`renderFailed: true` значит, что отрисовка чанка не удалась (неизвестный тип, ошибка Fenom). Пропустите блок или покажите запасной вариант в приложении.
+`renderFailed: true` значит, что отрисовка чанка не удалась (неизвестный тип, ошибка Fenom). Пропустите блок или покажите запасной вариант.
 
 #### JavaScript (fetch)
 
@@ -242,13 +242,13 @@ curl -s "${BASE}?action=web/catalog/list&context_key=web&api_key=${KEY}"
 }
 ```
 
-Кэшируйте список на час или до деплоя. Он меняется, когда добавляете JSON-типы или UI-типы в панели управления. В ответе типа поле `categories`: список slug. Поле `category` остаётся для совместимости.
+Кэшируйте список на час или до развёртывания. Он меняется, когда добавляете JSON-типы или UI-типы в панели управления. В ответе типа поле `categories`: список slug. Поле `category` остаётся для совместимости.
 
 ## Таблицы и QueryPolicy
 
 Отдельного endpoint таблиц нет. Строки таблиц отдаёт сниппет [PageBuilderTableRows](snippets/PageBuilderTableRows) или datasource в секции.
 
-`QueryPolicy` ограничивает datasource-запросы секций в менеджере. Ключи `sql`, `php`, `snippet`, `class` отклоняются. К query-параметрам `api.php` он не применяется. Лимит 100 относится к datasource-запросу и к REST `GET /pages`. Список `web/catalog/list` отдаёт все определения без постраничной нарезки.
+`QueryRequest` отклоняет ключи `sql`, `php`, `snippet`, `class`, `classname` и `query`. К query-параметрам `api.php` это не применяется. Лимит 100 относится к datasource-запросу и к REST `GET /pages`. Список `web/catalog/list` отдаёт все определения без постраничной нарезки.
 
 ## CORS
 
@@ -278,9 +278,9 @@ curl -s -D - -o /dev/null -X OPTIONS \
 | SEO meta плюс блоки | `values` (`plainText`, поля ресурса) |
 | Один блок на лендинге | `section_types=hero&include=document` |
 
-## Headless flow
+## Порядок вызова
 
-1. Включите API и задайте ключ в production.
+1. Включите API и задайте ключ на рабочем сайте.
 2. Один раз вызовите `web/catalog/list` и сохраните схемы полей в кэше (или сгенерируйте TS-типы из `fields`).
 3. На каждом маршруте вызовите `web/page/get` по `alias` или `resource_id`.
 4. Выводите `object.document.sections` своими компонентами или используйте `object.sections[].html` / `object.html` для SSR-гибрида.
