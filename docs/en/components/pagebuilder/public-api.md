@@ -246,7 +246,7 @@ Cache the list for an hour or until deploy. It changes when you add JSON types o
 
 The type payload includes `categories`: a list of slugs. `category` stays for compatibility.
 
-Catalog, table, and page queries go through `QueryPolicy`. Keys `sql`, `php`, `snippet`, and `class` are rejected. Page size is at most 100. Free `api.php` stays in place.
+`QueryPolicy` limits datasource queries of sections in the manager. Keys `sql`, `php`, `snippet`, and `class` are rejected. It does not apply to `api.php` query parameters. The limit of 100 applies to a datasource query and to REST `GET /pages`. `web/catalog/list` returns every definition with no paging.
 
 ## CORS
 
