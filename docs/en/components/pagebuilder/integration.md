@@ -2,6 +2,7 @@
 title: Manager and events
 description: PageBuilder control panel, permissions, data model, pbOn events, and Pro overview
 ---
+
 # Manager and events
 
 ## Control panel
@@ -12,16 +13,13 @@ Manager component: **Components → PageBuilder** (namespace `pagebuilder`, cont
 
 In the control panel:
 
-- list of resources with sections
-- jump to section editor
 - **Section types** (permission `pagebuilder_manage_types`): UI types, hide and restore built-in JSON types
-
-<!-- ![Section types in control panel](/components/pagebuilder/screenshots/mgr-cmp-section-types.jpg) -->
-
 - **Basket** (Pro, flag `basket`): global basket for deleted sections and table rows
 - Collections tab settings when `pagebuilder_collections_*` are enabled
 
-The editor on the resource form and in the control panel uses one Vue bundle via **VueTools**. Manager API entry:
+<!-- ![Section types in control panel](/components/pagebuilder/screenshots/mgr-cmp-section-types.jpg) -->
+
+The control panel has no list of resources with sections and no link into the resource **Sections** tab. The editor on the resource form and in the control panel uses one Vue bundle via **VueTools**. Manager API entry:
 
 `assets/components/pagebuilder/connector.php`
 
@@ -39,9 +37,9 @@ Main page record: table `pb_pages` (prefix `modx_pb_`).
 | `publishedon` / `publishedby` | Publish time and user |
 | `editedon` / `editedby` | Last draft change |
 
-PageBuilder does not overwrite `modResource.content`. Resource SEO fields (pagetitle, description) are used as usual.
+PageBuilder does not overwrite `modResource.content`.
 
-Page basket stores deleted sections in `document.trash`. On draft save a plugin syncs index `pb_basket_items`. There is no separate `pbOn*` event for basket: a plugin on `pbOnAfterSave` can read `record.draft.trash`. Global restore and permanent delete use Pro connector actions (`mgr/basket/*`).
+Page basket stores deleted sections in `document.trash`. When a draft save has non-empty `trashedSectionIds`, `pbOnBeforeTrash` and `pbOnAfterTrash` fire. The package plugin on `pbOnAfterSave` writes those sections to `pb_basket_items`. Another plugin on `pbOnAfterSave` can read `record.draft.trash`. Global restore and permanent delete use Pro connector actions (`mgr/basket/*`).
 
 Resource table data lives in separate `pb_*` tables (Tables tab).
 
@@ -49,15 +47,13 @@ Resource table data lives in separate `pb_*` tables (Tables tab).
 
 ## PageBuilder Pro
 
-The `pagebuilderpro` extra adds shared blocks, section journal, catalog examples, breakpoint fields, 27 advanced field types, global basket in the control panel, and [Agent API](agent-api).
+The `pagebuilderpro` component adds shared blocks, section journal, catalog examples, breakpoint fields, 27 advanced field types, global basket in the control panel, and [Agent API](agent-api).
 
 Details: [PageBuilder Pro](pro). Storefront sections require **miniShop3**.
 
 ## Events {#events}
 
-On install the extra registers 21 `pbOn*` events in MODX. The twenty-first is `pbOnAfterMediaCrop`. Subscribe a plugin under **System → Events** or use the static plugin from the package.
-
-Exception: **`pbOnBeforeTableGetList`** and **`pbOnTableRowSave`** are not created by the installer. Add events manually if your plugin should react.
+On install and upgrade the component registers 23 `pbOn*` events in MODX. The twenty-first is still `pbOnAfterMediaCrop`. The next two are `pbOnBeforeTableGetList` and `pbOnTableRowSave`. Subscribe a plugin under **System → Events** or use the static plugin from the package.
 
 ### Registration on boot
 
@@ -110,13 +106,9 @@ The installer does not create `pbOnLibraryItemSave`. Add the event under **Syste
 
 ### Resource table data
 
-::: warning Manual registration
-Events below are **not** registered on install. Add them under **System → Events** if your plugin should react.
-:::
-
 | Event | Data |
 | --- | --- |
-| `pbOnBeforeTableGetList` | `table`, `query`, `criteria` by reference. The row query does not read these arguments |
+| `pbOnBeforeTableGetList` | `table`, `query`, and `criteria` by reference. The row query reads `search`, `filters`, `page`, `limit`, and `criteria` pairs other than `table_id` |
 | `pbOnTableRowSave` | `table`, `data` by reference, `row_id` |
 
 ### Frontend render {#frontend-render}
@@ -126,6 +118,14 @@ Events below are **not** registered on install. Add them under **System → Even
 | `pbOnBeforeRenderDocument` | `resourceId`, `document`, `pipeline`, `options` |
 | `pbOnBeforeRenderSection` | `resourceId`, `pipeline` with one section, `index`, `options` |
 | `pbOnGetValues` | `resourceId`, `document`, `values` (`SectionValuesBag`). The snippet when `return_values=1`, and Public API when `include` contains `values` |
+
+### Crop
+
+| Event | When | Data |
+| --- | --- | --- |
+| `pbOnAfterMediaCrop` | After the crop file is stored, before the manager response | `sourceUrl`, `sourcePath`, `path`, `geometry`, `result` (`MediaCropResult`) |
+
+A plugin appends `$result->variants`. They land in the `image` field `crops`. Example: [image field](fields/image#crop-plugin).
 
 Example section registration in a plugin:
 
@@ -154,7 +154,7 @@ Custom JSON definitions must match built-in section schema: fields, chunk, categ
 
 ## Save, publish, and frontend output
 
-The editor writes the draft via connector, publish copies snapshot to `published_json`, the site snippet reads only the published version.
+The editor writes the draft via connector. Publish copies the snapshot to `published_json`. The site snippet reads only the published version.
 
 ```mermaid
 flowchart LR
