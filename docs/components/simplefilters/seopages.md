@@ -165,6 +165,5 @@ $sf->updateSeoRules(); // Обновление SEO-правил
 $sf->updateSeoPages($mode); // Обновление SEO-страниц. $mode = 'refresh' для предварительной очистки таблицы перед обновлением
 ```
 
-::: tip
-Для удобства скрипты представлены в виде отдельных сниппетов **sfUpdateIndex**, **sfUpdateSeoRules** и **sfUpdateSeoPages** которые можно запускать по расписанию с помощью [CronManager](https://docs.modx.com/current/en/extras/cronmanager/index) или [Scheduler](http://ttps//docs.modx.pro/components/scheduler/).
-:::
+> [!TIP]
+> Для удобства скрипты представлены в виде отдельных сниппетов sfUpdateIndex, sfUpdateSeoRules и sfUpdateSeoPages которые можно запускать по расписанию с помощью [CronManager](https://docs.modx.com/current/en/extras/cronmanager/index) или [Scheduler](http://ttps//docs.modx.pro/components/scheduler/).
