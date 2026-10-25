@@ -22,7 +22,7 @@ class msProduct extends modResource
 }
 ```
 
-In MiniShop3 part of the logic lives in services. Duplicating a product stays a method of the model.
+In MiniShop3 part of the logic moves into services. The model keeps what MODX expects from `modResource`: `duplicate()`, `getPrice()`, `getWeight()`, and image handling.
 
 ```php
 class msProduct extends modResource
@@ -40,10 +40,10 @@ class ProductService
 
 | Aspect | Fat models | Service layer |
 | --- | --- | --- |
-| Testing | Hard to mock | Easy to isolate |
+| Testing | Tied to the ORM | Isolated tests |
 | Reuse | Tied to ORM | Independent services |
 | Extension | Inheritance | Replace via DI |
-| File size | 1000+ lines | 100–300 lines |
+| File size | 1000+ lines | 100-300 lines |
 
 ::: info Compromise with MODX architecture
 MODX commonly puts business logic in models (`modResource`, `modUser`, etc.). Since some MiniShop3 models extend MODX classes (`msProduct extends modResource`), they must follow similar patterns.
@@ -97,7 +97,7 @@ $ms3->order->submit();
 
 ### Lazy loading
 
-Services are created on first use:
+Services are created on the first `get()`. The next call returns the same object:
 
 ```php
 // Service not created yet
@@ -617,11 +617,7 @@ core/config/ms3.services.d/
 └── 99-override.php       # Final overrides (priority 99)
 ```
 
-### Benefits
-
-- **No conflicts** — each component in its own file
-- **Priority** — via file name (alphabetical)
-- **Independent install** — components don’t overwrite each other’s config
+Each component has its own file. The file name sets the order (alphabetically, with a numeric prefix).
 
 ### Component config example
 
@@ -653,16 +649,22 @@ ServiceRegistry logs loaded configs:
 <?php
 namespace MyProject\Services;
 
-use MiniShop3\Services\Delivery\DeliveryService;
+use MiniShop3\Model\msDelivery;
 use MiniShop3\Model\msOrder;
+use MiniShop3\Controllers\Delivery\DeliveryProviderInterface;
+use MiniShop3\Services\Delivery\DeliveryService;
 
 class CustomDeliveryService extends DeliveryService
 {
-    public function calculateCost(msOrder $order): float
-    {
-        $baseCost = parent::calculateCost($order);
+    public function calculateDeliveryCost(
+        msDelivery $delivery,
+        ?DeliveryProviderInterface $controller,
+        msOrder $order,
+        float $cost = 0.0
+    ): float {
+        $baseCost = parent::calculateDeliveryCost($delivery, $controller, $order, $cost);
 
-        // Free delivery over 5000
+        // Free delivery from 5000
         if ($order->get('cart_cost') >= 5000) {
             return 0;
         }
@@ -679,28 +681,17 @@ class CustomDeliveryService extends DeliveryService
 
 ### External CRM integration
 
+`OrderService` does not intercept order save. Public methods: `paymentCommissionBase`, `clampComputedTotal`, `aggregateProductsTotals`, `updateProducts`, `getOrderStatistics`. Send data to an external system from the [status change](events/status) event.
+
 ```php
 <?php
 namespace MyProject\Services;
 
-use MiniShop3\Services\Order\OrderService;
 use MiniShop3\Model\msOrder;
 
-class CRMOrderService extends OrderService
+class CRMSync
 {
-    public function handleOrderSave(msOrder $order, ?bool $cacheFlag = null): bool
-    {
-        $result = parent::handleOrderSave($order, $cacheFlag);
-
-        // Sync to CRM on status change
-        if ($order->isDirty('status_id')) {
-            $this->syncToCRM($order);
-        }
-
-        return $result;
-    }
-
-    protected function syncToCRM(msOrder $order): void
+    public function syncToCRM(msOrder $order): void
     {
         $client = new \GuzzleHttp\Client();
         $client->post('https://crm.example.com/api/orders', [
@@ -751,7 +742,8 @@ class TelegramAuthProvider implements AuthProviderInterface
             return null;
         }
 
-        // Find or create customer
+        // Find the customer by your own field. msCustomer has no telegram_id column:
+        // add it through the customer's extra fields or your add-on's migration
         return $this->modx->getObject(msCustomer::class, [
             'telegram_id' => $credentials['telegram_id']
         ]);
@@ -774,12 +766,18 @@ $authManager->registerProvider(new TelegramAuthProvider($modx));
 
 ## System settings
 
-The service config paths are hardcoded, and neither setting ships with the package — create one yourself, and only if a path has to change:
+These keys are not in the transport package. `ServiceRegistry` reads the path from the option and, when the option is empty, uses the fallback:
 
-| Setting | Path when the setting is absent | Description |
+| Option | Fallback path | When a DEBUG line is written |
 | --- | --- | --- |
-| `ms3_services_config` | `core/config/ms3.services.php` | Main config path |
-| `ms3_services_addons_dir` | `core/config/ms3.services.d/` | Addon config directory |
+| `ms3_services_config` | `{core_path}config/ms3.services.php` | The option is set and the file is missing |
+| `ms3_services_addons_dir` | `{core_path}config/ms3.services.d/` | The option is set and the directory is missing |
+
+Those two lines appear only when the option is set and the file or directory is missing. On a normal install the options are empty, so the lines are absent.
+
+You will see a third line, `No addon configs found in: …`, on a normal install too. The installer creates `ms3.services.d/`, and while that directory has no add-on file the line is written on every request.
+
+A missing file or directory at these paths is not an error. `ServiceRegistry` continues.
 
 ## Troubleshooting
 
@@ -799,7 +797,7 @@ Dependency not found with key ms3_my_service.
 4. Look in the MODX log: a `No factory registered for service` line means the key is not one of the built-in ones, and such a service is never registered
 
 ::: warning A new key cannot be added through configuration
-The registry only creates keys that have a factory in the code — the same 83 listed above. Configuration replaces the **class of an existing** service; an unknown key in `ms3.services.php` or `ms3.services.d/*.php` is skipped with a log entry. An add-on puts its own service straight into the MODX container: `$modx->services->add('mypackage_service', …)`.
+`ServiceRegistry` only creates keys that have a factory in the code, the same 83 listed above. Configuration replaces the **class of an existing** service. An unknown key in `ms3.services.php` or `ms3.services.d/*.php` is skipped and written to the log. An add-on puts its own service straight into the MODX container: `$modx->services->add('mypackage_service', …)`.
 :::
 
 ### Custom class not used
