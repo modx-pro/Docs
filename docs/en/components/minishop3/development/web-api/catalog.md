@@ -5,7 +5,7 @@ description: "Public product and category API for MiniShop3 headless"
 
 # Catalog
 
-Public endpoints, no API token needed. The data set is the same as on the server-rendered (SSR) frontend.
+Public endpoints. No API token is required. Resource-group visibility is shared with the catalog snippet. `ProductCatalogService` builds the JSON, not the snippet's pdoFetch.
 
 ## Product
 
@@ -14,7 +14,7 @@ Public endpoints, no API token needed. The data set is the same as on the server
 | `GET` | `/product/get/{id}` | Product by ID |
 | `GET` | `/product/get` | Resolve: `alias` or `uri` parameter, optional `context` |
 | `GET` | `/product/list` | List / PLP |
-| `GET` | `/product/filters` | Facets (same filters as `list`) |
+| `GET` | `/product/filters` | Facets |
 | `GET` | `/product/{id}/images` | Gallery |
 
 Query parameters for `get` and resolve: `context`, `include_images` (0\|1, default 0), `include_seo` (default 1).
@@ -25,21 +25,36 @@ Main query parameters for `list`:
 | --- | --- |
 | `parent` / `category` | Category ID (kept for backward compatibility; ignored if `parents` is set) |
 | `parents` | CSV or array of category IDs. OR condition, and a product matches both by its primary category and by additional links (`msCategoryMember`) |
-| `nested` | 0\|1 — expand the tree when using `parents` |
+| `nested` | 0\|1. Expands the tree when `parents` is set |
 | `price_min`, `price_max` | Price range |
 | `in_stock`, `stock_min` | Stock |
 | `vendor_id`, `new`, `popular`, `favorite` | Flags / vendor |
 | `options` | Options JSON |
-| `limit`, `offset` / `page` | Pagination |
+| `limit`, `offset` / `page` | Pagination. `limit` defaults to 20, maximum 100 |
 | `sort`, `dir`, `query`, `context` | Sort and search |
 | `include_options`, `include_content`, `include_images` | Embeds (`include_images` default 0, at most 10 files per product) |
-| `include_seo` | [SEO block](#seo); the default is **0** on `list` and **1** on `get` |
+| `include_seo` | [SEO block](#seo). The default is 0 on `list` and 1 on `get` |
 
-`list` response: `{ items, total, limit, offset }` inside `data`.
+`list` response:
 
-`filters`: the same filters as `list`, plus `keys`, `include_price` (default 1), `include_vendors` (default 0).
+```json
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "items": [
+      { "id": 12, "pagetitle": "Mug" }
+    ],
+    "total": 1,
+    "limit": 20,
+    "offset": 0
+  }
+}
+```
 
-Product fields are returned according to an allowlist in `ProductCatalogService`.
+`filters` takes the same filters as `list`, plus `keys`, `include_price` (default 1), and `include_vendors` (default 0).
+
+`GET /product/{id}/images` and the product card return up to 50 gallery files.
 
 ## Category
 
@@ -71,7 +86,7 @@ The block arrives in `seo` when `include_seo` is on. Assembly order:
 | --- | --- |
 | `title`, `description` | Resource fields, overridden by the TV map where present |
 | `canonical` | Built with MODX `makeUrl`. With friendly URLs off it comes out as `index.php?id=N`, so the link keeps working |
-| `robots` | Either `index,follow` or `noindex,nofollow` — see [`searchable`](#searchable) |
+| `robots` | `index,follow` or `noindex,nofollow`. See [`searchable`](#searchable) |
 | `og.*` | From the TV map: `og.title`, `og.description`, `og.image`, `og.type` |
 
 The TV map is the `ms3_public_seo_tv_map` system setting: JSON that maps an SEO key to a TV name. Allowed keys are `title`, `description`, `canonical`, `robots`, `og.title`, `og.description`, `og.image`, `og.type`. Invalid JSON is ignored. The setting is empty by default: without it the SEO block is built from the resource fields alone.
