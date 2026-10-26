@@ -3,8 +3,6 @@ title: Quick start
 ---
 # Quick start
 
-Ace in the manager in a few minutes.
-
 ## Step 1. Install
 
 1. Install **Ace** via **Extras → Installer** ([overview](index#installation))
@@ -13,21 +11,22 @@ Ace in the manager in a few minutes.
 
 ## Step 2. Editor for elements
 
-System setting **which_element_editor** must be **Ace**.
+`which_element_editor` must be **Ace**.
 
 Open a snippet, chunk, template, or plugin: the code field becomes Ace with highlighting.
 
 ## Step 3. Code in resources
 
-Behavior depends on `use_editor` and `which_editor` (**context** overrides are respected):
+**Context** values of `use_editor` and `which_editor` are respected:
 
 | Goal | Settings |
 | --- | --- |
-| Ace in content | `use_editor = No` **or** `which_editor = Ace` |
-| TinyMCE / other RTE | `use_editor = Yes`, `which_editor` ≠ Ace; enable “Use Rich Text Editor” on the resource |
-| Plain textarea without Ace | `use_editor = Yes`, `which_editor` ≠ Ace, richtext off on the resource |
+| Ace in content on every resource | `use_editor = No`. A textarea with class `modx-richtext` is replaced too |
+| Ace only on resources without richtext | `use_editor = Yes`, `which_editor` empty or `Ace`, richtext off |
+| TinyMCE / other RTE | `use_editor = Yes`, `which_editor` is not `Ace`, richtext on |
+| Plain textarea without Ace | `use_editor = Yes`, `which_editor` is not `Ace`, richtext off |
 
-Since **1.9.10** Ace does not replace `#ta` when another RTE is selected. Details: [Integration](integration#resources-and-rte).
+`which_editor = Ace` with `use_editor` on and richtext on does not put Ace on `#ta` by itself. Details: [Integration](integration#resources-and-rte).
 
 ## Step 4. Verify
 
