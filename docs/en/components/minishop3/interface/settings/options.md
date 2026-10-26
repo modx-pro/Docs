@@ -21,7 +21,7 @@ Options store product attributes (EAV): color, size, material, any key of your o
 
 ### Options tab
 
-- **Left:** MODX category tree (`class_key = msCategory`). Checkboxes are independent: checking a parent does not select its children. The context menu works on a branch (refresh, expand, select), and there is a search by name.
+- **Left:** MODX category tree (`class_key = msCategory`). Checkboxes are independent: checking a parent does not select its children. The context menu works on a branch — five items: Refresh Directory, Expand tree, Collapse tree, Select All, Clear All. There is also a search by name.
 - **Right:** options grid. Filters: selected categories and group (`option_group_id`). Bulk actions: assign options to categories, delete.
 
 Create and edit dialog: form on the left (key, caption, description, type, `msOptionGroup` group, unit), category tree on the right for binding. For `combobox` / `comboMultiple` / `comboColors` there is a value editor with drag-and-drop ordering. For `comboColors`, a `ColorPicker` sits next to the hex field.
