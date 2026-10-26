@@ -62,7 +62,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | `version` | `3.0` |
 
 ::: warning XML does not create the tables
-Table structure comes from the model maps in `src/Model/mysql/` and from Phinx migrations. XML is only for the model generator. It takes no part in installation, and in places it has already drifted from the map, for example on the uniqueness of the index on the customer last name. Check fields against the model map.
+Table structure comes from the model maps in `src/Model/mysql/` and from Phinx migrations. XML is only for the model generator. It takes no part in installation, and in places it has already drifted from the map, for example on the uniqueness of the index on the customer last name ([the details](https://github.com/modx-pro/MiniShop3/issues/905)). Check fields against the model map.
 :::
 
 ## Database tables
@@ -281,9 +281,9 @@ Unique key: `attempt_id`, `event_type`, `provider_event_id`.
 | --- | --- | --- |
 | `msModelField` | `ms3_model_fields` | Model field settings |
 | `msModelFieldSection` | `ms3_model_field_sections` | Field sections |
-| `msGridField` | `ms3_grid_fields` | Grid column configuration (customers, orders, products) |
-| `msProductField` | `ms3_product_fields` | Product fields (legacy) |
-| `msPageSection` | `ms3_page_sections` | Page sections (legacy) |
+| `msGridField` | `ms3_grid_fields` | Grid column configuration: `customers`, `orders`, `order_products`, `vendors`, `category-products`, `deliveries` |
+| `msProductField` | `ms3_product_fields` | Product fields. A row is created by `ExtraFieldsService` together with its field, and read by `ConfigService` and `FieldConfigManager` |
+| `msPageSection` | `ms3_page_sections` | Page sections. Serves `/api/mgr/config/page-fields/{page_key}` |
 | `msExtraField` | `ms3_extra_fields` | Extra fields |
 
 ### Notifications
