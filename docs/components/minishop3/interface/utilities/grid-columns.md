@@ -281,6 +281,13 @@ displayConfig: {"format":"dd.MM.yyyy HH:mm"}
    - Агрегация: `SUM`
 3. Сохраните
 
+### Ссылка в колонке email
+
+1. Найдите колонку `email`.
+2. Смените тип на `template`.
+3. Шаблон: `<a href="mailto:{email}">{email}</a>`.
+4. Сохраните.
+
 ## API-эндпоинты
 
 ### Получение конфигурации грида
@@ -630,6 +637,47 @@ MS3ActionRegistry.register('sendNotification', async (data, context) => {
   // Кнопка неактивна, если покупатель не заблокирован
   "disabledField": "active"  // disabled когда active = true
 }
+```
+
+### Хуки встроенных действий
+
+Встроенные `edit` и `delete` тоже идут через реестр, поэтому на них вешаются те же хуки.
+
+Запись удалений в журнал аудита:
+
+```javascript
+MS3ActionRegistry.registerAfterHook('delete', async (data, context, result) => {
+  // Отправить в систему аудита
+  await fetch('/api/audit/log', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      action: 'delete',
+      entity: context.gridId,
+      entityId: data.id,
+      user: MODx.user?.id,
+      timestamp: new Date().toISOString()
+    })
+  })
+})
+```
+
+Запрет удаления:
+
+```javascript
+MS3ActionRegistry.registerBeforeHook('delete', (data, context) => {
+  // Не давать удалять оплаченные заказы
+  if (context.gridId === 'orders' && data.status === 2) {
+    context.toast.add({
+      severity: 'error',
+      summary: 'Запрещено',
+      detail: 'Оплаченный заказ удалить нельзя',
+      life: 5000
+    })
+    return false // Отменить действие
+  }
+  return true // Продолжить
+})
 ```
 
 ### Доступные иконки
