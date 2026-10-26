@@ -56,7 +56,7 @@ items: [
 
 # msBulkEditor
 
-**msBulkEditor** is an extra for [MODX Revolution 3](https://modx.com/) and [MiniShop3](/en/components/minishop3/): bulk product editing in the manager. Catalog filters, before/after preview, chunked apply, history with rollback, presets, CSV/XLSX.
+**msBulkEditor** is an extra for [MODX Revolution 3](https://modx.com/) and [MiniShop3](/en/components/minishop3/). You edit products in bulk in the manager: filters, before/after preview, chunked apply, history with rollback, presets, CSV/XLSX.
 
 Works with MiniShop3 products (`msProduct`). Regular MODX resources (non-products) are not edited here.
 
@@ -89,14 +89,14 @@ Start here: [Quick start](quick-start).
 
 ## Features
 
-- **Products grid** — category tree, filters, KPI, TV/option columns, expert mode
-- **21 operation types** — price, stock, TV, options, categories, SEO, boolean, dates, links, variants, utilities
-- **Quick actions** — fixed toolbar items without choosing a type in Select
-- **Inline** — cell edits through the same preview/apply pipeline
-- **Preview** — summary and diff table, exclude rows before apply
-- **History** — full and selective rollback
-- **Presets** — saved JSON operations from the tab or toolbar
-- **Import / export** — CSV and XLSX (OpenSpout)
+- **Products grid:** category tree, filters, KPI, TV/option columns, expert mode
+- **21 operation types:** price, stock, TV, options, categories, SEO, boolean, dates, links, variants, utilities
+- **Quick actions:** fixed toolbar items without choosing a type in Select
+- **Inline:** cell edits through the same preview/apply pipeline
+- **Preview:** summary and diff table, exclude rows before apply
+- **History:** full and selective rollback
+- **Presets:** saved JSON operations from the tab or toolbar
+- **Import / export:** CSV and XLSX (OpenSpout)
 
 More: [Features](features).
 
@@ -111,21 +111,21 @@ More: [Features](features).
 
 ### Dependencies
 
-- **[MiniShop3](/en/components/minishop3/)** — `msProduct`, prices, stock, options
-- **[VueTools](https://modstore.pro/)** — Vue 3 SPA in the manager. Without it the UI will not load
+- **[MiniShop3](/en/components/minishop3/):** `msProduct`, prices, stock, options
+- **[VueTools](https://modstore.pro/):** Vue 3 UI in the manager. Without it the screen will not load
 
 ### Optional
 
-- **[ms3Variants](/en/components/ms3variants/)** — variant column and `variant` operations
-- **[Scheduler](/en/components/scheduler/)** — history cleanup
-- **OpenSpout** (in package vendor) — XLSX read/write
+- **[ms3Variants](/en/components/ms3variants/):** variant column and `variant` operations
+- **[Scheduler](/en/components/scheduler/):** history cleanup
+- **OpenSpout** (in package vendor): XLSX read/write
 
 ## Installation
 
 1. [Connect ModStore](https://modstore.pro/info/connection) if you install from the catalog.
-2. **Extras → Installer** → **Download Extras** — **msBulkEditor** → **Download** → **Install**.
+2. **Extras → Installer** → **Download Extras** → **msBulkEditor** → **Download** → **Install**.
 3. Ensure **MiniShop3** and **VueTools** are installed.
-4. Assign manager permissions — see [Settings](settings#permissions).
+4. Assign manager permissions. See [Settings](settings#permissions).
 5. **Manage → Clear Cache**.
 
 After install you get namespace `msbulkeditor`, manager menu, `msbulkeditor_*` permissions, tables `msbe_*`, and system settings in area `msbulkeditor`.

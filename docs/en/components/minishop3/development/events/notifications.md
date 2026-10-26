@@ -161,6 +161,13 @@ Instead of your own bot, you can use third-party services (SendPulse, Unisender,
 
 ## msOnBeforeSendNotification
 
+```mermaid
+flowchart LR
+  address["msOrderAddress: email and phone"] --> customer["msCustomer: email and phone"]
+  customer --> profile["modUserProfile.extended: telegram_chat_id"]
+  profile --> recipient["recipient"]
+```
+
 Fired **before** sending a notification. Lets you modify the recipient, replace the channel list or cancel sending.
 
 ### Parameters

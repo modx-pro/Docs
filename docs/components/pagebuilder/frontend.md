@@ -71,10 +71,10 @@ description: Шаблон, CSS, Fenom chunks секций, кеш и превь�
 
 В `settings` секции можно задать:
 
-- `contexts`: список ключей контекста MODX (текущий контекст запроса)
+- `contexts`: список ключей контекста MODX. Сверяется с контекстом запроса. Ключ HTML-кеша тоже содержит этот контекст, поэтому попадание в кеш не подставляет HTML другого контекста
 - `utm`: правила по UTM из `$_SESSION['utm']` после [PageBuilderUtmSession](snippets/PageBuilderUtmSession)
 
-В Pro при флаге `conditions` добавляется `settings.conditions` (loggedIn, guest, context, GET-параметры и др.). Проверка идёт через `SectionVisibility` и событие `pbOnCheckSectionVisibility`.
+В Pro при флаге `conditions` добавляется `settings.conditions`. Типы: `loggedIn`, `guest`, `context`, `get`, `resource`, `template`. Неизвестный `type` секцию не прячет. Проверка идёт через `SectionVisibility` и событие `pbOnCheckSectionVisibility`.
 
 Секция не попадает в HTML, если правило не выполнено.
 

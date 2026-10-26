@@ -53,7 +53,7 @@ const product = await $fetch(`${api}?route=/api/v1/product/get/123`, {
 })
 ```
 
-List params: [Catalog](catalog).
+The full list of `list` parameters is on the [Catalog](catalog) page.
 
 ## Guest token + cart (curl)
 
@@ -259,7 +259,7 @@ async function checkout(api: string, token: string) {
 curl -c jar.txt -b jar.txt -sS -X POST \
   "${API}?route=/api/v1/customer/addresses" \
   -H 'Content-Type: application/json' \
-  -d '{"city":"Moscow","street":"Tverskaya","building":"1"}'
+  -d '{"name":"Home","city":"Moscow","street":"Tverskaya","building":"1"}'
 
 curl -c jar.txt -b jar.txt -sS \
   "${API}?route=/api/v1/customer/addresses"
@@ -277,14 +277,27 @@ curl -c jar.txt -b jar.txt -sS -X POST \
 curl -sS "${API}?route=/api/v1/health"
 ```
 
+```json
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "status": "ok",
+    "version": "1.14.3-beta1",
+    "timestamp": 1760544000,
+    "api": "web"
+  }
+}
+```
+
 ```ts
-type Ms3Success<T> = { success: true, message: string, data: T }
+type Ms3Success<T> = { success: true, message: string | null, data: T }
 type Ms3Error = {
   success: false
   message: string
   code: number
   errors: Record<string, string> | null
-  error_code?: string
+  error_code: string
   data?: unknown
 }
 type Ms3Response<T> = Ms3Success<T> | Ms3Error

@@ -8,7 +8,7 @@ A set type chooses which manual links to read and which auto logic to run when t
 ## Common rules (all types)
 
 1. Manual links in `ms3_product_sets` for (`product_id`, `type`) are checked first. Unpublished and deleted IDs are dropped (`msps_filter_valid_product_ids`). One bad ID does not empty the block. `showUnpublished=true` will not bring those IDs back from the table.
-2. If there are no manual links, auto logic for the type runs.
+2. If there are no manual links and `ms3productsets.auto_recommendation` is 1, auto logic for the type runs. `vip` does not read the setting. An empty table still loads `vip_set_{set_id}`.
 3. When the result is empty:
    - `hideIfEmpty=true` → empty string `''`
    - `hideIfEmpty=false` → `emptyTpl`
@@ -18,7 +18,7 @@ A set type chooses which manual links to read and which auto logic to run when t
 ## Parameters that most often affect output
 
 - `resource_id` / `productId`: base product
-- `category_id`: forced category for auto modes
+- `category_id`: category for `msps_get_auto_recommendations` (`buy_together` after an empty co-purchase list, `cart_suggestion`, `popcorn`, `auto`, `custom`). It does not affect `similar` or the `auto_sales` SQL. The folder query takes up to 100 newest ids (at most `limit` × 2). Then it shuffles them.
 - `set_id`: VIP set number (`vip_set_{set_id}`)
 - `exclude_ids`: IDs to exclude
 
@@ -70,8 +70,9 @@ Priority:
 
 1. Manual links `type=similar`.
 2. If empty: `msps_get_similar_products`:
-   - category (`parent`) of the current product
-   - current product and `exclude_ids` excluded
+   - category (`parent`) of the current product. `category_id` is not read
+   - the folder query takes up to 100 newest ids (at most `limit` × 2), then shuffles them
+   - current product and `exclude_ids` are excluded
 
 ::: code-group
 
@@ -181,8 +182,8 @@ Recommendations from real orders (“often bought together”).
 Priority:
 
 1. Manual links `type=auto_sales`.
-2. If empty: SQL on orders (`ms3_order_product` + `ms3_order`, statuses `2,4,5`).
-3. If no stats: fallback to `similar`.
+2. If empty: SQL on orders (`ms3_order_product` + `ms3_order`, statuses `2,4,5`). `category_id` is not part of the query. Order ids are not filtered for unpublished products before `msProducts` renders them.
+3. If the SQL result is an empty array: fallback to `similar`. A non-empty list of unpublished products does not start `similar`.
 
 ::: code-group
 

@@ -5,7 +5,7 @@ description: "Form with configurable fields via FetchIt. Pro layer."
 
 # Contact form
 
-You build the field set in the inspector (text, email, phone, textarea, select, radio, checkbox, date), set **Form key** and success text. Submission goes through **FetchIt** and the `PageBuilderContactForm` snippet. Do not call the handler from the template.
+You build the field set in the inspector: text, email, phone, textarea, select, radio, checkbox, date. Set **Form key** and success text. Submission goes through **FetchIt** and the `PageBuilderContactForm` snippet. Do not call the handler from the template.
 
 ![Contact form](/components/pagebuilder/screenshots/sections/contact_form.jpg)
 
@@ -13,7 +13,7 @@ You build the field set in the inspector (text, email, phone, textarea, select, 
 Requires PageBuilder Pro and **FetchIt**.
 :::
 
-## What the form gives you in PageBuilder
+## Why a contact form
 
 - Field set in a repeater, not in form code
 - Stable POST id via `form_key` (`pb_form_key`)
@@ -33,7 +33,9 @@ Requires PageBuilder Pro and **FetchIt**.
 
 ## form_key and fields
 
-**Form key** (`form_key`) must be unique on the page if you have several forms. Repeater **Form fields**: name, label, type (`text`, `email`, `phone`, `textarea`, `select`, `radio`, `checkbox`, `date`), required. For select and radio, write one value per line — the line becomes both the label and the value. Field name: `[a-z][a-z0-9_]*`, case-insensitive. A required checkbox stays empty until the value is `1`, `yes`, `true`, or `on`.
+**Form key** (`form_key`) must be unique on the page if you have several forms.
+
+Repeater **Form fields**: name, label, type (`text`, `email`, `phone`, `textarea`, `select`, `radio`, `checkbox`, `date`), required. For select and radio, write one value per line. The line becomes both the label and the value. Field name: `[a-z][a-z0-9_]*`, case-insensitive. A required checkbox stays empty until the value is `1`, `yes`, `true`, or `on`.
 
 Email recipient: `emailsender` or site mail settings (same as handler). Without **FetchIt** the section shows a form unavailability message.
 
@@ -51,48 +53,50 @@ Email recipient: `emailsender` or site mail settings (same as handler). Without 
 | Layer | Pro |
 | Category | conversion (`conversion`) |
 | Chunk | `pagebuilderpro_contact_form` |
-| Requirements | pro, FetchIt |
+| Requirements | pro |
 
-## Editor fields
+The section is part of the page context (`runtimeContext: true`) so the HTML cache does not freeze the form. The storefront needs **FetchIt** (see the note above).
 
-Fill fields in the section inspector on the resource. Field type descriptions: [type reference](../fields/types).
+## Inspector fields
+
+Field types: [field types reference](../fields/types).
 
 ### Title (`title`)
 
-Type [text](../fields/text#section-data-output). Optional.
+Type [text](../fields/text#output-in-section-data). Optional.
 
 ### Intro (`intro`)
 
-Type [textarea](../fields/textarea#section-data-output). Optional.
+Type [textarea](../fields/textarea#output-in-section-data). Optional.
 
 ### Form key (`form_key`)
 
-Type [text](../fields/text#section-data-output). Required.
+Type [text](../fields/text#output-in-section-data). Required.
 
 ### Form fields (`fields`)
 
-Type [repeater](../fields/repeater#section-data-output). Required. Repeating rows. **Add** button in inspector.
+Type [repeater](../fields/repeater#output-in-section-data). Required. Repeating rows. **Add** button in inspector.
 
 Each row:
 
 | Field | Type | Label | Required |
 | --- | --- | --- | --- |
-| `name` | [text](../fields/text#section-data-output) | Field name (name) | yes |
-| `label` | [text](../fields/text#section-data-output) | Label | yes |
-| `type` | [select](../fields/select#section-data-output) | Field type | yes |
-| `required` | [yesno](../fields/yesno#section-data-output) | Required | no |
+| `name` | [text](../fields/text#output-in-section-data) | Field name (name) | yes |
+| `label` | [text](../fields/text#output-in-section-data) | Label | yes |
+| `type` | [select](../fields/select#output-in-section-data) | Field type | yes |
+| `required` | [yesno](../fields/yesno#output-in-section-data) | Required | no |
 
 ### Submit button text (`submit_label`)
 
-Type [text](../fields/text#section-data-output). Optional.
+Type [text](../fields/text#output-in-section-data). Optional.
 
 ### Success message (`success_message`)
 
-Type [textarea](../fields/textarea#section-data-output). Optional.
+Type [textarea](../fields/textarea#output-in-section-data). Optional.
 
 ### Redirect URL after submit (`redirect_url`)
 
-Type [url](../fields/url#section-data-output). Optional.
+Type [url](../fields/url#output-in-section-data). Optional.
 
 ## What the visitor sees
 
@@ -252,7 +256,7 @@ Fenom chunk `pagebuilderpro_contact_form_fields`:
 
 Without FetchIt the chunk prints lexicon `pagebuilder_fe_form_unavailable`.
 
-## Related pages
+## See also
 
 - [Quiz](quiz)
 - [PageBuilderContactForm snippet](../snippets/PageBuilderContactForm)

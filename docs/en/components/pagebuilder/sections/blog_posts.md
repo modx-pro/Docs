@@ -16,7 +16,6 @@ Requires PageBuilder Pro.
 ## What the blog feed adds
 
 - Feed from child resources, no hand-rolled pdo in templates
-- Limit and sort in inspector
 - Intro and thumbnail toggles
 
 ## Where to place
@@ -32,7 +31,7 @@ Requires PageBuilder Pro.
 
 ## Parent and limit
 
-**Blog parent**: resource ID or picker. **Limit**, **Sort**, **Show intro** / **image** flags.
+**Blog parent**: resource ID or picker. **Limit**, **Sort**, **Show intro** / **image** flags. The type is marked `"cacheable": false`.
 
 ## Similar sections
 
@@ -51,7 +50,7 @@ Requires PageBuilder Pro.
 
 ## Inspector fields
 
-Fill these fields in the section inspector. Field types are documented in the [field types reference](../fields/types).
+Field types: [field types reference](../fields/types).
 
 ### Title (`title`)
 
@@ -87,7 +86,7 @@ Type [select](../fields/select#output-in-section-data). Optional. `grid`, `featu
 
 ## Section data {#output-in-section-data}
 
-Example payload after save. Media, video, and map values may be enriched on output:
+Example payload after save:
 
 ```json
 {

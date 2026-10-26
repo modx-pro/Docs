@@ -15,20 +15,30 @@ Do not edit `core/components/pagebuilder/sections/`. A package upgrade overwrite
 
 1. Keep the JSON next to your component.
 2. Create a chunk whose name matches the `chunk` field.
-3. In **Elements → Plugins** create a plugin, subscribe it to `pbOnRegisterSectionDefinitions`, and call `registerFromFile`.
+3. In **Elements → Plugins** create a plugin, subscribe it to `pbOnRegisterSectionDefinitions`, read the JSON, and call `$registry->register(SectionDefinition::fromArray(...))`.
 
 ```php
 <?php
+
+use PageBuilder\Section\SectionDefinition;
+
 switch ($modx->event->name) {
     case 'pbOnRegisterSectionDefinitions':
         /** @var \PageBuilder\Section\SectionRegistry $registry */
         $registry = $modx->event->params['registry'];
-        $registry->registerFromFile($modx->getOption('core_path') . 'components/mypackage/sections/custom.json');
+        $path = $modx->getOption('core_path') . 'components/mypackage/sections/custom.json';
+        $payload = json_decode((string) file_get_contents($path), true);
+        if (!is_array($payload)) {
+            break;
+        }
+        $payload['source'] = 'code';
+        $payload['readOnly'] = true;
+        $registry->register(SectionDefinition::fromArray($payload));
         break;
 }
 ```
 
-A key that contains `_`, or `category: dev`, stays out of the production catalog. `SectionRequirementChecker` evaluates `requires`.
+A key with the `_` prefix (such as `_qa_field_matrix`) and `category: dev` stay out of the catalog. An underscore inside the key (`contact_form`, `data_table`) does not hide the type. `SectionRequirementChecker` evaluates `requires`.
 
 ## What to check
 
@@ -40,7 +50,7 @@ Create the type in the control panel through `mgr/sectiontype/*`. The row lives 
 
 ## Rollback
 
-Hide the type in the panel, or remove `registerFromFile`.
+Hide the type in the panel, or remove the `register()` call.
 
 ## Example: a Case type
 

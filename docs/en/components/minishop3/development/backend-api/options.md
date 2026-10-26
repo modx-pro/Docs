@@ -23,7 +23,19 @@ msOption (color, "Color", comboMultiple)
 
 ## OptionService (facade)
 
-Main service for options. Wraps the three sub-services.
+`OptionService` reads and writes values and assigns options to categories. It brings three services together.
+
+```mermaid
+flowchart LR
+  opt[msOption] --> cat[msCategoryOption]
+  cat --> val[msProductOption]
+  facade[OptionService] --> loader[Loader]
+  facade --> sync[Sync]
+  facade --> category[Category]
+  loader -->|getProductOptionValues| val
+  sync -->|saveProductOptions| val
+  category -->|assignOptionToCategories| cat
+```
 
 ```php
 $optionService = $modx->services->get('ms3_option_service');
@@ -52,7 +64,8 @@ $options = $optionService->loadOptionsForProduct($productId);
 //     'color.caption' => 'Color',
 //     'color.type' => 'comboMultiple',
 //     'color.description' => 'Select color',
-//     'color.category_name' => 'Product properties',
+//     'color.measure_unit' => null,
+//     'color.group_name' => 'Product properties',
 //     'size' => ['L', 'XL'],
 //     'size.caption' => 'Size',
 //     ...
@@ -61,6 +74,8 @@ $options = $optionService->loadOptionsForProduct($productId);
 // Without metadata (keys and values only)
 $options = $optionService->loadOptionsForProduct($productId, false);
 ```
+
+The loader does not list metadata keys in advance. It puts **every** column of the query into the array as `key.column`. That covers all `msOption` fields (`caption`, `description`, `type`, `measure_unit`, `properties`, and the rest) plus `group_name`, the option group name joined from `msOptionGroup`. The group name lives in `group_name`. There is no `category_name` key.
 
 ### Batch loading
 
@@ -144,7 +159,7 @@ Option definition is stored in table `ms3_options`.
 
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
-| `key` | varchar(191) | '' | Unique key (letters, digits, hyphen, underscore) |
+| `key` | varchar(191) | '' | Unique key. The allowed character set is wider than it looks. See [Key validation](#key-validation) |
 | `caption` | varchar(191) | '' | Display name |
 | `description` | text | null | Description |
 | `measure_unit` | tinytext | null | Unit of measure |
@@ -152,21 +167,21 @@ Option definition is stored in table `ms3_options`.
 | `type` | varchar(191) | '' | Option type (comboMultiple, textfield, numberfield, etc.) |
 | `properties` | json | null | Extra properties |
 
-### Key validation
+### Key validation {#key-validation}
 
-The model map holds two validation rules for `key`. The first is a regex — `/^(?!\W+)(?!\d)[a-zA-Z0-9\x2d-\x2f\x7f-\xff-_]+(?!\s)$/` — which means a key must:
+The `msOption` model map sets a regex for the key and a list of reserved names (`id`, `type`, `price`, `color`, `size`, and other product and resource fields).
 
-- Not start with a digit, and not start with a non-word character
-- Not end with a space
-- Otherwise consist of Latin letters, digits, `-`, `.`, `/`, `_` or bytes in the `\x7f-\xff` range — so a Cyrillic key passes too
+`POST /api/mgr/options` and a direct `save()` do not run these rules. The controller trims the key, replaces a dot with `_`, and checks uniqueness. The map rules run only when code calls `$option->validate()`.
 
-The second rule rejects reserved field names: `id`, `type`, `price`, `weight`, `image`, `published` and the other `modResource` and product columns.
+The map regex is `/^(?!\W+)(?!\d)[a-zA-Z0-9\x2d-\x2f\x7f-\xff-_]+(?!\s)$/`. Three rules follow from it, and none of them is in the field description:
 
-::: warning Neither rule is enforced on save
-Both live in the map as validation rules, so they run only when code calls `$option->validate()`. Neither `POST /api/mgr/options` nor a plain `$option->save()` calls it: the controller only trims the key, replaces a dot with `_` and checks uniqueness.
+- the key does not start with a digit: the map rejects `1c_code` and accepts `c1_code`;
+- the key does not start with a non-word character and does not end with a space;
+- the character set is wider than you would expect: besides Latin letters and digits it allows `-`, `.`, `/`, `_`, and bytes `\x7f-\xff`, so a Cyrillic key passes.
 
-So a key like `1c_code` or a reserved `color` passes through the Manager API without a complaint. In templates a reserved key is then shadowed by the product's own field ([#841](https://github.com/modx-pro/MiniShop3/issues/841)).
-:::
+Because of that, `1c_code` is saved through the Manager API, while code that writes the option through the model with `validate()` rejects the same key.
+
+A reserved key such as `color` is saved through the Manager API and then shadowed by the product column in the template ([#841](https://github.com/modx-pro/MiniShop3/issues/841)).
 
 ### Programmatic usage
 
@@ -267,7 +282,7 @@ Always use `OptionService` for product options. Creating `msProductOption` direc
 
 ## CategoryOptionService
 
-Handles options on the category side — the manager builds the category options list through it.
+`CategoryOptionService` returns the options of a category. The manager list is built on it.
 
 ```php
 use MiniShop3\Model\msCategory;
@@ -335,8 +350,6 @@ $sync->updateOptionKey('old_key', 'new_key');
 
 ### OptionCategoryService
 
-Option–category links.
-
 ```php
 $categoryService = $optionService->getCategory();
 
@@ -365,7 +378,7 @@ $categoryService->removeFromCategories($optionId, [5, 12, 18]);
 ## REST API
 
 ::: info Since v1.10.0-beta1
-Legacy processors `Processors/Settings/Option/*` and `Processors/Category/Option/*` were removed together with the ExtJS UI — 22 files, ~2600 lines. All operations go through two REST controllers: `OptionsController` and `CategoryOptionsController`.
+The old processors `Processors/Settings/Option/*` and `Processors/Category/Option/*` were removed together with the ExtJS interface. Every operation goes through two REST controllers: `OptionsController` and `CategoryOptionsController`.
 :::
 
 ### Option management — `/api/mgr/options/*`
@@ -417,10 +430,7 @@ Controller `MiniShop3\Controllers\Api\Manager\CategoryOptionsController`, permis
 
 ### Schema API — `msOptionType::getSchema()`
 
-::: info Since v1.10.0-beta1
-:::
-
-Every type class in `Controllers/Options/Types/` can describe its field in two ways: as a JS string for the old ExtJS manager (`getField()`) or as an array (`getSchema()`):
+Since v1.10.0-beta1 every type class in `Controllers/Options/Types/` has `getField()` (a string for ExtJS) and `getSchema()`.
 
 ```php
 abstract class msOptionType
@@ -430,10 +440,8 @@ abstract class msOptionType
 }
 ```
 
-::: warning Neither description reaches the Vue manager
-`getSchema()` is declared on `msOptionType` and mirrored on the `msOption` model, but nothing in the package calls it: `OptionLoaderService::getFieldsForProduct()` does not put the schema into `option_fields`, and no Vue component asks for it.
+::: warning Nothing calls `getSchema()` yet
+The method is declared on `msOptionType` and duplicated on the `msOption` model, but the package never calls it. `OptionLoaderService::getFieldsForProduct()` does not put it into `option_fields`. The Vue product card does not request it and builds the field from `type`. The core still fills `ext_field` with the string from `getField()`.
 
-`getField()` is still called — `CategoryOptionService` and `AdminOptionFields` fill `ext_field` from it, through the `msOption::getManagerField()` wrapper — but that value is a leftover of the ExtJS manager, and the Vue code does not read `ext_field` either.
-
-Both paths are therefore dead ends today: the Vue product card builds the field from `type` alone, and overriding `getSchema()` in your own option type changes nothing.
+Overriding `getSchema()` in your own option type does nothing. The result is not used. Until schema rendering is wired up, field behavior is set through `getField()` and `type`.
 :::

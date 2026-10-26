@@ -1,15 +1,17 @@
 ---
 title: Bundle
-description: "Export, dry-run, and import of UI section types in one transaction. Pro layer"
+description: "Export, dry-run, and import of UI section types. The CMP tab is hidden in the current release"
 ---
 
 # Constructor Bundle
 
-Result: UI section types from one site appear on another. CMP tab: [Bundle](../cmp#bundle). Requires PageBuilder Pro.
+In the current release the **Bundle** tab is **not shown** in the CMP (`BUNDLE_ENABLED = false` in `ProFeatureProvider`). While the flag is off, `mgr/bundle/*` routes are not registered on the provider. The processor files stay in the package. A manager call does not reach them.
+
+When the tab is available, UI section types move from one site to another.
 
 ## Before you start
 
-PageBuilder Pro is installed on both sites. The source site already has the UI types you want to move.
+PageBuilder Pro is installed on both sites. The source site already has the UI types you want to move. The Bundle tab is enabled in your build.
 
 ## Steps
 
@@ -31,4 +33,5 @@ Do not confirm import. Processors: `mgr/bundle/*`.
 ## See also
 
 - [Control panel](../cmp#bundle)
+- [PageBuilder Pro](../pro#constructor-bundle)
 - [Custom section type](custom-section)

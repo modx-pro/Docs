@@ -1,39 +1,38 @@
 ---
-title: pdoTools limitations
+title: Limitations
 ---
-# pdoTools profiling limitations in MODX 3.x
+# Limitations
 
-## What is profiled
+## Summary
 
-| Type | Status | Note |
-|------|--------|------|
-| **Standard MODX snippets** | ✅ Works | `[[!mySnippet]]` — fully profiled |
-| **Chunks via MODX tag** | ✅ Works | `[[$chunkName]]` — via MODX parser |
-| **SQL queries** | ✅ Works | All queries |
-| **MODX events** | ✅ Works | OnDocFormSave, OnResourceDelete, etc. |
-| **Memory and time** | ✅ Works | Overall stats |
-| **pdoTools snippets** | ⚠️ Limited | Only as top-level tags — no inner breakdown |
+| Object | What reaches the panel |
+| --- | --- |
+| Events `OnHandleRequest`, `OnLoadWebDocument` | Duration between open and close |
+| Events `OnMODXInit`, `OnWebPagePrerender` | A timeline row with 0 ms |
+| Manager events (`OnDocFormSave`, `OnResourceDelete`, and others) | The plugin is not subscribed to them |
+| Memory and total time | Overview tab |
+| SQL | One row with the `executedQueries` count and the `queryTime` sum. No query text |
+| A plain `[[!Snippet]]` or `[[$chunk]]` tag | The parser wrapper is installed on `OnMODXInit` before `getParser()`. `processElementTags()` goes to the inner parser and does not call the wrapper `processTag()` |
+| A snippet from pdoTools timings | A `modSnippet` load row. Time: that step's delta, and the SQL count on the row is 0 |
+| Plugins | Not collected |
+| Recommendations and the `slow_query_ms`, `slow_snippet_ms` thresholds | Calculated in memory. Not present in the HTML |
 
-## pdoTools snippet behavior
+On a profiled request `SQLProfiler` sets `cache_db` to false.
 
-pdoTools snippets (`msProducts`, `pdoResources`, `pdoPage`) **are** profiled, but:
+Five rules run in memory. Slow SQL reads `slow_query_ms`. The slow snippet rule reads `slow_snippet_ms` and events of type `snippet`, which collection does not add. N+1 reads `is_n1`, which collection does not set. A chunk is flagged from 50 calls. Snippets are info from 5 and warning from 10. None of this is in the HTML.
 
-1. **No breakdown of Fenom chunks inside `tpl`/`tplWrapper`** — snippet appears with total time, SQL is visible, but chunks in `tpl=` are not split.
-2. **Fenom modifiers are not profiled** — `{$var|date_format}` is not profiled separately.
-3. **Nested calls not profiled** — `{$_modx->runSnippet('pdoMenu', [...])}` in a chunk is not detailed.
+## pdoTools
 
-The toolbar shows only the top-level call (e.g. `[[!msProducts]]`) with total time and SQL; no breakdown by modifiers or runSnippet inside Fenom.
+When the `pdotools` service exists, collection reads its `timings` and looks for `Loaded "modSnippet"`. That line is written when the object is loaded. The tag becomes `{$_modx->runSnippet("name")}` with the step delta as the time. That is not execution duration and not the SQL inside the snippet.
 
-## Recommendations
+Collection does not split `tpl` chunks, Fenom modifiers, or a nested `{$_modx->runSnippet()}`.
 
-### For development
+When the `pdotools` service is missing, every profiled request writes `pdoTools service not found` to the MODX log. The request still reaches panel injection.
 
-1. Use **standard MODX snippets** to test the profiler.
-2. **Check SQL** — it is profiled well (Top 5 Slowest, N+1 Rule).
-3. **Watch total time of pdoTools snippets** — if `[[!msProducts]]` takes 500 ms, check SQL, indexes and tpl complexity.
+There is no miniShop3 integration in the package. The `OnMODXInit` priority of -100 is set so the plugin runs before pdoTools and MiniShop3.
 
-### For production
+## What to use instead of a breakdown
 
-1. **Cache pdoTools snippets** where possible: e.g. pdoPage with `` &cache=`1` `` and `` &cacheTime=`3600` ``. See [pdoTools — general properties](/en/components/pdotools/general-properties) and [pdoPage](/en/components/pdotools/snippets/pdopage).
-2. Use **`` &includeContent=`0` ``** if content is not needed.
-3. **Optimize SQL** from toolbar reports — indexes, prefer `&where` with JSON string.
+Read the query count and the summed query time in the single SQL tab row. Take query text and the plan from the database log. The panel does not show SQL text or the execution time of `msProducts`.
+
+pdoTools snippet cache is configured on the snippet call. Selection parameters are described in [pdoTools general properties](/en/components/pdotools/general-properties).

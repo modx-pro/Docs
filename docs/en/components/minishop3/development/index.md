@@ -42,7 +42,9 @@ flowchart TB
   vuecrud[Vendor Vue CRUD] --> db[(Database)]
 ```
 
-As of **1.10+**, the screens for orders, customers, settings and utilities run through the **Manager REST API** (`Controllers\Api\Manager\*` on FastRoute). The product and category forms are the exception: those are plain MODX resource screens, and Vue only lives in their tabs. The older **processors** (`MiniShop3\Processors\*`) remain only for:
+As of **1.10+**, the screens for orders, customers, settings and utilities run through the **Manager REST API** (`Controllers\Api\Manager\*` on FastRoute). The product and category cards stay ordinary MODX resource screens. Vue is only in the tabs.
+
+**Processors** (`MiniShop3\Processors\*`) are still used by:
 
 - the previous connector and `runProcessor()` calls from PHP;
 - utilities where the controller calls a processor explicitly: `ImportController` (product import) and `UtilitiesGalleryController` (bulk gallery operations), both through the `RunsMs3Processors` trait;
@@ -54,4 +56,4 @@ Events are not always lost. Orders, their statuses and lines go through services
 
 Vue CRUD for directories writes straight to the database and skips `Processors/Settings/Vendor/*`. Vendor CRUD plugins do not run from the manager. Deliveries and payments have cost events in `events.php`, not CRUD events. Link types have no CRUD events. See [Vendor events](events/vendor).
 
-The headless frontend calls the Web API (`/api/v1/*`). Login, registration, logout, forgot-password and reset-password delegate to `MiniShop3\Processors\Api\Customer\*`.
+The headless frontend uses the Web API (`/api/v1/*`). Processors there remain only for customer authentication, so plugins on those events fire from a headless client.

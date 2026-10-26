@@ -279,16 +279,26 @@ $router->post('/api/mgr/products', function($params) use ($modx) {
 ]);
 ```
 
-**Main MiniShop3 permissions:**
+**MiniShop3 permissions.** The `miniShopManagerPolicy` template declares fifteen permissions of its own; `view_document` from the MODX core joins them.
 
-- `msproduct_save` — create/edit products
-- `mssetting_save` — manage settings (deliveries, payments, vendors, notifications)
-- `view_document` — read categories and category product grids
-- `msorder_list` — order and customer lists, customer addresses (GET)
-- `msorder_view` — view customer card
-- `msorder_save` — edit orders and customers, order line mutations
-- `msorder_remove` — delete orders, customers, bulk delete
-- `msorder_inventory_override` — edit order lines past a stock shortage (since 1.14.3-beta1)
+| Permission | What it opens | Enforced in |
+| --- | --- | --- |
+| `msproduct_save` | creating and editing products, sorting, editing product data in the grid | routes |
+| `msproduct_publish` | publishing a product from the category grid | routes |
+| `msproduct_delete` | bulk deletion of category products | routes |
+| `mscategory_save` | the whole category options group | routes |
+| `msorder_list` | order and customer lists, customer addresses, customer groups | routes |
+| `msorder_view` | the customer card, a customer group by ID | routes |
+| `msorder_save` | editing orders and customers, order line mutations, shipment | routes |
+| `msorder_remove` | deleting orders, customers, groups, bulk deletion | routes |
+| `msorder_inventory_override` | editing order contents past a stock shortage (since 1.14.3-beta1) | service |
+| `mssetting_list` | reading the reference data of the forms | routes, `AnyPermissionMiddleware` |
+| `mssetting_view` | the same, viewing | routes, `AnyPermissionMiddleware` |
+| `mssetting_save` | deliveries, payments, vendors, statuses, link types, options, extra fields, grid config | routes |
+| `msproductfile_generate` | bulk gallery operations | routes |
+| `msproductfile_list` | reading the product gallery | processors |
+| `msproductfile_save` | uploading, editing and deleting gallery files | processors |
+| `view_document` | reference lists, the category product grid, grid config for reading | routes |
 
 ::: warning The permission to go negative is granted separately
 With inventory tracking on (`ms3_inventory_enabled`), an edit of the order lines compares the reserve with the resulting quantity and refuses when there is not enough stock: a `409` with the key `ms3_err_inventory_short`. If the request sends `force` and the user has no permission for it, the answer is `403`. In both cases `data` contains `product_id`, `available`, `required` and `can_override`. The last one shows whether a repeat with `force` would help.
@@ -296,6 +306,7 @@ With inventory tracking on (`ms3_inventory_enabled`), an edit of the order lines
 `msorder_inventory_override` lets that edit through anyway, and the stock goes negative. The permission is in the policy template, but **it is not granted in the policy itself**, so after an update you assign it explicitly. A user with `sudo` receives it automatically, like any other MODX permission.
 :::
 
+The two gallery permissions are not part of the route map: they are checked by the `Processors\Gallery\*` processors that `UtilitiesGalleryController` calls.
 ::: tip Where a user gets these permissions
 They all live in the `miniShopManagerPolicy` access policy created by the install. The policy grants nothing until it is assigned to a user group: since 1.14.2-beta1 install and upgrade assign it to every group that already has access to the `mgr` context, as an additional record with `authority 9999` — the group's own permissions still win.
 
@@ -334,7 +345,24 @@ $router->group('/api/v1/cart', function($router) use ($modx) {
 }, [$tokenMiddleware]);
 ```
 
-On routes with middleware, without a valid token the server auto-mints a guest token (except paths in middleware `publicRoutes`, e.g. logout). Catalog, health, and `token/get` in `web.php` do not use the middleware.
+On a route carrying the middleware the server mints a guest token when the request has no token at all. The middleware also holds a `publicRoutes` list of fifteen prefixes and one path pattern: a path from the list passes without a guest token and without a 401. There is no separate `optional` mode in the code — membership in the list is what decides.
+
+```text
+/api/v1/product/get          /api/v1/delivery/get
+/api/v1/product/list         /api/v1/delivery/list
+/api/v1/product/filters      /api/v1/delivery/webhook
+/api/v1/category/get         /api/v1/payment/get
+/api/v1/category/list        /api/v1/payment/list
+/api/v1/category/tree        /api/v1/payment/webhook/
+/api/v1/health               /api/v1/customer/token/get
+                             /api/v1/customer/logout
+```
+
+The pattern is `/api/v1/product/*/images`, where `*` covers exactly one segment: the product gallery stays public without opening the whole `/api/v1/product/*` branch.
+
+A match is tested as `path === prefix` or `path starts with prefix and a slash`. The payment entry already ends with a slash, so the code compares it with two slashes in a row and `/api/v1/payment/webhook/{id}` never matches it ([details](https://github.com/modx-pro/MiniShop3/issues/903)).
+
+In practice the list works on two paths — `GET /customer/token/get` and `POST /customer/logout` — because those are the only public paths the middleware is attached to. Catalog, health and the webhooks in `web.php` do not use it at all.
 
 Details: [Web API authorization](/en/components/minishop3/development/web-api/auth).
 

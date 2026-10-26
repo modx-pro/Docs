@@ -9,6 +9,19 @@ Besides the parameters listed below, every event on this page also receives `con
 
 ## Which events can abort the operation
 
+```mermaid
+flowchart TD
+  output["output() is not empty"] --> before["msOnBefore*"]
+  before --> stop["The request is aborted, the customer sees an error"]
+  output --> added["msOnAddToCart"]
+  added --> saved["The product is already saved"]
+  saved --> err["The request still returns an error"]
+  output --> done["change, remove, empty"]
+  done --> ignore["The response is not read"]
+  output --> getCart["msOnGetCart and msOnGetStatusCart"]
+  getCart --> patch["Data substitution only"]
+```
+
 `$modx->event->output(...)` does not stop the work everywhere: the core reads the plugin response only for some of the events.
 
 | Event | Reaction to `output()` |
@@ -156,6 +169,16 @@ switch ($modx->event->name) {
 ---
 
 ## msOnAddToCart
+
+```mermaid
+flowchart TD
+  add["add()"] --> before["msOnBeforeAddToCart"]
+  before --> exists{"Key already in the cart?"}
+  exists -->|no| onAdd["msOnAddToCart"]
+  exists -->|yes| change["change()"]
+  change --> beforeChange["msOnBeforeChangeInCart"]
+  beforeChange --> onChange["msOnChangeInCart"]
+```
 
 Fired **after** a product has been successfully added — it is already saved and the draft is recalculated.
 

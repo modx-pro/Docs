@@ -55,6 +55,7 @@ items: [
 | `paymentKeyParams` | id способа оплаты → параметр ссылки на оплату, в котором лежит ключ оплаты |
 | `savedCookiesOnCreatingOrder` | куки аналитики, которые сохраняются в свойства заказа при его создании (`_ga`, `_ym_uid`, `_fbp` и т. п.) |
 | `hashedKeys` | поля покупателя и заказа, которые передаются sha256-хешами (`email`, `phone` …) |
+| `orderFormFields` | с 1.4.1: дополнительные поля формы оформления, которые попадают в данные заказа для чанков и слушателей (см. ниже) |
 | `redefinedSubmit` | переопределять ли отправку формы заказа miniShop2, чтобы `order_created` успел попасть в `dataLayer` |
 | `measurementProtocol` | серверная отправка: `events` (событие → чанк), `requestUrl`, `token`, `counterId`, `clientIdKey`, `sessionIdKey` |
 
@@ -75,6 +76,23 @@ items: [
 `add_shipping_info` отправляется, когда выбрана доставка и заполнены все её обязательные
 поля (`msDelivery.requires`). Список полей можно подменить событием
 [`ecsOnGetRequires`](events#ecsongetrequires).
+
+### Поля формы заказа
+
+С версии 1.4.1 при изменении формы оформления (`ecsOnAddToOrder`) в данные заказа (`orderData`)
+попадают только поля из белого списка: `receiver`, `email`, `phone`, `payment`, `delivery`,
+`comment`, поля `msOrderAddress`, обязательные поля выбранной доставки
+([`ecsOnGetRequires`](events#ecsongetrequires)) и ключи `hashedKeys`. Свои поля формы, которые
+читают чанки или слушатели, перечислите в `orderFormFields`:
+
+```php
+'orderFormFields' => ['phone_code'],
+```
+
+Поля `id`, `num`, `status`, `cost`, `cart_cost`, `delivery_cost`, `weight`, `context`,
+`properties`, `user_id`, `order_id`, `createdon`, `updatedon` из формы не берутся никогда:
+раньше скрытое поле `id` в форме (например, id товара) подменяло id заказа, и аналитика
+записывалась в чужой заказ.
 
 ## Системные настройки
 
