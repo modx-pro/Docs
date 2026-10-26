@@ -3,7 +3,7 @@ title: Extra fields
 ---
 # Utilities: Extra fields
 
-Custom columns on MiniShop3 models without editing the core. The field is written to the DB and appears in Manager forms.
+Your own columns on MiniShop3 models, without editing the core. The field is written to the database and shows up on manager forms.
 
 ::: tip Cookbook
 Step-by-step cases (order, repeater, key-value): [Extra fields cookbook](/en/components/minishop3/manager/extra-fields/cookbook). Examples: [order field](/en/components/minishop3/manager/examples/order-custom-field), [product wholesale price](/en/components/minishop3/manager/examples/product-extra-field).
@@ -13,17 +13,17 @@ Step-by-step cases (order, repeater, key-value): [Extra fields cookbook](/en/com
 
 ## Purpose
 
-You create a key, widget type, and column type. After the column migration applies, the field is available on the model card and (for products) in CSV import.
+You set a key, a widget type, and a column type. After the column migration, the field is available on the model card and, for a product, in CSV import.
 
 ## Supported models
 
-In the UI you pick a short name; the DB and POST store the full `MiniShop3\Model\...` class.
+In the UI you pick a short name. The database and POST store the full `MiniShop3\Model\...` class.
 
 | Short name | Class in API / DB | Description |
 | --- | --- | --- |
-| `msProduct` | `MiniShop3\Model\msProduct` | Product resource |
+| `msProduct` | `MiniShop3\Model\msProduct` | Product resource (not in the UI dropdown, API only) |
 | `msProductData` | `MiniShop3\Model\msProductData` | Product data |
-| `msCategory` | `MiniShop3\Model\msCategory` | Category |
+| `msCategory` | `MiniShop3\Model\msCategory` | Category (not in the UI dropdown, API only) |
 | `msVendor` | `MiniShop3\Model\msVendor` | Vendor |
 | `msOption` | `MiniShop3\Model\msOption` | Option |
 | `msLink` | `MiniShop3\Model\msLink` | Link type |
@@ -36,17 +36,12 @@ In the UI you pick a short name; the DB and POST store the full `MiniShop3\Model
 | `msDelivery` | `MiniShop3\Model\msDelivery` | Delivery |
 | `msPayment` | `MiniShop3\Model\msPayment` | Payment |
 
-Extra-fields CRUD requires `mssetting_save`. The order card also calls `GET /extra-fields` on load: without that permission widget metadata will not load (column values still arrive in `GET /orders/{id}`).
+Reading the schema (`GET /api/mgr/extra-fields`) is available to any authenticated manager. Order and product forms load it without a separate permission. `mssetting_save` is required only to create, edit, and delete fields.
 
 ## Creating a field
 
-### Step 1: Select model
-
-Choose a model from the dropdown at the top of the page.
-
-### Step 2: Add field
-
-Click **Add field** and fill the form.
+1. Pick the model in the list at the top of the page.
+2. Click **Add field** and fill the form.
 
 ### Field parameters
 
@@ -54,13 +49,13 @@ Click **Add field** and fill the form.
 
 | Parameter | Description | Required |
 | --- | --- | --- |
-| Key | Unique field name (Latin, snake_case) | Yes |
+| Key | Unique field name (Latin letters, snake_case) | Yes |
 | Label | Display name | Yes |
-| Description | User hint | No |
-| Active | Field in use | Yes |
+| Description | Hint for the user | No |
+| Active | The field is in use | Yes |
 
 ::: warning Field key
-The key must be unique within the model. Use Latin letters and underscores. Examples: `wholesale_price`, `external_id`, `custom_field`.
+The key must be unique within the model. Use Latin letters and underscores. For example: `wholesale_price`, `external_id`, `custom_field`.
 :::
 
 #### Widget type (xtype)
@@ -70,17 +65,18 @@ The key must be unique within the model. Use Latin letters and underscores. Exam
 | `textfield` | Text field | Strings, SKUs |
 | `numberfield` | Number field | Prices, quantities |
 | `textarea` | Multiline field | Descriptions |
-| `xcheckbox` | Checkbox | Yes/No |
-| `ms3-combo-select` | Fixed select | Status, delivery type |
-| `ms3-combo-vendor` | Vendor picker | Link to vendor |
-| `ms3-combo-autocomplete` | Autocomplete | Pick from list |
+| `xcheckbox` | Checkbox | Yes or no |
+| `ms3-combo-select` | Fixed dropdown | Statuses, delivery types |
+| `ms3-combo-vendor` | Vendor picker | Link to a vendor |
+| `ms3-combo-autocomplete` | Autocomplete | Pick from a list |
 | `ms3-combo-options` | Option picker | Product variants |
-| `ms3-repeater` | Row table (JSON) | Specs, list characteristics |
-| `ms3-key-value` | Key → value (JSON) | Named property set |
+| `ms3-repeater` | Table of rows (JSON) | Composition, a list of characteristics |
+| `ms3-key-value` | Key to value (JSON) | A set of named properties |
+| `datefield` | Date field | Dates (usually with `dbtype: date`) |
 
-### Repeater (`ms3-repeater`)
+#### Repeater (`ms3-repeater`)
 
-Since v1.12. In `properties` / widget config set `repeater_config`:
+Since v1.12. In `properties` or the widget config, set `repeater_config`:
 
 ```json
 {
@@ -95,9 +91,9 @@ Since v1.12. In `properties` / widget config set `repeater_config`:
 }
 ```
 
-In the DB the column is usually `json`. Repeater is not included in CSV import.
+The database column is usually `json`. These fields do not enter CSV import.
 
-### Key-value (`ms3-key-value`)
+#### Key-value (`ms3-key-value`)
 
 Config `key_value_config`:
 
@@ -111,17 +107,18 @@ Config `key_value_config`:
 }
 ```
 
-`mode`: `fixed` (only defined keys) or `free` (customer/manager adds pairs).
+`fixed` allows only the listed keys. `free` lets you add pairs yourself.
 
 #### Database type (dbtype)
 
 | Type | Description | Example values |
 | --- | --- | --- |
-| `varchar` | Variable-length string | Text up to 255 chars |
+| `varchar` | Variable-length string | Text up to 255 characters |
 | `text` | Long text | Descriptions, HTML |
 | `int` | Integer | IDs, quantities |
-| `decimal` | Decimal | Prices with cents |
-| `tinyint` | Small integer (0–255) | Flags, ratings |
+| `decimal` | Decimal number | Prices with cents |
+| `tinyint` | Small integer (0-255) | Flags, ratings |
+| `date` | Date without time | 2024-01-15 |
 | `datetime` | Date and time | 2024-01-15 12:30:00 |
 | `timestamp` | Timestamp | Unix timestamp |
 | `json` | JSON data | Arrays, objects |
@@ -130,8 +127,8 @@ Config `key_value_config`:
 
 For `varchar` and `decimal`:
 
-- `varchar` — max string length (default 255)
-- `decimal` — format `10,2` means 10 digits total, 2 after decimal
+- `varchar`: maximum string length (default 255)
+- `decimal`: format `10,2` (10 digits in total, 2 after the decimal mark)
 
 #### PHP type (phptype)
 
@@ -139,9 +136,9 @@ For `varchar` and `decimal`:
 | --- | --- |
 | `string` | String |
 | `integer` | Integer |
-| `float` | Float |
+| `float` | Floating-point number |
 | `boolean` | Boolean |
-| `json` | JSON (auto encode/decode) |
+| `json` | JSON (encoded and decoded automatically) |
 | `datetime` | DateTime object |
 | `timestamp` | Unix timestamp |
 
@@ -151,7 +148,7 @@ For `varchar` and `decimal`:
 | --- | --- |
 | `NULL` | Empty value |
 | `CURRENT_TIMESTAMP` | Current time (for datetime) |
-| `USER_DEFINED` | Set manually |
+| `USER_DEFINED` | Set it yourself |
 | `NONE` | No default |
 
 #### Indexing
@@ -159,15 +156,15 @@ For `varchar` and `decimal`:
 | Type | Description | When to use |
 | --- | --- | --- |
 | `NONE` | No index | Rarely used fields |
-| `INDEX` | Regular index | Search and sort fields |
-| `UNIQUE` | Unique index | Unique values |
+| `INDEX` | Ordinary index | Fields used for search and sorting |
+| `UNIQUE` | Unique index | Fields with unique values |
 | `FULLTEXT` | Full-text index | Text search |
 
 ## Field examples
 
 ### Wholesale price
 
-```
+```text
 Key: wholesale_price
 Label: Wholesale price
 xtype: numberfield
@@ -178,11 +175,11 @@ Default: NULL
 Index: NONE
 ```
 
-### External ID (ERP)
+### External ID (1C)
 
-```
+```text
 Key: external_id
-Label: ERP ID
+Label: ID in 1C
 xtype: textfield
 dbtype: varchar
 Precision: 50
@@ -191,9 +188,9 @@ Default: NULL
 Index: UNIQUE
 ```
 
-### Delivery lead time
+### Delivery time
 
-```
+```text
 Key: delivery_days
 Label: Delivery time (days)
 xtype: numberfield
@@ -203,11 +200,11 @@ Default: USER_DEFINED → 3
 Index: NONE
 ```
 
-### Extra attributes (JSON)
+### Extra characteristics (JSON)
 
-```
+```text
 Key: extra_attributes
-Label: Extra attributes
+Label: Extra characteristics
 xtype: textarea
 dbtype: json
 phptype: json
@@ -217,42 +214,42 @@ Index: NONE
 
 ## Editing a field
 
-Click a row in the table to open the edit dialog.
+Click the field row. The edit dialog opens.
 
-::: warning Limitations
+::: warning Limits
 Some parameters cannot change after creation:
 
 - Field key
 - Database type (dbtype)
 
-To change these, delete the field and create it again.
+To change them, delete the field and create it again.
 :::
 
 ## Deleting a field
 
-1. Click delete on the row
+1. Click the delete icon on the field row
 2. Confirm in the dialog
 
-::: danger Warning
-Deleting a field **permanently** removes:
+::: danger Caution
+Deleting a field is irreversible. You lose:
 
-- Field definition from the schema
-- Column from the database table
-- All data for that field on all records
+- the field definition in the schema
+- the column in the database table
+- every value of this field on every record
 :::
 
 ## Use in code
 
-### Getting a value
+### Reading a value
 
 ```php
-// Get product
+// Get the product
 $product = $modx->getObject(\MiniShop3\Model\msProduct::class, $id);
 
-// Get product data
+// Get the product data
 $data = $product->getOne('Data');
 
-// Get extra field value
+// Read the extra field
 $wholesalePrice = $data->get('wholesale_price');
 ```
 
@@ -269,21 +266,21 @@ $data->save();
 ```fenom
 {$wholesale_price}
 {if $wholesale_price > 0}
-    <span class="wholesale">Wholesale: {$wholesale_price | number_format : 0}</span>
+    <span class="wholesale">Wholesale: {$wholesale_price | number_format : 0} RUB</span>
 {/if}
 ```
 
 ## API endpoints
 
-### Model field list
+### List fields of a model
 
-```
+```http
 GET /api/mgr/extra-fields?class=MiniShop3\Model\msProductData
 ```
 
-### Create field
+### Create a field
 
-```
+```http
 POST /api/mgr/extra-fields
 ```
 
@@ -305,27 +302,27 @@ POST /api/mgr/extra-fields
 }
 ```
 
-### Update field
+### Update a field
 
-```
+```http
 PUT /api/mgr/extra-fields/{id}
 ```
 
-### Delete field
+### Delete a field
 
-```
+```http
 DELETE /api/mgr/extra-fields/{id}
 ```
 
 ## Migrations
 
-When a field is created the system automatically:
+When you create a field:
 
-1. Creates a record in the field configuration table
-2. Adds a column to the model table (ALTER TABLE)
-3. Creates an index (if specified)
+1. A row is created in the field configuration table
+2. A column is added to the model table (ALTER TABLE)
+3. An index is created (if you asked for one)
 
-When a field is deleted:
+When you delete a field:
 
-1. Removes the configuration record
-2. Drops the column from the database table
+1. The configuration row is removed
+2. The column is removed from the database table

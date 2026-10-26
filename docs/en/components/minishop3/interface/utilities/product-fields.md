@@ -5,50 +5,38 @@ title: Product fields
 
 <!-- ![Utilities → Product fields](/components/minishop3/screenshots/mgr-product-fields.png) -->
 
-Configure fields on the **Data** tab in the product card.
+Field layout on the **Data** tab of the product card.
 
 ::: tip Cookbook
-Sections, hiding fields, extra fields link: [Product fields cookbook](/en/components/minishop3/manager/product-fields/cookbook). End-to-end example: [Wholesale price](/en/components/minishop3/manager/examples/product-extra-field).
+Sections, hiding fields, and the link to extra fields: [Product fields cookbook](/en/components/minishop3/manager/product-fields/cookbook). End-to-end example: [Wholesale price](/en/components/minishop3/manager/examples/product-extra-field).
 :::
 
 ## Purpose
 
-This utility controls **layout** on the Data tab:
+The tool controls the **layout** of fields on the Data tab:
 
-- field visibility and order
-- section groups
+- visibility and order
+- groups by section
 - labels and widget xtypes
 
-Create new columns in `ms3_product_data` via [Extra fields](/en/components/minishop3/interface/utilities/extra-fields). After POST extra field, a row appears here automatically.
+A new column in `ms3_product_data` is created in [Extra fields](/en/components/minishop3/interface/utilities/extra-fields). After you create the field, a row appears here on its own.
 
 ## Interface
 
 ### Sections
 
-The left panel lists sections with drag-and-drop sorting.
-
-**Section actions:**
-
-- **Add** — create a new section
-- **Edit** — change section parameters
-- **Delete** — delete a section (fields move to "No section")
-- **Drag** — reorder sections
+The left panel lists sections. Drag them to sort.
 
 ### Fields
 
-The right panel shows fields for the selected section.
+The right panel lists fields of the selected section.
 
-**Displayed info:**
+**In the row:**
 
 - Field name (key)
 - Label
 - Widget type (xtype)
-- Visibility status
-
-**Field actions:**
-
-- **Edit** — configure field parameters
-- **Drag** — reorder within the section
+- Visibility
 
 ## Section management
 
@@ -59,82 +47,84 @@ The right panel shows fields for the selected section.
 
 | Field | Description | Required |
 | --- | --- | --- |
-| Section key | Unique identifier (Latin) | Yes |
-| Lexicon key | Key for translated title | No |
+| Section key | Unique identifier (Latin letters) | Yes |
+| Lexicon key | Key for the translated title | No |
 | Title | Display name | No |
-| Hidden | Section hidden in product card | No |
+| Hidden | The section is hidden on the product card | No |
 
 ::: tip Lexicon
-If a lexicon key is set, the title comes from localization files. This supports multiple manager languages automatically.
+If a lexicon key is set, the title comes from the localization files. The interface is translated into several languages.
 :::
 
 ### Editing a section
 
-Click the edit icon next to the section name or double-click the section.
+Click the edit icon to the right of the title, or double-click the section.
 
 ### Deleting a section
 
-::: warning Note
-When a section is deleted, all its fields move to "No section". Fields are not deleted.
+::: warning Caution
+When you delete a section, its fields move to No section. The fields themselves stay.
 :::
 
 ## Field management
 
 ### Editing a field
 
-Click a field to open the edit dialog.
+Click a field. The edit dialog opens.
 
 **Available parameters:**
 
 | Parameter | Description |
 | --- | --- |
-| Title (label) | Display label |
-| Description | Hint below the field |
-| Section | Section the field belongs to |
-| Widget type (xtype) | Form element type |
-| Visibility | Show/hide in product card |
-| Order | Position in the section field list |
+| Title (label) | Display name of the field |
+| Placeholder | Hint inside the input |
+| Description | Hint under the field |
+| Section | Which section the field belongs to |
+| Widget type (xtype) | Only while creating the field. The edit dialog locks this control |
+| Visibility | Whether the field shows on the card |
+| Width | Grid columns: 3, 4, 6, 8, 12 |
 
 ### Widget types (xtype)
 
 | Type | Description |
 | --- | --- |
 | `textfield` | Single-line text |
-| `numberfield` | Number field |
+| `numberfield` | Number |
 | `textarea` | Multiline text |
 | `xcheckbox` | Checkbox |
 | `ms3-combo-vendor` | Vendor picker |
-| `ms3-combo-autocomplete` | Autocomplete from list |
+| `ms3-combo-autocomplete` | Autocomplete from a list |
 | `ms3-combo-options` | Pick from product options |
 
 ### Moving fields
 
-Fields can be moved:
+You move fields like this:
 
-- **Within a section** — drag up/down
-- **Between sections** — change section in the edit dialog
+- **Inside a section**, drag them up or down
+- **Between sections**, change the section in the edit dialog
 
 ## Default sections
 
-By default these sections exist:
+Defaults (seed `product_data`):
 
-| Key | Title | Description |
+| Key | Title | Seed fields |
 | --- | --- | --- |
-| `main` | Main data | SKU, price, weight, etc. |
-| `availability` | Availability | Stock, flags |
-| `content` | Content | Description, attributes |
+| `main` | Main data | `article`, `weight`, `color`, `size`, `vendor_id`, `made_in` |
+| `pricing` | Prices and stock | `price`, `old_price`, `stock` |
+| `seo` | SEO | empty section. You add the fields |
+| `additional` | Additional | `tags`, `new`, `favorite`, `popular` |
 
 ## Saving changes
 
-- Changes save **automatically** when dragging
-- When editing a field/section click **Save**
-- **Reload the product page** to see changes in the product card
+- Dragging saves **automatically**
+- When you edit a field or a section, click **Save**
+- **Reload the page** to see the change on the product card
 
 ## API endpoints
 
 ### Get field configuration
 
-```
+```http
 GET /api/mgr/config/page-fields/product_data
 ```
 
@@ -143,7 +133,7 @@ GET /api/mgr/config/page-fields/product_data
 ```json
 {
   "success": true,
-  "object": {
+  "data": {
     "fields": [
       {
         "name": "article",
@@ -160,19 +150,19 @@ GET /api/mgr/config/page-fields/product_data
 
 ### Get sections
 
-```
+```http
 GET /api/mgr/config/sections/product_data
 ```
 
 ### Save field configuration
 
-```
+```http
 PUT /api/mgr/config/page-fields/product_data
 ```
 
-Write permission: `mssetting_save`. GET works for any manager session without `mssetting_save`.
+Write permission: `mssetting_save`. A GET is available to any manager session without `mssetting_save`.
 
-**Request body** — a **`fields`** array (not a single field):
+**Request body** is a **`fields`** array (not one field):
 
 ```json
 {
@@ -190,9 +180,9 @@ Write permission: `mssetting_save`. GET works for any manager session without `m
 
 ### Save sections
 
-The UI adds a section locally, then saves the full list:
+The UI adds a new section locally, then saves the whole list:
 
-```
+```http
 PUT /api/mgr/config/sections/product_data
 ```
 
@@ -210,9 +200,9 @@ PUT /api/mgr/config/sections/product_data
 }
 ```
 
-### Delete section
+### Delete a section
 
-```
+```http
 DELETE /api/mgr/config/sections/product_data/{section_key}
 ```
 
@@ -220,28 +210,10 @@ Base sections cannot be deleted. There is no `POST /config/sections/...` in 1.13
 
 ## Configuration examples
 
-### Hiding unneeded fields
+### Hide fields you do not need
 
-For a clothing store using options for color and size separately:
+If color and size are options, turn off visibility for `color` and `size`.
 
-1. Open field `color`
-2. Uncheck **Visibility**
-3. Save
-4. Repeat for `size`
+### Create an "SEO" section
 
-### Creating an "SEO" section
-
-1. Click "Add section"
-2. Fill:
-   - Key: `seo`
-   - Title: `SEO`
-3. Move `metatitle`, `metadescription` into the new section
-
-### Section order
-
-Drag sections to the desired order. For example:
-
-1. Main data
-2. Prices
-3. Availability
-4. SEO
+The `seo` section is already in the seed. If you deleted it, add it again (key `seo`). Document tab fields (`longtitle`, `description`) are not part of `product_data`. Their visibility is `ms3_product_main_fields`. Into the empty SEO section you move your own fields from `main` / `additional`, or extra fields.
