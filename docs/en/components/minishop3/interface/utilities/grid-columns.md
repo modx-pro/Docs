@@ -283,6 +283,13 @@ A column of action buttons. Built-in handlers and your own.
    - Aggregation: `SUM`
 3. Save
 
+### A link in the email column
+
+1. Find the `email` column.
+2. Change its type to `template`.
+3. Set the template: `<a href="mailto:{email}">{email}</a>`.
+4. Save.
+
 ## API endpoints
 
 ### Get grid configuration
@@ -632,6 +639,47 @@ The row field `disabledField` turns the button off:
   // Inactive when the customer is not blocked
   "disabledField": "active"  // disabled when active = true
 }
+```
+
+### Hooks for built-in actions
+
+The built-in `edit` and `delete` go through the registry too, so the same hooks apply to them.
+
+Logging deletes:
+
+```javascript
+MS3ActionRegistry.registerAfterHook('delete', async (data, context, result) => {
+  // Send to the audit system
+  await fetch('/api/audit/log', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      action: 'delete',
+      entity: context.gridId,
+      entityId: data.id,
+      user: MODx.user?.id,
+      timestamp: new Date().toISOString()
+    })
+  })
+})
+```
+
+Preventing a delete:
+
+```javascript
+MS3ActionRegistry.registerBeforeHook('delete', (data, context) => {
+  // Do not let paid orders be deleted
+  if (context.gridId === 'orders' && data.status === 2) {
+    context.toast.add({
+      severity: 'error',
+      summary: 'Forbidden',
+      detail: 'A paid order cannot be deleted',
+      life: 5000
+    })
+    return false // Cancel the action
+  }
+  return true // Continue
+})
 ```
 
 ### Available icons
