@@ -29,7 +29,7 @@ On a live site leave `frontend_toolbar` on only when those who log in to the man
 
 ## Shared hosting
 
-The package does not create trace files. Install and upgrade send a POST to `https://metrics.modx.pro/` with a 2 second timeout. Failure does not interrupt installation. The body is described in the [overview](/en/components/modx3profilertoolbar/#installation).
+The package does not create trace files. Install and upgrade send a POST to `https://metrics.modx.pro/` with a 2 second timeout. Failure does not interrupt installation. The body is described in the [overview](index#installation).
 
 ## How to turn it off
 

@@ -16,7 +16,7 @@ title: Quick start
 2. Find **Modx3ProfilerToolbar**.
 3. Click **Install**.
 
-Install and upgrade send an anonymized POST to `https://metrics.modx.pro/`. The payload is described in the [overview](/en/components/modx3profilertoolbar/#installation). A failed send does not roll the package back.
+Install and upgrade send an anonymized POST to `https://metrics.modx.pro/`. The payload is described in the [overview](index#installation). A failed send does not roll the package back.
 
 ## Step 2. Settings
 
