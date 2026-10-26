@@ -17,7 +17,7 @@ description: msrOn* события, msrOnCaptchaVerify, prefetch, коды ош�
 | `msrOnReviewPublish` | После публикации |
 | `msrOnReviewReject` | При отклонении |
 | `msrOnBeforeReviewUpdate` / `msrOnReviewUpdate` | Правка на витрине (`review/update_own`) или в CMP (`mgr/review/update`) |
-| `msrOnBeforeReviewDelete` / `msrOnReviewDelete` | Самоудаление на витрине |
+| `msrOnBeforeReviewDelete` / `msrOnReviewDelete` | `review/delete_own` переводит отзыв в `archived`. Строка не удаляется |
 | `msrOnReviewVote` | После «полезно» |
 | `msrOnBeforeQuestionCreate` | До создания вопроса (витрина или CMP) |
 | `msrOnQuestionCreate` | После создания вопроса (витрина или CMP) |
@@ -47,8 +47,6 @@ switch ($modx->event->name) {
         return false;
 }
 ```
-
-Настройки: [Уведомление модератора](settings#уведомление-модератора).
 
 ## Капча (msrOnCaptchaVerify)
 

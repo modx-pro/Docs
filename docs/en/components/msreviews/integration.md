@@ -2,7 +2,9 @@
 title: Интеграция и сценарии
 description: Сборка блоков msReviews на карточке, каталоге, главной — pdoPage, verified, капча
 ---
+
 <!-- TODO: translate from docs/components/msreviews/integration.md -->
+
 # Интеграция и сценарии
 
 Подключите сниппеты в шаблонах MiniShop3. На карточке товара **`product_id`** — id ресурса MS3.
@@ -49,7 +51,7 @@ description: Сборка блоков msReviews на карточке, ката
 
 То же для Q&A: на карточке товара `msQuestions`, для FAQ-ленты по каталогу `msQuestionsLatest`.
 
-Без `product_id` у `msReviews` сработает fallback на id страницы, а не «все товары». Для ленты по каталогу вызывайте `msReviewsLatest`.
+Без `product_id` `msReviews` берёт id страницы, не «все товары». Для ленты по каталогу вызывайте `msReviewsLatest`.
 
 **Общий рейтинг раздела** (не список отзывов): `msRatingSummary` с `all=1` / `parents` / `productIds` (с **1.2.3**). См. [msRatingSummary](snippets/msRatingSummary#общий-рейтинг-главная-категория), [Каталог](frontend/catalog#общий-рейтинг-раздела).
 
@@ -133,7 +135,7 @@ description: Сборка блоков msReviews на карточке, ката
 
 ## «Полезно», правка, удаление
 
-Скрипт **`reviews.js`** (через `msReviews` или `engagement=1` у `msReviewsLatest`) обрабатывает голос, правку и удаление. Настройки: **`msreviews_engagement_*`**.
+`msReviews` подключает **`reviews.js`**. Скрипт обрабатывает голос, правку и `delete_own` (статус `archived`). Свойство `engagement` у `msReviewsLatest` не читается. Настройки группы «Полезно»: `msreviews_helpful_voting_enabled`, `msreviews_self_edit_*`, `msreviews_self_delete_enabled`.
 
 ## Капча
 
@@ -143,13 +145,13 @@ description: Сборка блоков msReviews на карточке, ката
 
 Токены **`--msr-*`** в `reviews.css`. Переопределение на родителе карточки товара или через **`formClass`** у формы. В каталоге CSS подключают в шаблоне страницы или оставляют автоподключение сниппета — [Каталог — reviews.css](frontend/catalog#подключение-reviewscss-в-каталоге). Полный список токенов: [Чанки](chunks#css-токены-msr).
 
-У витринных сниппетов есть **`registerCss`** / **`registerJs`** (по умолчанию `1`). Глобально: `msreviews_frontend_css_enabled` / `_js_enabled`.
+У витринных сниппетов есть **`registerCss`** / **`registerJs`** (по умолчанию `1`). Глобально: `msreviews_frontend_css_enabled` / `_js_enabled`. JS подключают `msReviews`, `msReviewForm`, `msQuestionForm`, `msReviewsHub` и `msReviewsTabbed`. `msReviewMediaGallery` подключает `reviews.js` при lightbox и непустом списке. У `msReviewsLatest`, `msQuestions`, `msQuestionsLatest`, `msRatingSummary`, `msReviewsFilters`, `msRatingBadge`, `msReviewPrompt` и `msTopRatedProducts` в регистрацию уходит только CSS.
 
 ## Кастомная вёрстка: data-контракт
 
 С **1.2** JS витрины ищет элементы только по **`data-msr-*`**, `name`, `type`, `role`. BEM-классы (`msreviews-form__*`, `msreviews-item__*`) остались для CSS, в логике скриптов не участвуют.
 
-Кастомный чанк без `data-msr-*` перестанет работать с штатным JS. Headless (свой фронт + POST на коннектор) это не затрагивает.
+Свой чанк без `data-msr-*` перестанет работать со штатным JS. Свой фронт и POST на коннектор это не затрагивает.
 
 ### Формы
 
@@ -189,9 +191,9 @@ description: Сборка блоков msReviews на карточке, ката
 
 ### Вкладки
 
-`data-msreviews-tabbed` на корне, `data-msr-tab` / `data-msr-tab-panel` / `data-msr-tab-count`. Активная вкладка: `aria-selected="true"`, скрытая панель: `hidden`. Класс `.is-active` в JS и CSS больше не используется.
+`data-msreviews-tabbed` на корне, `data-msr-tab` / `data-msr-tab-panel` / `data-msr-tab-count`. Активная вкладка: `aria-selected="true"`, скрытая панель: `hidden`. У вкладок класс `.is-active` не используется. У chip-фильтров его ставит PHP, стиль есть в `reviews.css`.
 
-### Свой фронт без нашего JS
+### Свой фронт без штатного JS
 
 Отключите скрипты параметром `registerJs=0` на сниппетах (или настройкой `msreviews_frontend_js_enabled = Нет`) и отправляйте POST на коннектор. Поля описаны в [AJAX API](api). Тексты UI: `window.msrLexicon` из [msReviewsLexiconScript](snippets/msReviewsLexiconScript).
 
