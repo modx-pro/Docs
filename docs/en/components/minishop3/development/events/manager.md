@@ -71,14 +71,20 @@ switch ($modx->event->name) {
         $controller = $scriptProperties['controller'];
         $page = $scriptProperties['page'];
 
+        // Shared styles for every page
         $controller->addCss('/assets/components/mycomponent/css/common.css');
 
+        // Scripts for products only
         if (in_array($page, ['product_create', 'product_update'])) {
             $controller->addJavascript('/assets/components/mycomponent/js/product-extend.js');
         }
+
+        // Scripts for orders only
         if (in_array($page, ['orders', 'order'])) {
             $controller->addJavascript('/assets/components/mycomponent/js/order-extend.js');
         }
+
+        // Categories only
         if ($page === 'category_update') {
             $controller->addJavascript('/assets/components/mycomponent/js/category-extend.js');
         }
@@ -95,6 +101,7 @@ switch ($modx->event->name) {
         $controller = $scriptProperties['controller'];
         $page = $scriptProperties['page'];
 
+        // Data to hand over to JS
         $config = [
             'apiUrl' => '/assets/components/mycomponent/connector.php',
             'userId' => $modx->user->get('id'),
@@ -148,11 +155,13 @@ switch ($modx->event->name) {
 ```javascript
 // product-toolbar.js
 Ext.onReady(function() {
+    // Wait for the panel to initialise
     var checkPanel = setInterval(function() {
         var panel = Ext.getCmp('ms3-product-panel');
         if (panel && panel.getTopToolbar) {
             clearInterval(checkPanel);
 
+            // Add a button to the toolbar
             var toolbar = panel.getTopToolbar();
             toolbar.add('-');
             toolbar.add({
@@ -192,6 +201,7 @@ Ext.onReady(function() {
         if (tabs) {
             clearInterval(checkTabs);
 
+            // Add a tab of your own
             tabs.add({
                 title: 'My tab',
                 id: 'my-custom-tab',
@@ -236,11 +246,13 @@ switch ($modx->event->name) {
 ```javascript
 // orders-grid.js
 Ext.onReady(function() {
+    // Extend the orders grid configuration
     var originalGetColumns = ms3.grid.Orders.prototype.getColumns;
 
     ms3.grid.Orders.prototype.getColumns = function() {
         var columns = originalGetColumns.apply(this, arguments);
 
+        // Add a column of your own
         columns.splice(3, 0, {
             header: 'Source',
             dataIndex: 'source',
@@ -272,14 +284,17 @@ switch ($modx->event->name) {
         $controller = $scriptProperties['controller'];
         $page = $scriptProperties['page'];
 
+        // Product pages only
         if (!in_array($page, ['product_create', 'product_update'])) {
             return;
         }
 
         $assetsUrl = MODX_ASSETS_URL . 'components/mycomponent/';
 
+        // CSS
         $controller->addCss($assetsUrl . 'css/product-extend.css');
 
+        // Config for JS
         $productId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
         $config = [
@@ -292,6 +307,7 @@ switch ($modx->event->name) {
             ],
         ];
 
+        // Load the extra data for a product that already exists
         if ($productId > 0) {
             $product = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
             if ($product) {
@@ -302,12 +318,14 @@ switch ($modx->event->name) {
             }
         }
 
+        // Pass the config over
         $controller->addHtml('
             <script>
                 window.MyProductExtend = ' . json_encode($config) . ';
             </script>
         ');
 
+        // The main script
         $controller->addJavascript($assetsUrl . 'js/product-extend.js');
         break;
 }
@@ -318,12 +336,14 @@ switch ($modx->event->name) {
 Ext.onReady(function() {
     var config = window.MyProductExtend || {};
 
+    // Wait for the product form to load
     var checkForm = setInterval(function() {
         var form = Ext.getCmp('modx-panel-resource');
         if (!form) return;
 
         clearInterval(checkForm);
 
+        // 1. Add a sync button to the toolbar
         var toolbar = form.getTopToolbar();
         if (toolbar && config.options.enableSync) {
             toolbar.add('-');
@@ -337,12 +357,15 @@ Ext.onReady(function() {
             toolbar.doLayout();
         }
 
+        // 2. Add the event handlers
         form.on('success', function(response) {
             console.log('Product saved:', response);
+            // Anything else you want after a save
         });
 
     }, 100);
 
+    // The sync function
     function syncProduct(productId) {
         if (!productId) {
             MODx.msg.alert('Error', 'Save the product first');
@@ -375,6 +398,7 @@ Ext.onReady(function() {
 ```css
 /* product-extend.css */
 
+/* Styles for the custom elements */
 .my-custom-field {
     border: 1px solid #ddd;
     padding: 10px;
@@ -428,8 +452,10 @@ if (panel) {
 ### Use ExtJS events
 
 ```javascript
+/ Subscribing to the component events
 Ext.onReady(function() {
     if (typeof ms3 !== 'undefined') {
+        // Subscribe to the load event
         ms3.on('load', function() {
             console.log('MiniShop3 loaded');
         });

@@ -275,10 +275,8 @@ Ext.onReady(function() {
 ```php
 <?php
 /**
-
  * Плагин: Расширение карточки товара
  * События: msOnManagerCustomCssJs
-
  */
 
 switch ($modx->event->name) {
