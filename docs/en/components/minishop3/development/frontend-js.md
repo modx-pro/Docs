@@ -183,7 +183,8 @@ const ms3 = {
 
   async init() {
     this.config = window.ms3Config || {}
-    this.selectors = getSelectors(this.config)
+    // Selectors from Selectors.js, overridable through ms3Config.selectors
+    this.config.selectors = { ...window.Ms3DefaultSelectors, ...getSelectors() }
 
     // Hooks and messages
     this.hooks = window.ms3Hooks
@@ -193,7 +194,7 @@ const ms3 = {
     // through setApiClient(), and only then the token is requested
     this.tokenManager = new TokenManager({ tokenName: this.config.tokenName || 'ms3_token' })
     this.apiClient = new ApiClient({
-      baseUrl: this.config.actionUrl,
+      baseUrl: this.config.actionUrl || '/assets/components/minishop3/api.php',
       tokenManager: this.tokenManager,
       ctx: this.config.ctx,
     })
@@ -227,7 +228,7 @@ const ms3 = {
     this.initFormHandler()
 
     // Ready event
-    document.dispatchEvent(new CustomEvent('ms3:ready'))
+    document.dispatchEvent(new Event('ms3:ready'))
   }
 }
 ```
@@ -325,6 +326,7 @@ class TokenManager {
     this.apiClient = apiClient
   }
 
+  // Check for a token and fetch one when needed
   async ensureToken() {
     // Token is in httpOnly cookie — JS cannot read it directly
     if (this.tokenInitialized) return
@@ -332,6 +334,7 @@ class TokenManager {
     await this.fetchNewToken()
   }
 
+  // Request a new token (the server sets the httpOnly cookie)
   async fetchNewToken() {
     if (!this.apiClient) {
       console.error('TokenManager: ApiClient not set. Use setApiClient()')
@@ -523,28 +526,54 @@ class CustomerAPI {
     this.api = apiClient
   }
 
+  // Add or update a field
   async add(key, value) {
     return this.api.post('/api/v1/customer/add', { key, value })
   }
 
+  // Change the delivery address
   async changeAddress(key, value) {
     return this.api.post('/api/v1/customer/changeAddress', { key, value })
   }
 
+  // Update the profile
   async updateProfile(data) {
     return this.api.put('/api/v1/customer/profile', data)
   }
 
+  // Create an address
   async createAddress(data) {
     return this.api.post('/api/v1/customer/addresses', data)
   }
 
+  // Update an address
   async updateAddress(id, data) {
     return this.api.put(`/api/v1/customer/addresses/${id}`, data)
   }
 
+  // Delete an address
   async deleteAddress(id) {
     return this.api.delete(`/api/v1/customer/addresses/${id}`)
+  }
+
+  // Set the default address
+  async setDefaultAddress(id) {
+    return this.api.put(`/api/v1/customer/addresses/${id}/set-default`)
+  }
+
+  // Sign in
+  async login(email, password) {
+    return this.api.post('/api/v1/customer/login', { email, password })
+  }
+
+  // Register
+  async register(data) {
+    return this.api.post('/api/v1/customer/register', data)
+  }
+
+  // Cancel an order
+  async cancelOrder(orderId) {
+    return this.api.post(`/api/v1/customer/orders/${orderId}/cancel`)
   }
 }
 ```
@@ -568,6 +597,7 @@ class CartUI {
     this.initOptionSelects()    // Option selects: a delegated change listener
   }
 
+  // Adding a product
   async handleAdd(id, count = 1, options = {}) {
     const hookData = { id, count, options }
     await this.hooks.runHooks('beforeAddCart', hookData)
@@ -594,6 +624,7 @@ class CartUI {
     }
   }
 
+  // Automatic rendering
   renderCart(renderData) {
     const cartRenderConfig = this.config.render?.cart
 
@@ -611,6 +642,26 @@ class CartUI {
 
   }
 
+  // Clearing the cart
+  async handleClean() {
+    const hookData = {}
+    await this.hooks.runHooks('beforeCleanCart', hookData)
+
+    if (hookData.cancel) return
+
+    const renderTokens = this.getRenderTokens()
+    const response = await this.cart.clean(renderTokens)
+
+    await this.hooks.runHooks('afterCleanCart', { response })
+
+    if (response.success) {
+      if (response.data?.render) {
+        this.renderCart(response.data.render)
+      }
+      this.dispatchCartUpdated(response.data)
+    }
+  }
+  // The cart-updated event
   dispatchCartUpdated(data) {
     document.dispatchEvent(new CustomEvent('ms3:cart:updated', {
       detail: data
@@ -661,14 +712,20 @@ Order form handler:
 ```javascript
 class OrderUI {
   init() {
-    document.querySelectorAll('.ms3_order_form').forEach(form => {
+    document.querySelectorAll(this.selectors.formOrder).forEach(form => {
       this.initForm(form)
     })
+
+    // The cart changed, so recalculate: the free-delivery threshold may have kicked in
+    document.addEventListener('ms3:cart:updated', () => this.updateOrderCosts())
   }
 
+  // Autosaving the fields
   initRegularInput(input) {
-    // Without a parent div the handler returns silently
     input.addEventListener('change', async () => {
+      // Without a parent div the handler returns silently
+      if (!input.closest('div')) return
+
       const response = await this.handleAdd(input.name, input.value)
 
       if (response.success) {
@@ -681,6 +738,7 @@ class OrderUI {
     })
   }
 
+  // Submitting the order
   async handleSubmit() {
     const hookData = {}
     await this.hooks.runHooks('beforeSubmitOrder', hookData)
@@ -1122,6 +1180,11 @@ window.ms3Message = {
 ### Subscribing
 
 ```javascript
+// ms3 has initialised
+document.addEventListener('ms3:ready', () => {
+  console.log('ms3 is ready')
+})
+
 // Cart update
 document.addEventListener('ms3:cart:updated', (e) => {
   // detail does not always arrive — clearing the order dispatches it empty
