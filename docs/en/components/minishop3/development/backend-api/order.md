@@ -17,12 +17,23 @@ Order lifecycle: **draft** → **submit** → **status changes**.
 
 ## Order controller (facade)
 
-The `Order` facade controller is the main way to work with orders from PHP: a single entry point backed by dedicated services.
+The `Order` controller (`$ms3->order`) is the PHP entry point to the order services.
+
+```mermaid
+flowchart LR
+  draft[Draft] --> init[initialize or initDraft]
+  init --> fields["add or set"]
+  fields --> submit[submit]
+  submit --> status[ms3_status_new]
+  status --> svc[OrderStatusService]
+```
 
 ::: warning The result comes in an envelope
 Every controller method that returns an `array` returns the envelope `['success' => bool, 'message' => string, 'data' => array]` — the same `Utils::success()` / `Utils::error()` shape the Web API uses. The values you need are in `data`; for `get()` they sit one level deeper, in `data['order']`.
 
-Only these return a value directly: `initialize()`, `initDraft()`, `remove()` and `hasPayment()` — `bool`; `getDraft()` — an `msOrder` object or `null`; `getUserId()` — `int`.
+Only these return a value directly: `initialize()`, `initDraft()`, `remove()`, and `hasPayment()` (`bool`); `getDraft()` (an `msOrder` object or `null`); `getUserId()` (`int`); `getNewOrderNum()` (`string`).
+
+`restrictDraft()` is the special case: it is declared `void`. The method recalculates the draft (`OrderDraftManager::recalculate()`), and success is judged by the order state, not by a return value.
 :::
 
 ```php
@@ -48,6 +59,7 @@ $result = $ms3->order->set([
 // Submit order
 $result = $ms3->order->submit();
 // The payment response. With DefaultPayment data holds order_id, order_num, payment_link.
+/ The redirect key is redirect, and the msorder query parameter carries the order uuid.
 
 // Clear draft
 $ms3->order->clean();
@@ -86,10 +98,12 @@ In the REST API and in snippets this happens automatically.
 | `setCustomerAddress($hash)` | Apply saved customer address |
 | `cleanCustomerAddress()` | Clear address fields |
 | `getDeliveryValidationRules($deliveryId)` | Delivery validation rules |
-| `getDeliveryRequiresFields($deliveryId)` | Required delivery fields |
-| `getDraft()` | Get the draft `msOrder` object |
-| `hasPayment($deliveryId, $paymentId)` | Check whether the delivery–payment pair is allowed |
-| `getUserId()` | MODX user ID for the current order; registers a user if there is none |
+| `getDeliveryRequiresFields($deliveryId)` | Required delivery fields. The name is not a typo: the controller and the Web API method are called `Requires`, while `OrderFieldManager` has `getDeliveryRequiredFields()` |
+| `getDraft()` | The draft `msOrder` object |
+| `hasPayment($deliveryId, $paymentId)` | Whether the delivery and payment pair is allowed |
+| `getUserId()` | MODX user ID for the current order. Registers one if there is none |
+| `getNewOrderNum()` | Deprecated. Shows the next number without taking it. On submit, `OrderNumberGenerator::runWithNextNumber()` issues the number |
+| `restrictDraft($draft)` | Recalculate the draft cost through `OrderDraftManager::recalculate()` |
 
 ## Drafts (OrderDraftManager)
 
@@ -140,6 +154,20 @@ $draftManager->clean($draft);
 $draftManager->deleteDraft($draft);
 
 ```
+
+Other public methods:
+
+| Method | Description |
+| --- | --- |
+| `findDraftByToken($token, $ctx)` | Draft by token, without creating one |
+| `createDraft($token, $ctx)` | A new draft |
+| `ensureAddress($draft)` | The draft address. Creates the row if it is missing |
+| `syncToken($draft, $newToken)` | Write the new token onto the draft |
+| `getSessionCustomerId()` | Customer ID from the session |
+| `bindDraftToCustomer($token, $customerId, $ctx)` | Bind the token's draft to a customer |
+| `transferDraftToToken($fromToken, $toToken, $customerId, $ctx)` | Move the draft to a new token after the session changes |
+| `fillAddressFromArray($order, $addressData)` | Fill the address from an array |
+| `addProductFromSnapshot($order, $snapshot, $origin)` | Add a line from a snapshot, without a product resource |
 
 ## Fields and validation (OrderFieldManager)
 
@@ -232,7 +260,7 @@ Modes (`mode`):
 | --- | --- |
 | `auto` (default) | Recalculates only for `DefaultDelivery` / `DefaultPayment` (from `price`, `weight_price`, `free_delivery_amount` and the percentages). For custom handlers it returns the warning `delivery_manual_required` / `payment_manual_required` and keeps the previous `delivery_cost` and a fee of 0 — it calls no external API. |
 | `manual` | Takes the `manual_delivery_cost` you pass. The payment fee is still calculated automatically, from the field. |
-| `force_provider` | Explicitly calls `loadController()` → `getCost()` and `loadHandler()` → `getCost()` in `try/catch`. On failure — the warning `delivery_provider_error` / `payment_provider_error`, and the previous values stay. |
+| `force_provider` | Explicitly calls `loadController()` → `getCost()` and `loadHandler()` → `getCost()` in `try/catch`. A delivery failure keeps the previous `delivery_cost` and adds the warning `delivery_provider_error`. A payment failure sets the fee to 0, rebuilds `cost` and adds `payment_provider_error` ([#897](https://github.com/modx-pro/MiniShop3/issues/897)) |
 
 The response repeats the order data from `GET /api/mgr/orders/{id}` and adds:
 
@@ -284,7 +312,26 @@ See also [API Router](/en/components/minishop3/development/routing).
 
 ## Order submit (OrderSubmitHandler)
 
-`OrderSubmitHandler` runs the full submit flow: validation → create customer → calculate cost → generate number → change status → call payment.
+`OrderSubmitHandler` runs the full submit cycle, from validation through the payment call.
+
+```mermaid
+flowchart TB
+  a["1. msOnSubmitOrder"] --> b["2. Cart is not empty"]
+  b --> c["3-6. Delivery, payment, pair allowed, required fields"]
+  c --> d["7. msCustomer, optional"]
+  d --> e["8. MODX user, by setting"]
+  e --> f["9. Cost calculation"]
+  f --> g["10. assertOrderAvailable"]
+  g --> h["11. runWithNextNumber: number issued"]
+  h --> i["12. Address when save_address"]
+  i --> j["13. msOnBeforeCreateOrder and msOnCreateOrder"]
+  j --> k["14. Stock check and status ms3_status_new"]
+  k --> l["15. msPayment send"]
+  l --> m["16. redirect, if it was missing"]
+  j -->|failure| r["Number is released when inventory is on"]
+  k -->|failure| r
+  l -->|failure| s["Number stays, only the stock hold is released"]
+```
 
 ```php
 $submitHandler = $modx->services->get('ms3_order_submit_handler');
@@ -314,11 +361,16 @@ $result = $submitHandler->submit($draft, $orderData, $token);
 11. `OrderNumberGenerator::runWithNextNumber()` writes the number and the totals — allocation and save share one lock
 12. The address goes to the customer's address book only if `properties` holds `save_address` and the order has a `customer_id`
 13. Events `msOnBeforeCreateOrder` / `msOnCreateOrder`
-14. Set status to `ms3_status_new` (default: 2)
+14. Stock is checked again, and the status changes to `ms3_status_new` (default: 2)
 15. Call `$msPayment->send()`
-16. If the payment response holds no `data.redirect`, the handler appends the thank-you page URL with the order uuid
+16. If the payment response has no `data.redirect`, the handler appends the thank-you page URL with the order uuid
 
-After step 11 the order already holds a number, and errors are handled differently from there on. A failure at steps 13–14 (or the repeated stock check before the status change) releases the number through `revertAllocatedNumber()` — but only when inventory tracking is on. At steps 15–16 the number stays with the order: the handler only drops the stock hold (`abortInventoryHold()`) and returns an error. A failed payment, in other words, does not free the number.
+From step 11 the order holds a number. What happens to that number on failure:
+
+| Where it fails | Order number |
+| --- | --- |
+| Steps 13–14, including the repeated stock check before the status change | Released through `revertAllocatedNumber()`, but only when inventory tracking is on |
+| Steps 15–16, the payment call and the redirect | Stays with the order. The handler only releases the stock hold (`abortInventoryHold()`) and returns an error |
 
 ### Order number generation
 
@@ -442,6 +494,8 @@ Every order has exactly one related `msOrderAddress` (table `ms3_order_addresses
 | Field | Type | Description |
 | --- | --- | --- |
 | `order_id` | integer | Order ID |
+| `createdon` | datetime | Created at |
+| `updatedon` | datetime | Updated at |
 | `first_name` | string | First name |
 | `last_name` | string | Last name |
 | `phone` | string | Phone |
@@ -522,6 +576,9 @@ $entries = $logService->getEntries($orderId);
 $entries = $logService->getEntries($orderId, true);
 // With limit
 $entries = $logService->getEntries($orderId, false, 50);
+
+// The previous method: add($orderId, $entry, $action, $visible = true)
+$logService->add($orderId, ['old' => 1, 'new' => 2], 'status');
 
 // Check if action is logged (setting ms3_order_log_actions)
 if ($logService->shouldLog('status')) {
@@ -694,23 +751,49 @@ Composite relations are deleted with the order (address, products, log). Aggrega
 
 ## Events
 
-| Event | When fired |
+| Event | When fired | Who calls it |
+| --- | --- | --- |
+| `msOnBeforeSaveOrder` / `msOnSaveOrder` | Any order save, including a draft save | `msOrder` (the model) |
+| `msOnBeforeRemoveOrder` / `msOnRemoveOrder` | Order removal | `msOrder` (the model) |
+| `msOnBeforeGetOrderCost` / `msOnGetOrderCost` | Building the order total | `OrderCostCalculator` |
+| `msOnBeforeGetCartCost` / `msOnGetCartCost` | Cart cost calculation | `OrderCostCalculator` |
+| `msOnBeforeGetDeliveryCost` / `msOnGetDeliveryCost` | Delivery cost calculation | `OrderCostCalculator` |
+| `msOnBeforeGetPaymentCost` / `msOnGetPaymentCost` | Payment fee calculation | `OrderCostCalculator` |
+| `msOnBeforeAddToOrder` / `msOnAddToOrder` | Adding or changing a field | `OrderFieldManager` |
+| `msOnBeforeRemoveFromOrder` / `msOnRemoveFromOrder` | Removing a field | `OrderFieldManager` |
+| `msOnBeforeValidateOrderValue` / `msOnValidateOrderValue` | Value validation | `OrderFieldManager` |
+| `msOnErrorValidateOrderValue` | Validation error | `OrderFieldManager` |
+| `msOnSubmitOrder` | Submit starts | `OrderSubmitHandler` |
+| `msOnBeforeCreateOrder` / `msOnCreateOrder` | Order creation, all three sources. See the note below | `OrderSubmitHandler`, `OrderFinalizeService` |
+| `msOnBeforeCreateOrderProduct` / `msOnCreateOrderProduct` | Adding an order line | `ManagerOrderProductsService` (manager), `OrderDraftManager` (programmatic creation) |
+| `msOnBeforeUpdateOrderProduct` / `msOnUpdateOrderProduct` | Changing a line, manager only | `ManagerOrderProductsService` |
+| `msOnBeforeRemoveOrderProduct` / `msOnRemoveOrderProduct` | Removing a line, manager only | `ManagerOrderProductsService` |
+| `msOnBeforeEmptyOrder` / `msOnEmptyOrder` | Clearing the order | `OrderDraftManager` |
+| `msOnBeforeChangeOrderStatus` / `msOnChangeOrderStatus` | Status change | `OrderStatusService` |
+| `msOnBeforeGetOrderUser` / `msOnGetOrderUser` | Finding or creating a user | `OrderUserResolver` |
+| `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder` | Manager finalization (only `origin=manager`) | `OrderFinalizeService` |
+
+The customer works with the cart, not with order lines. None of the six line events fire on the storefront, even when a product is added to the cart, although an `msOrderProduct` row is created there (`CartItemManager`). Cart changes use the cart events: `msOnBeforeAddToCart`, `msOnBeforeChangeInCart`, `msOnBeforeRemoveFromCart` (see [Cart events](../events/cart)).
+
+The call from `OrderDraftManager` is `addProductFromSnapshot()`, and it comes only from `ProgrammaticOrderService` (sessionless order creation for integrations and cron). That call has an extra `origin` key, which the manager call does not. Parameter details are on the [order line events](../events/order-product) page.
+
+### Parameters of msOnBeforeCreateOrder and msOnCreateOrder {#create-order-event-params}
+
+Two different services create an order, and their parameter sets do not match. A plugin that expects one source gets `null` instead of the object on the other.
+
+| Source | Parameters |
 | --- | --- |
-| `msOnBeforeSaveOrder` / `msOnSaveOrder` | Order save |
-| `msOnBeforeRemoveOrder` / `msOnRemoveOrder` | Order remove |
-| `msOnBeforeGetOrderCost` / `msOnGetOrderCost` | Order total composition |
-| `msOnBeforeGetCartCost` / `msOnGetCartCost` | Cart cost calculation |
-| `msOnBeforeGetDeliveryCost` / `msOnGetDeliveryCost` | Delivery cost calculation |
-| `msOnBeforeGetPaymentCost` / `msOnGetPaymentCost` | Payment cost calculation |
-| `msOnBeforeAddToOrder` / `msOnAddToOrder` | Add/update field |
-| `msOnBeforeRemoveFromOrder` / `msOnRemoveFromOrder` | Remove field |
-| `msOnBeforeValidateOrderValue` / `msOnValidateOrderValue` | Value validation |
-| `msOnErrorValidateOrderValue` | Validation error |
-| `msOnSubmitOrder` | Start submit |
-| `msOnBeforeCreateOrder` / `msOnCreateOrder` | Order creation |
-| `msOnBeforeChangeOrderStatus` / `msOnChangeOrderStatus` | Status change |
-| `msOnBeforeGetOrderUser` / `msOnGetOrderUser` | Find/create user |
-| `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder` | Finalize from manager (only `origin=manager`) |
+| Storefront submit (`OrderSubmitHandler`) | `handler` is the handler itself, `msOrder` is the draft, `customFields` are the extra fields from `properties['_validated']` |
+| Manager finalization and programmatic creation (`OrderFinalizeService`) | `service` is the service itself, `msOrder` is the order, `origin` is `manager` or `integration`, `from_manager` is `true` only when `origin=manager` |
+
+The two cases are easy to tell apart by which key is present:
+
+```php
+$order = $params['msOrder'] ?? null;
+$origin = $params['origin'] ?? 'storefront'; // no key means storefront submit
+```
+
+Returning an error from either event cancels creation: the order stays a draft, and the response carries the plugin message. The number has already been issued by then. On storefront submit it is released (`revertAllocatedNumber()`), but only when inventory tracking is on. Without tracking the number stays on the draft. Manager finalization never rolls the number back.
 
 ## Manager REST API
 
@@ -736,6 +819,39 @@ Endpoints of the Vue orders UI. They run under an mgr session — see [API Route
 | `GET` | `/api/mgr/orders/{id}/shipment` | Order shipment |
 | `PUT` | `/api/mgr/orders/{id}/shipment` | Update shipment |
 
-Create and finalize from the manager go through `OrderFinalizeService` and fire `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder`.
+Reading the list, the card, filters, stats, lines, the log, and the shipment requires `msorder_list`. Writing, including both `DELETE` routes, requires `msorder_save`. These routes have no separate `msorder_remove`.
+
+::: warning Editing lines is checked against stock {#inventory-reconcile}
+With inventory tracking on (`ms3_inventory_enabled`), adding a line, changing its quantity, and deleting it bring the warehouse reserve to the final quantity of each product, and move the stock by the difference. Since 1.14.3-beta1 this happens before the row is saved. If stock is short, the row is not saved, and the reserve and the stock stay as they were.
+
+The refusal comes as `409 Conflict` with one of two keys:
+
+| Key | When |
+| --- | --- |
+| `ms3_err_inventory_short` | Stock is short of the requested quantity |
+| `ms3_err_inventory_adjust_unsupported` | The stock service was replaced and does not implement `AdjustableInventoryInterface`, and the order already holds stock |
+
+The refusal `data` includes details, among them `can_override`: whether the current user has the `msorder_inventory_override` permission. The interface uses it to decide whether to offer a retry:
+
+```json
+{
+  "success": false,
+  "message": "Not enough stock",
+  "code": 409,
+  "errors": null,
+  "error_code": "conflict",
+  "data": {
+    "product_id": 15,
+    "available": 3,
+    "required": 10,
+    "can_override": true
+  }
+}
+```
+
+To push the edit through a shortage, send `force: true` in the body. Without the permission the response is `403 Forbidden` with the same message: the `force` flag grants nothing by itself. For `ms3_err_inventory_adjust_unsupported`, `can_override` is always `false`. The problem is the replaced service, not the permission.
+:::
+
+`POST /api/mgr/orders` creates a draft (`ms3_status_draft`, fallback id 1) and does not fire `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder`. Those events are fired by `POST /api/mgr/orders/{id}/finalize`, when `OrderFinalizeService` runs with `origin=manager`.
 
 Event parameters: [Events](../events).
