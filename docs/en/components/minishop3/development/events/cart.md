@@ -31,7 +31,7 @@ flowchart TD
 | `msOnChangeInCart`, `msOnChangeOptionInCart`, `msOnRemoveFromCart`, `msOnEmptyCart` | Ignored — the operation has already completed |
 | `msOnGetCart`, `msOnGetStatusCart` | Used only to substitute data, not to abort |
 
-These four after-events cannot return an error: the core calls them without reading the response. Put your checks into the paired `msOnBefore*`.
+Put checks in the paired `msOnBefore*` events. Where the response is ignored, a plugin error disappears and the customer never sees it.
 
 ## msOnBeforeGetCart
 
@@ -180,14 +180,14 @@ flowchart TD
   beforeChange --> onChange["msOnChangeInCart"]
 ```
 
-Fired **after** a product has been successfully added — it is already saved and the draft is recalculated.
+Fired **after** a product has been successfully added. The product is already saved and the draft is recalculated.
 
 ::: warning Can fail an already completed request
 The product is saved by this point, yet the plugin can still call `$modx->event->output(...)` — `add()` then returns an error to the client although the cart has already changed.
 :::
 
 ::: tip Not fired when the same product is added again
-If the product+options key is already in the cart, `msOnBeforeAddToCart` still fires — an `output()` on it blocks the quantity increase as well. Only then does `add()` hand the work over to `change()`: `msOnBeforeChangeInCart` and `msOnChangeInCart` fire, while `msOnAddToCart` does not. The quantity is summed with what is already there: 2 units on top of 3 give `count = 5`, and that is the value the change events receive.
+If the product+options key is already in the cart, `msOnBeforeAddToCart` still fires. `output()` on it also blocks the quantity increase. Then `add()` hands the work to `change()`, `msOnBeforeChangeInCart` and `msOnChangeInCart` fire, and `msOnAddToCart` does not. Quantities are summed: 2 units added to the existing 3 give `count = 5`.
 :::
 
 ### Parameters
@@ -537,7 +537,7 @@ $status = [
 ];
 ```
 
-There are no other keys in `status` — the array is built entirely by `CartItemManager::calculateStatus()`. `total_count` sums the quantities of every row, `total_positions` counts the rows themselves.
+There are no other keys in `status`. `CartItemManager::calculateStatus()` builds the whole array.
 
 ### Modifying data
 
