@@ -9,13 +9,32 @@ Customer account and profile. Auth flows: [Authorization](auth).
 
 ## Session
 
+`GET /customer/me` for a guest:
+
+```json
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "authenticated": false,
+    "customer": null,
+    "token": {
+      "expires_at": "2026-10-16 18:00:00",
+      "customer_id": 0
+    }
+  }
+}
+```
+
+After login `authenticated` becomes `true`, and `customer` carries the public fields: `id`, `first_name`, `last_name`, `email`, `phone`, `email_verified_at`, `is_active`, `created_at`, `updated_at`.
+
 | Method | Path | Notes |
 | --- | --- | --- |
-| `GET` | `/customer/me` | `authenticated`, `customer`, token meta |
+| `GET` | `/customer/me` | For a guest: `authenticated: false`, `customer: null` |
 | `POST` | `/customer/token/refresh` | Rotates a guest token too |
-| `POST` | `/customer/logout` | optional token |
-| `POST` | `/customer/login` | no middleware |
-| `POST` | `/customer/register` | no middleware |
+| `POST` | `/customer/logout` | Token is optional |
+| `POST` | `/customer/login` | No `TokenMiddleware` |
+| `POST` | `/customer/register` | No `TokenMiddleware` |
 | `POST` | `/customer/forgot-password` | |
 | `POST` | `/customer/reset-password` | |
 
@@ -27,7 +46,9 @@ Customer account and profile. Auth flows: [Authorization](auth).
 | `POST` | `/customer/add` | Quick single field |
 | `POST` | `/customer/changeAddress` | Address into order draft |
 
-The server trims profile fields by an allowlist. A guest token gets an authorization error on `profile`, `add` and `changeAddress`, while `me` and `token/refresh` succeed for a guest.
+The server accepts only profile fields from its allowlist. With a guest token, `profile`, `add`, and `changeAddress` return an authorization error. For a guest only `me` and `token/refresh` succeed.
+
+The body of `POST /customer/add` is `key` and `value`. The body of `POST /customer/changeAddress` is `address_hash` or `value`.
 
 ## Addresses
 
@@ -40,7 +61,7 @@ The server trims profile fields by an allowlist. A guest token gets an authoriza
 | `DELETE` | `/customer/addresses/{id}` |
 | `PUT` | `/customer/addresses/{id}/set-default` |
 
-`POST` answers 201. `name`, `city` and `street` are required — without them the response is 422 `validation_failed`.
+`POST` answers 201. `name`, `city`, and `street` are required. Without them the server returns 422 with `validation_failed`.
 
 ## Account orders
 
@@ -50,7 +71,11 @@ The server trims profile fields by an allowlist. A guest token gets an authoriza
 | `GET` | `/customer/orders/{id}` |
 | `POST` | `/customer/orders/{id}/cancel` |
 
-Submitted customer orders, not the `/order/get` draft.
+The list contains only the customer's submitted orders. The draft from `/order/get` is not in it.
+
+List parameters: `limit` (default 20, maximum 100), `offset`, and `status`. The list itself arrives twice, under `orders` and under `items`.
+
+An order can be cancelled in the statuses from `ms3_customer_cancel_allowed_statuses`. If the setting is empty, those are new and paid. A successful response returns `order_id` and `status_id`. An order in another status gets 400.
 
 ## Email
 
@@ -66,10 +91,12 @@ flowchart TD
 
 | Method | Path | Notes |
 | --- | --- | --- |
-| `GET` | `/customer/email/verify` | Public. Query token, `html=1` for page |
-| `POST` | `/customer/email/resend-verification` | Requires authenticated token |
+| `GET` | `/customer/email/verify` | Public. Query parameter `token`. With `format=json` the response is always JSON. With `html=1` it is a 302 |
+| `POST` | `/customer/email/resend-verification` | Needs an authenticated token |
 
-Custom email URL: `ms3_email_verification_url`. Otherwise the link points to `api.php?route=…/email/verify`.
+With `html=1`, success goes to `ms3_email_verification_success_url` or to `site_url` with `ms3_email_verified=1`. A failure goes to `site_url?ms3_email_verified=0`.
+
+`ms3_email_verification_url` sets the link address in the email. The template accepts both `[[+token]]` and `{token}`. If the setting is empty, the link points at `api.php?route=…/email/verify` and already includes `html=1`.
 
 ## Related pages
 
