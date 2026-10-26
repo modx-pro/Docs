@@ -7,7 +7,7 @@ description: Установка msReviews и первый блок отзыво�
 
 # Быстрый старт
 
-За несколько минут выведете на карточке сводку рейтинга, список отзывов, форму и JSON-LD.
+На карточке появятся сводка рейтинга, список отзывов, форма и JSON-LD.
 
 ```mermaid
 flowchart TB
@@ -40,7 +40,7 @@ flowchart TB
 
 1. [Подключите ModStore](https://modstore.pro/info/connection).
 2. **Extras → Installer → Download Extras** — **msReviews** → **Download** → **Install**.
-3. Убедитесь, что установлены **MiniShop3** и **[pdoTools](/components/pdotools/) 3.0+**.
+3. Нужны **MiniShop3** и **[pdoTools](/components/pdotools/) 3.0+**.
 4. **Настройки → Очистить кэш**.
 
 Пакет: [msReviews на modstore.pro](https://modstore.pro/packages/ecommerce/msreviews). Обновление с 1.1: [Обновление до 1.2](upgrade-1.2).
@@ -53,7 +53,7 @@ flowchart TB
 | Чанки | `tplReviewItem`, `tplReviewForm`, `tplRatingSummary` и др. |
 | Плагины | **msReviews Order status**, **msReviews Product resource tab**, **msReviews Storefront cache** — включены |
 | CMP | **Extras → msReviews** (Vue 3) |
-| Таблицы | `msreviews_reviews`, `msreviews_aggregate`, … |
+| Таблицы | `msreviews_reviews`, `msreviews_aggregate`, `msreviews_questions`, `msreviews_answers`, `msreviews_media`, `msreviews_tokens`, `msreviews_request_queue`, `msreviews_moderation_log`, `msreviews_spam_signals`, `msreviews_rl`, `msreviews_review_votes`. К именам добавляется префикс таблиц MODX |
 
 <!-- ![Вкладка «Отзывы» на ресурсе товара](/components/msreviews/screenshots/resource-product-tab.png) -->
 
@@ -101,8 +101,6 @@ flowchart TB
 
 ## Шаг 3: Системные настройки
 
-Минимум для старта:
-
 | Ключ | Рекомендация |
 | --- | --- |
 | `msreviews_request_order_statuses` | ID статусов MS3 для письма «оставьте отзыв» |
@@ -117,20 +115,20 @@ flowchart TB
 Плагин **msReviews Order status** ставит записи в очередь при смене статуса заказа. Отправка:
 
 - кнопка **Обработать очередь** во вкладке **Операции** CMP
-- или cron по URL:
+- или cron **POST** на `assets/components/msreviews/connector.php`. Тело `application/x-www-form-urlencoded`:
 
 ```text
-https://ваш-сайт/assets/components/msreviews/connector.php?action=request/process&key=ВАШ_msreviews_cron_key
+action=request/process&key=ВАШ_msreviews_cron_key
 ```
 
-Ключ задаётся в **`msreviews_cron_key`**. Пустой ключ — запрос вернёт 403.
+Ключ читается только из тела (`key` или `k`). Значение в адресе запроса не подходит. Пустой ключ в настройке, неверный ключ и ключ только в URL дают **403** и `msr_err_forbidden`.
 
 ## Шаг 5: Проверка
 
 1. **Настройки → Очистить кэш**.
 2. Откройте карточку товара: сводка, форма, список (если есть опубликованные отзывы).
 3. Отправьте тестовый отзыв — проверьте **Extras → msReviews → Отзывы**.
-4. На ресурсе товара — вкладка **Отзывы** (read-only сводка).
+4. На ресурсе товара — вкладка **Отзывы** (сводка только для чтения).
 
 ## Дальше
 
