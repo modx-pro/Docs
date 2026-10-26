@@ -259,7 +259,7 @@ Modes (`mode`):
 | --- | --- |
 | `auto` (default) | Recalculates only for `DefaultDelivery` / `DefaultPayment` (from `price`, `weight_price`, `free_delivery_amount` and the percentages). For custom handlers it returns the warning `delivery_manual_required` / `payment_manual_required` and keeps the previous `delivery_cost` and a fee of 0 — it calls no external API. |
 | `manual` | Takes the `manual_delivery_cost` you pass. The payment fee is still calculated automatically, from the field. |
-| `force_provider` | Explicitly calls `loadController()` → `getCost()` and `loadHandler()` → `getCost()` in `try/catch`. On failure — the warning `delivery_provider_error` / `payment_provider_error`, and the previous values stay. |
+| `force_provider` | Explicitly calls `loadController()` → `getCost()` and `loadHandler()` → `getCost()` in `try/catch`. A delivery failure keeps the previous `delivery_cost` and adds the warning `delivery_provider_error`. A payment failure sets the fee to 0, rebuilds `cost` and adds `payment_provider_error` ([#897](https://github.com/modx-pro/MiniShop3/issues/897)) |
 
 The response repeats the order data from `GET /api/mgr/orders/{id}` and adds:
 
