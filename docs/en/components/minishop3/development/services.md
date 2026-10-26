@@ -315,7 +315,7 @@ $status = $itemManager->calculateStatus($items);
 
 **Cart vs Order responsibility:**
 
-```
+```text
 OrderDraftManager    — draft lifecycle (shared by Cart and Order)
 CartItemManager     — cart line items (Cart-specific)
 OrderCostCalculator — order cost (Order-specific)
