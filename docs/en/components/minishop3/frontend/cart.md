@@ -129,6 +129,15 @@ The quantity form uses `min="0"`: submitting zero takes the product out of the c
 
 ### Changing options
 
+```mermaid
+flowchart TB
+  Add[cartAPI.add] --> Cart[Cart session]
+  Change[cartAPI.change] --> Cart
+  Opt[cartAPI.changeOption] --> Cart
+  Remove[cartAPI.remove] --> Cart
+  Clean[cartAPI.clean] --> Cart
+```
+
 If a line has options (size, colour), changing the combination goes through `POST /api/v1/cart/change-option`. The body takes `product_key` and `options`; without `product_key` the response is `400`.
 
 On the server `CartMutationHandler` recalculates the line key and fires two events: `msOnBeforeChangeOptionsInCart` before the change and `msOnChangeOptionInCart` after it.

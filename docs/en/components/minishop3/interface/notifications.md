@@ -9,6 +9,23 @@ Open **Extras → MiniShop3 → Notifications**. Here you set who gets a message
 
 ## Typical records
 
+```mermaid
+flowchart TB
+  PutOrder[PUT_api/mgr/orders/id_status_id] --> EventDisp[order_status_changed]
+  EventDisp --> Records[Notification_center_records]
+  Records --> Match{event_and_status_id_and_enabled}
+  Match --> CustomerEmail[customer_email]
+  Match --> ManagerEmail[manager_email]
+  Match --> ManagerTelegram[manager_telegram]
+  CustomerEmail --> ChunkTemplate[template_chunk_Fenom]
+  ManagerEmail --> ChunkTemplate
+  ManagerTelegram --> ChunkTemplate
+  Records --> DelayField{delay_use_scheduler_and_Scheduler}
+  DelayField --> Queue[Scheduler_queue]
+  DelayField --> SendNow[Send_immediately]
+  FormCreated[order_created_in_the_form] --> NotSent[Sending_is_not_called]
+```
+
 - Email to the customer when an order is created.
 - Email to the manager about a new order.
 - Customer notification when the order moves to Paid, Shipped or Delivered.

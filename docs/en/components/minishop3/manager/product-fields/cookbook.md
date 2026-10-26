@@ -53,6 +53,21 @@ When size and color use options:
 
 ## API appendix
 
+```mermaid
+flowchart TB
+  util[Product fields utility]
+  putSec[PUT /config/sections/product_data]
+  exists{Section already in the database?}
+  create[Create the section]
+  update[Update the sections]
+  putFields[PUT /config/page-fields/product_data]
+  tab[Data tab on the card]
+  util --> putSec --> exists
+  exists -->|No| create --> putFields
+  exists -->|Yes| update --> putFields
+  putFields --> tab
+```
+
 ```http
 GET /api/mgr/config/page-fields/product_data
 GET /api/mgr/config/sections/product_data

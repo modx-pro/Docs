@@ -13,6 +13,17 @@ MiniShop3 **1.14.x**, MODX 3, Vue-менеджер из пакета.
 
 ## Когда что выбирать
 
+```mermaid
+flowchart TD
+  needCol[Нужна новая колонка в базе?]
+  needCol -->|Да| extra[Свои поля]
+  needCol -->|Нет| where{Где показать?}
+  where -->|Вкладка «Данные» товара| productFields[Поля товара]
+  where -->|Форма заказа, производителя и прочие| modelFields[Поля модели]
+  where -->|Таблица списка| grid[Колонки гридов]
+  extra --> productFields
+```
+
 | Инструмент | Таблица | Задача |
 | --- | --- | --- |
 | [Свои поля](/components/minishop3/interface/utilities/extra-fields) | `ms3_extra_fields` | Новая колонка в БД и виджет в форме |
