@@ -263,7 +263,8 @@ items: [
 - в редакционном списке секции включают и выключают на строках
 - удалённые секции попадают в корзину страницы
 - контент правите в модальном инспекторе **Свойства**
-- пока инспектор открыт для только что добавленной секции, автосохранение на паузе: **Отмена** откатывает черновик к состоянию до добавления
+- пока инспектор открыт для только что добавленной секции, автосохранение на паузе
+- **Отмена** откатывает черновик к состоянию до добавления
 - правила видимости (контекст, UTM) открывает кнопка **Видимость**, если включена системная настройка
 - превью черновика в выезжающей панели по подписанной ссылке
 - отмена и повтор в текущей сессии
@@ -292,17 +293,25 @@ flowchart TD
 
 Секцию `gallery` создаёт Pro (`authoring: pro`). Отрисовка уже созданной `gallery` на сайте работает и в Free.
 
-В панели управления (**Blocks**) типы фильтруете чипами **Все / Из пакета / Мои**, массово скрываете предустановленные и задаёте своё превью в каталоге вместо схематичной картинки.
+В панели управления (**Blocks**):
+
+- чипы **Все / Из пакета / Мои**
+- массовое скрытие предустановленных типов
+- своё превью в каталоге вместо схематичной картинки
 
 35 типов полей в Free и 27 в Pro (62 всего): text, richtext, repeater, migx, file, select и др. При `pagebuilder_responsive_editor_enabled` в инспекторе появляются вкладки значений по устройствам.
 
 ## PageBuilder Pro
 
-Глобальная библиотека (**Общие блоки**): подтянуть с другой страницы (Связать | Копировать), сквозная запись связанных секций, шаблоны страниц, журнал событий секции (View/Restore).
-
-Вкладка **Примеры** в каталоге (тумблер Examples / `pagebuilder_catalog_examples_enabled`). [Agent API](agent-api) для скриптов и агентов. **Корзина** в панели управления восстанавливает удалённые секции и строки таблиц между ресурсами.
-
-Каталог Pro: [gallery](sections/gallery), features, team, tabs, карты, [формы](sections/contact_form), [квиз](sections/quiz), блоки miniShop3. Кадрирование полей image/gallery задаёт capability `image-crop` (Pro). Секция `video` создаётся в Free. Ещё 27 типов полей: gallery, map, relation, table, embeddedTable, editorjs и др.
+- глобальная библиотека (**Общие блоки**): подтянуть с другой страницы (Связать | Копировать), сквозная запись связанных секций
+- шаблоны страниц и журнал событий секции (View/Restore)
+- вкладка **Примеры** в каталоге (тумблер Examples / `pagebuilder_catalog_examples_enabled`)
+- [Agent API](agent-api) для скриптов и агентов
+- **Корзина** в панели управления: секции и строки таблиц между ресурсами
+- каталог: [gallery](sections/gallery), features, team, tabs, карты, [формы](sections/contact_form), [квиз](sections/quiz), блоки miniShop3
+- кадрирование image/gallery: capability `image-crop`
+- секция `video` создаётся в Free
+- ещё 27 типов полей: gallery, map, relation, table, embeddedTable, editorjs и др.
 
 ## Таблицы на ресурсе
 
@@ -314,7 +323,7 @@ flowchart TD
 
 ## Collections и панель управления
 
-Нужны PageBuilder Pro и capability `collections`. При `collections_enabled` вкладки ресурса (секции, таблицы, iframe и др.) настраиваются в панели управления. Без capability вкладки нет. Раздел **Компоненты → PageBuilder** ведёт в каталог ресурсов с секциями и типами секций.
+Нужны PageBuilder Pro и capability `collections`. При `collections_enabled` вкладки ресурса (секции, таблицы, iframe и др.) настраиваются в панели управления. Без capability вкладки нет. **Компоненты → PageBuilder** открывает конструктор типов и вкладки Pro. Списка ресурсов в CMP нет. Редактор секций на вкладке ресурса.
 
 ## Сниппеты, Public API и события
 
@@ -323,7 +332,7 @@ flowchart TD
 | `PageBuilder` | HTML секций |
 | `PageBuilderResource` | секции другого ресурса |
 | `PageBuilderSitemap` | XML sitemap |
-| [Public API](public-api) | опубликованные секции JSON для headless (`api.php`) |
+| [Public API](public-api) | опубликованные секции JSON для внешнего фронта (`api.php`) |
 | События `pbOn*` | плагины на save, publish, render и регистрацию типов |
 
 ## Системные требования
@@ -340,8 +349,8 @@ flowchart TD
 
 | Дополнение | Версия | Содержимое |
 | --- | --- | --- |
-| `pagebuilder` | 1.0.15-beta | Free: core, секции, панель управления, сниппеты, MIGX, responsive, Save = публикация, фильтр типов и свои превью |
-| `pagebuilderpro` | 1.0.15-beta | Pro: зависит от `pagebuilder` ≥ 1.0.15, quiz, library pull, шаблоны страниц, журнал секций |
+| `pagebuilder` | 1.0.17-beta | Free: core, секции, панель управления, сниппеты, MIGX, responsive, Save = публикация, фильтр типов и свои превью |
+| `pagebuilderpro` | 1.0.17-beta | Pro: зависит от `pagebuilder` ≥ 1.0.17, quiz, library pull, шаблоны страниц, журнал секций |
 
 Namespace в MODX: `pagebuilder`.
 
@@ -357,7 +366,7 @@ Namespace в MODX: `pagebuilder`.
 | Права, события `pbOn*`, модель данных | [Менеджер и события](integration) |
 | Шаблон, превью, кеш сниппета | [Вывод на сайте](frontend) |
 | CSS-токены и BEM секций | [Дизайн-система](design-system) |
-| JSON для headless | [Public API](public-api) |
+| JSON для внешнего фронта | [Public API](public-api) |
 | Сниппеты и параметры | [Сниппеты](snippets/) |
 | Pro, корзина, примеры | [PageBuilder Pro](pro) |
 | Скрипты и агенты | [Agent API](agent-api) |
@@ -371,18 +380,18 @@ Namespace в MODX: `pagebuilder`.
 
 | URL / путь | Назначение |
 | --- | --- |
-| Компонент `pagebuilder` → `index` | Каталог ресурсов с секциями, типы секций (Pro) |
+| Компонент `pagebuilder` → `index` | Конструктор типов секций и вкладки Pro. Списка ресурсов нет. Редактор секций на вкладке ресурса |
 | `assets/components/pagebuilder/connector.php` | MGR API (VueTools) |
 | `assets/components/pagebuilder/preview.php` | Превью черновика в iframe |
-| `assets/components/pagebuilder/api.php` | Public API: опубликованные секции JSON (headless) |
+| `assets/components/pagebuilder/api.php` | Public API: опубликованные секции JSON |
 | `assets/components/pagebuilder/api/v1.php` | REST API v1 (Pro): Bearer-токены, scopes `pages.read` / `catalog.read` |
 | Сниппет `[[!PageBuilder]]` | HTML опубликованных секций на сайте |
 
 ## Права
 
-| Permission | Назначение |
+| Право | Назначение |
 | --- | --- |
-| `pagebuilder_view` | Вкладка «Секции», каталог, токен превью |
+| `pagebuilder_view` | Вкладка «Секции», каталог типов, токен превью. То же открывает `save_document` |
 | `pagebuilder_save` | Сохранение черновика и публикация (запасной вариант: `save_document`) |
 | `pagebuilder_manage_types` | панель управления «Типы секций» (без запасного `view`) |
 

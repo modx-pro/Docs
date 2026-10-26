@@ -7,7 +7,7 @@ description: "Field schema in section JSON, inspector widgets, and data after sa
 
 Fields define what the editor fills in a section. The schema lives in type JSON (`core/components/pagebuilder/sections/{key}.json`) or is built in the control panel.
 
-The [reference](types) lists 62 types (35 Free and 27 Pro). Types with a page have JSON **Configuration**, a **Section data** block, and a Fenom or HTML example. Chunk values come from `section.data`.
+The [reference](types) lists 62 types (35 Free and 27 Pro).
 
 <!-- ![Section inspector](/components/pagebuilder/screenshots/mgr-section-inspector.jpg) -->
 
@@ -34,7 +34,7 @@ The [reference](types) lists 62 types (35 Free and 27 Pro). Types with a page ha
 | `showWhen` | Conditional visibility of a sibling field |
 | `fields` | Nested schema for repeater, fieldset, jsongrid |
 
-Full cycle on `richtext` example: [richtext.md](richtext).
+Full cycle on the [richtext](richtext) example.
 
 ## Common field properties
 
@@ -43,7 +43,7 @@ For fields with `name` that land in section data (not `heading` / `dependent`):
 | Key | Type | Inspector | Panel |
 | --- | --- | --- | --- |
 | `tab` | string | Fields with the same `tab` group under a subheading | yes |
-| `width` | 25–100 | Column width in % (flex row), default 100 | yes |
+| `width` | 25, 33, 50, 66, 75, 100 | Column width in % (flex row). The CMP offers only these values. Default 100 | yes |
 | `description` | string | Text under field label | yes |
 | `default` | any | Initial value when section data is empty | yes |
 | `active` | bool | `false` hides field in inspector | yes |
@@ -51,7 +51,7 @@ For fields with `name` that land in section data (not `heading` / `dependent`):
 
 **Decorative types** (`heading`, `dependent`): not written to data. Support `tab`, `width`, `label`.
 
-**Fieldset (Pro):** no own key in data. Nested `fields` flatten into section data. See [fieldset.md](fieldset).
+**Fieldset (Pro):** no own key in data. Nested `fields` flatten into section data. See [fieldset](fieldset).
 
 Other schema keys (`showWhen`, `currency`, `mask`, `sourceField`, `columns`, `table_key`, …) are not stripped by the control panel: `sectionTypeForm.ts` keeps them in passthrough `extra`.
 
@@ -73,7 +73,7 @@ On types `text`, `textarea`, `url`, `number`, `currency`, `richtext`, `slug` wit
 
 Names `alt`, `caption`, `slug` are excluded from responsive (`responsiveValues.ts`). If the field JSON has `"responsive": true`, per-breakpoint values stay on. You cannot collapse them into one string.
 
-Screen thresholds come from `pagebuilder_responsive_breakpoints` (or `responsiveBreakpoints` on the section type). Default: desktop ≥1024, tablet ≥768, mobile ≥0; manager preview uses `previewWidth`. Output mode: `pagebuilder_responsive_apply`.
+Screen thresholds come from `pagebuilder_responsive_breakpoints` (or `responsiveBreakpoints` on the section type). Default: desktop ≥1024, tablet ≥768, mobile ≥0. Manager preview uses `previewWidth`. Output mode: `pagebuilder_responsive_apply`.
 
 | Mode | Behavior |
 | --- | --- |
@@ -119,7 +119,7 @@ Live examples: section `_qa_field_matrix` (catalog: **QA: all field types**), "M
 }
 ```
 
-Section data holds an array of objects. Each row has service `_rowId`. In chunk: `{foreach $items as $item}` and `{$item.title|escape}`. Row order in inspector: drag handle or arrows. Same drag on gallery, keyvalue, inline table, and related lists. Details: [repeater.md](repeater).
+Section data holds an array of objects. Each row has service `_rowId`. In the chunk: `{foreach $items as $item}` and `{$item.title|escape}`. Row order in the inspector: drag handle or arrows. The same drag is on gallery, keyvalue, inline table, and related lists. Details: [repeater](repeater).
 
 ## showWhen
 
@@ -132,7 +132,7 @@ Section data holds an array of objects. Each row has service `_rowId`. In chunk:
 }
 ```
 
-Field is visible when `showWhen.field` matches `showWhen.value`. Array in `value` means "any of". Code: `fieldVisibility.ts`. More examples: [types.md](types#composite-scenarios).
+The field is visible when `showWhen.field` matches `showWhen.value`. An array in `value` means "any of". Code: `fieldVisibility.ts`. More examples: [types](types#composite-scenarios).
 
 ## optionsSource
 
@@ -148,7 +148,7 @@ On draft save `SectionFieldEnricher` adds:
 - **video**: `embed_url`, `provider`, `watch_url`. Flat `video_*` when `type=video` or field name contains `video`
 - **map**: `embed_url`, `watch_url`. Flat `map_*`
 
-In chunks for media use `{$photo.url}`, not a bare path string. See [image.md](image), [video.md](video).
+In chunks for media use `{$photo.url}`, not a bare path string. See [image](image), [video](video).
 
 ## Next
 

@@ -3,9 +3,9 @@ title: ms3recentlyviewed
 ---
 # Snippet ms3recentlyviewed
 
-Outputs a list of products by given IDs. Used for the “Recently viewed” block with server-side output or after getting IDs from the connector.
+Product list by given IDs. “Recently viewed” with server-side output or IDs from the connector.
 
-Internally it calls msProducts (pdoTools). The addon sets the `parents` parameter required in MODX 3.
+Internally msProducts (pdoTools). The addon sets `parents` for MODX 3.
 
 ## Parameters
 
@@ -17,13 +17,13 @@ Internally it calls msProducts (pdoTools). The addon sets the `parents` paramete
 | **emptyTpl** | Empty state chunk | tplViewedEmpty |
 | **limit** | Max items in result | from setting `ms3recentlyviewed.max_items` (`20`) |
 | **includeThumbs** | Thumb aliases for `msProducts` | `thumb,small` |
-| **fromDB** | Load IDs from DB if the user is authenticated in the current context. `sync_enabled` is not read | `false` |
+| **fromDB** | Load IDs from DB if the user is authenticated in the current context. `sync_enabled` is not read. Not in transport | `false` |
 | **autoIdsFallback** | If the ID list is empty, take the first catalog products (demo). Not in transport | `false` |
 | **showUnpublished** / **showDeleted** / **showZeroPrice** | Passed to the product query. Not in transport | `false` |
 
-**ids** comes from the template or placeholder **`[[+viewedIds]]`**, or is omitted when **fromDB=true** (authenticated user). `sync_enabled` does not gate this read. Guests + `storage_type=cookie`: plugin fills `viewedIds`. Fenom: **`$_modx->getPlaceholder('viewedIds')`**.
+**ids** from the template or **`[[+viewedIds]]`**, or omit when **fromDB=true** (authenticated user). `sync_enabled` does not gate this read. Guests with `storage_type=cookie`: plugin sets `viewedIds`. Fenom: **`$_modx->getPlaceholder('viewedIds')`**.
 
-Stub snippet **`ms3rvDebugGetViews`** returns an empty string. Do not call it.
+**`ms3rvDebugGetViews`** is a stub that returns an empty string. Do not call it.
 
 ## Examples
 
@@ -63,4 +63,4 @@ Stub snippet **`ms3rvDebugGetViews`** returns an empty string. Do not call it.
 
 :::
 
-When there are no products, the snippet returns an empty string or `emptyTpl` content. The template can hide the block when the result is empty.
+With no IDs the snippet returns wrapper `div.ms3rv__list` with `data-ms3rv-hydrate="viewed"` and `emptyTpl` HTML. `viewed.js` fills the list from the browser via that marker.

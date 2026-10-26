@@ -9,7 +9,7 @@ description: "FetchIt вызывает обработчик секции contact
 
 ## Назначение
 
-Валидация полей, письмо через `modMail`, JSON-ответ FetchIt (success / field errors / redirect).
+Проверяет поля, шлёт письмо через `modMail`, отвечает JSON FetchIt (success / field errors / redirect).
 
 ```mermaid
 flowchart LR
@@ -20,7 +20,7 @@ flowchart LR
 
 ## Где вызывается
 
-Chunk `pagebuilderpro_contact_form` вызывает [PageBuilderFetchIt](PageBuilderFetchIt) со свойствами `snippet` = `PageBuilderContactForm` и `form` = `pagebuilderpro_contact_form_fields`.
+Чанк `pagebuilderpro_contact_form` вызывает [PageBuilderFetchIt](PageBuilderFetchIt) со свойствами `snippet` = `PageBuilderContactForm` и `form` = `pagebuilderpro_contact_form_fields`.
 
 ## Параметры
 
@@ -28,10 +28,10 @@ Chunk `pagebuilderpro_contact_form` вызывает [PageBuilderFetchIt](PageBu
 
 | Поле | Назначение |
 | --- | --- |
-| `pb_form_key` | Ключ формы из данных секции. Пустой ключ — ошибка валидации |
-| `pb_csrf` | Токен из скрытого поля чанка. Неверный или пустой — лексикон `pagebuilder_fe_form_validation_error` |
+| `pb_form_key` | Ключ формы из данных секции. Пустой ключ: ошибка валидации |
+| `pb_csrf` | Токен из скрытого поля чанка. Неверный или пустой: лексикон `pagebuilder_fe_form_validation_error` |
 | поля repeater | Имена и правила из секции |
-| `nospam` | Honeypot. Заполненное поле отвечает success, письмо не отправляется |
+| `nospam` | Honeypot. Заполненное поле отвечает success до проверки CSRF, письмо не отправляется |
 | `pageId` | Необязательный id ресурса со страницы формы |
 
 `resource_id` страницы, где искать секцию:
@@ -42,6 +42,8 @@ Chunk `pagebuilderpro_contact_form` вызывает [PageBuilderFetchIt](PageBu
 | свойство `resource_id` в action FetchIt | 2 |
 | текущий ресурс MODX | 3 |
 
+Чанк передаёт в action ключи `form_key`, `form_csrf`, `successMessage` и `validationErrorMessage`. `form_csrf` в action важнее токена сессии.
+
 ### Ошибки
 
 | Ситуация | Ответ |
@@ -49,6 +51,7 @@ Chunk `pagebuilderpro_contact_form` вызывает [PageBuilderFetchIt](PageBu
 | Секция с тем же `form_key` не найдена | `pagebuilder_fe_form_not_found` |
 | Прямой вызов обработчика без сервиса FetchIt | JSON с `pagebuilder_fe_fetchit_unavailable` |
 | Отрисовка формы без FetchIt | Чанк показывает `pagebuilder_fe_form_unavailable`, см. [PageBuilderFetchIt](PageBuilderFetchIt) |
+| `modMail` не отправил письмо | `pagebuilder_fe_form_send_error`, письмо не считается отправленным |
 
 ## Зависимости
 

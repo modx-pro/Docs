@@ -266,6 +266,16 @@ await ms3.cartAPI.clean()
 `cartAPI.clean()` только отправляет запрос к серверу. Мини-корзина, счётчики и карточки товаров **не обновятся** сами. Для полного обновления UI вызывайте `ms3.cartUI.handleClean()`: он вызовет API, отрисует HTML и отправит событие `ms3:cart:updated`. Подробнее: [Frontend JavaScript](frontend-js#cartui).
 :::
 
+### Что возвращают методы корзины
+
+| Метод | `data` в ответе |
+| --- | --- |
+| `get` | `cart`, `status`, `items` |
+| `add`, `change`, `changeOption`, `remove` | `last_key`, `cart`, `status`, `items` |
+| `clean` | `cart`, `status`, `items` — без `last_key` |
+
+`last_key` — ключ позиции, которой коснулась операция. У `changeOption` рядом приходит `old_product_key`: смена набора опций меняет ключ. Когда в запросе передан `render`, к этим ключам добавляется `render` с готовой разметкой.
+
 ## OrderAPI
 
 Методы заказа.
@@ -380,6 +390,20 @@ const response = await ms3.orderAPI.getCost()
   }
 }
 ```
+
+### Что возвращают методы заказа
+
+| Метод | `data` в ответе |
+| --- | --- |
+| `get` | `order` — черновик целиком |
+| `add` | только записанное поле: `{ "first_name": "Иван" }` |
+| `set` | `order` |
+| `remove` | `removed` — имя удалённого ключа |
+| `clean` | пусто |
+| `submit` | `order_id`, `order_num`, `redirect`, у штатной оплаты ещё `payment_link` |
+| `getCost` | суммы заказа вместе с итогами корзины |
+
+У `add` поле `message` приходит пустым: подтверждения записи нет, судите по `success`.
 
 ## CustomerAPI
 
@@ -909,17 +933,27 @@ document.querySelector('.add-to-cart').addEventListener('click', () => {
 }
 ```
 
-**При ошибке:**
+**При ошибке** ключи `code`, `errors` и `error_code` есть всегда, даже когда `errors` пустой:
 
 ```javascript
 {
   success: false,
   message: "Описание ошибки",
-  data: {
-    errors: ["field1", "field2"]  // Поля с ошибками
-  }
+  code: 400,
+  errors: null,
+  error_code: "bad_request"
 }
 ```
+
+Форм ошибки три, и различаются они тем, где лежит разбор по полям.
+
+| Когда | Как выглядит |
+| --- | --- |
+| Битый запрос, нет авторизации, не найдено | `errors: null`, `data` нет |
+| Валидация с разбором по полям | `code: 422`, `error_code: validation_failed`, `errors` — карта «поле → сообщение»; в `data` приходит текущий черновик |
+| Правило магазина | `code: 400`, `error_code: business_rule`, в `data` массив имён полей, например `["delivery_id"]` |
+
+То есть `errors` — это всегда карта или `null`, а массив имён полей приходит в `data`, не в `errors`.
 
 ## Токены и авторизация
 

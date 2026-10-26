@@ -8,8 +8,8 @@ description: "Common PageBuilder issues: editor, permissions, cache, Pro, and mi
 
 1. Install **VueTools** 1.1.2+ and clear cache.
 2. Set `pagebuilder_resource_tab_enabled = 1`.
-3. Check that the resource matches `pagebuilder_resource_tab_parents` (empty parent list means all resources).
-4. Grant the user `pagebuilder_view` and `view` on the resource.
+3. Check `pagebuilder_resource_tab_parents`. An empty list means all resources. Otherwise the resource id itself, its direct parent, or any ancestor matches.
+4. Grant `pagebuilder_view` or `save_document`, and the `view` policy on the resource. The policy is required to open the form.
 
 Open the browser console: VueTools load errors show on the Sections tab.
 
@@ -23,23 +23,23 @@ Open the browser console: VueTools load errors show on the Sections tab.
 
 - Check `pagebuilder_preview_secret` (after install the value must not be empty).
 - Preview URL: `{assets_url}components/pagebuilder/preview.php`.
-- The user needs `pagebuilder_view`.
+- The user needs `pagebuilder_view` or `save_document`.
 
 ## CSS on the site differs from preview
 
-Preview loads template CSS (`pagebuilder_preview_include_template_css`) and URLs from `pagebuilder_preview_css_urls`. On the site only `pagebuilder-sections.css` loads by default. Add theme styles in the shared layout or move the needed rules.
+Preview loads template CSS (`pagebuilder_preview_include_template_css`) and URLs from `pagebuilder_preview_css_urls`. On a Free site `pagebuilder-sections.css` loads. With capability `pro`, `pagebuilder-sections-pro.css` and `pagebuilder-commerce.css` are added when the files exist. Add theme styles in the shared layout or move the needed rules.
 
 ## Pro section is gray in the palette
 
-You need **pagebuilderpro** and an active Pro license. Commerce sections also require **miniShop3**.
+You need **pagebuilderpro** installed (capability `pro`). The code does not check the license again each time the palette opens. Commerce sections also require **miniShop3**.
 
 ## "Package provider not found" on install
 
-Paid extra from modstore.pro: add provider `https://modstore.pro/extras/` under **Packages → Providers** before install.
+Paid package from modstore.pro: add provider `https://modstore.pro/extras/` under **Packages → Providers** before install.
 
 ## Custom section missing from the list
 
-Register JSON via `pbOnRegisterSectionDefinitions` or import in the control panel (Pro). Check JSON syntax and unique `key`.
+Register JSON via `pbOnRegisterSectionDefinitions` or create a UI type on the **Blocks** tab in the CMP (`pagebuilder_manage_types`). Check JSON syntax and a unique `key`. The Bundle tab is hidden in this release. Bundle import through the CMP is not available.
 
 ## UTM rules do not work
 

@@ -69,10 +69,10 @@ Useful for partial blocks in different template areas.
 
 In section `settings` you can set:
 
-- `contexts`: MODX context keys (current request context)
+- `contexts`: MODX context keys. Compared with the request context. The HTML cache key also contains that context, so a cache hit does not serve HTML from another context
 - `utm`: UTM rules from `$_SESSION['utm']` after [PageBuilderUtmSession](snippets/PageBuilderUtmSession)
 
-With Pro and capability `conditions`, add `settings.conditions` (loggedIn, guest, context, GET params, and more). Checked via `SectionVisibility` and event `pbOnCheckSectionVisibility`.
+With Pro and capability `conditions`, add `settings.conditions`. Types: `loggedIn`, `guest`, `context`, `get`, `resource`, `template`. An unknown `type` does not hide the section. Checked via `SectionVisibility` and event `pbOnCheckSectionVisibility`.
 
 The section is omitted from HTML when a rule fails.
 

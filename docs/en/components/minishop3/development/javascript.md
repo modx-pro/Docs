@@ -282,6 +282,16 @@ await ms3.cartAPI.clean()
 `cartAPI.clean()` is a headless method: it only sends the request to the server. The mini-cart, counters and product cards **do not refresh** by themselves. For a full UI update use `ms3.cartUI.handleClean()` — it calls the API, renders the HTML and dispatches `ms3:cart:updated`. More in [Frontend JavaScript](frontend-js#cartui).
 :::
 
+### What the cart methods return
+
+| Method | `data` in the response |
+| --- | --- |
+| `get` | `cart`, `status`, `items` |
+| `add`, `change`, `changeOption`, `remove` | `last_key`, `cart`, `status`, `items` |
+| `clean` | `cart`, `status`, `items` — no `last_key` |
+
+`last_key` is the key of the line the operation touched. `changeOption` adds `old_product_key` next to it: a new set of options changes the key. When the request carries `render`, a `render` key with the ready markup joins the list.
+
 ## OrderAPI
 
 API for working with the order.
@@ -393,6 +403,20 @@ const response = await ms3.orderAPI.getCost()
   }
 }
 ```
+
+### What the order methods return
+
+| Method | `data` in the response |
+| --- | --- |
+| `get` | `order` — the whole draft |
+| `add` | the written field only: `{ "first_name": "Ivan" }` |
+| `set` | `order` |
+| `remove` | `removed` — the name of the removed key |
+| `clean` | empty |
+| `submit` | `order_id`, `order_num`, `redirect`, plus `payment_link` with the built-in payment |
+| `getCost` | the order amounts together with the cart totals |
+
+`add` returns an empty `message`: there is no write confirmation, judge by `success`.
 
 ## CustomerAPI
 
@@ -920,17 +944,27 @@ All methods return a Promise with an object:
 }
 ```
 
-**On error:**
+**On error** the `code`, `errors` and `error_code` keys are always there, even when `errors` is empty:
 
 ```javascript
 {
   success: false,
   message: "Error description",
-  data: {
-    errors: ["field1", "field2"]  // Error fields
-  }
+  code: 400,
+  errors: null,
+  error_code: "bad_request"
 }
 ```
+
+There are three shapes, and they differ in where the per-field breakdown sits.
+
+| When | How it looks |
+| --- | --- |
+| Malformed request, no authorization, not found | `errors: null`, no `data` |
+| Validation with a per-field breakdown | `code: 422`, `error_code: validation_failed`, `errors` is a field → message map; `data` carries the current draft |
+| A shop rule | `code: 400`, `error_code: business_rule`, `data` holds an array of field names, for example `["delivery_id"]` |
+
+So `errors` is always a map or `null`, and an array of field names arrives in `data`, not in `errors`.
 
 ## Tokens and authorization
 

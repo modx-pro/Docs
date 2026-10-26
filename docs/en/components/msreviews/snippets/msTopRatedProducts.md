@@ -7,11 +7,11 @@ description: Топ товаров по рейтингу для главной m
 
 # Сниппет msTopRatedProducts
 
-Выводит список товаров, отсортированных по агрегированному рейтингу магазина (алгоритм Wilson или среднее — настройка `msreviews_*_algorithm`).
+Выводит список товаров по display-рейтингу (`msreviews_aggregate_algorithm`: `average` или `wilson`). Сортировка идёт по `display_avg`.
 
 ## Назначение
 
-Блок «Лучшие товары» / «Топ по отзывам» на главной. В чанке `tplTopRatedProduct`: `product_id`, `product_title`, `product_url`, `rating_html`. Цену и фото добавьте в чанке через Fenom или MS3.
+«Лучшие товары» на главной. Чанк `tplTopRatedProduct`: `product_id`, `product_title`, `product_url`, `rating_html`. Цену и фото — в чанке (Fenom, MS3).
 
 ## Где вызывать
 
@@ -21,7 +21,7 @@ description: Топ товаров по рейтингу для главной m
 ## Зависимости
 
 - **MiniShop3**, **msReviews**
-- **pdoTools 3.0+** — рендер чанков на Fenom
+- **pdoTools 3.0+** — отрисовка чанков на Fenom
 - `minReviewCount` отсеивает товары с малым числом отзывов
 
 ## Параметры
@@ -30,15 +30,15 @@ description: Топ товаров по рейтингу для главной m
 | --- | --- | --- |
 | `limit` | `8` | Товаров в блоке (1–24) |
 | `minReviewCount` | `3` | Минимум отзывов для попадания в топ |
-| `parents` | *(пусто)* | CSV id категорий |
+| `parents` | *(пусто)* | CSV id категорий, не больше 50. Под ними до 2000 документов |
 | `parent` | *(пусто)* | Alias для одной папки (альтернатива `parents`) |
-| `productIds` | *(пусто)* | CSV id конкретных товаров |
+| `productIds` | *(пусто)* | CSV id товаров, не больше 50 |
 | `tpl` | `tplTopRatedProduct` | Чанк строки товара |
 | `wrapper` | `tplTopRatedProductsList` | Чанк-обёртка |
 | `hideEmpty` | `1` | Не выводить блок без товаров |
 | `heading` | *(лексикон)* | Свой заголовок блока |
 | `registerCss` | `1` | Подключать `reviews.css` этим вызовом |
-| `registerJs` | `1` | Подключать JS витрины этим вызовом |
+| `registerJs` | `1` | Не влияет на JS: регистрируется только CSS |
 
 ## Базовый блок
 

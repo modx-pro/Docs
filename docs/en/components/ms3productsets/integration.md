@@ -3,8 +3,6 @@ title: Site integration
 ---
 # Site integration
 
-How to wire snippets in Fenom and standard MODX, and how to verify the result.
-
 ## 1. Load assets (required)
 
 In the template (or shared head/footer), load **lexicon first**, then CSS and JS.
@@ -27,7 +25,7 @@ In the template (or shared head/footer), load **lexicon first**, then CSS and JS
 
 ## 2. Block in the product card: “Frequently bought together”
 
-After you add the call, a recommendations block should appear on the product card. If there are no products, the block is not shown.
+If there are no products, the block is not shown.
 
 ::: code-group
 
@@ -205,11 +203,11 @@ Button label from MiniShop3 lexicon (`ms3_cart_add`), same as chunk **tplSetItem
 
 :::
 
-Stock `tplSetItem` is a MiniShop3 `ms3_form`, not `data-add-to-cart`. The example below is custom. `productsets.js` hits MiniShop3 Web API first (`ms3Config.actionUrl`). Connector `add_to_cart` is fallback.
+Stock `tplSetItem` is a MiniShop3 `ms3_form`, not `data-add-to-cart`. The example is custom. `productsets.js` hits MiniShop3 Web API first (`ms3Config.actionUrl`). Connector `add_to_cart` is fallback.
 
 ## 8. “Add entire set” button
 
-`data-add-set` adds all products in the set. Used in **tplSetVIP** and **tplSetWrapper** (when `count > 0`).
+`data-add-set` adds every product in the set. **tplSetWrapper** shows the button when `count > 0`. **tplSetVIP** always prints the button. That chunk does not receive `count`.
 
 **tplSetVIP** / **tplSetWrapper** / **tplPopcorn** set `data-msps-product-ids`. JS reads that first, then `[data-product-id]` / `[data-add-to-cart]`, then `input[name="id"]`.
 
@@ -229,7 +227,7 @@ Stock `tplSetItem` is a MiniShop3 `ms3_form`, not `data-add-to-cart`. The exampl
 
 :::
 
-Use component lexicon (`ms3productsets`, topic `default`) for the label, not hard-coded text.
+Use component lexicon (`ms3productsets`, topic `default`) for the label.
 
 ## Post-integration checklist
 

@@ -3,6 +3,7 @@ title: Каталог и главная
 description: Рейтинг в msProducts, виджеты Latest, TopRated, QuestionsLatest, prefetch
 ---
 <!-- TODO: translate from docs/components/msreviews/frontend/catalog.md -->
+
 # Каталог и главная
 
 ## Каталог (msProducts)

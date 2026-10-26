@@ -327,7 +327,11 @@ A custom tab with no `position` gets `100`. A value from the **5–99** range pu
 
 The built-in tabs occupy the integers 0–4, so no integer will place a tab between them — sorting is numeric, and `2.5` lands between Address and Shipment.
 
-Tabs with the same position sort in registration order.
+Tabs with the same position sort in registration order. Built-in tabs enter the list first, so `position: 0` puts your tab right after Info rather than before it — a negative number is what makes it first.
+
+::: tip `position: 0` works here, on product tabs it does not
+An order tab reads the value as `position ?? 100`, so zero survives. On [product tabs](product-tabs-integration.md#tab-positioning) the core reads `position || 100` and replaces zero with `100`.
+:::
 
 ## If the tab does not appear
 

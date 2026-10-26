@@ -74,7 +74,9 @@ Request and response bodies: [auth](auth), [catalog](catalog), [cart](cart), [ch
 | `GET` | `/customer/orders/{id}` | auto-mint | Order detail |
 | `POST` | `/customer/orders/{id}/cancel` | auto-mint | Cancel |
 
-Account endpoints with auto-mint need a customer on the token: otherwise the controller returns unauthorized / business error. See [Customer](customer).
+Auto-mint still runs for addresses, the profile, `customer/add`, the verification resend, and account orders, but the request itself requires a customer on the token.
+
+For a guest, `GET /customer/me` and `POST /customer/token/refresh` succeed: `me` returns `authenticated: false` and `customer: null`. Details are on [Customer](customer).
 
 ## Product (public)
 
@@ -101,14 +103,15 @@ Account endpoints with auto-mint need a customer on the token: otherwise the con
 | --- | --- | --- | --- |
 | `GET` | `/delivery/get/{id}` | none | Delivery method |
 | `GET` | `/delivery/list` | none | Active deliveries |
-| `POST` | `/delivery/webhook/{delivery_id}` | none | Provider webhook (signature, not customer token) |
+| `POST` | `/delivery/webhook/{delivery_id}` | none | Delivery webhook (`handler` signature; 404 when `ms3_shipment_enabled=0`) |
 | `GET` | `/payment/get/{id}` | none | Payment method |
 | `GET` | `/payment/list` | none | Active payments |
+| `POST` | `/payment/webhook/{payment_method_id}` | none | Payment webhook (`PaymentWebhookHandlerInterface`) |
 
 ## Health
 
 | Method | Path | Token | Purpose |
 | --- | --- | --- | --- |
-| `GET` | `/health` | none | API status |
+| `GET` | `/health` | none | Availability check: `status`, `version` (`ms3_version`, otherwise `1.0.0`), `timestamp`, `api: web` |
 
 Programmatic order creation from PHP (cron/extra) is not Web HTTP: [ProgrammaticOrderService](/en/components/minishop3/development/backend-api/order#programmatic-order).

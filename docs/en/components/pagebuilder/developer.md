@@ -5,8 +5,6 @@ description: Section definitions, data model, extensions, and PageBuilder JS API
 
 # Developer
 
-For adding custom sections, extending Pro, or calling the connector from your code.
-
 ## References
 
 | Topic | Pages |
@@ -41,7 +39,7 @@ Minimal JSON:
 }
 ```
 
-Sections with `category: dev` or a key containing `_` do not appear in the production catalog.
+Sections with `category: dev` or a key that starts with `_` do not appear in the production catalog. The key `my_promo` stays in the catalog. A hidden key example is `_qa_field_matrix`.
 
 ### Pro sections
 
@@ -76,11 +74,21 @@ Register from plugin:
 
 ```php
 <?php
+
+use PageBuilder\Section\SectionDefinition;
+
 switch ($modx->event->name) {
     case 'pbOnRegisterSectionDefinitions':
         /** @var \PageBuilder\Section\SectionRegistry $registry */
         $registry = $modx->event->params['registry'];
-        $registry->registerFromFile($modx->getOption('core_path') . 'components/mypackage/sections/custom.json');
+        $path = $modx->getOption('core_path') . 'components/mypackage/sections/custom.json';
+        $payload = json_decode((string) file_get_contents($path), true);
+        if (!is_array($payload)) {
+            break;
+        }
+        $payload['source'] = 'code';
+        $payload['readOnly'] = true;
+        $registry->register(SectionDefinition::fromArray($payload));
         break;
 }
 ```
@@ -113,8 +121,6 @@ Pro: `pb_library_items`, `pb_section_events`, `pb_page_templates`. Table `pb_rev
 
 ### Document JSON
 
-Page document format:
-
 ```json
 {
   "schemaVersion": 1,
@@ -135,7 +141,7 @@ Page document format:
 
 ### Render cache
 
-Cache partition: `pagebuilder/{resourceId}`. Cleared on publish and unpublish. Cache is not used when checking UTM visibility during the request, with `use_cache=0`, or on render errors.
+Cache partition: `pagebuilder/{resourceId}`. Cleared on publish and unpublish. Cache is neither written nor read when the document has UTM rules, `conditions`, a type with `cacheable: false`, or `runtimeContext: true`. The same applies to `use_cache=0` and to a render error.
 
 ### PHP service
 
@@ -154,9 +160,9 @@ Plugin on `pbOnRegisterFeatureProviders` registers your `FeatureProvider` alongs
 
 Boot, save, and render events: [Manager and events](integration#events).
 
-In `pbOnBeforeSave` extensions can replace the document before draft or publish write via `PageDocumentBag`. `DocumentChangeSet` separately records section enable/disable (no false "update" on a pure toggle).
+In `pbOnBeforeSave` extensions can replace the document before the draft write via `PageDocumentBag`. Publish does not accept that object. `DocumentChangeSet` separately records section enable/disable (no false "update" on a pure toggle).
 
-## Public API (Headless)
+## Public API
 
 Read-only JSON for external frontends. Entry point `assets/components/pagebuilder/api.php`. Enable and keys: [Public API](public-api) and [settings](settings#public-api).
 
@@ -166,7 +172,7 @@ Writes and drafts: [Agent API](agent-api) (Pro) or **Sections** tab in the manag
 
 | File | Purpose |
 | --- | --- |
-| `pagebuilder-api.js` | `PageBuilderApi`: POST to connector from custom manager UI |
+| `pagebuilder-api.js` | `PageBuilderApi`: POST to connector from your manager UI |
 | `pb-fetch-lite.js` | Minimal POST without Vue |
 
 ```js
@@ -183,15 +189,13 @@ For agents and bulk section writes use [Agent API](agent-api).
 
 ## Resource data tables {#resource-data-tables}
 
-Processors:
-
 | Processor | Purpose |
 | --- | --- |
 | `mgr/datatable/list` | Resource tables |
 | `mgr/datatable/rows/list` | Rows: `search`, `page`, `limit`, `filters` |
 | `mgr/datatable/rows/save` / `remove` | Create, update, delete rows |
 
-JSON filters: `{ "price": { "op": "gte", "value": "10" } }`. Operators: `eq`, `contains`, `in`, `gte`, `lte`, `between`, `empty`, `not_empty`.
+JSON filters: `{ "price": { "op": "gte", "value": "10" } }`. Operators: `eq`, `contains`, `in`, `gt`, `lt`, `gte`, `lte`, `between`, `empty`, `not_empty`.
 
 Tables tab or `table` tab type in [Collections](cmp#collections). Rows on the site via `PageBuilderTableRows` snippet.
 

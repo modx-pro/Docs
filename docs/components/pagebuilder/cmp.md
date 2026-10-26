@@ -5,26 +5,26 @@ description: "Blocks, UTM, Collections, Forms, Bundle, API tokens и корзи�
 
 # Панель управления PageBuilder
 
-**Компоненты → PageBuilder** (`SectionTypesManager.vue`). Списка ресурсов с секциями в CMP нет. Редактор — вкладка **Секции** на ресурсе.
+**Компоненты → PageBuilder** (`SectionTypesManager.vue`). Списка ресурсов с секциями в CMP нет. Редактор открывается на вкладке **Секции** ресурса.
 
-Вкладка **Blocks**: право `pagebuilder_manage_types`. Pro-вкладки появляются только при своей capability (`utm`, `collections`, `basket`, …). Процессоры обычно требуют `pagebuilder_view`. Право не появляется у каждого менеджера само.
+Вкладка **Модели секций** (id `blocks`): право `pagebuilder_manage_types`. Pro-вкладки появляются только при своей capability (`utm`, `collections`, `basket`, …). Процессоры обычно требуют `pagebuilder_view`. Право не появляется у каждого менеджера само.
 
 | Вкладка | Слой | Назначение |
 | --- | --- | --- |
-| **Blocks** | Free | UI-конструктор типов секций (`pb_section_types`) |
-| **UTM** | Pro | Глобальный реестр UTM-параметров (`pb_utm_params`), capability `utm` |
+| **Модели секций** | Free | UI-конструктор типов секций (`pb_section_types`), id `blocks` |
+| **Правила показа** | Pro | Глобальный реестр UTM-параметров (`pb_utm_params`), capability `utm`, id `utm` |
 | **Рабочие области** | Pro | Наборы вкладок на форме ресурса по шаблону (`pb_collections`), capability `collections` |
-| **Basket** | Pro | Глобальная корзина удалённых секций и строк таблиц |
+| **Архив** | Pro | Глобальная корзина удалённых секций и строк таблиц, id `basket` |
 | **Шаблоны страниц** | Pro | Скелеты пустых секций (`pb_page_templates`), capability `page-templates` |
-| **Forms** | Pro | Схемы для [form_builder](sections/form_builder), capability `forms` |
+| **Формы** | Pro | Схемы для [form_builder](sections/form_builder), capability `forms` |
 | **Bundle** | Pro | Export/import UI-типов. В текущем релизе вкладка скрыта (`BUNDLE_ENABLED = false`) |
-| **API tokens** | Pro | Bearer-токены [REST API v1](rest-api) |
+| **API-токены** | Pro | Bearer-токены [REST API v1](rest-api) |
 
 ![Панель управления PageBuilder](/components/pagebuilder/screenshots/mgr-cmp-index.png)
 
 ## Blocks
 
-CRUD типов секций без деплоя PHP. Встроенные JSON из `core/components/pagebuilder/sections/*.json` можно править, скрывать и восстанавливать в каталоге через панель управления.
+Типы секций меняют в CMP. PHP выкладывать не нужно. Встроенные JSON из `core/components/pagebuilder/sections/*.json` можно править, скрывать и восстанавливать в каталоге.
 
 Фильтр по источнику (выбор сохраняется в браузере):
 
@@ -34,7 +34,7 @@ CRUD типов секций без деплоя PHP. Встроенные JSON 
 | **Из пакета** | Типы из JSON пакета (и их переопределение в БД) |
 | **Мои** | Типы, созданные в панели управления |
 
-Кнопка **Скрыть предустановленные** массово прячет типы из пакета. Для UI-записей и своих типов ставится `published = 0`. Для code-типов hide по-прежнему через lifecycle. Свои типы остаются. Секции на уже собранных страницах не меняются.
+Кнопка **Скрыть предустановленные** массово прячет типы из пакета. Для UI-записей и своих типов ставится `published = 0`. Для code-типов hide идёт через lifecycle. Свои типы остаются. Секции на уже собранных страницах не меняются.
 
 В карточке типа поле **Превью в каталоге**: загрузите скриншот вёрстки. В диалоге **+ Создать** на ресурсе он заменит схематичную картинку пакета.
 
@@ -59,15 +59,15 @@ Connector `mgr/sectiontype/remove` принимает POST-параметр `lif
 
 Нужна capability `utm`. Параметры для плейсхолдеров <code v-pre>{{utm:key}}</code> и значений по умолчанию. <!-- markdownlint-disable-line MD033 -->
 
-Правила **видимости** секций задаются в диалоге **Видимость** инспектора ресурса (`settings.utm`), если включена `pagebuilder_inspector_visibility_enabled`. Не на этой вкладке. Уже опубликованные правила на сайте исполняет Free.
+Правила **видимости** секций задаются в диалоге **Видимость** инспектора (`settings.utm`), если включена `pagebuilder_inspector_visibility_enabled`. Не на этой вкладке. Уже опубликованные правила на сайте исполняет Free.
 
-На фронте сессия UTM: [PageBuilderUtmSession](snippets/PageBuilderUtmSession) до `PageBuilder`. Ссылки: [Сниппеты](snippets/).
+Сессия UTM на сайте: [PageBuilderUtmSession](snippets/PageBuilderUtmSession) до `PageBuilder`. Ссылки: [Сниппеты](snippets/).
 
 ## Collections {#collections}
 
 Вкладка в панели называется **Рабочие области**. Нужны PageBuilder Pro и capability `collections`. Без capability вкладки нет, даже если `pagebuilder_collections_enabled = 1`.
 
-Collection привязывается к `template_ids` (пустой список означает все шаблоны). При включённой настройке старые вкладки `resource_tab_enabled` и `resource_tables_tab_enabled` заменяются набором из панели управления.
+Collection привязывается к `template_ids` (пустой список означает все шаблоны). При включённых collections вкладка «Таблицы» не показывается. Вкладка «Секции» остаётся, если для шаблона нет записи в `pb_collections`.
 
 ### Типы вкладок (`tab_type`)
 
@@ -112,9 +112,9 @@ Capability `forms`. Во вкладке создаёте схему с ключ�
 
 ## Bundle {#bundle}
 
-Вкладка в CMP сейчас **не показывается** (`BUNDLE_ENABLED = false`).
+Вкладка в CMP сейчас **не показывается** (`BUNDLE_ENABLED = false`). Маршруты `mgr/bundle/*` не регистрируются. Вызов из менеджера отвечает `Invalid action.`
 
-Export UI-типов секций, dry-run и import одной транзакцией через `UiSectionTypeService`.
+Когда флаг включат, export UI-типов, dry-run и import идут одной транзакцией через `UiSectionTypeService`.
 
 1. На исходном сайте откройте **Bundle** и выгрузите JSON.
 2. На целевом сайте вставьте JSON и запустите dry-run.

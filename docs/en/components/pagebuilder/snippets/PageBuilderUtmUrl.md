@@ -5,11 +5,7 @@ description: Append PageBuilder registry UTM parameters to a URL
 
 # PageBuilderUtmUrl snippet
 
-Appends UTM parameters from the CMP registry to any URL. Values come from the query string, `$_SESSION['utm']`, or the record `default_value` in `pb_utm_params`.
-
-## Purpose
-
-Link to a landing or form with the same tags as the current visit without hand-building query strings in the template.
+Appends UTM parameters from the CMP registry to any URL. The link gets the current visit tags. You do not build the query string in the template. Values come from the query string, `$_SESSION['utm']`, or the record `default_value` in `pb_utm_params`.
 
 ## Where to call
 
@@ -62,13 +58,19 @@ Template, chunk outside PageBuilder, custom buttons. For url/button fields insid
 
 ## Fenom: utm_query modifier
 
-pdoTools registers a modifier on `pdoToolsOnFenomInit`:
+The PageBuilder plugin registers the modifier on `pdoToolsOnFenomInit`:
 
 ```fenom
 <a href="{$button.url|utm_query}">{$button.label}</a>
 ```
 
-Same as the snippet for URLs from section data.
+The second modifier argument is an array of extra query parameters. Those keys override the registry, like `&params=` on the snippet:
+
+```fenom
+<a href="{$button.url|utm_query:['utm_content' => 'hero-cta']}">{$button.label}</a>
+```
+
+For a URL from section data this is the same as calling the snippet.
 
 ## UTM session
 

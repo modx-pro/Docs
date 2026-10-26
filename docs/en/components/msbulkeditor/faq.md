@@ -1,6 +1,6 @@
 ---
 title: FAQ
-description: Common msBulkEditor questions — install, permissions, operations, import
+description: Common questions on install, permissions, operations, and import
 ---
 
 # FAQ
@@ -20,7 +20,7 @@ description: Common msBulkEditor questions — install, permissions, operations,
 
 ### “Presets” or “Import” tabs are missing
 
-You need `msbulkeditor_presets` and `msbulkeditor_import_export`. Without the permission the tab is hidden; a direct URL goes to **Products**.
+You need `msbulkeditor_presets` and `msbulkeditor_import_export`. Without the permission the tab is hidden. A direct URL goes to **Products**.
 
 ### `msbulkeditor_auth_permission_denied`
 
@@ -44,9 +44,9 @@ Narrow filters or raise `msbulkeditor_expert_limit` (mind RAM and PHP timeout).
 
 An admin disabled `msbulkeditor_expert_mode`. Enable it in system settings area `msbulkeditor`.
 
-### Inline will not edit a multi-value option / list TV
+### A click on an option replaces the tag list
 
-That is by design. Change those fields with a bulk operation. See [Inline editing](interface/inline-editing).
+A click on an option column saves one string and replaces the previous list. TV list / checkbox / file stay closed in the cell. Add or remove a single tag with a bulk operation. See [Inline editing](interface/inline-editing).
 
 ### Binding wizard opened
 
@@ -60,7 +60,16 @@ OpenSpout is unavailable on the server (package vendor). Export CSV or reinstall
 
 ### `msbulkeditor_import_mapping_invalid`
 
-Map an ID column and at least one target field (price, stock, or article).
+Map an ID column and at least one target field (price, stock, or article). Without an ID column the import does not use the current filter.
+
+### Other connector messages
+
+| Message | What to do |
+| --- | --- |
+| `msbulkeditor_auth_method_not_allowed` | Writes accept POST only |
+| `msbulkeditor_import_file_too_large` | File is larger than 10 MB |
+| `msbulkeditor_expert_mode_disabled` | Turn on `msbulkeditor_expert_mode` |
+| `msbulkeditor_processor_failed` | Check the MODX log |
 
 ### Why does import not write TVs and options?
 
@@ -74,10 +83,11 @@ You need `msbulkeditor_rollback`. Rollback works for completed operations. For `
 
 ### History is not cleaned
 
-Enable Scheduler and `msbulkeditor_scheduler_enabled`, or clean tables manually. See [Settings](settings#scheduler).
+The log is cleaned without Scheduler too: plugin `msbulkeditor_bootstrap` runs cleanup at most once a day when a manager page opens. If Scheduler is installed, the package enables the task and repeats that on every update. See [Settings](settings#scheduler).
 
 ## Limits
 
 - `msProduct` (MiniShop3) only
-- no inline for multi-value options or TV list/checkbox/file
+- a click on an option column saves one string and replaces the tag list
+- no inline edit for TV list/checkbox/file
 - option `valueKind` in bulk is chosen manually (no auto-detect)

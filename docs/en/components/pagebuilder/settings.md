@@ -6,7 +6,7 @@ description: "pagebuilder namespace keys: preview, tabs, visibility, responsive,
 
 MODX namespace: **pagebuilder**. Database key: `pagebuilder_<name>`.
 
-The extra manifest has **28 keys**. On install or upgrade Phinx/resolver adds missing ones. Existing values are not overwritten (`update.settings = false`).
+The package manifest has **28 keys**. On install or upgrade Phinx/resolver adds missing ones. Existing values are not overwritten (`update.settings = false`).
 
 Keys added in 1.0.3+:
 
@@ -36,13 +36,14 @@ Keys added in 1.0.9–1.0.10:
 | `pagebuilder_preview_include_template_css` | boolean | `1` | Pull `<link rel="stylesheet">` from the resource template into preview iframe |
 | `pagebuilder_preview_css_urls` | textarea | empty | Extra CSS for preview (comma-separated), placeholders `{assets_url}` and others |
 
-Empty `pagebuilder_preview_secret` falls back to `site_uuid`. On production set a separate secret if manager preview should not rely on a predictable UUID.
+An empty `pagebuilder_preview_secret` falls back to `site_uuid`. With neither a secret nor `site_uuid`, preview is signed with the string `pagebuilder-preview-disabled`. On production set a separate secret if manager preview should not rely on a predictable UUID.
 
 CSS order in preview iframe (`preview.php`):
 
 1. Stylesheet from the resource template if `pagebuilder_preview_include_template_css = 1`
 2. URLs from `pagebuilder_preview_css_urls` (comma or newline separated)
-3. `pagebuilder-sections.css` and `pagebuilder-preview.css`
+3. `pagebuilder-sections.css` and Pro/commerce styles by flags
+4. `pagebuilder-preview.css`
 
 If the theme loads CSS only via Fenom or `@import` without `<link>`, add files explicitly to `preview_css_urls`. Placeholders: `{assets_url}`, `{base_url}`, `{site_url}`.
 
@@ -51,7 +52,7 @@ If the theme loads CSS only via Fenom or `@import` without `<link>`, add files e
 | Key | Type | Default | Description |
 | --- | --- | --- | --- |
 | `pagebuilder_resource_tab_enabled` | boolean | `0` | Sections tab on the resource form |
-| `pagebuilder_resource_tab_parents` | text | empty | Parent IDs comma-separated. Empty with tab enabled = all resources |
+| `pagebuilder_resource_tab_parents` | text | empty | Comma-separated ids. Empty means all resources. Otherwise the resource id, its direct parent, or any ancestor matches |
 | `pagebuilder_resource_tab_index` | number | `-1` | Sections tab position: `0` first and selected when the resource opens, `1` second, `-1` last |
 | `pagebuilder_resource_tables_tab_enabled` | boolean | `0` | Tables tab (resource table data) |
 | `pagebuilder_resource_tables_tab_index` | number | `-1` | Tables tab position |
@@ -62,6 +63,8 @@ If the theme loads CSS only via Fenom or `@import` without `<link>`, add files e
 | --- | --- | --- | --- |
 | `pagebuilder_collections_enabled` | boolean | `0` | Dynamic tab set from Collections. Needs capability `collections` (Pro). Without it the tabs are absent |
 | `pagebuilder_collections_modx_bridge_enabled` | boolean | `0` | Tab type `modx_collections` |
+
+When collections are on, the Tables tab is hidden. The Sections tab stays when the template has no row in `pb_collections`.
 
 Enable only with PageBuilder Pro, after you configured tabs in the control panel. Details: [Control panel → Collections](cmp#collections).
 
@@ -75,7 +78,7 @@ Tables tab on the resource (`pagebuilder_resource_tables_tab_enabled`) or `table
 | `mgr/datatable/rows/list` | Rows: `search`, `page`, `limit`, `filters` |
 | `mgr/datatable/rows/save` / `remove` | Row CRUD |
 
-JSON filters by column: `{ "price": { "op": "gte", "value": "10" } }`. Operators: `eq`, `contains`, `in`, `gte`, `lte`, `between`, `empty`, `not_empty`.
+JSON filters by column: `{ "price": { "op": "gte", "value": "10" } }`. Operators: `eq`, `contains`, `in`, `gt`, `lt`, `gte`, `lte`, `between`, `empty`, `not_empty`.
 
 On the site: `PageBuilderTableRows` snippet, [data_table](sections/data_table) section. Details: [Developer](developer#resource-data-tables).
 
@@ -133,7 +136,7 @@ Pro read-only transport. Details: [REST API v1](rest-api). Issue tokens on the C
 | Key | Type | Default | Description |
 | --- | --- | --- | --- |
 | `pagebuilder_rest_api_enabled` | boolean | `0` | Enable `assets/components/pagebuilder/api/v1.php`. Requires PageBuilder Pro |
-| `pagebuilder_rest_token_pepper` | text | empty | Pepper for the token SHA-256 hash. Empty means `site_id` |
+| `pagebuilder_rest_token_pepper` | text | empty | Pepper for the token SHA-256 hash. Empty means `site_id`. If `site_id` is empty too, the pepper is `pagebuilder` |
 | `pagebuilder_rest_tokens` | textarea | `[]` | Token JSON without secrets (`prefix` and `hash`) |
 | `pagebuilder_rest_throttle_per_minute` | number | `120` | Request limit per token prefix. `0` disables the limit |
 

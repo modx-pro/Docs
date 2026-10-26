@@ -83,10 +83,10 @@ MiniShop3 runs on the MODX event system. A plugin steps into cart, order, produc
 | [msOnErrorValidateCustomerValue](events/customer#msonerrorvalidatecustomervalue) | Validation error |
 | [msOnBeforeCreateCustomer](events/customer#msonbeforecreatecustomer) | Before creating customer |
 | [msOnCreateCustomer](events/customer#msoncreatecustomer) | After creating customer |
-| [msOnBeforeAddCustomerAddress](events/customer#msonbeforeaddcustomeraddress) | Before adding address |
-| [msOnAddCustomerAddress](events/customer#msonaddcustomeraddress) | After adding address |
 | [msOnBeforeUpdateCustomer](events/customer#msonbeforeupdatecustomer) | Before updating customer (processor; neither the manager nor the Web API calls it yet) |
 | [msOnUpdateCustomer](events/customer#msonupdatecustomer) | After updating customer (processor; neither the manager nor the Web API calls it yet) |
+| [msOnBeforeAddCustomerAddress](events/customer#msonbeforeaddcustomeraddress) | Before adding address |
+| [msOnAddCustomerAddress](events/customer#msonaddcustomeraddress) | After adding address |
 
 ### Products (catalog)
 
@@ -201,6 +201,19 @@ With `ms3_inventory_enabled=1` the work is done by `ProductStockInventory` (`ms3
 | `msOnBeforeInventoryReserve` / `msOnInventoryReserve` | Reserve on `ms3_status_new` (and right before commit, when an order goes straight to paid) |
 | `msOnBeforeInventoryCommit` / `msOnInventoryCommit` | Commit on `ms3_status_paid` (does not decrease the stock twice) |
 | `msOnBeforeInventoryRelease` / `msOnInventoryRelease` | Release on `ms3_status_canceled` before commit. Also when payment `send()` fails |
+| `msOnBeforeInventoryAdjust` / `msOnInventoryAdjust` | Editing order lines in the manager: the reserve is brought to the new line quantity (since 1.14.3-beta1) |
+
+The `Adjust` pair has its own parameters, not the ones used by reserve, commit and release:
+
+| Parameter | Type | Value |
+| --- | --- | --- |
+| `product_id` | `int` | The product whose reserve changes |
+| `order_id` | `int` | The order |
+| `old_qty` | `float` | How much the order held before the edit |
+| `new_qty` | `float` | How much it will hold after |
+| `forced` | `bool` | The edit went through despite a shortage, using the `msorder_inventory_override` permission |
+
+The event fires for every product whose quantity changed, including when a line is removed. Then `new_qty` is zero. `msOnBeforeInventoryAdjust` with `success=false` cancels the edit: the order line is not saved, and the stock and the reserve stay as they were.
 
 ```mermaid
 flowchart TB

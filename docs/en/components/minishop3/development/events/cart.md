@@ -11,10 +11,10 @@ Besides the parameters listed below, every event on this page also receives `con
 
 ```mermaid
 flowchart TD
-  output["output() non-empty"] --> before["msOnBefore*"]
-  before --> stop["Request aborted, the customer sees an error"]
+  output["output() is not empty"] --> before["msOnBefore*"]
+  before --> stop["The request is aborted, the customer sees an error"]
   output --> added["msOnAddToCart"]
-  added --> saved["Product already saved"]
+  added --> saved["The product is already saved"]
   saved --> err["The request still returns an error"]
   output --> done["change, remove, empty"]
   done --> ignore["The response is not read"]

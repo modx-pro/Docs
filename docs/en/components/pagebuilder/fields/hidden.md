@@ -1,6 +1,6 @@
 ---
 title: "hidden"
-description: "Hidden string: stored in section data, not shown in the inspector"
+description: "Hidden string: stored in section data, the inspector shows no label"
 ---
 
 # Field hidden
@@ -11,22 +11,22 @@ Version: **Free**.
 
 ## Why this type
 
-The value is saved and reaches the chunk, but the editor does not see a field. The default is set in JSON or in the manager.
+The value is saved and reaches the chunk. The inspector shows only an `input type="hidden"`, with no label and no field wrapper. The default is set in JSON or in the manager. `active: false` removes the field entirely.
 
 ## When to use
 
 - Service token, preset key, analytics id
-- Section constant changed by dev only
+- Section constant changed by the developer only
 - Default duplicated for front-end forms
 
 ## Tips
 
-Editors need to see value use [readonly](readonly). `active: false` hides any type, hidden is for data-only semantics.
+Editors need to see the value: use [readonly](readonly). `active: false` hides any type. Use `hidden` when the value belongs in the data only.
 
 ## Similar types
 
-- [readonly](readonly) for visible non-editable
-- [text](text) with active false for CMP toggle
+- [readonly](readonly) for a visible value the editor cannot change
+- [text](text) with `active: false` if the value is toggled in the CMP
 
 ## Schema
 
@@ -42,11 +42,9 @@ Editors need to see value use [readonly](readonly). `active: false` hides any ty
 
 ## Value
 
-String in the section data, not shown visually in the form.
+String in the section data.
 
 ## Section data {#output-in-section-data}
-
-Key `token` in the section data:
 
 ```json
 {
@@ -75,13 +73,13 @@ For fields with `name` that are stored in the section data:
 | Key | Type | Role | CMP |
 | --- | --- | --- | --- |
 | `tab` | string | Group subtitle in the inspector | yes |
-| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `width` | 25, 33, 50, 66, 75, 100 | Field width as % of the row (flex). The CMP offers only these values | yes |
 | `description` | string | Hint under the label | yes |
 | `default` | any | Initial value for a new section | yes |
 | `active` | bool | `false` hides the field in the inspector | yes |
-| `required` | bool | Required on **publish** (draft still saves) | yes |
+| `required` | — | For `hidden`, the publish required check does not run | — |
 
-- The field is hidden in the UI; `active: false` also hides any field type.
+The inspector does not draw the label, `width`, or `description` for this type. `tab` still groups the field with its neighbors.
 
 See [fields overview](overview#obshchie-svoystva-polya).
 

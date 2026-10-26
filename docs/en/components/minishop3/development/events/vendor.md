@@ -9,7 +9,7 @@ Tracking operations on vendors (brands).
 Vendor CRUD in the manager (**Extras → MiniShop3 → Vendors**) goes through `VendorsController` (Manager API) **without** `$modx->invokeEvent`. The events below fire only when the older processors `MiniShop3\Processors\Settings\Vendor\*` are called (`runProcessor`, the old connector). To intercept changes made in the Vue manager, add your own REST middleware after the save, or extend the controller in an add-on.
 :::
 
-The package does not build the keys in the tables below. The processors only set `$objectType = 'msVendor'`. The parameter array comes from the MODX processor: `CreateProcessor`, `UpdateProcessor`, or `RemoveProcessor`.
+The package does not build the keys in the tables below. The MiniShop3 processors set `$classKey`, `$objectType = 'msVendor'` and the event names in the `$beforeSaveEvent`, `$afterSaveEvent`, `$beforeRemoveEvent` and `$afterRemoveEvent` properties — without those the base processor fires no event at all. The call itself and the parameter array come from the MODX processor: `CreateProcessor`, `UpdateProcessor`, or `RemoveProcessor`.
 
 ## msOnBeforeVendorCreate
 
@@ -34,6 +34,7 @@ switch ($modx->event->name) {
         /** @var \MiniShop3\Model\msVendor $vendor */
         $vendor = $scriptProperties['msVendor'];
 
+        // Check that the name is unique
         $existing = $modx->getObject(\MiniShop3\Model\msVendor::class, [
             'name' => $vendor->get('name'),
         ]);
@@ -75,6 +76,7 @@ switch ($modx->event->name) {
             $vendor->get('id')
         ));
 
+        // Creating a page for the vendor
         // $page = $modx->newObject('modResource', [...]);
         break;
 }
@@ -140,15 +142,11 @@ switch ($modx->event->name) {
     case 'msOnVendorUpdate':
         $vendor = $scriptProperties['msVendor'];
 
-        $before = $modx->eventData['vendor_before'] ?? [];
-
-        if ($before['name'] !== $vendor->get('name')) {
-            $modx->log(modX::LOG_LEVEL_INFO, sprintf(
-                '[Vendor] Renamed: %s → %s',
-                $before['name'],
-                $vendor->get('name')
-            ));
-        }
+        $modx->log(modX::LOG_LEVEL_INFO, sprintf(
+            '[Vendor] Vendor updated: %s (ID: %d)',
+            $vendor->get('name'),
+            $vendor->get('id')
+        ));
         break;
 }
 ```
@@ -175,6 +173,7 @@ switch ($modx->event->name) {
     case 'msOnBeforeVendorDelete':
         $vendor = $scriptProperties['msVendor'];
 
+        // Refuse the delete while products are linked
         $productCount = $modx->getCount(\MiniShop3\Model\msProductData::class, [
             'vendor_id' => $vendor->get('id'),
         ]);
@@ -218,6 +217,7 @@ switch ($modx->event->name) {
             $vendor->get('id')
         ));
 
+        // Clear the cache
         $modx->cacheManager->delete('vendors_list');
         break;
 }
@@ -239,6 +239,7 @@ switch ($modx->event->name) {
     case 'msOnVendorCreate':
         $vendor = $scriptProperties['msVendor'];
 
+        // Create the brand page in the catalogue
         $brandsParent = $modx->getOption('brands_resource_id', null, 0);
         if ($brandsParent) {
             $page = $modx->newObject('modResource', [
@@ -252,6 +253,7 @@ switch ($modx->event->name) {
             $page->setTVValue('vendor_id', $vendor->get('id'));
             $page->save();
 
+            // Store the link
             $vendor->set('resource_id', $page->get('id'));
             $vendor->save();
         }
@@ -260,6 +262,7 @@ switch ($modx->event->name) {
     case 'msOnVendorUpdate':
         $vendor = $scriptProperties['msVendor'];
 
+        // Update the brand page
         $resourceId = $vendor->get('resource_id');
         if ($resourceId) {
             $page = $modx->getObject('modResource', $resourceId);
@@ -274,6 +277,7 @@ switch ($modx->event->name) {
     case 'msOnVendorDelete':
         $vendor = $scriptProperties['msVendor'];
 
+        // Delete the brand page
         $resourceId = $vendor->get('resource_id');
         if ($resourceId) {
             $page = $modx->getObject('modResource', $resourceId);
