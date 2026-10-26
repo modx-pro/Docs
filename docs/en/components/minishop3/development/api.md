@@ -15,7 +15,7 @@ MiniShop3 Web API (`api.php`) handles the frontend and headless clients: cart, c
 | --- | --- |
 | `core/components/minishop3/config/routes/web.php` | Web API routes |
 | `core/config/ms3_routes_web.custom.php` | Your own routes. Not shipped — you create it |
-| `core/config/ms3.routes.d/web/*.php` | Add-on route fragments. The directory is not shipped |
+| `core/config/ms3.routes.d/web/*.php` | Add-on route fragments. Install creates the directory. Add-ons place the files |
 
 ## Documentation
 

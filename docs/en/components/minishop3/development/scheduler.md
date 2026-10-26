@@ -69,7 +69,9 @@ $setting->save();
 
 Imports products from CSV. The mode is a human decision: the import form carries a "synchronous or background" switch, and the background mode queues the task in Scheduler.
 
-The `ms3_import_sync_limit` setting (300 rows by default) does not drive that choice directly: once the file holds more rows, the form reveals the mode switch, and without Scheduler installed it shows a warning that the file is too large for a synchronous pass. The import itself is never queued until the switch is set.
+The installer registers the task with namespace `minishop3` and path `elements/tasks/csvImport.php`. The import processor looks it up as `getTask('MiniShop3', 'ms3_csv_import')`, with a different case. On a typical MySQL database the strings compare without regard to letter case, so the task is found and there is no duplicate. A second task appears in another situation: Scheduler was installed after MiniShop3, the installer task does not exist at all, and the processor creates its own, already with namespace `MiniShop3`. The mismatch is tracked in [a known issue](https://github.com/modx-pro/MiniShop3/issues/904).
+
+The `ms3_import_sync_limit` setting (300 rows by default) sets the threshold. When the file has more rows, the form shows the mode switch, and without Scheduler installed it shows a warning that the file is too large for a synchronous pass. The setting itself does not pick the mode. Until the switch is set, the import is not queued.
 
 **Script properties:**
 
@@ -117,18 +119,6 @@ $manager->registerChannel(new \MyPackage\Notifications\SmsChannel($modx));
 
 ## Monitoring tasks
 
-```mermaid
-flowchart TB
-  q["schedule or Schedule a run"] --> s0["0 waiting"]
-  s0 --> cron[Cron pass]
-  cron --> s1["1 running"]
-  s1 --> s2["2 success"]
-  s1 --> s3["3 failure"]
-  s2 --> rec{Recurring}
-  rec -->|yes| nxt["New run after interval"]
-  rec -->|no| stop[End]
-```
-
 ### Via manager
 
 **Extras → Scheduler** — three tabs: Tasks (the registered ones), Scheduled Runs and Historic Runs.
@@ -163,7 +153,19 @@ if ($lastRun) {
 }
 ```
 
-The status numbers match the `sTaskRun::STATUS_SCHEDULED`, `STATUS_EXECUTING`, `STATUS_SUCCESS` and `STATUS_FAILURE` constants.
+The codes `0`–`3` are `sTaskRun::STATUS_SCHEDULED`, `STATUS_EXECUTING`, `STATUS_SUCCESS` and `STATUS_FAILURE`. Status 3 is set when the run has errors (`hasErrors()`), including after an exception. The value returned from the task file is written to `message` and does not change the status by itself.
+
+```mermaid
+flowchart TB
+  q["schedule or Schedule a run"] --> s0["0 waiting"]
+  s0 --> cron[Cron pass]
+  cron --> s1["1 running"]
+  s1 --> s2["2 success"]
+  s1 --> s3["3 failure"]
+  s2 --> rec{Recurring}
+  rec -->|yes| nxt["New run after interval"]
+  rec -->|no| stop[End]
+```
 
 ## Running tasks manually
 
@@ -196,7 +198,7 @@ There is no synchronous run: `schedule()` only queues the run, and the Scheduler
 
 ## Creating custom tasks
 
-Task types, passing data and the rules for returning a result are covered in the Scheduler docs: [Creating a task](../../scheduler/create-a-task) and [Task development](../../scheduler/task-development). Below is only what concerns tasks living next to MiniShop3.
+Task types, passing data and the rules for returning a result are covered in the Scheduler docs: [Creating a task](../../scheduler/create-a-task) and [Task development](../../scheduler/task-development).
 
 ### Registering a task
 
@@ -223,7 +225,7 @@ $task->schedule('+1 minute');
 
 ### Task file
 
-Scheduler includes the file and gives it four variables: `$modx`, `$task`, `$run` and `$scriptProperties` (data from the second argument of `schedule()`). The returned value becomes the run result.
+Scheduler loads the file through `include` and gives it four variables: `$modx`, `$task`, `$run` and `$scriptProperties` (data from the second argument of `schedule()`). The returned value becomes the run result.
 
 ```php
 <?php
@@ -244,12 +246,12 @@ try {
     $modx->log(modX::LOG_LEVEL_INFO, "[myTask] Completed successfully");
     return true;
 } catch (\Exception $e) {
-    $run->addError('exception', ['error' => $e->getMessage()]);
+    $run->addError($e->getMessage());
     return false;
 }
 ```
 
-The first argument of `addError()` is the error type; details go in the array passed as the second argument. That call is what decides the fate of the run: a run is marked as failed when it holds at least one error record. Returning `false` on its own does not change the status — the returned value lands in the `message` field. More on this in [Logging errors in Scheduler](../../scheduler/task-development#errors).
+`addError($type, array $details = [])` in Scheduler: the first argument becomes the `type` field, and the second defaults to empty. `csvImport.php` passes a single message string, and that string is stored as `type`.
 
 ## Related settings
 
