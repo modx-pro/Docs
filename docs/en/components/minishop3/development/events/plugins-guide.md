@@ -206,19 +206,7 @@ $values = $modx->event->returnedValues;
 $values['count'] = 5;
 ```
 
-## Utils::invokeEvent
-
-```mermaid
-flowchart TD
-  subgraph utils [Utils invokeEvent]
-    text["output with text"] --> fail["success false, the text lands in message"]
-    values["returnedValues"] --> data["The fields land in data"]
-  end
-  subgraph gate [EventGate invokeRaw]
-    cancel["output cancel or false"] --> stopped["isCancelled"]
-    channel["A named channel"] --> apply["applyReturnedArray"]
-  end
-``` and EventGate
+## Utils::invokeEvent and EventGate
 
 ```mermaid
 flowchart TD

@@ -67,9 +67,11 @@ switch ($modx->event->name) {
 
         $values = &$modx->event->returnedValues;
 
+        // Phone: keep the digits only
         if ($key === 'phone') {
             $values['value'] = preg_replace('/\D/', '', $value);
         }
+        // Email in lower case
         if ($key === 'email') {
             $values['value'] = strtolower(trim($value));
         }
@@ -102,6 +104,7 @@ switch ($modx->event->name) {
         /** @var \MiniShop3\Model\msOrder|null $draft */
         $draft = $scriptProperties['draft'];
 
+        // Log the field change
         $modx->log(modX::LOG_LEVEL_INFO,
             "[Order] Field {$key} set: {$value}"
         );
@@ -138,6 +141,7 @@ switch ($modx->event->name) {
 
         $values = &$modx->event->returnedValues;
 
+        // Strip spaces out of the postcode
         if ($key === 'index') {
             $values['value'] = str_replace(' ', '', $value);
         }
@@ -169,6 +173,7 @@ switch ($modx->event->name) {
 
         $values = &$modx->event->returnedValues;
 
+        // Append the region to the city
         if ($key === 'city') {
             $values['value'] = $value . ', Moscow Region';
         }
@@ -201,6 +206,7 @@ switch ($modx->event->name) {
 
         $values = &$modx->event->returnedValues;
 
+        // A custom email error message
         if ($key === 'email') {
             $values['error'] = [$key => 'Enter a valid email to receive the receipt'];
         }
@@ -249,6 +255,7 @@ switch ($modx->event->name) {
     case 'msOnBeforeRemoveFromOrder':
         $key = $scriptProperties['key'];
 
+        // Fields the draft must have
         $required = ['delivery_id', 'payment_id', 'email'];
         if (in_array($key, $required)) {
             $modx->event->output('This field cannot be removed');
@@ -356,11 +363,13 @@ switch ($modx->event->name) {
         $draft = $scriptProperties['draft'];
         $orderData = $scriptProperties['orderData'];
 
+        // Minimum total
         if (($draft->get('cart_cost') ?? 0) < 1000) {
             $modx->event->output('Minimum order amount is 1000');
             return;
         }
 
+        // Order-taking hours
         $hour = (int)date('G');
         if ($hour < 9 || $hour > 21) {
             $modx->event->output('Orders accepted from 9:00 to 21:00');
@@ -382,11 +391,13 @@ switch ($modx->event->name) {
 
         $values = &$modx->event->returnedValues;
 
+        // UTM out of the session into the order properties
         if (!empty($_SESSION['utm'])) {
             $data['properties']['utm'] = $_SESSION['utm'];
             $values['data'] = $data;
         }
 
+        // Referrer
         $data['properties']['source'] = $_SERVER['HTTP_REFERER'] ?? 'direct';
         $values['data'] = $data;
         break;
@@ -478,6 +489,7 @@ switch ($modx->event->name) {
     case 'msOnBeforeCreateOrder':
         $order = $scriptProperties['msOrder'];
 
+        // A note for the manager in properties
         $properties = $order->get('properties') ?? [];
         $properties['manager_note'] = 'Order created ' . date('d.m.Y H:i');
         $order->set('properties', $properties);

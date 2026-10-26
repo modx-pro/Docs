@@ -34,6 +34,7 @@ switch ($modx->event->name) {
             return;
         }
 
+        // Status changes only during working hours
         $hour = (int)date('G');
         if ($hour < 9 || $hour > 18) {
             $modx->event->output('Status change available from 9:00 to 18:00');
@@ -147,6 +148,7 @@ switch ($modx->event->name) {
         $oldStatus = $scriptProperties['old_status'];
         $newStatus = $scriptProperties['status'];
 
+        // Log the status change
         $modx->log(modX::LOG_LEVEL_INFO, sprintf(
             '[Status] Order #%s: status %d → %d',
             $order->get('num'),
