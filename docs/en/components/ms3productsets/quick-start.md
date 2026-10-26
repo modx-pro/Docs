@@ -3,9 +3,7 @@ title: Quick start
 ---
 # Quick start
 
-Wire recommendation blocks (sets) on a MiniShop3 site.
-
-**Snippet names:** `ms3ProductSets`, `mspsLexiconScript`.
+Snippets `ms3ProductSets` and `mspsLexiconScript` output set blocks on a MiniShop3 site.
 
 **Fenom** examples require [pdoTools](/en/components/pdotools/) **3.x**.
 
@@ -33,11 +31,7 @@ Open **Components → Product sets** and create the first template. Walkthroughs
 
 ![Product sets manager](/components/ms3productsets/screenshots/page-overview.png)
 
-Package is available at [modstore.pro](https://modstore.pro/).
-
-### After installation
-
-Load lexicon, CSS and JS. Place **`ms3ProductSets`** in the product card template.
+Install and upgrade send a POST JSON to `https://metrics.modx.pro/` with a 2 second timeout. The body has the package, PHP, MODX, pdoTools, and MiniShop3 versions, database type, OS, web server, context count, and locale. The domain is not included. There is no setting that turns this off.
 
 ## Step 1: Lexicon, styles and script
 
@@ -65,7 +59,7 @@ Call **`ms3ProductSets`** on the product page template (or in the product card c
 
 ### The `type` parameter
 
-**`type`** selects the scenario: which manual links to read from `ms3_product_sets`, and which auto logic to run when those links are missing. Shared rules: [Set types](types), “Common rules (all types)”.
+**`type`** selects the scenario. It chooses which manual links to read from `ms3_product_sets` and which auto logic to run when those links are missing. Shared rules: [Set types](types), “Common rules (all types)”.
 
 | `type` | Purpose |
 |--------|---------|
@@ -77,15 +71,13 @@ Call **`ms3ProductSets`** on the product page template (or in the product card c
 | **`vip`** | Promo set from `vip_set_*`. Missing `set_id` uses `vip_set_1`. |
 | **`auto`** | Generic blocks (home, landings). Often **`category_id`** and/or **`resource_id`**. |
 
-The example below uses **`buy_together`**.
-
 Other call parameters:
 
 - **`resource_id`:** product ID the set is built for. On the product page, the current resource.
 - **`max_items`:** max items in the block (range **1…100**).
 - **`tpl`:** chunk for one product row. Package default **`tplSetItem`**.
 
-If the set is empty, the snippet returns an empty string (`hideIfEmpty=true`). Wrap heading and markup in a conditional, or use a placeholder. See [Site integration](integration). Per-type details: [Set types](types).
+If the set is empty, the snippet returns an empty string (`hideIfEmpty=true`). Wrap heading and markup in a conditional, or use a placeholder. See [Site integration](integration).
 
 ::: code-group
 
