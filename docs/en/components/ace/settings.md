@@ -20,7 +20,7 @@ On package upgrade, `ace.*` keys are **not overwritten**. Exceptions: an empty `
 | `ace.tab_size` | textfield | `4` | Tab width in spaces |
 | `ace.fold_widgets` | combo-boolean | `Yes` | Fold controls on the gutter |
 | `ace.show_invisibles` | combo-boolean | `No` | Spaces, tabs, line endings |
-| `ace.height` | textfield | empty | Height in px for elements, files, `#ta`, and the cache buffer. Empty: the Ext field height. Ace TVs and `.modx-richtext` textareas do not read this key. They use the field height or 200 |
+| `ace.height` | textfield | empty | Height in px for elements, files, `#ta`, and the cache buffer. Empty: the Ext field height. An Ace TV and a `.modx-richtext` textarea do not read this key. They use the field height or 200 |
 | `ace.grow` | textfield | empty | Fit height to text. Empty = off. Number > 0 = max height. `0` = unlimited |
 
 ## Behavior

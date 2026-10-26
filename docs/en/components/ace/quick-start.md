@@ -21,7 +21,7 @@ Open a snippet, chunk, template, or plugin: the code field becomes Ace with high
 
 | Goal | Settings |
 | --- | --- |
-| Ace in content on every resource | `use_editor = No`. Textareas with class `modx-richtext` are replaced too |
+| Ace in content on every resource | `use_editor = No`. A textarea with class `modx-richtext` is replaced too |
 | Ace only on resources without richtext | `use_editor = Yes`, `which_editor` empty or `Ace`, richtext off |
 | TinyMCE / other RTE | `use_editor = Yes`, `which_editor` is not `Ace`, richtext on |
 | Plain textarea without Ace | `use_editor = Yes`, `which_editor` is not `Ace`, richtext off |
