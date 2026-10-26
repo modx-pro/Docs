@@ -305,6 +305,7 @@ switch ($modx->event->name) {
         $key = $scriptProperties['key'];
         $errors = $scriptProperties['errors'];
 
+        // Customising the error messages
         $modx->log(modX::LOG_LEVEL_WARN, sprintf(
             '[Customer] Validation error %s: %s',
             $key,
