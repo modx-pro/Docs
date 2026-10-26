@@ -59,6 +59,7 @@ $result = $ms3->order->set([
 // Submit order
 $result = $ms3->order->submit();
 // The payment response. With DefaultPayment data holds order_id, order_num, payment_link.
+/ The redirect key is redirect, and the msorder query parameter carries the order uuid.
 
 // Clear draft
 $ms3->order->clean();
