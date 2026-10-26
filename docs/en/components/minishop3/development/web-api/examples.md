@@ -53,7 +53,7 @@ const product = await $fetch(`${api}?route=/api/v1/product/get/123`, {
 })
 ```
 
-List params: [Catalog](catalog).
+The full list of `list` parameters is on the [Catalog](catalog) page.
 
 ## Guest token + cart (curl)
 
