@@ -27,7 +27,7 @@ Vue OrderView (root component)
 
 ## Tab registration
 
-The `register(tabConfig)` method accepts:
+The `window.MS3OrderTabsRegistry.register(tabConfig)` method accepts:
 
 | Parameter | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -51,7 +51,7 @@ The tab receives this data automatically:
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `orderId` | number | Order ID (0 on create) |
+| `orderId` | number \| string | Order ID. The create page passes the string `'new'` |
 | `order` | object \| null | Order data. `null` on create and until the API responds — hence `order?.num` in the examples |
 | `config` | object | ms3 configuration (`ms3.config`) |
 | `isCreateMode` | boolean | New order creation mode |
@@ -171,7 +171,7 @@ For full components built with Vite/Webpack:
 import { ref, onMounted } from 'vue'
 
 const props = defineProps({
-  orderId: { type: Number, required: true },
+  orderId: { type: [Number, String], required: true },  // On create this is 'new'
   order: { type: Object, default: null },
   config: { type: Object, default: () => ({}) },
   isCreateMode: { type: Boolean, default: false }
