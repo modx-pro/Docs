@@ -3,83 +3,89 @@ title: Vendors
 ---
 # Vendors
 
-Vendors (brands) are managed via **Extras → MiniShop3 → Settings → Vendors**.
+Open **Extras → MiniShop3 → Settings → Product vendors**.
 
 ::: warning msOnVendor* events
-CRUD in this section goes through Manager API (`VendorsController`), **without** calling processors `Processors/Settings/Vendor/*`. Plugins on `msOnBeforeVendorCreate` and similar fire only on legacy `runProcessor()`. Details: [Vendor events](/en/components/minishop3/development/events/vendor).
+CRUD in this section goes through the Manager API (`VendorsController`), **without** calling the processors `Processors/Settings/Vendor/*`. Plugins on `msOnBeforeVendorCreate` and the related events fire only from the legacy `runProcessor()`. Details: [Vendor events](/en/components/minishop3/development/events/vendor).
 :::
 
 ## Purpose
 
-The vendor directory lets you:
+The directory is there so you can:
 
-- Link products to brands
-- Show vendor information on the product page
-- Filter the catalog by vendor
-- Create brand pages
+- link products to brands
+- show vendor data on the product page
+- filter the catalog by vendor
+- build brand pages
 
 ## Vendor fields
 
 | Field | Type | Description |
 | --- | --- | --- |
 | `name` | string | Vendor name |
-| `resource_id` | int | Resource ID — vendor page |
+| `resource_id` | int | Resource ID of the vendor page |
 | `country` | string | Vendor country |
-| `logo` | string | Logo path |
+| `logo` | string | Path to the logo |
 | `address` | string | Address |
 | `phone` | string | Phone |
 | `email` | string | Email |
 | `description` | text | Description |
 | `position` | int | Sort order |
-| `properties` | JSON | Additional properties |
+| `properties` | JSON | Extra properties |
 
-## Resource linkage
+## Resource link
 
-The `resource_id` field links a vendor to a MODX resource. Useful for:
+The `resource_id` field links the vendor to a MODX resource:
 
-- SEO brand pages
-- Catalog of products from a specific vendor
-- Detailed brand information
+- SEO pages for brands
+- A catalog of that vendor's products
+- A longer text about the brand
 
-When `resource_id` is set, snippets can resolve the vendor page URL.
+When `resource_id` is set, snippets can take the URL of the vendor page.
 
 ## Usage
 
-### Assigning a vendor to a product
+### Vendor on the product card
 
-Set the vendor in the product card in the **Vendor** field. A product can have only one vendor.
+The vendor is set on the product card in the **Vendor** field. A product has only one vendor.
 
 ### Output in snippets
 
-In `msProducts` these vendor placeholders are available:
+`msProducts` can print vendor placeholders. That needs the `includeVendor` parameter. Without it, `{if $vendor_name?}` is always false:
 
 ```fenom
 {if $vendor_name?}
-<div class="product-vendor">
     {if $vendor_logo?}
         <img src="{$vendor_logo}" alt="{$vendor_name}">
     {/if}
-    <span>{$vendor_name}</span>
-    {if $vendor_country?}
-        <span class="country">({$vendor_country})</span>
-    {/if}
-</div>
+    {$vendor_name}
+    {if $vendor_country?} ({$vendor_country}){/if}
 {/if}
 ```
-
-### Filter by vendor
 
 ```fenom
 {$_modx->runSnippet('msProducts', [
     'parents' => 0,
-    'vendors' => '1,2,3',  // Vendor IDs
+    'includeVendor' => 1,  {* attaches the join and the vendor columns *}
+    'tpl' => 'tpl.msProducts.row'
+])}
+```
+
+### Filter by vendor
+
+`msProducts` has no `vendors` parameter. Filter with `where` on the product data:
+
+```fenom
+{$_modx->runSnippet('msProducts', [
+    'parents' => 0,
+    'where' => ['Data.vendor_id:IN' => '1,2,3'],  {* vendor IDs *}
     'tpl' => 'tpl.msProducts.row'
 ])}
 ```
 
 ### Vendor list
 
-To list vendors use a direct query or a custom snippet:
+The list comes from a direct query on the model, or from your own snippet:
 
 ```php
 <?php
@@ -98,30 +104,30 @@ return $output;
 
 ## Extra fields {#extra-fields}
 
-::: info Starting with v1.9.0
-Vendors support custom fields created via **Utilities → Extra fields**.
+::: info Since v1.9.0
+Vendors support custom fields created in **Utilities → Extra fields**.
 :::
 
-To add a custom vendor field:
+To add a custom field to vendors:
 
 1. Go to **Extras → MiniShop3 → Utilities → Extra fields**
-2. Select model **msVendor** in the dropdown
-3. Click **Create field** and set key, type (`textfield`, `numberfield`, `checkbox`, `textarea`, etc.)
+2. In the dropdown, select the **msVendor** model
+3. Click **Create field** and set the key and the type (`textfield`, `numberfield`, `checkbox`, `textarea`, and others)
 
-The field appears in the vendor edit form. All 13+ `DynamicField` types are supported, including:
+The field appears on the vendor edit form. All 13+ `DynamicField` types are supported, including:
 
-- `textfield` — text field
-- `numberfield` — number field
-- `textarea` — multiline text
-- `checkbox` — checkbox
-- `file` / `image` — file picker via FileBrowser
-- `combobox` — dropdown
+- `textfield`: text field
+- `numberfield`: number field
+- `textarea`: multiline text
+- `checkbox`: checkbox
+- `file` / `image`: file picker through FileBrowser
+- `combobox`: dropdown
 
-Extra field values are saved and returned via API together with standard vendor fields.
+Custom field values are saved and returned by the API together with the standard vendor fields.
 
-## Additional properties
+## Extra properties
 
-The `properties` field stores arbitrary JSON data:
+The `properties` field stores arbitrary JSON:
 
 ```json
 {
@@ -145,4 +151,4 @@ In a chunk:
 
 ## Vendor import
 
-When importing products from CSV, vendors are created automatically if the `vendor` column is present. The system looks up an existing vendor by name and creates a new one if missing.
+When products are imported from CSV, vendors are created automatically if the `vendor` column is set. The component looks up the vendor by name and creates a new one when it is missing.
