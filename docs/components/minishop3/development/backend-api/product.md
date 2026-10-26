@@ -241,6 +241,15 @@ $options = $optionService->getProductOptionValues($productId);
 $keys = $optionService->getAvailableOptionKeys($productId);
 ```
 
+Для шаблона вызывайте `loadOptionsForProduct`. Загрузчик кладёт значения в `color` и копирует колонки строки в `color.caption`, `color.type` и остальные ключи `color.<колонка>`. Второй аргумент по умолчанию `true` и добавляет `color.group_name` из группы опций. С `false` имя группы в ответ не входит.
+
+`loadOptionsForProducts` читает ту же структуру сразу для нескольких товаров и возвращает `[id => данные]`. Второй аргумент по умолчанию `false`. Полный список ключей описан в [API опций](options).
+
+```php
+$options = $optionService->loadOptionsForProduct($productId);
+$allOptions = $optionService->loadOptionsForProducts([1, 2, 3]);
+```
+
 ::: warning Не используйте модель msProductOption напрямую
 Для работы с опциями всегда используйте `OptionService`. Прямое создание и сохранение объектов `msProductOption` обходит логику синхронизации с JSON-полями и категориями.
 :::

@@ -241,6 +241,15 @@ $options = $optionService->getProductOptionValues($productId);
 $keys = $optionService->getAvailableOptionKeys($productId);
 ```
 
+For a template, call `loadOptionsForProduct`. The loader puts values under `color` and copies each selected column to `color.caption`, `color.type`, and the other `color.<column>` keys. The second argument defaults to `true` and adds `color.group_name` from the option group. With `false`, the group name is left out.
+
+`loadOptionsForProducts` reads the same shape for several products at once and returns `[id => data]`. Its second argument defaults to `false`. The full key list is in the [Options API](options).
+
+```php
+$options = $optionService->loadOptionsForProduct($productId);
+$allOptions = $optionService->loadOptionsForProducts([1, 2, 3]);
+```
+
 ::: warning Do not use the msProductOption model directly
 Always use `OptionService` for options. Creating and saving `msProductOption` objects directly bypasses the sync with JSON fields and categories.
 :::
