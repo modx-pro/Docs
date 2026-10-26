@@ -3,33 +3,23 @@ title: System settings
 ---
 # System settings
 
-All settings use the prefix `modx3profilertoolbar.` and are in the **modx3profilertoolbar** namespace.
+In MODX system settings, filter the `modx3profilertoolbar` namespace. The package does not create a menu item.
 
-**Where to change:** **Manage → System settings** (in MODX 3: **Settings → System settings**) — filter by namespace `modx3profilertoolbar`.
+## Keys
 
-## Settings table
+| Key | Default | What the code does |
+| --- | --- | --- |
+| `modx3profilertoolbar.enabled` | No | Turns the plugin on. On `OnMODXInit` it calls `start()` and `replaceParser()`. When the value is No, the plugin returns before collection. |
+| `modx3profilertoolbar.sampling_rate` | `100` | Percent of requests for which `start()` reaches collection. Below 100, a skipped request gets no panel. With `enabled` on, `replaceParser()` still runs on a skipped request. |
+| `modx3profilertoolbar.frontend_toolbar` | Yes | Allows the panel to be injected. Requires the `web` context and an `mgr` session. |
+| `modx3profilertoolbar.slow_query_ms` | `100` | Slow SQL threshold in milliseconds. The rule reads the SQL row time. The result is not inserted into HTML. |
+| `modx3profilertoolbar.slow_snippet_ms` | `50` | Slow snippet threshold in milliseconds. The rule reads events of type `snippet`. Collection does not add those events. The panel does not show the threshold. |
+| `modx3profilertoolbar.cli_enabled` | No | When Yes, CLI collection is not rejected. The panel is injected only in the `web` context. The trace is not written to the database or to a file. |
 
-| Setting | Description | Default | Notes |
-|---------|-------------|---------|-------|
-| `modx3profilertoolbar.enabled` | Enable or disable profiling | No | Enable on dev/staging; on production use sampling 1–5%. |
-| `modx3profilertoolbar.sampling_rate` | Percent of requests to profile (1–100) | `100` | Dev: 100; production: 1–5. |
-| `modx3profilertoolbar.frontend_toolbar` | Show Dev Toolbar on frontend (web context) | Yes | For developers only; disable on production. Toolbar visible only when logged into Manager. |
-| `modx3profilertoolbar.slow_query_ms` | Threshold (ms) above which SQL is considered slow | `100` | Advisor marks such queries. |
-| `modx3profilertoolbar.slow_snippet_ms` | Threshold (ms) for slow snippets | `50` | Advisor marks such snippets. |
-| `modx3profilertoolbar.cli_enabled` | Profile CLI requests (cron) | No | Enable only when debugging CLI. |
+## Who can see the data
 
-## Security
+The HTML receives JSON for the current request: times, names of collected tags, and a row with the SQL count. Individual query text and plugin names are not in that markup.
 
-The profiler exposes sensitive data: SQL, snippet and plugin names.
+Injection runs only for a request with an `mgr` session. Restrict manager login.
 
-- Toolbar is shown only to users logged into the Manager. Restrict admin access.
-- On production use sampling 1–5%.
-
-## Environment
-
-| Aspect | Development / Staging | Production |
-|--------|------------------------|------------|
-| **enabled** | Yes | As needed (with sampling) |
-| **sampling_rate** | 100 | 1–5 |
-| **frontend_toolbar** | Optional | No |
-| **cli_enabled** | When debugging cron | No |
+`sampling_rate` reduces how many requests are collected. It does not turn off parser replacement while `enabled` is on.

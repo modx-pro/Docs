@@ -3,52 +3,40 @@ title: Troubleshooting
 ---
 # Troubleshooting
 
-Common issues with Modx3ProfilerToolbar.
+The panel did not appear, or the MODX log is filling with package errors.
 
-## Toolbar does not appear
+## The panel does not appear
 
-**Check:**
+1. `modx3profilertoolbar.enabled` and `modx3profilertoolbar.frontend_toolbar` are on.
+2. The page is open in the `web` context, not in the manager.
+3. There is an `mgr` context session.
+4. The `Modx3ProfilerToolbar` plugin is enabled on `OnMODXInit`, `OnHandleRequest`, `OnLoadWebDocument`, and `OnWebPagePrerender`.
+5. The request fell inside `sampling_rate`. Below 100, some requests get no panel.
+6. The resource output contains `</body>`. Without that string the package does not change the HTML and does not write a console error.
+7. The browser loaded `toolbar.js` and `petite-vue` 0.4.1 from `unpkg.com`. Blocking `unpkg` leaves the JSON in the page and does not build the panel. Search the page for `window.modx3profilertoolbarToolbarData`.
 
-1. **modx3profilertoolbar.enabled** and **modx3profilertoolbar.frontend_toolbar** are enabled.
-2. You are in the **web** context (not in admin).
-3. You are logged into the Manager (toolbar is only available with a session in `mgr` context).
-4. The Modx3ProfilerToolbar plugin is enabled and bound to events (OnMODXInit, OnHandleRequest, OnLoadWebDocument, OnWebPagePrerender).
-5. Browser console — no errors (e.g. toolbar.js blocked or missing `window.modx3profilertoolbarToolbarData`).
+## The log says pdoTools service not found
 
----
+On a profiled request without the `pdotools` service, the package writes `[Modx3ProfilerToolbar] pdoTools service not found`. Collection continues after that write. The error text does not mean the request was aborted.
 
-## FAQ
+## What collection adds
 
-### How much overhead does the profiler add?
+On a request inside `sampling_rate`, memory holds the timer, the SQL row, and pdoTools timings when the service exists. The trace is not written to the database or to disk.
 
-When profiling is on, each request is measured. Traces are **not stored** (no DB or file writes). Estimate: **under 5%** at 100% sampling. On production at 1–5% sampling impact is usually **under 0.5%**.
+With `enabled` on, the package still replaces the parser on `OnMODXInit` for a request outside `sampling_rate`. The package does not measure overhead as a percentage.
 
-### Can it be used on production?
+On a live site leave `frontend_toolbar` on only when those who log in to the manager are the people who should see the panel. An `mgr` session is already required for injection.
 
-Yes, with limits:
+## Shared hosting
 
-1. Enable **sampling** 1–5%.
-2. Toolbar is shown only when logged into Manager — restrict admin access.
-3. Disable **modx3profilertoolbar.frontend_toolbar** for normal users or leave it only for developers.
+The package does not create trace files. Install and upgrade send a POST to `https://metrics.modx.pro/` with a 2 second timeout. Failure does not interrupt installation. The body is described in the [overview](/en/components/modx3profilertoolbar/#installation).
 
-100% profiling on high-load production is not recommended.
+## How to turn it off
 
-### Shared hosting: any limits?
+Set `modx3profilertoolbar.enabled` to No. The plugin returns before `start()` and before parser replacement.
 
-Modx3ProfilerToolbar does not write traces to disk or use the DB for storage — it only injects current-request data into the HTML. Disk space and write permissions are not an issue.
+With the key off, the request only reads that setting.
 
-### How to fully disable the profiler?
+## Other packages
 
-Set **modx3profilertoolbar.enabled** to **No**. The toolbar will disappear and data collection will stop.
-
-### Does the profiler affect speed when enabled is off?
-
-With **modx3profilertoolbar.enabled = false** the plugin does not start collection. Only a minimal settings check remains; impact is negligible.
-
-### Compatibility with other extras (miniShop3, pdoTools, etc.)?
-
-Yes. The profiler works at the MODX event and call-interception level. Compatible with miniShop3, pdoTools, Fenom and other extras.
-
-### Do I need to change templates or chunks?
-
-No. Install the package and enable the settings. The toolbar is injected automatically before `</body>`.
+There is no separate code for miniShop3, Fenom, or pdoTools snippets. How they meet this package is described in [Limitations](limitations). You do not need to edit the template. The panel is added before `</body>` in the resource output that is already built.
