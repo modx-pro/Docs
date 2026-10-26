@@ -643,7 +643,7 @@ MS3ActionRegistry.register('sendNotification', async (data, context) => {
 
 Встроенные `edit` и `delete` тоже идут через реестр, поэтому на них вешаются те же хуки.
 
-Журналирование удалений:
+Запись удалений в журнал аудита:
 
 ```javascript
 MS3ActionRegistry.registerAfterHook('delete', async (data, context, result) => {
