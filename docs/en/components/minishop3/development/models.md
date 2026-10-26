@@ -181,7 +181,7 @@ Table structure comes from the model maps in `src/Model/mysql/` and from Phinx m
 | `privacy_accepted_at` | datetime | Privacy policy acceptance date |
 
 ::: tip Difference from miniShop2
-In miniShop2 customer = modUser. In MiniShop3 customer is a separate entity msCustomer, which can optionally be linked to modUser.
+In miniShop2 the customer was a `modUser`. In MiniShop3 the customer is a separate entity, `msCustomer`, and the link to `modUser` is optional.
 :::
 
 ### Delivery and payment
