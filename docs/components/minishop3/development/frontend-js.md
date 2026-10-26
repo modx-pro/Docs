@@ -8,7 +8,6 @@ JavaScript на стороне сайта: модули без jQuery, ES6+, с�
 ## Структура модулей
 
 ```
-
 assets/components/minishop3/js/web/
 ├── core/                    # Ядро системы
 │   ├── ApiClient.js         # HTTP-клиент
@@ -167,25 +166,37 @@ const cancelBtns = document.querySelectorAll(this.selectors.orderCancel)
 const ms3 = {
   config: {},
   selectors: {},
+  // Ядро
   tokenManager: null,
   apiClient: null,
+
+  // Модули API
   cartAPI: null,
   orderAPI: null,
   customerAPI: null,
+
+  // Модули интерфейса
   cartUI: null,
   orderUI: null,
   customerUI: null,
   authUI: null,
   quantityUI: null,
   productCardUI: null,
+
+  // Вспомогательное
   hooks: null,
   message: null,
 
 async init() {
   this.config = window.ms3Config || {}
+  // Селекторы из Selectors.js, переопределяются через ms3Config.selectors
+  this.config.selectors = { ...window.Ms3DefaultSelectors, ...getSelectors() }
+
   this.hooks = window.ms3Hooks
   this.message = window.ms3Message
 
+  // Токены и клиент API: сначала создаётся клиент, менеджер получает его
+  // через setApiClient(), и только потом запрашивается токен
   this.tokenManager = new TokenManager({
     tokenName: this.config.tokenName || 'ms3_token',
   })
@@ -197,10 +208,12 @@ async init() {
   this.tokenManager.setApiClient(this.apiClient)
   await this.tokenManager.ensureToken()
 
+  // Модули API
   this.cartAPI = new CartAPI(this.apiClient)
   this.orderAPI = new OrderAPI(this.apiClient)
   this.customerAPI = new CustomerAPI(this.apiClient)
 
+  // Модули интерфейса
   this.cartUI = new CartUI(this.cartAPI, this.hooks, this.message, this.config)
   this.orderUI = new OrderUI(this.orderAPI, this.hooks, this.message, this.config)
   this.customerUI = new CustomerUI(this.customerAPI, this.hooks, this.message, this.config)
@@ -208,12 +221,18 @@ async init() {
   this.quantityUI = new QuantityUI(this.cartAPI, this.hooks, this.message, this.config)
   this.productCardUI = new ProductCardUI(this.cartAPI, this.hooks, this.message, this.config)
 
+  // Запуск
   this.cartUI.init()
   this.orderUI.init()
   this.customerUI.init()
   this.authUI.init()
   this.quantityUI.init()
   await this.productCardUI.init()
+
+  // Кнопки количества перепривязываются после каждой перерисовки корзины
+  document.addEventListener('ms3:cart:updated', () => this.quantityUI.reinit())
+
+  this.initFormHandler()
 
   document.dispatchEvent(new Event('ms3:ready'))
 }
