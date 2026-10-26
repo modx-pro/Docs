@@ -41,6 +41,7 @@ switch ($modx->event->name) {
         /** @var \MiniShop3\Model\msOrderProduct $orderProduct */
         $orderProduct = $scriptProperties['msOrderProduct'];
 
+        // Check the stock
         $productId = $orderProduct->get('product_id');
         $count = $orderProduct->get('count');
 
@@ -79,6 +80,7 @@ switch ($modx->event->name) {
     case 'msOnCreateOrderProduct':
         $orderProduct = $scriptProperties['msOrderProduct'];
 
+        // Reserve the product
         $productId = $orderProduct->get('product_id');
         $count = $orderProduct->get('count');
 
@@ -126,6 +128,7 @@ switch ($modx->event->name) {
         $newCount = $orderProduct->get('count');
         $productId = $orderProduct->get('product_id');
 
+        // Check the stock covers the resulting quantity
         $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
         if ($msProduct) {
             $stock = $msProduct->get('stock') ?? 0;
@@ -201,6 +204,7 @@ switch ($modx->event->name) {
         /** @var \MiniShop3\Model\msOrder $order */
         $order = $scriptProperties['msOrder'];
 
+        // Refuse removal from an order in a final status (example)
         if ($order && (int) $order->get('status_id') === 2) {
             $modx->event->output('Cannot remove lines from a finalized order');
             return;
@@ -232,6 +236,7 @@ switch ($modx->event->name) {
     case 'msOnRemoveOrderProduct':
         $orderProduct = $scriptProperties['msOrderProduct'];
 
+        // Return the product to stock
         $productId = $orderProduct->get('product_id');
         $count = $orderProduct->get('count');
 
