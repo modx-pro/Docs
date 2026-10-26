@@ -15,10 +15,6 @@ Options store product attributes (EAV): color, size, material, any key of your o
 
 ## Interface
 
-<!-- ![Options directory](/components/minishop3/screenshots/mgr-options.png) -->
-
-<!-- ![Option groups](/components/minishop3/screenshots/mgr-option-groups.png) -->
-
 ### Options tab
 
 - **Left:** MODX category tree (`class_key = msCategory`). Checkboxes are independent: checking a parent does not select its children. The context menu works on a branch — five items: Refresh Directory, Expand tree, Collapse tree, Select All, Clear All. There is also a search by name.
