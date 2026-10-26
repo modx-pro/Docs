@@ -4,18 +4,16 @@ description: 'Programmatic product create and update, options, images, categorie
 ---
 # Product API
 
-Programmatic interface for working with MiniShop3 products from PHP.
+A product is two models:
 
-A product in MiniShop3 uses two models:
+- **msProduct**: extends `modResource` and stores the resource fields (pagetitle, content, parent, and the rest)
+- **msProductData**: extends `xPDOSimpleObject` and stores the commerce fields (price, article, stock, and the rest) in the `ms3_products` table
 
-- **msProduct** — extends `modResource`, holds standard resource fields (pagetitle, content, parent, etc.)
-- **msProductData** — extends `xPDOSimpleObject`, holds commerce fields (price, article, stock, etc.) in table `ms3_products`
-
-Relation is one-to-one by `id`.
+The relation is one to one, by `id`.
 
 ## Calling the processors
 
-MiniShop3 processors are classes in the namespace `MiniShop3\Processors\`. Call them by **full class name** — the same value the connector and vueManager pass in the `action` parameter. A short path like `Gallery\Upload` with a `processors_path` option does not work: given a short name, MODX looks for a file with the `.class.php` suffix, and MiniShop3 processors have none.
+MiniShop3 processors are classes in the namespace `MiniShop3\Processors\`. Call them by **full class name**. The connector and Vue manager requests pass the same name in the `action` parameter. A short name such as `Gallery\Upload` does not work.
 
 ```php
 // Correct — the full class name
@@ -25,12 +23,12 @@ $response = $modx->runProcessor('MiniShop3\\Processors\\Gallery\\Upload', [
 ]);
 
 // Wrong — a short path without the namespace
-$response = $modx->runProcessor('Gallery\Upload', [...], [
+$response = $modx->runProcessor('Gallery\\Upload', [...], [
     'processors_path' => $modx->getOption('core_path') . 'components/minishop3/src/Processors/',
 ]);
 ```
 
-The MiniShop3 sources sometimes pass `processors_path` next to the full name — in `RunsMs3Processors`, for example. That is an addition to the full name, not a replacement: a short name will not work even with the path supplied.
+Next to the full name, callers sometimes also pass `processors_path`. `RunsMs3Processors` does that. It is an addition to the full name, not a replacement: a short name still fails when the path is set.
 
 The tables below shorten names to the part after `MiniShop3\Processors\`: `Product\Create` means `MiniShop3\Processors\Product\Create`.
 
@@ -117,7 +115,7 @@ $price = $productData->get('price');
 
 ### msProductData virtual fields
 
-`msProductData::get()` supports virtual keys that load related data from the DB:
+The `get()` method of `msProductData` supports virtual keys and loads related data from the database:
 
 | Key | Type | Description |
 | --- | --- | --- |
@@ -222,70 +220,38 @@ Events used: `msOnGetProductPrice`, `msOnGetProductWeight`, `msOnGetProductField
 
 ## Product options
 
-Options use the EAV pattern (Entity-Attribute-Value) in table `ms3_product_options`. Each row has `product_id`, `key` (option name) and `value`.
-
-### OptionService
+Product options live in the `ms3_product_options` table (EAV: `product_id`, `key`, `value`). Write them through `OptionService`. The full reference is the [Options API](options).
 
 ```php
 $optionService = $modx->services->get('ms3_option_service');
-```
 
-### Saving options
-
-```php
 $optionService->saveProductOptions($productId, [
     'color' => ['Red', 'Blue'],
     'size' => ['L', 'XL'],
     'material' => ['Cotton'],
 ]);
 
-// By default removeOther=true — options not in the array are removed.
-// To add without removing existing:
+// By default removeOther=true: options missing from the array are deleted.
+// To add options without deleting the existing ones:
 $optionService->saveProductOptions($productId, [
     'brand' => ['Nike'],
 ], false);  // removeOther = false
-```
 
-### Reading options
-
-```php
-// All product options
 $options = $optionService->getProductOptionValues($productId);
-// ['color' => ['Red', 'Blue'], 'size' => ['L', 'XL']]
-
-// Specific options
-$colors = $optionService->getProductOptionValues($productId, ['color']);
-// ['color' => ['Red', 'Blue']]
+$keys = $optionService->getAvailableOptionKeys($productId);
 ```
 
-### Loading options for template
+For a template, call `loadOptionsForProduct`. The loader puts values under `color` and copies each selected column to `color.caption`, `color.type`, and the other `color.<column>` keys. The second argument defaults to `true` and adds `color.group_name` from the option group. With `false`, the group name is left out.
 
-`loadOptionsForProduct` returns data ready for Fenom templates:
+`loadOptionsForProducts` reads the same shape for several products at once and returns `[id => data]`. Its second argument defaults to `false`. The full key list is in the [Options API](options).
 
 ```php
 $options = $optionService->loadOptionsForProduct($productId);
-// [
-//     'color' => ['Red', 'Blue'],
-//     'color.caption' => 'Color',
-//     'color.type' => 'comboMultiple',
-//     ...
-// ]
-
-// Batch load (avoids N+1)
 $allOptions = $optionService->loadOptionsForProducts([1, 2, 3]);
-// [1 => [...], 2 => [...], 3 => [...]]
 ```
 
-### Available option keys
-
-```php
-// Which options are available for the product (from categories)
-$keys = $optionService->getAvailableOptionKeys($productId);
-// ['color', 'size', 'material']
-```
-
-::: warning Do not use msProductOption model directly
-Always use `OptionService` for options. Creating/saving `msProductOption` objects directly bypasses sync with JSON fields and categories.
+::: warning Do not use the msProductOption model directly
+Always use `OptionService` for options. Creating and saving `msProductOption` objects directly bypasses the sync with JSON fields and categories.
 :::
 
 ## Images (gallery)
@@ -344,25 +310,34 @@ $imageService->removeProductCatalog($productData);
 
 ### Gallery processors
 
-| Processor | Description |
-| --- | --- |
-| `Gallery\Upload` | Upload image (file, URL, path) |
-| `Gallery\GetList` | List product images |
-| `Gallery\Update` | Update image description |
-| `Gallery\Remove` | Remove one image |
-| `Gallery\RemoveAll` | Remove all product images |
-| `Gallery\Sort` | Sort images |
-| `Gallery\SortByName` | Re-sort by filename in natural order — after a batch upload |
-| `Gallery\Multiple` | Bulk operations (remove several) |
-| `Gallery\Generate` | Generate thumbnails for one image |
-| `Gallery\GenerateAll` | Generate thumbnails for all product images |
-| `Gallery\SetPreview` | Set main image (`preview_file_id` in `msProductData`) |
+| Processor | Permission | Description |
+| --- | --- | --- |
+| `Gallery\Upload` | `msproductfile_save` | Upload an image (file, URL, or path) |
+| `Gallery\GetList` | `msproductfile_list` | List of product images |
+| `Gallery\Update` | `msproductfile_save` | Update the image description |
+| `Gallery\Remove` | `msproductfile_save` | Delete one image |
+| `Gallery\RemoveAll` | `msproductfile_save` | Delete all images of the product |
+| `Gallery\Sort` | `msproductfile_save` | Sort images |
+| `Gallery\SortByName` | `msproductfile_save` | Sort by file name (natural order), after a batch upload |
+| `Gallery\Multiple` | `msproductfile_save` | Bulk operations (delete several) |
+| `Gallery\Generate` | `msproductfile_generate` | Generate thumbnails for one image |
+| `Gallery\GenerateAll` | `msproductfile_generate` | Generate thumbnails for every image of the product |
+| `Gallery\SetPreview` | `msproductfile_save` | Set the main image (`preview_file_id` in `msProductData`) |
 
 ## Additional categories
 
-A product can belong to multiple categories. The main category is `parent` on `msProduct`. Additional ones are in table `ms3_product_categories` via model `msCategoryMember`.
+The main category is the `parent` field of `msProduct`. Additional categories live in the `ms3_product_categories` table (model `msCategoryMember`).
 
-Product category tree in the manager: `GET /api/mgr/product-data/{id}/categories/tree` (`ProductDataController::getCategoriesTree()`).
+The card, the category tree, and the links, the whole `/api/mgr/product-data` group, require an mgr session and the `msproduct_save` permission:
+
+| Method | Path | Description |
+| --- | --- | --- |
+| `GET` | `/api/mgr/product-data/{id}` | Product data card |
+| `PUT` | `/api/mgr/product-data/{id}` | Update product data |
+| `GET` | `/api/mgr/product-data/{id}/categories/tree` | Product category tree (`getCategoriesTree()`) |
+| `GET` | `/api/mgr/product-data/{id}/links` | Product links |
+| `POST` | `/api/mgr/product-data/{id}/links` | Create a link |
+| `DELETE` | `/api/mgr/product-data/{id}/links` | Delete links |
 
 ### Managing in code
 
@@ -412,10 +387,19 @@ $productData->save();
 
 ## Product links
 
-Links relate products — "Similar", "Frequently bought together". Two models are involved:
+Links join products: "Similar", "Bought with this". Two models:
 
-- **msLink** — link type (id, type, name)
-- **msProductLink** — link between products (link, master, slave)
+- **msLink**: the link type (id, type, name)
+- **msProductLink**: one link between products (link, master, slave)
+
+```mermaid
+flowchart TB
+  create[ProductLink Create] --> t{msLink.type}
+  t -->|one_to_many| a[one row, master to slave]
+  t -->|many_to_one| b[one row, slave to master]
+  t -->|one_to_one| c[two rows, both directions]
+  t -->|many_to_many| d[two rows and the group pairs]
+```
 
 ### Link types (msLink)
 
@@ -446,17 +430,8 @@ One link in the manager is not necessarily one `msProductLink` row. `ProductLink
 
 A type outside this list fails with `ms3_err_no_link`. The service also rejects a product linked to itself and a reference to a link type that does not exist.
 
-So write through the processor `MiniShop3\Processors\Product\ProductLink\Create` (`…\ProductLink\Remove` to delete). Keep plain `newObject` for reads and for the cases where you assemble every pair yourself.
+Write through the processor `MiniShop3\Processors\Product\ProductLink\Create`. It hands the work to `ProductLinkService`, and the service creates the right set of rows (the calls are in [Via processors](#link-processors)). Keep `newObject` for reads and for the cases where you assemble every pair yourself.
 :::
-
-```php
-// Through the processor — the service creates the whole set of rows
-$response = $modx->runProcessor('MiniShop3\\Processors\\Product\\ProductLink\\Create', [
-    'master' => $productId,
-    'slave' => $relatedId,
-    'link' => $linkTypeId,
-]);
-```
 
 Working with the model directly:
 
@@ -490,10 +465,10 @@ if ($link) {
 }
 ```
 
-### Via processors
+### Via processors {#link-processors}
 
 ```php
-// Create link
+// Create a link. The service decides how many rows the link type needs
 $response = $modx->runProcessor('MiniShop3\\Processors\\Product\\ProductLink\\Create', [
     'link' => $linkTypeId,
     'master' => $productId,
@@ -507,6 +482,8 @@ $response = $modx->runProcessor('MiniShop3\\Processors\\Product\\ProductLink\\Re
     'slave' => $relatedId,
 ]);
 ```
+
+Both processors require the `msproduct_save` permission.
 
 ::: info Composite primary key
 `msProductLink` uses composite PK `link` + `master` + `slave`. Pass all three when getting or removing.
@@ -580,28 +557,28 @@ Vendors are managed by processors `MiniShop3\Processors\Settings\Vendor\*`:
 
 ## Product processors
 
-All product processors — directory `core/components/minishop3/src/Processors/Product/`:
+All product processors live in `core/components/minishop3/src/Processors/Product/`:
 
-| Processor | Description |
-| --- | --- |
-| `Product\Create` | Create product |
-| `Product\Update` | Update product |
-| `Product\UpdateFromGrid` | Update from grid (inline edit) |
-| `Product\Delete` | Mark for deletion |
-| `Product\Undelete` | Unmark deletion |
-| `Product\Get` | Get product |
-| `Product\GetList` | List products |
-| `Product\GetOptions` | Get product options |
-| `Product\Publish` | Publish |
-| `Product\Unpublish` | Unpublish |
-| `Product\Show` | Show in tree |
-| `Product\Hide` | Hide from tree |
-| `Product\Sort` | Sort |
-| `Product\Multiple` | Bulk operations |
-| `Product\Category` | Product categories |
-| `Product\UpdateSource` | Change product media source |
+| Processor | Permission | Description |
+| --- | --- | --- |
+| `Product\Create` | `msproduct_save` | Create a product |
+| `Product\Update` | `msproduct_save` | Update a product |
+| `Product\UpdateFromGrid` | `msproduct_save` | Update from the grid (inline edit). The permission is inherited from `Product\Update` |
+| `Product\Delete` | `msproduct_delete` | Mark as deleted |
+| `Product\Undelete` | `msproduct_delete` | Clear the deleted mark |
+| `Product\Get` | not set | Get a product |
+| `Product\GetList` | not set | Product list |
+| `Product\GetOptions` | not set | Get product options |
+| `Product\Publish` | `msproduct_publish` | Publish |
+| `Product\Unpublish` | `msproduct_publish` | Unpublish |
+| `Product\Show` | `msproduct_save` | Show in the tree. The permission is inherited from `Product\Update` |
+| `Product\Hide` | `msproduct_save` | Hide from the tree. The permission is inherited from `Product\Update` |
+| `Product\Sort` | `msproduct_save` | Sort |
+| `Product\Multiple` | `msproduct_save` | Bulk operations |
+| `Product\Category` | `msproduct_save` | Work with the product categories |
+| `Product\UpdateSource` | `msproduct_save` | Change the product media source |
 
-Autocomplete (product search) is not a processor but a Manager API route: `GET /api/mgr/references/products`. It is listed with the product-data routes in the [API Router](../routing) route map.
+Autocomplete (product search) is not a processor. It is a Manager API method: `GET /api/mgr/references/products`. See [References](../routing#references).
 
 ### Calling from PHP
 
