@@ -5,7 +5,7 @@ description: CSV/XLSX export and import of price, stock, article
 
 # Import & export
 
-Exchange data with Excel/CSV without typing values in the operation dialog.
+Exchange data with Excel/CSV without typing values in the operation dialog. You need **`msbulkeditor_import_export`**. Without it the tab is hidden.
 
 ![Import & export tab](/components/msbulkeditor/screenshots/import-export-tab.png)
 
@@ -17,13 +17,11 @@ Exchange data with Excel/CSV without typing values in the operation dialog.
 | --- | --- | --- |
 | Columns | Any from catalog: `id`, MS3 fields, `tv:*`, `option:*` | **Price**, **stock**, **article** only |
 | Excel round-trip | Export → edit → upload | `price`, `stock`/`count`, `article` |
-| TV / options | Yes in file | Not in UI; use a bulk operation |
+| TV / options | Yes in file | Not in UI. Use a bulk operation |
 
 Exporting TV/options is useful for reports. You cannot mass-update TV/options from the import tab.
 
-Tab permission: **`msbulkeditor_import_export`**. Without it the tab is hidden.
-
-Above the forms the UI shows **operation scope** (same selection meta as on Products): export and import apply use the current selection / expert mode.
+Export uses the selection on **Products**: checked rows or expert mode. Import changes only products whose id is read from the file. Without an ID column the request ends with `msbulkeditor_import_mapping_invalid`. The current filter does not apply to import.
 
 ---
 
@@ -35,7 +33,7 @@ Above the forms the UI shows **operation scope** (same selection meta as on Prod
 2. **Import & export** tab → **Export** block.
 3. **Format:** CSV or XLSX.
 4. **Columns** comma-separated (default `id,pagetitle,price,stock,published`).
-5. **Run export** — the browser downloads the file.
+5. **Run export.** The browser downloads the file.
 
 ![Export form](/components/msbulkeditor/screenshots/export-form.png)
 
@@ -50,15 +48,13 @@ Above the forms the UI shows **operation scope** (same selection meta as on Prod
 | `published` | 0/1 |
 | `article` | SKU |
 | `tv:name` / `msbe:tv:name` | TV value from `fields.tvs` |
-| `option:key` / `msbe:option:key` | Option value from `fields.options`; multi-value comma-separated |
+| `option:key` / `msbe:option:key` | Option value from `fields.options`. Multi-value comma-separated |
 
 TVs and options use keys from [columns](column-settings) or short prefixes `tv:` / `option:`.
 
 ### XLSX
 
 Requires **OpenSpout** in the component vendor (`composer install` in `core/components/msbulkeditor`). Otherwise message `msbulkeditor_export_xlsx_unavailable`.
-
-Permission: **`msbulkeditor_import_export`**.
 
 ### Plugins
 
@@ -102,7 +98,7 @@ A warning appears when the file is truncated by the limit.
 
 ## JSON import
 
-Block **“Advanced: row JSON and mapping”** — same target fields (price / stock / article), no file upload:
+Block **“Advanced: row JSON and mapping”** uses the same target fields (price / stock / article) with no file upload:
 
 ```json
 [
@@ -124,7 +120,7 @@ For TVs and options use a [bulk operation](preview-and-apply), not this block.
 ## After import
 
 - Summary: **Success / Skipped / Errors**.
-- **Clear preview** — reset import preview and apply result. If already empty — toast “nothing to clear”.
+- **Clear preview** resets import preview and apply result. If already empty, toast “nothing to clear”.
 
 Import uses the same preview/apply pipeline as bulk operations.
 
@@ -133,4 +129,4 @@ Import uses the same preview/apply pipeline as bulk operations.
 ## See also
 
 - [Product & prices](product-and-prices)
-- [events](../events) — `export/run`, `import/parse`, `import/run`
+- [events](../events): `export/run`, `import/parse`, `import/run`

@@ -5,7 +5,7 @@ description: Save and rerun JSON operations
 
 # Presets
 
-Save bulk operation parameters under a name for reuse.
+A preset is a named set of operation parameters. You configure it once and run it on a new selection.
 
 ![Presets tab](/components/msbulkeditor/screenshots/presets-tab.png)
 
@@ -15,7 +15,7 @@ Save bulk operation parameters under a name for reuse.
 
 ## Presets tab
 
-An InfoBanner at the top explains: after save, use **Apply** or the toolbar menu.
+A banner at the top explains: after save, use **Apply** or the toolbar menu.
 
 | Element | Action |
 | --- | --- |
@@ -31,13 +31,13 @@ An InfoBanner at the top explains: after save, use **Apply** or the toolbar menu
 
 Empty list: empty state “No presets yet”.
 
-Permission: **`msbulkeditor_presets`**. Without it the tab is hidden. Global presets (`is_global`) show a badge; only editable rows can be deleted.
+Permission: **`msbulkeditor_presets`**. Without it the tab is hidden. Global presets (`is_global`) show a badge. Only editable rows can be deleted.
 
 ### Rename
 
 1. **Load** the preset into the form.
 2. Change **Name** (not the JSON).
-3. **Save** — UI creates the new name and deletes the old (`presets/delete` after save).
+3. **Save.** The UI creates the new name and deletes the old (`presets/delete` after save).
 
 Form banner: “Renaming preset … After save the old name will be removed”.
 
@@ -76,13 +76,13 @@ Invalid JSON on save or apply → error toast.
 
 ## Quick launch from toolbar
 
-On **Products** → **Presets** menu (PresetMenu):
+On **Products** open the **Presets** menu:
 
 | Menu state | Behavior |
 | --- | --- |
 | Loading | “Loading…” item |
 | Empty list | “No presets” item |
-| Has runnable | Preset names; click → operation dialog |
+| Has runnable | Preset names. Click opens the operation dialog |
 
 Requires selected products or expert mode (otherwise the menu button is disabled).
 
@@ -103,7 +103,7 @@ A TV/option preset runs through the [binding wizard](binding-wizard).
 
 ## Storage
 
-Table **`msbe_presets`**, site-wide (not per-user). CRUD requires the presets permission.
+Table **`msbe_presets`**. Presets you save are personal (`created_by`, `is_global` false). A manager with `msbulkeditor_presets` creates, edits, and deletes only their own. Rows with `is_global` are visible to everyone as read-only: you can run them, not edit or delete them.
 
 ---
 
