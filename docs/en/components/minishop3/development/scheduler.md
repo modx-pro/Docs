@@ -23,7 +23,7 @@ Scheduler 1.8.0 or higher. Tasks also work on older versions, but recurring ones
 - **token and draft cleanup** runs on schedule; the setting neither enables nor disables it. The tasks are registered by the MiniShop3 installer, and only when Scheduler is already in place: otherwise the resolver exits silently and no schedule appears. If Scheduler came second, upgrade MiniShop3 again or create the tasks by hand.
 :::
 
-<!-- MEDIA: screenshot-admin | must | Системные настройки, пространство имён `minishop3`, список отфильтрован по ключу `ms3_use_scheduler`: видна строка настройки с названием, описанием и значением «Да». | На стенде открыть системные настройки, выбрать пространство имён `minishop3`, в поиске ввести `ms3_use_scheduler`, включить настройку. -->
+![The ms3_use_scheduler setting in system settings](/components/minishop3/screenshots/mgr-scheduler-setting.png)
 In code the setting is changed through the `modSystemSetting` object:
 
 ```php
@@ -177,7 +177,9 @@ flowchart TB
 
 The run goes into the queue. A single cron pass takes as many runs as the Scheduler setting `scheduler.tasks_per_run` allows — one by default, so with a non-empty queue a run may wait for several passes.
 
-<!-- MEDIA: screenshot-admin | nice | Scheduler: список задач с отфильтрованным пространством имён `minishop3`, на экране видны все вкладки интерфейса; у одной из задач открыто контекстное меню с пунктом «Запланировать запуск». Вторым кадром — окно, которое открывается после выбора пункта. | На стенде открыть Scheduler через меню «Дополнения», вызвать контекстное меню на `ms3_cleanup_tokens`. Окно снять, не сохраняя запуск. -->
+![MiniShop3 tasks in Scheduler and the task context menu](/components/minishop3/screenshots/mgr-scheduler-tasks.png)
+
+![The "Schedule a run" window](/components/minishop3/screenshots/mgr-scheduler-schedule-dialog.png)
 ### Via PHP
 
 ```php

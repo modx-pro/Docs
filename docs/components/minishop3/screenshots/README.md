@@ -35,6 +35,9 @@
 | `mgr-product-gallery.png` | Вкладка галереи на товаре | [interface/gallery.md](../interface/gallery.md) |
 | `mgr-product-categories.png` | Вкладка **Категории** на карточке товара | [interface/product.md](../interface/product.md) |
 | `mgr-system-settings.png` | System Settings → namespace minishop3 | [quick-start.md](../quick-start.md) |
+| `mgr-scheduler-setting.png` | Системные настройки, namespace minishop3, фильтр по `ms3_use_scheduler`, значение «Да» и раскрытое описание | [development/scheduler.md](../development/scheduler.md) |
+| `mgr-scheduler-tasks.png` | **Планировщик → Задания**, поиск `minishop3`, контекстное меню на `ms3_cleanup_tokens` | [development/scheduler.md](../development/scheduler.md) |
+| `mgr-scheduler-schedule-dialog.png` | Окно «Запланировать запуск» для `ms3_cleanup_tokens` | [development/scheduler.md](../development/scheduler.md) |
 | `fe-catalog.png` | Каталог товаров на фронтенде | [frontend/catalog.md](../frontend/catalog.md) |
 | `fe-product.png` | Страница товара | [frontend/product.md](../frontend/product.md) |
 | `fe-cart.png` | Корзина | [frontend/cart.md](../frontend/cart.md) |
