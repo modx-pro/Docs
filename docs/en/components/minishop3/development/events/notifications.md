@@ -135,6 +135,7 @@ switch ($modx->event->name) {
         $message = "Order #{$orderNum}\n";
         $message .= "Status changed to: {$statusName}";
 
+        // Sending through the Bot API
         $botToken = $modx->getOption('ms3_telegram_bot_token');
         $url = "https://api.telegram.org/bot{$botToken}/sendMessage";
 
