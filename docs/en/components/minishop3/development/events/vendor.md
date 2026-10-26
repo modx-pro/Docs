@@ -34,6 +34,7 @@ switch ($modx->event->name) {
         /** @var \MiniShop3\Model\msVendor $vendor */
         $vendor = $scriptProperties['msVendor'];
 
+        // Check that the name is unique
         $existing = $modx->getObject(\MiniShop3\Model\msVendor::class, [
             'name' => $vendor->get('name'),
         ]);
@@ -75,6 +76,7 @@ switch ($modx->event->name) {
             $vendor->get('id')
         ));
 
+        // Creating a page for the vendor
         // $page = $modx->newObject('modResource', [...]);
         break;
 }
@@ -171,6 +173,7 @@ switch ($modx->event->name) {
     case 'msOnBeforeVendorDelete':
         $vendor = $scriptProperties['msVendor'];
 
+        // Refuse the delete while products are linked
         $productCount = $modx->getCount(\MiniShop3\Model\msProductData::class, [
             'vendor_id' => $vendor->get('id'),
         ]);
@@ -214,6 +217,7 @@ switch ($modx->event->name) {
             $vendor->get('id')
         ));
 
+        // Clear the cache
         $modx->cacheManager->delete('vendors_list');
         break;
 }
@@ -235,6 +239,7 @@ switch ($modx->event->name) {
     case 'msOnVendorCreate':
         $vendor = $scriptProperties['msVendor'];
 
+        // Create the brand page in the catalogue
         $brandsParent = $modx->getOption('brands_resource_id', null, 0);
         if ($brandsParent) {
             $page = $modx->newObject('modResource', [
@@ -248,6 +253,7 @@ switch ($modx->event->name) {
             $page->setTVValue('vendor_id', $vendor->get('id'));
             $page->save();
 
+            // Store the link
             $vendor->set('resource_id', $page->get('id'));
             $vendor->save();
         }
@@ -256,6 +262,7 @@ switch ($modx->event->name) {
     case 'msOnVendorUpdate':
         $vendor = $scriptProperties['msVendor'];
 
+        // Update the brand page
         $resourceId = $vendor->get('resource_id');
         if ($resourceId) {
             $page = $modx->getObject('modResource', $resourceId);
@@ -270,6 +277,7 @@ switch ($modx->event->name) {
     case 'msOnVendorDelete':
         $vendor = $scriptProperties['msVendor'];
 
+        // Delete the brand page
         $resourceId = $vendor->get('resource_id');
         if ($resourceId) {
             $page = $modx->getObject('modResource', $resourceId);

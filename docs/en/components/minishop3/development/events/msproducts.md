@@ -41,6 +41,7 @@ After the event the list rows are updated from `returnedValues['rows']` (`EventG
 switch ($modx->event->name) {
     case 'msOnProductsLoad':
         $values = &$modx->event->returnedValues;
+        // Example: flag every product with no price
         $rows = $scriptProperties['rows'];
         foreach ($rows as $i => $row) {
             if (empty($row['price'])) {
