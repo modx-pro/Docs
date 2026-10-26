@@ -527,7 +527,7 @@ If `ms3_customer_sync_create_moduser` = true, also creates `modUser` + `modUserP
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
 | `customer_id` | integer | 0 | Customer ID |
-| `token` | string | '' | Token string (128 chars, unique) |
+| `token` | string | '' | Token string, unique. The column holds up to 128 characters: api and refresh tokens are 64 hex characters (`random_bytes(32)`), the email verification token is 128 (`random_bytes(64)`) |
 | `type` | enum | 'api' | Type: api, refresh, magic_link, email_verification, password_reset |
 | `expires_at` | datetime | — | Expiry |
 | `created_at` | datetime | now | Created at |
