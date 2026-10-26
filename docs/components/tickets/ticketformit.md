@@ -1,12 +1,12 @@
 # Интеграция с FormIt
 
-Валидация FormIt работает в `TicketForm` и `TicketComments` через `&validate` и `&customValidators`. FormIt не входит в зависимости пакета.
+Валидация FormIt работает в `TicketForm` и `TicketComments` через `&validate`. FormIt не входит в зависимости пакета. Ключ `&customValidators` Tickets в коде не читает. Он попадёт в config, который отдаётся FormIt, если FormIt сам его ждёт.
 
 ## Правила
 
 - Ошибки выводят в `<span class="error"></span>` рядом с полем или в `#имя_поля-error`
 - Правила FormIt: [документация FormIt](https://docs.modx.com/current/ru/extras/formit)
-- Для комментариев валидируется поле `text`
+- У комментариев валидируется поле `text`
 
 Разметка поля:
 

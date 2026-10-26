@@ -5,7 +5,7 @@ description: TicketUserPolicy, TicketVipPolicy, TicketSectionPolicy
 
 # Политики и права
 
-Компонент Tickets создаёт три политики доступа. Ключи проверяют на фронтенде (формы, AJAX) и в mgr: какие ключи действуют только в mgr, помечено в таблице. С фронтенда тикет сохраняют без проверки `ticket_save`.
+Компонент создаёт три политики доступа. Ключи проверяют на фронтенде (формы, AJAX) и в mgr. Какие ключи действуют только в mgr, помечено в таблице. С фронтенда тикет сохраняют без проверки `ticket_save`.
 
 ## Политики
 
@@ -42,7 +42,7 @@ description: TicketUserPolicy, TicketVipPolicy, TicketSectionPolicy
 | `ticket_vote` | Голосовать за тикет |
 | `ticket_star` | Добавлять тикет в избранное |
 | `ticket_file_upload` | Загружать файлы к тикету |
-| `ticket_file_delete` | Удалять свои файлы тикета |
+| `ticket_file_delete` | Ключ есть в политике. Удаление файла на фронте проверяет `ticket_file_upload` и автора файла. Это право процессор не читает |
 | `section_unsubscribe` | Отписывать пользователей от секции (mgr) |
 | `comment_save` | Создавать и редактировать комментарий |
 | `comment_delete` | Удалять и восстанавливать комментарий (mgr) |
@@ -59,11 +59,11 @@ description: TicketUserPolicy, TicketVipPolicy, TicketSectionPolicy
 
 ## Закрытые тикеты
 
-Закрытый тикет отмечают флагами `private` и `privateweb`. Без `ticket_view_private` пользователя перенаправляют на ресурс из `tickets.private_ticket_page`.
+Закрытый тикет отмечает флаг `privateweb`. Чекбокс в форме пишет именно его. Без `ticket_view_private` страница подменяется ресурсом из `tickets.private_ticket_page`. Адрес в браузере не меняется. Если id равен `0`, подмена не выполняется. Поле `private` при этом не проверяется.
 
 ## Подписки
 
-- На **секцию** — чекбокс в `tpl.Tickets.comment.wrapper`, AJAX `section/subscribe`
-- На **автора** — сниппет [subscribeAuthor](/components/tickets/snippets/subscribeauthor), AJAX `author/subscribe`
+- На **секцию**: чекбокс в `tpl.Tickets.comment.wrapper`, AJAX `section/subscribe`
+- На **автора**: сниппет [subscribeAuthor](/components/tickets/snippets/subscribeauthor), AJAX `author/subscribe`
 
 Оба действия требуют авторизации на фронтенде.
