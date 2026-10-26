@@ -44,7 +44,20 @@ Retry-After: 42
 }
 ```
 
-`Retry-After` is sent only with a 429. `X-RateLimit-Limit`, `X-RateLimit-Remaining` and `X-RateLimit-Reset` go out on requests that are still inside the window. The bucket is counted per IP, and `OPTIONS` does not consume the quota.
+The window is fixed: it starts with the first request, `reset_at` is set once as «now plus `ms3_rate_limit_decay_seconds`» and never slides. Once the window is over, the counter resets completely.
+
+| Header | When it is sent | What it holds |
+| --- | --- | --- |
+| `Retry-After` | with a 429 only | seconds until the window ends |
+| `X-RateLimit-Limit` | while the request fits the quota | the value of `ms3_rate_limit_max_attempts` |
+| `X-RateLimit-Remaining` | the same | how many requests are left |
+| `X-RateLimit-Reset` | the same | a **Unix timestamp** of the window end, not a number of seconds |
+
+::: warning Behind a reverse proxy the counter is shared
+The bucket key is `md5()` of `REMOTE_ADDR`. The middleware deliberately ignores headers such as `X-Forwarded-For`: the client controls them, so the limit could be bypassed by forging one. If the site sits behind a reverse proxy, a CDN or a Nuxt server and the web server does not replace `REMOTE_ADDR` with the visitor address, every customer shares one bucket and hits a common limit. Configure the real address at the web-server level.
+:::
+
+`OPTIONS` requests do not consume the quota.
 
 | Key | Default | Meaning |
 | --- | --- | --- |
