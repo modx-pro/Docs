@@ -3,8 +3,6 @@ title: Быстрый старт
 ---
 # Быстрый старт
 
-Ace в менеджере за несколько минут.
-
 ## Шаг 1. Установка
 
 1. Установите **Ace** через **Extras → Installer** ([обзор](index#установка))
@@ -13,21 +11,22 @@ Ace в менеджере за несколько минут.
 
 ## Шаг 2. Редактор для элементов
 
-Системная настройка **which_element_editor** должна быть равна **Ace**.
+`which_element_editor` = **Ace**.
 
 Откройте сниппет, чанк, шаблон или плагин: поле кода станет редактором Ace с подсветкой.
 
 ## Шаг 3. Код в ресурсах
 
-Поведение зависит от `use_editor` и `which_editor` (учитываются **контекстные** переопределения):
+Учитываются **контекстные** значения `use_editor` и `which_editor`:
 
 | Цель | Настройки |
 | --- | --- |
-| Ace в поле content | `use_editor = Нет` **или** `which_editor = Ace` |
-| TinyMCE / другой RTE | `use_editor = Да`, `which_editor` ≠ Ace; у ресурса включите «Использовать HTML-редактор» |
-| Textarea без Ace | `use_editor = Да`, `which_editor` ≠ Ace, у ресурса richtext выключен |
+| Ace в поле content у всех ресурсов | `use_editor = Нет`. Тогда же заменяются textarea с классом `modx-richtext` |
+| Ace только у ресурсов без richtext | `use_editor = Да`, `which_editor` пустой или `Ace`, richtext выключен |
+| TinyMCE / другой RTE | `use_editor = Да`, `which_editor` не `Ace`, у ресурса включён richtext |
+| Textarea без Ace | `use_editor = Да`, `which_editor` не `Ace`, richtext выключен |
 
-С версии **1.9.10** Ace не подменяет `#ta`, если выбран другой RTE. Подробнее: [Интеграция](integration#ресурсы-и-rte).
+`which_editor = Ace` при включённом `use_editor` и richtext само по себе Ace на `#ta` не ставит. Подробнее: [Интеграция](integration#ресурсы-и-rte).
 
 ## Шаг 4. Проверка
 

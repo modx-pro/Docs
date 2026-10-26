@@ -3,9 +3,9 @@ title: ms3recentlyviewed
 ---
 # Сниппет ms3recentlyviewed
 
-Выводит список товаров по переданным ID. Используется для блока «Недавно просмотренные» при серверном выводе или после получения ID из коннектора.
+Список товаров по переданным ID. Блок «Недавно просмотренные» при серверном выводе или после ID из коннектора.
 
-Внутри вызывается msProducts (pdoTools). Дополнение подставляет параметр `parents`, требуемый в MODX 3.
+Внутри msProducts (pdoTools). Дополнение подставляет `parents` для MODX 3.
 
 ## Параметры
 
@@ -17,13 +17,13 @@ title: ms3recentlyviewed
 | **emptyTpl** | Чанк пустого состояния | tplViewedEmpty |
 | **limit** | Макс. количество в выборке | из настройки `ms3recentlyviewed.max_items` (`20`) |
 | **includeThumbs** | Алиасы превью для `msProducts` | `thumb,small` |
-| **fromDB** | ID из БД, если пользователь авторизован в текущем контексте. `sync_enabled` не читается | `false` |
+| **fromDB** | ID из БД, если пользователь авторизован в текущем контексте. `sync_enabled` не читается. Нет в transport | `false` |
 | **autoIdsFallback** | При пустом списке — первые товары каталога (демо). Нет в transport | `false` |
 | **showUnpublished** / **showDeleted** / **showZeroPrice** | В запрос товаров. Нет в transport | `false` |
 
-**ids** из шаблона или плейсхолдера **`[[+viewedIds]]`**, либо опускается при **fromDB=true** (авторизованный пользователь). `sync_enabled` это чтение не закрывает. Гость + `storage_type=cookie`: плагин заполняет `viewedIds`. Fenom: **`$_modx->getPlaceholder('viewedIds')`**.
+**ids** из шаблона или **`[[+viewedIds]]`**, либо не нужен при **fromDB=true** (авторизованный пользователь). `sync_enabled` чтение не отключает. Гость и `storage_type=cookie`: плагин задаёт `viewedIds`. Fenom: **`$_modx->getPlaceholder('viewedIds')`**.
 
-Заглушка **`ms3rvDebugGetViews`** возвращает пустую строку. Не вызывайте.
+**`ms3rvDebugGetViews`**: заглушка, пустая строка. Не вызывайте.
 
 ## Примеры
 
@@ -63,4 +63,4 @@ title: ms3recentlyviewed
 
 :::
 
-При отсутствии товаров сниппет вернёт пустую строку или контент `emptyTpl`. В шаблоне можно не выводить блок при пустом результате.
+Без ID сниппет вернёт обёртку `div.ms3rv__list` с `data-ms3rv-hydrate="viewed"` и HTML `emptyTpl`. `viewed.js` по маркеру подставит список из браузера.

@@ -186,6 +186,15 @@ switch ($modx->event->name) {
 
 ## msOnImportRow
 
+```mermaid
+flowchart TD
+  csv["CSV row"] --> event["msOnImportRow"]
+  event --> cancelled{"output cancel or false?"}
+  cancelled -->|yes| skipped["The row goes into the skipped counter"]
+  cancelled -->|no| values["returnedValues"]
+  values --> fields["data, tvData, optionData, gallery"]
+```
+
 Fired when processing **each row** of the CSV. Lets you modify data or skip the row.
 
 ### Parameters

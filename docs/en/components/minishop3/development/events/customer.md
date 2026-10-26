@@ -9,16 +9,16 @@ Adding and validating customer fields, creating a customer, managing addresses.
 
 Fired **before** getting the customer for the order.
 
-::: warning Aborting does not block checkout
-Linking an `msCustomer` to the order is optional: `OrderSubmitHandler` carries on with checkout even when no customer was created or found — the data stays in `msOrderAddress`. Aborting this event with `output()` does not "forbid checkout for guests", it only leaves the order without a linked `msCustomer`.
-:::
-
 ### Parameters
 
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
 | `msCustomer` | `msCustomer \| null` | Customer object (may be null) |
+
+::: warning Aborting does not block checkout
+Linking an `msCustomer` to the order is optional. `OrderSubmitHandler` continues checkout even when the customer was not created or found. The data stays in `msOrderAddress`. Aborting this event with `output()` does not forbid checkout for guests. It only leaves the order without a linked `msCustomer`.
+:::
 
 ### Substituting the customer
 
@@ -294,7 +294,9 @@ Fired on validation **error** for a customer field.
 | `value` | `mixed` | Invalid value |
 | `errors` | `array` | Errors array |
 
-### Example
+### Replacing the error set
+
+A plugin can replace the error array through `returnedValues['errors']`, or collapse it into one message by aborting the event with `output()`:
 
 ```php
 <?php
@@ -303,12 +305,19 @@ switch ($modx->event->name) {
         $key = $scriptProperties['key'];
         $errors = $scriptProperties['errors'];
 
-        // Customize error messages
+        // Customising the error messages
         $modx->log(modX::LOG_LEVEL_WARN, sprintf(
             '[Customer] Validation error %s: %s',
             $key,
             json_encode($errors)
         ));
+
+        // Replace the error set (otherwise the original $errors is used)
+        if ($key === 'phone') {
+            $modx->event->returnedValues = [
+                'errors' => [$key => 'Enter a phone number as +7XXXXXXXXXX'],
+            ];
+        }
         break;
 }
 ```
@@ -418,7 +427,6 @@ Fired **before** adding an address to the customer.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `customer` | `\MiniShop3\Controllers\Customer\Customer` | Customer controller |
 | `addressData` | `array` | Address data |
 
 ### Aborting the operation
@@ -478,7 +486,6 @@ Fired **after** adding an address to the customer.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `customer` | `\MiniShop3\Controllers\Customer\Customer` | Customer controller |
 | `addressData` | `array` | Address data |
 | `msCustomerAddress` | `msCustomerAddress` | Created address object |
 

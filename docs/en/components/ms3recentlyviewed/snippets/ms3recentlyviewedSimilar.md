@@ -3,7 +3,7 @@ title: ms3recentlyviewedSimilar
 ---
 # Snippet ms3recentlyviewedSimilar
 
-Outputs products from the same categories (parents) as the given viewed IDs. Excludes those IDs. “Similar to viewed” block.
+Products from the same categories (parents) as the given viewed IDs. Those IDs are excluded. “Similar to viewed” block.
 
 ## Parameters
 
@@ -14,11 +14,11 @@ Outputs products from the same categories (parents) as the given viewed IDs. Exc
 | **tplOuter** | Wrapper chunk | *(empty)* |
 | **limit** | Max items in result | `10` |
 | **depth** | Category search depth. Values `< 2` are raised to 2 by the snippet and AJAX | **2** |
-| **fromDB** | Load IDs from DB if the user is authenticated in the current context | `false` |
+| **fromDB** | Load IDs from DB if the user is authenticated in the current context. Not in transport | `false` |
 | **autoIdsFallback** | Demo IDs when `fromDB` and the list is empty. Default off, not in transport | `false` |
 | **fallbackToRoot** / **fallbackReturnIds** | Catalog-wide fallback when the category query is empty. Not in transport | `true` |
-| **where** | Extra `msProducts` `where` (JSON). Merged with `id:NOT IN` viewed IDs | — |
-| **showUnpublished** / **showDeleted** | Passed to the product query | `false` |
+| **where** | Extra `msProducts` `where` (JSON). Merged with `id:NOT IN` viewed IDs. Not in transport | — |
+| **showUnpublished** / **showDeleted** | Passed to the product query. Not in transport | `false` |
 
 ## Examples
 
@@ -44,6 +44,8 @@ Outputs products from the same categories (parents) as the given viewed IDs. Exc
 
 :::
 
-If nothing is found by category, the snippet may use a catalog-wide selection with a higher depth.
+If the category query is empty, the snippet may search the whole catalog with higher depth. No IDs: empty string.
 
-Via connector (AJAX): POST with `action=similar`, parameters `ids`, optionally `limit`, `tpl`, `depth`. See [Frontend integration](/en/components/ms3recentlyviewed/frontend).
+`renderSimilar()` in `viewed.js` defaults to 8 products, excludes the current product, and does not send `depth`. The server keeps 2. An empty response hides the container. Snippet default limit is 10.
+
+Connector (AJAX): POST `action=similar`, `ids`, optionally `limit`, `tpl`, `depth`. Context: `ms3recentlyviewed.context` (default `web`). See [Frontend integration](/en/components/ms3recentlyviewed/frontend).

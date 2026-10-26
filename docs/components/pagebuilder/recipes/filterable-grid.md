@@ -19,7 +19,13 @@ description: "filterable_grid: поиск, сортировка и страни�
 2. Выберите datasource: `modx-resources`, `pagebuilder-tables` или `minishop3`. Для таблицы укажите ключ.
 3. **Сохранить** ресурса. На сайте форма, сортировка и пагинация идут через `pagebuilder-filterable-grid.js`. Адрес обновляет `history.pushState`.
 4. Параметры: `pb_fg_{id}_search`, `_sort`, `_dir`, `_page`, `_f_{поле}`. Префикс `pb_fg_{id}_` пишет `DatasourceSectionEnricher` в `filter_param_prefix`.
-5. Оператор зависит от типа поля: text → `contains`, number и currency → `gte`, color, yesno и toggle → `eq`. Колонка `image` в фильтр и сортировку не попадает. Подпись фильтра берётся из `label` колонки.
+5. Колонки `image` и `id` в фильтр и сортировку не попадают. Подпись фильтра берётся из `label` колонки.
+
+| Тип поля | Оператор |
+| --- | --- |
+| text | `contains` |
+| number, currency | `gte` |
+| color, colorpalette, yesno, toggle | `eq` |
 
 Страница больше последней приводится к последней. Пустой результат: `pagebuilder_fe_filter_empty`. Кнопка сброса: `pagebuilder_fe_filter_clear`.
 
@@ -27,11 +33,9 @@ description: "filterable_grid: поиск, сортировка и страни�
 
 Title `Каталог`. Datasource `pagebuilder-tables`, ключ таблицы тот же, что на вкладке **Таблицы**. **Лимит** `12` (размер страницы).
 
-После сохранения откройте страницу и введите слово в поиск. Адрес получает `pb_fg_{id}_search`, где `{id}` равен id секции. Сброс возвращает список и пишет лексикон `pagebuilder_fe_filter_clear`. Пустая выборка показывает `pagebuilder_fe_filter_empty`.
-
 ## Что проверить
 
-С JavaScript список обновляется без полной перезагрузки, а query остаётся в адресе. Выключите JavaScript и отправьте форму: это обычный GET с теми же параметрами. Колонка `image` в фильтрах не появляется.
+С JavaScript список обновляется без полной перезагрузки, а query остаётся в адресе. Выключите JavaScript и отправьте форму: это обычный GET с теми же параметрами.
 
 ## Откат
 

@@ -5,9 +5,7 @@ description: Quick bulk operations menu on the Products toolbar
 
 # Quick actions
 
-**Quick actions** — dropdown on the Products toolbar with preset bulk operation types. The toolbar button is icon-only (bolt); the label appears in a tooltip.
-
-In code the component is `ComboMenu` (config `comboMenuModel.js`); in the manager UI the label is **Quick actions**.
+Dropdown on the Products toolbar with ready-made operation types. The toolbar button is icon-only (bolt). The label appears in a tooltip.
 
 ![Quick actions button and menu items](/components/msbulkeditor/screenshots/combo-menu.png)
 
@@ -17,7 +15,7 @@ In code the component is `ComboMenu` (config `comboMenuModel.js`); in the manage
 
 1. Select products **or** enable [expert mode](products-grid#expert-mode).
 2. Click **Quick actions** (bolt icon).
-3. Pick an item — opens the operation dialog with **pre-filled type** (field type locked).
+3. Pick an item. The operation dialog opens with **pre-filled type** (field type locked).
 4. Fill parameters → **Preview** → **Apply**.
 
 The menu is **disabled** when there is no selection and expert mode is off.
@@ -41,18 +39,16 @@ Most-used items appear first:
 | Change template | `template` | Template ID |
 | Change parent | `category` | `mode: change_parent`, parent ID |
 | Change vendor | `vendor` | Vendor ID |
-| Set text | `text_set` | defaults to field `pagetitle`; changeable in the form |
-| Regenerate gallery thumbnails | `gallery_regenerate` | — |
+| Set text | `text_set` | defaults to field `pagetitle`, changeable in the form |
+| Regenerate gallery thumbnails | `gallery_regenerate` | |
 | Clear resource cache | `resource_utility` | `action: clear_cache` |
 | Regenerate URI | `resource_utility` | `action: regenerate_uri` |
-| Soft delete | `soft_delete` | — |
+| Soft delete | `soft_delete` | |
 | Change file source | `source` | Source ID |
 | Change content type | `content_type` | Type ID |
 | Assign resource group | `resource_group` | Group ID |
 | Change dates | `dates` | date field, mode set / clear / offset |
 | Change user | `user` | field (createdby, …), user ID |
-
-Order and config: `assets/.../config/comboMenuModel.js`.
 
 ### Item screenshots
 
@@ -108,4 +104,4 @@ For **price**, **stock**, **TV**, **options** use **Run operation** or a [preset
 ## See also
 
 - [Product and prices](product-and-prices)
-- [Presets](presets) — save operation parameters for reuse
+- [Presets](presets)

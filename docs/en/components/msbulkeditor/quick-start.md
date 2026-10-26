@@ -19,7 +19,7 @@ In 10–15 minutes you can install the panel and apply the first bulk operation 
 ## Step 1: Install the package
 
 1. [Connect ModStore](https://modstore.pro/info/connection) if installing from the catalog.
-2. **Extras → Installer → Download Extras** — **msBulkEditor** → **Download** → **Install**.
+2. **Extras → Installer → Download Extras** → **msBulkEditor** → **Download** → **Install**.
 3. Ensure **MiniShop3** and **VueTools** are installed.
 4. **Manage → Clear Cache**.
 
@@ -30,7 +30,7 @@ In 10–15 minutes you can install the panel and apply the first bulk operation 
 | Menu | **Extras → msBulkEditor** |
 | Namespace | `msbulkeditor` |
 | Permissions | `msbulkeditor_view`, `edit`, `rollback`, `presets`, `import_export` |
-| Tables | `msbe_operations`, `msbe_operation_items`, `msbe_presets` |
+| Tables | `msbe_operations`, `msbe_operation_items`, `msbe_presets`, `msbe_user_states` |
 | Settings | area `msbulkeditor` |
 
 ## Step 2: Permissions
@@ -59,9 +59,9 @@ If you see a VueTools warning, install the package and clear the cache. See [FAQ
 1. On **Products**, filter a category and check rows, or enable **expert mode** for the full filtered set.
 2. Click **Run operation**.
 3. Type: **Price** → mode **−%** → value `10`. Optionally transfer to `old_price`.
-4. **Preview** — check the summary and before/after table.
+4. **Preview.** Check the summary and before/after table.
 5. Uncheck rows you do not want to change.
-6. **Apply** — wait for progress.
+6. **Apply.** Wait for progress.
 
 ![Preview](/components/msbulkeditor/screenshots/preview-block.png)
 

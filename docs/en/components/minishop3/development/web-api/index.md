@@ -29,7 +29,7 @@ With an empty `route` the server answers 400 before the router runs:
 
 A router response carries `success`, `message` and `data`. An error adds `code`, `errors` and `error_code`.
 
-**Success.** `message` is most often `null`: the catalog and account controllers do not pass it. An empty string arrives where the calling code passed `''` — `GET /customer/token/get`, for one. Cart and order routes return the lexicon entry of the operation: `GET /cart/get` answers with `Cart data retrieved`.
+**Success.** `message` is most often `null`: the catalog and account controllers do not pass it. An empty string arrives where the calling code passed `''`, for example `GET /customer/token/get`. Cart and order routes return the lexicon entry of the operation: `GET /cart/get` answers with `Cart data retrieved`.
 
 ```json
 {
@@ -51,7 +51,7 @@ A router response carries `success`, `message` and `data`. An error adds `code`,
 }
 ```
 
-The `errors` key is always present in error bodies (often `null`). `error_code` is resolved on the server. Details: [Errors](errors).
+The `errors` and `error_code` keys are always present in a router response, although `errors` is often `null`. A response that never reaches the router does not have them. Details: [Errors](errors).
 
 ## Middleware
 
@@ -70,10 +70,10 @@ flowchart TD
 
 | Order | Middleware | Purpose |
 | --- | --- | --- |
-| 1 | `CorsMiddleware` | Origins from `ms3_cors_allowed_origins` |
-| 2 | `RateLimitMiddleware` | `ms3_rate_limit_*` |
-| 3 | `ServiceCheckMiddleware` | MS3 services available |
-| (per route) | `TokenMiddleware` | Resolve / auto-mint token |
+| 1 | `CorsMiddleware` | Checks Origin against `ms3_cors_allowed_origins` |
+| 2 | `RateLimitMiddleware` | Counts the request quota from `ms3_rate_limit_*` |
+| 3 | `ServiceCheckMiddleware` | Checks that the MS3 services are available |
+| (per route) | `TokenMiddleware` | Finds the token or issues a guest one (auto-mint) |
 
 CORS and rate limit settings: [CORS](cors), [System settings](/en/components/minishop3/settings#api).
 

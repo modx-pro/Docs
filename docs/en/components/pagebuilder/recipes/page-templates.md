@@ -18,15 +18,15 @@ Result: an empty **Sections** tab gets a ready order of types, with no copy. Req
 1. On a sample page arrange the sections in the order you want.
 2. **Save as template**. The template stores only `type` and `typeVersion`, not field values.
 3. In the CMP **Page templates** set the name, MODX template IDs, and the default flag.
-4. Open a resource with an empty draft. Apply buttons list the templates that fit.
+4. Open a resource with an empty draft. The default template button reads "Add empty sections from \"{name}\"". Other templates are buttons with only the name. The buttons show while the section list is empty.
 5. Apply writes the draft through `mgr/pagetemplate/apply`. A draft that already has sections needs `force`.
 6. Fill the fields and click **Save** on the resource.
 
 ## Example fields
 
-The sample page has `hero`, `faq`, and `cta`. **Save as template**, name `Landing`. `pb_page_templates` stores the three types, without Title or button text.
+The sample page has `hero`, `faq`, and `cta`. **Save as template**, name `Landing`. `pb_page_templates` stores one row. `sections_json` holds three objects `{type, typeVersion}`, without Title or button text.
 
-On a new resource with an empty draft click "Apply Landing". The inspector shows three empty sections of those types. Fill the hero Title and click **Save**. If the draft already has sections, apply without `force` does not replace it.
+On a new resource with an empty draft click "Add empty sections from \"Landing\"". The inspector shows three empty sections of those types. Fill the hero Title and click **Save**.
 
 ## What to check
 

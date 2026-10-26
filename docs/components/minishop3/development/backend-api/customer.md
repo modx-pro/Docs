@@ -522,7 +522,7 @@ $customer = $factory->createFromOrderData([
 | Поле | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
 | `customer_id` | integer | 0 | ID покупателя |
-| `token` | string | '' | Строка токена, в базе до 128 символов. Код выпускает 64 hex-символа |
+| `token` | string | '' | Строка токена, уникальная. Колонка вмещает до 128 символов: токены api и refresh — 64 hex-символа (`random_bytes(32)`), токен подтверждения email — 128 (`random_bytes(64)`) |
 | `type` | enum | 'api' | Тип: api, refresh, magic_link, email_verification, password_reset |
 | `expires_at` | datetime | — | Срок действия |
 | `created_at` | datetime | now | Дата создания |

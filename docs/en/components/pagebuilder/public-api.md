@@ -3,9 +3,9 @@ title: Public API
 description: Read-only JSON API for headless frontends. Published sections only, no drafts
 ---
 
-# Public API (Headless)
+# Public API
 
-Read-only JSON for an external frontend (Next.js, Nuxt, React, and similar). Returns **published** PageBuilder content only. Drafts and writes go through the [Agent API](agent-api) (Pro) or the resource **Sections** tab in the manager.
+Read-only JSON for an external frontend (Next.js, Nuxt, React). Returns **published** PageBuilder content only. Drafts and writes go through the [Agent API](agent-api) (Pro) or the resource **Sections** tab.
 
 Entry point:
 
@@ -67,7 +67,9 @@ Same envelope as the manager connector:
 | --- | --- | --- |
 | 401 | `Invalid API key.` | Wrong or missing key |
 | 403 | `Access denied.` | No view policy |
-| 404 | `Resource not found.` | Unknown resource or API disabled |
+| 404 | `Public API is disabled.` | `pagebuilder_public_api_enabled` is off |
+| 404 | `Resource not found.` | Unknown resource |
+| 404 | `Resource is not published.` | Resource exists, but is not published in MODX |
 | 404 | `Page has no published content.` | Resource exists, PageBuilder never published |
 | 400 | `resource_id or alias is required.` | No identifier |
 | 400 | `Invalid action.` | Unknown `action=` |
@@ -207,8 +209,6 @@ $page = $api->getPage(
 
 Class `PageBuilder\PublicApi\PageBuilderPublicApiService` registers in `ServiceRegistry`.
 
-Compare `publishedRevision` after a manager publish to decide when to revalidate frontend cache.
-
 ### `web/catalog/list`
 
 Section type metadata for mapping `section.type` to your components.
@@ -246,7 +246,11 @@ Cache the list for an hour or until deploy. It changes when you add JSON types o
 
 The type payload includes `categories`: a list of slugs. `category` stays for compatibility.
 
-Catalog, table, and page queries go through `QueryPolicy`. Keys `sql`, `php`, `snippet`, and `class` are rejected. Page size is at most 100. Free `api.php` stays in place.
+## Tables and QueryPolicy
+
+There is no separate tables endpoint. Table rows come from the [PageBuilderTableRows](snippets/PageBuilderTableRows) snippet or a section datasource.
+
+`QueryRequest` rejects keys `sql`, `php`, `snippet`, `class`, `classname`, and `query`. This does not apply to `api.php` query parameters. The limit of 100 applies to a datasource query and to REST `GET /pages`. `web/catalog/list` returns every definition with no paging.
 
 ## CORS
 

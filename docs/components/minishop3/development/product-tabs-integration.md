@@ -68,6 +68,8 @@ ExtJS TabPanel (верхний уровень)
 | `productId` | number | ID товара | props Vue-компонента |
 | `record` | object | Данные товара | props Vue-компонента, `config.record` у панели ExtJS |
 
+`record` — это запись товара, которой экран правки инициализировал ExtJS-панель: поля ресурса вместе с данными товара, как их отдал контроллер. Сами встроенные вкладки читают оттуда `id`, `parent`, `thumb` и `categories`; полный состав зависит от набора полей товара на сайте, включая свои поля.
+
 Для ExtJS-вкладок `record` подставляет в `extConfig` само ядро — передавать его не нужно.
 
 ## Порядок загрузки
@@ -250,7 +252,7 @@ $controller->addLastJavascript($assetsUrl . 'js/mgr/product-integration.js');
 
 Панель ExtJS монтируется только при переключении на вкладку и уничтожается вместе со страницей.
 
-## Позиционирование вкладок
+## Позиционирование вкладок {#tab-positioning}
 
 Встроенные вкладки занимают позиции 0–4, своя вкладка без `position` получает `100`. Чтобы встать сразу за встроенными, задайте значение из диапазона 5–99.
 
@@ -265,6 +267,7 @@ $controller->addLastJavascript($assetsUrl . 'js/mgr/product-integration.js');
 | `[ProductTabsRegistry] Tab must have key and title` | Не задан `key` или `title` |
 | `[ProductTabsRegistry] Tab "…" already registered` | Повтор ключа в очереди, до передачи в Vue |
 | `[ProductTabs] Tab with key "…" already registered` | Повтор ключа при регистрации на уже открытой странице |
+| `[ProductTabs] Invalid plugin tab data` | Не задан `key` или `title`, причём вызов обошёл `register()` — тот отклонил бы вкладку раньше со своим сообщением |
 | `TypeError: … _onMounted is not a function` | Вы создали заглушку — см. предупреждение в «Порядке загрузки» |
 
 Фильтровать консоль по `[ProductTabs]` недостаточно: часть сообщений приходит с префиксом `[ProductTabsRegistry]`.

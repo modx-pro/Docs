@@ -42,7 +42,7 @@ items: [
 ---
 # Tickets
 
-Компонент для публикации пользовательских страниц (тикетов) и комментариев к ним. Актуальная версия пакета: **1.14.0**.
+Компонент публикует пользовательские страницы (тикеты) и комментарии к ним. Актуальная версия пакета: **1.14.1**.
 
 ## Что умеет
 
@@ -68,6 +68,6 @@ items: [
 
 ## Зависимости
 
-- [pdoTools](/components/pdotools/) — выборки в сниппетах списков.
-- [FormIt](https://docs.modx.com/current/ru/extras/formit) — опционально, для `&validate` в [TicketFormit](ticketformit).
-- **PHP 8+** (в 1.14 добавлены правки под 8.2).
+- [pdoTools](/components/pdotools/): выборки в сниппетах списков.
+- [FormIt](https://docs.modx.com/current/ru/extras/formit): опционально, для `&validate` в [TicketFormit](ticketformit).
+- **PHP 8+**. В транспорте пакета требования к PHP нет. Это договорённость релиза 1.14.

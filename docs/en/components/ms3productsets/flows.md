@@ -70,7 +70,7 @@ sequenceDiagram
 ## 5. Apply template to a category
 
 1. UI sends `apply_template` (`template_id`, `parent_id/parent_ids`, `replace`).
-2. Category expands recursively to all `msProduct` resources.
+2. The category expands recursively to published, not deleted `msProduct` resources (depth up to 10). If that list is empty, `product_ids` is used.
 3. For each product, links are created in `ms3_product_sets`.
 4. UI receives `applied` (number of inserted links).
 

@@ -5,7 +5,7 @@ description: Обзор сниппетов PageBuilder для вывода се�
 
 # Сниппеты PageBuilder
 
-Сниппеты вывода. Pro-пакет добавляет к ним обработчики форм. Чанк секции: Free-пакет — `pagebuilder_{key}`, Pro — `pagebuilderpro_{key}` (исключение — `data_table` → `pagebuilder_data_table`). Namespace у чанков нет: префикс равен имени пакета.
+Сниппеты вывода и, в Pro, обработчики форм. Чанк секции: Free `pagebuilder_{key}`, Pro `pagebuilderpro_{key}` (`data_table` → `pagebuilder_data_table`). Namespace у чанков нет: префикс равен имени пакета. Чанк `pagebuilder_data_table` ставится вместе с пакетом.
 
 | Сниппет | Назначение |
 | --- | --- |
@@ -14,9 +14,9 @@ description: Обзор сниппетов PageBuilder для вывода се�
 | [PageBuilderSitemap](PageBuilderSitemap) | XML sitemap страниц с опубликованными секциями |
 | [PageBuilderUtmSession](PageBuilderUtmSession) | UTM из query string в сессию для правил видимости секций |
 | [PageBuilderUtmUrl](PageBuilderUtmUrl) | UTM из реестра панели управления к произвольному URL |
-| [PageBuilderTableRows](PageBuilderTableRows) | Строки табличных данных ресурса (JSON или chunk) |
+| [PageBuilderTableRows](PageBuilderTableRows) | Строки табличных данных ресурса (JSON или чанк) |
 
-Pro. Из шаблона не вызывайте: чанк секции вызывает [PageBuilderFetchIt](PageBuilderFetchIt).
+Pro-обработчики. Из шаблона не вызывайте: чанк секции вызывает [PageBuilderFetchIt](PageBuilderFetchIt).
 
 | Сниппет | Назначение |
 | --- | --- |
@@ -27,11 +27,9 @@ Pro. Из шаблона не вызывайте: чанк секции вызы
 
 ## Порядок на типовой странице
 
-1. **PageBuilderUtmSession** в общий layout, если на странице работают UTM-правила секций: один раз на запрос, до отрисовки секций.
+1. **PageBuilderUtmSession** в общий layout при UTM-правилах секций. Один раз на запрос, до отрисовки секций.
 2. **PageBuilder** в шаблоне или поле content ресурса.
 3. **PageBuilderTableRows** отдельно, если таблица выводится вне секции `data_table`.
-
-Блок с другой страницы (hero с главной, FAQ из лендинга) выводит **PageBuilderResource**.
 
 ```mermaid
 flowchart TB
@@ -40,6 +38,8 @@ flowchart TB
     C -->|"таблица вне секции data_table"| D[PageBuilderTableRows]
     C -->|"секции другой страницы"| E[PageBuilderResource]
 ```
+
+Блок с другой страницы (hero с главной, FAQ из лендинга) выводит **PageBuilderResource**.
 
 ## Таблица соответствий (MODX / Fenom)
 
@@ -52,7 +52,7 @@ flowchart TB
 | Sitemap | `[[!PageBuilderSitemap]]` | `{'!PageBuilderSitemap' \| snippet}` |
 | UTM в сессию | `[[!PageBuilderUtmSession]]` | `{'!PageBuilderUtmSession' \| snippet}` |
 | URL с UTM | `` [[!PageBuilderUtmUrl? &url=`/contacts/`]] `` | `{'!PageBuilderUtmUrl' \| snippet : ['url' => '/contacts/']}` |
-| Строки таблицы | `` [[!PageBuilderTableRows? &table_key=`prices`]] `` | `{'!PageBuilderTableRows' \| snippet : ['table_key' => 'prices']}` |
+| Строки таблицы | `` [[!PageBuilderTableRows? &resource_id=`[[*id]]` &table_key=`prices`]] `` | `{'!PageBuilderTableRows' \| snippet : ['resource_id' => $_modx->resource.id, 'table_key' => 'prices']}` |
 
 ## Кеш
 

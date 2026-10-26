@@ -68,6 +68,8 @@ The tab receives this data automatically:
 | `productId` | number | Product ID | props of the Vue component |
 | `record` | object | Product data | props of the Vue component, `config.record` in the ExtJS panel |
 
+`record` is the product record the edit screen initialised the ExtJS panel with: the resource fields together with the product data as the controller returned them. The built-in tabs read `id`, `parent`, `thumb` and `categories` from it; the full set depends on the product fields configured on the site, extra fields included.
+
 For ExtJS tabs the core injects `record` into `extConfig` itself — you do not need to pass it.
 
 ## Load order
@@ -265,6 +267,7 @@ The core logs the reason, and the prefix depends on when the tab was rejected:
 | `[ProductTabsRegistry] Tab must have key and title` | `key` or `title` missing |
 | `[ProductTabsRegistry] Tab "…" already registered` | Duplicate key in the queue, before it reaches Vue |
 | `[ProductTabs] Tab with key "…" already registered` | Duplicate key registered on an already open page |
+| `[ProductTabs] Invalid plugin tab data` | `key` or `title` missing and the call bypassed `register()` — that one would have rejected the tab earlier with its own message |
 | `TypeError: … _onMounted is not a function` | You created a stub — see the warning in Load order |
 
 Filtering the console by `[ProductTabs]` is not enough: some messages arrive with the `[ProductTabsRegistry]` prefix.

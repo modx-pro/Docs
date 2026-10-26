@@ -11,7 +11,7 @@ description: Микро-бейдж рейтинга для каталога и �
 
 ## Назначение
 
-Ещё компактнее, чем [msRatingSummary](msRatingSummary) с `tplRatingCatalog`. Подходит для плотных карточек, мобильного каталога, виджетов сравнения.
+Компактнее [msRatingSummary](msRatingSummary) + `tplRatingCatalog`. Плотные карточки, мобильный каталог, сравнение.
 
 ## Где вызывать
 
@@ -31,7 +31,7 @@ description: Микро-бейдж рейтинга для каталога и �
 | `tpl` | `tplRatingBadge` | Чанк бейджа |
 | `hideEmpty` | `1` | Не выводить при нуле отзывов |
 | `registerCss` | `1` | `0` — не подключать `reviews.css` (CSS уже в шаблоне каталога) |
-| `registerJs` | `1` | Подключать JS витрины |
+| `registerJs` | `1` | Не влияет на JS: регистрируется только CSS |
 
 ## В чанке msProducts
 

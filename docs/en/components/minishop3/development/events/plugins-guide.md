@@ -132,10 +132,10 @@ switch ($modx->event->name) {
 
 ```mermaid
 flowchart LR
-  plugins["Plugins"] --> collect["Collect output()"]
+  plugins["Plugins"] --> collect["Collecting output()"]
   collect --> check{"Any non-empty output?"}
-  check -->|yes| cancel["Operation cancelled, text to the customer"]
-  check -->|no| go["Operation continues"]
+  check -->|yes| cancel["The operation is cancelled, the text goes to the customer"]
+  check -->|no| go["The operation continues"]
 ```
 
 1. MiniShop3 `invokeEvent()` collects every plugin output.
@@ -206,7 +206,19 @@ $values = $modx->event->returnedValues;
 $values['count'] = 5;
 ```
 
-## Utils::invokeEvent and EventGate
+## Utils::invokeEvent
+
+```mermaid
+flowchart TD
+  subgraph utils [Utils invokeEvent]
+    text["output with text"] --> fail["success false, the text lands in message"]
+    values["returnedValues"] --> data["The fields land in data"]
+  end
+  subgraph gate [EventGate invokeRaw]
+    cancel["output cancel or false"] --> stopped["isCancelled"]
+    channel["A named channel"] --> apply["applyReturnedArray"]
+  end
+``` and EventGate
 
 ```mermaid
 flowchart TD
