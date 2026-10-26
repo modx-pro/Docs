@@ -26,16 +26,20 @@ Fired when getting product price. Lets you modify the price on the fly.
 <?php
 switch ($modx->event->name) {
     case 'msOnGetProductPrice':
+        // The price may already have been changed by another plugin
         $price = $modx->eventData['msOnGetProductPrice']['price']
             ?? $scriptProperties['price'];
         $data = $scriptProperties['data'];
 
+        // 15% off for category 5
         if ($data['parent'] == 5) {
             $price = $price * 0.85;
         }
 
+        // Hand it on to the plugins that run after this one
         $modx->eventData['msOnGetProductPrice']['price'] = $price;
 
+        // Return the result
         $values = &$modx->event->returnedValues;
         $values['price'] = $price;
         break;
@@ -52,6 +56,7 @@ switch ($modx->event->name) {
             ?? $scriptProperties['price'];
         $data = $scriptProperties['data'];
 
+        // VIP discount
         if ($modx->user->isMember('VIP')) {
             $price = $price * 0.8; // -20%
         }
@@ -80,6 +85,7 @@ switch ($modx->event->name) {
         $price = $modx->eventData['msOnGetProductPrice']['price']
             ?? $scriptProperties['price'];
 
+        // Rate out of the cache, or from an API
         $rate = $modx->cacheManager->get('usd_rate') ?? 90;
 
         // Convert a product priced in dollars when the extra field currency exists
@@ -118,6 +124,7 @@ switch ($modx->event->name) {
             ?? $scriptProperties['weight'];
         $data = $scriptProperties['data'];
 
+        // Add the packaging weight (500 g)
         $packagingWeight = 0.5;
         $weight = $weight + $packagingWeight;
 
@@ -143,8 +150,11 @@ switch ($modx->event->name) {
         $width = $data['width'] ?? 0;
         $height = $data['height'] ?? 0;
 
+        // Volumetric weight: the 5000 divisor is the courier standard
         if ($length > 0 && $width > 0 && $height > 0) {
             $volumeWeight = ($length * $width * $height) / 5000;
+
+            // Whichever weight is larger wins
             $weight = max($weight, $volumeWeight);
         }
 
@@ -176,6 +186,7 @@ switch ($modx->event->name) {
         $data = $modx->eventData['msOnGetProductFields']['data']
             ?? $scriptProperties['data'];
 
+        // Add the computed fields
         $data['discount_percent'] = 0;
         if ($data['old_price'] > 0 && $data['price'] > 0) {
             $data['discount_percent'] = round(
@@ -183,6 +194,7 @@ switch ($modx->event->name) {
             );
         }
 
+        // Add the availability status
         $stock = $data['stock'] ?? 0;
         if ($stock <= 0) {
             $data['availability'] = 'out_of_stock';
@@ -211,12 +223,14 @@ switch ($modx->event->name) {
         $data = $modx->eventData['msOnGetProductFields']['data']
             ?? $scriptProperties['data'];
 
+        // Add the review count
         $reviewCount = $modx->getCount('msProductReview', [
             'product_id' => $data['id'],
             'published' => 1,
         ]);
         $data['review_count'] = $reviewCount;
 
+        // Add the average rating
         $c = $modx->newQuery('msProductReview');
         $c->where(['product_id' => $data['id'], 'published' => 1]);
         $c->select('AVG(rating) as avg_rating');
@@ -251,9 +265,10 @@ switch ($modx->event->name) {
 
         $discounts = [];
 
+        // 1. Discount by category
         $categoryDiscounts = [
-            5 => 10,
-            10 => 15,
+            5 => 10,  // Category 5 — 10% off
+            10 => 15, // Category 10 — 15% off
         ];
         if (isset($categoryDiscounts[$data['parent']])) {
             $discount = $categoryDiscounts[$data['parent']];
@@ -261,16 +276,19 @@ switch ($modx->event->name) {
             $discounts['category'] = $discount;
         }
 
+        // 2. Discount for signed-in customers
         if ($modx->user->isAuthenticated()) {
-            $price = $price * 0.95;
+            $price = $price * 0.95; // -5%
             $discounts['member'] = 5;
         }
 
+        // 3. VIP discount
         if ($modx->user->isMember('VIP')) {
-            $price = $price * 0.9;
+            $price = $price * 0.9; // -10%
             $discounts['vip'] = 10;
         }
 
+        // Keep the discount breakdown for msOnGetProductFields
         $modx->eventData['discounts'] = $discounts;
         $modx->eventData['msOnGetProductPrice']['price'] = $price;
 
@@ -282,12 +300,14 @@ switch ($modx->event->name) {
         $data = $modx->eventData['msOnGetProductFields']['data']
             ?? $scriptProperties['data'];
 
+        // Add the discount breakdown
         $discounts = $modx->eventData['discounts'] ?? [];
         if (!empty($discounts)) {
             $data['applied_discounts'] = $discounts;
             $data['total_discount'] = array_sum($discounts);
         }
 
+        // Add the badges
         $badges = [];
         if ($data['new']) {
             $badges[] = ['type' => 'new', 'text' => 'New'];
