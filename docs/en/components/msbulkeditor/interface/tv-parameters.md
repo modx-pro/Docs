@@ -5,7 +5,7 @@ description: Bulk set/add/replace/remove for template variables
 
 # TV parameters
 
-Bulk work with resource **Template Variables (TVs)** on products.
+Bulk set, replace, and clear **Template Variables (TVs)** on products.
 
 ![TV parameter operation dialog](/components/msbulkeditor/screenshots/operation-tv.png)
 
@@ -29,15 +29,15 @@ Bulk work with resource **Template Variables (TVs)** on products.
 
 Parameters:
 
-- **TV name** — `name` (not caption);
-- for **replace**: `search`, `replace`, optional `useRegex`, `caseInsensitive`;
-- for **set/add**: `value`.
+- **TV name:** `name` (not caption)
+- for **replace:** `search`, `replace`, optional `useRegex`, `caseInsensitive`
+- for **set/add:** `value`
 
 ---
 
 ## Value input in bulk
 
-The operation dialog provides **typed widgets** by TV type from the field catalog (B-11):
+The operation dialog provides **typed widgets** by TV type from the field catalog:
 
 | TV type | Bulk UI |
 | --- | --- |
@@ -62,7 +62,7 @@ See [inline editing](inline-editing).
 
 ## Template binding
 
-Before preview/apply for TVs, template binding is checked; gaps open the [binding wizard](binding-wizard).
+Before preview/apply for TVs, template binding is checked. Gaps open the [binding wizard](binding-wizard).
 
 With mixed templates, checkbox “primary template only” is available.
 
@@ -81,7 +81,7 @@ With mixed templates, checkbox “primary template only” is available.
 
 ## TV export
 
-Columns `tv:name` or `msbe:tv:name` are supported in export — see [import and export](import-export).
+Columns `tv:name` or `msbe:tv:name` are supported in export. See [import and export](import-export).
 
 ---
 

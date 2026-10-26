@@ -5,17 +5,17 @@ description: Ключи msbulkeditor_*, права доступа, Scheduler и 
 
 # Системные настройки
 
-Namespace: **`msbulkeditor`**. Ключи в БД: `msbulkeditor_*`.
+Namespace **`msbulkeditor`**, ключи в БД: `msbulkeditor_*`.
 
 ## Основные
 
 | Ключ | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
-| `msbulkeditor_chunk_size` | number | `50` | Товаров за один проход применения / пачки |
+| `msbulkeditor_chunk_size` | number | `50` | Товаров за пачку применения |
 | `msbulkeditor_expert_limit` | number | `5000` | Максимум товаров в операции «все по фильтру» |
 | `msbulkeditor_preview_detail_limit` | number | `100` | Строк в детальном предпросмотре |
 | `msbulkeditor_history_retention_days` | number | `90` | Срок хранения записей истории (дней) |
-| `msbulkeditor_enable_save_setting_user` | boolean | `Да` | Сохранять колонки и экспертный режим в таблице `msbe_user_states` |
+| `msbulkeditor_enable_save_setting_user` | boolean | `Да` | Сохранять колонки и экспертный режим в `msbe_user_states` |
 | `msbulkeditor_expert_mode` | boolean | `Нет` | Разрешить экспертный режим в интерфейсе |
 | `msbulkeditor_import_max_rows` | number | `10000` | Максимум строк CSV/XLSX за загрузку |
 
@@ -23,20 +23,18 @@ Namespace: **`msbulkeditor`**. Ключи в БД: `msbulkeditor_*`.
 
 | Ключ | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
-| `msbulkeditor_scheduler_enabled` | boolean | `Нет` | Очистка истории через задачу Scheduler |
-| `msbulkeditor_cleanup_task_stub` | textarea | JSON | Служебный ключ: конфигурация встроенной очистки без Scheduler. Не для ручной правки |
+| `msbulkeditor_scheduler_enabled` | boolean | `Нет` в transport | Очистка истории через Scheduler. При установленном Scheduler установка и обновление пакета ставят `Да` |
+| `msbulkeditor_cleanup_task_stub` | textarea | JSON | Служебный ключ: встроенная очистка без Scheduler. Не для ручной правки |
 
 Задача **`msbulkeditor / operation_cleanup`** удаляет операции старше `history_retention_days`.
 
-1. Установите [Scheduler](/components/scheduler/).
-2. Включите `msbulkeditor_scheduler_enabled = Да`.
-3. Настройте cron на `php /path/to/assets/components/scheduler/run.php` (обычно раз в сутки).
+При установке или обновлении msBulkEditor со Scheduler пакет ставит `msbulkeditor_scheduler_enabled = Да` и отключает заглушку. Следующее обновление снова включит настройку, даже если вы её выключили. Задаче нужен cron: `php /path/to/assets/components/scheduler/run.php` (обычно раз в сутки).
 
-Без Scheduler очистка всё равно работает: встроенный механизм запускает её раз в сутки при загрузке страниц менеджера. Конфигурация лежит в служебном ключе `msbulkeditor_cleanup_task_stub`.
+Без Scheduler в transport остаётся `Нет`. Плагин `msbulkeditor_bootstrap` на `OnManagerPageInit` чистит историю не чаще раза в сутки, пока в `msbulkeditor_cleanup_task_stub` значение `enabled: true`.
 
 ## Права доступа
 
-Права создаются при установке. Назначайте их политике менеджеров магазина.
+Права создаются при установке. Назначьте их политике менеджеров магазина.
 
 | Право | Назначение |
 | --- | --- |
@@ -46,7 +44,7 @@ Namespace: **`msbulkeditor`**. Ключи в БД: `msbulkeditor_*`.
 | `msbulkeditor_presets` | Создание / изменение / удаление пресетов |
 | `msbulkeditor_import_export` | Импорт и экспорт файлов |
 
-Доступ к странице компонента возможен и при глобальном **`view`** (только просмотр).
+Доступ к странице компонента есть и при глобальном **`view`** (только просмотр).
 
 ### Маршрут API → право
 
@@ -62,9 +60,9 @@ Namespace: **`msbulkeditor`**. Ключи в БД: `msbulkeditor_*`.
 
 ## Рекомендации для рабочего сервера
 
-- Каталог **> 5000** позиций: держите `expert_limit` согласованным с памятью и лимитом времени PHP. Уменьшите `chunk_size`, если пачка не укладывается в лимит времени.
-- **`enable_save_setting_user = Да`** — у менеджеров свои колонки. **Нет** — сервер вид не хранит, но браузер всё равно держит свою копию в `localStorage`.
-- **`expert_mode = Нет`** — только явный выбор строк. Так меньше риск массовой ошибки.
+- Каталог **> 5000** позиций: согласуйте `expert_limit` с памятью и лимитом времени PHP. Уменьшите `chunk_size`, если пачка не укладывается в лимит.
+- **`enable_save_setting_user = Да`**: свои колонки у каждого менеджера. **`Нет`**: сервер вид не хранит, в браузере копия остаётся в `localStorage`.
+- **`expert_mode = Нет`**: только явный выбор строк, меньше риск массовой ошибки.
 
 ## Пути после установки
 
