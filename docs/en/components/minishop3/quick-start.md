@@ -157,6 +157,18 @@ Without a delivery↔payment link, frontend checkout fails with a pair error.
 
 ## First test order
 
+```mermaid
+flowchart TB
+  cat[Category on the site]
+  cart[msCart]
+  order[msOrder]
+  thanks[thanks ?msorder=]
+  get[msGetOrder]
+  mgr[Manager Orders status New]
+  cat -->|cart/add| cart --> order -->|submit| thanks --> get
+  thanks --> mgr
+```
+
 1. Open the category on the frontend, add a product to the cart.
 2. Go to the cart, then checkout.
 3. Fill required fields for the selected delivery.

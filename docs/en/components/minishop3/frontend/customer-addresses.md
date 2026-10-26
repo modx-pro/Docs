@@ -395,6 +395,13 @@ On delete and set-default, a confirmation dialog is shown (`ms3Confirm`). Confir
 
 ## Form handling
 
+```mermaid
+flowchart TB
+  Form[Address form] --> Req["name city street are required"]
+  Req --> API["customer/address-create or update"]
+  API --> Field[comment not text_address]
+```
+
 | Action | ms3_action | Description |
 | --- | --- | --- |
 | Create | `customer/address-create` | Create new address |

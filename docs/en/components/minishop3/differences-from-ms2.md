@@ -3,6 +3,18 @@ title: Differences from miniShop2
 ---
 # Differences from miniShop2
 
+```mermaid
+flowchart TB
+  ms2[miniShop2 site]
+  export[Catalog export / manual transfer]
+  install[Install MS3 + VueTools + pdoTools 3]
+  settings[ms3_* keys instead of ms2_*]
+  forms[ms3_form forms / Web API]
+  grids[Columns in the grid utility]
+  ms2 --> export --> install --> settings --> forms
+  install --> grids
+```
+
 This guide helps developers familiar with miniShop2 get up to speed with MiniShop3 and understand the key changes.
 
 ## System requirements

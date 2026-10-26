@@ -7,6 +7,20 @@ MiniShop3 provides a set of snippets for building the store frontend. All snippe
 
 ## Snippet overview
 
+```mermaid
+flowchart TB
+  need[What does the page need?]
+  need -->|Catalog / listing| products[msProducts]
+  need -->|Cart| cart[msCart]
+  need -->|Header subtotal| total[msOrderTotal]
+  need -->|Checkout| order[msOrder]
+  need -->|Thank-you page| getOrder[msGetOrder]
+  need -->|Product gallery| gallery[msGallery]
+  need -->|Options / attributes| opts[msOptions / msProductOptions]
+  need -->|Customer account| customer[msCustomer]
+  order -->|after submit ?msorder=| getOrder
+```
+
 | Snippet | Purpose |
 | --- | --- |
 | [msProducts](msproducts) | Product list with filtering and sorting |

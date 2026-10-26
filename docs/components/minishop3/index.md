@@ -176,7 +176,7 @@ MiniShop3 разработан специально для MODX Revolution 3.x �
 
 ```mermaid
 flowchart TB
-  store[Витрина сниппеты / JS]
+  store[Фронтенд сниппеты / JS]
   api[api.php Web API /api/v1]
   mgr[Vue-менеджер]
   mgrApi[Manager API /api/mgr]
