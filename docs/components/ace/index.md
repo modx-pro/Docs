@@ -20,34 +20,32 @@ items: [
 ---
 # Ace
 
-Адаптация [Ace Editor](https://ace.c9.io/) для менеджера MODX Revolution: подсветка синтаксиса в сниппетах, плагинах, чанках, шаблонах, файлах и (опционально) в контенте ресурса.
+[Ace Editor](https://ace.c9.io/) в менеджере MODX Revolution: подсветка синтаксиса в сниппетах, плагинах, чанках, шаблонах, файлах и (опционально) в контенте ресурса.
 
-Пакет: **1.9.10-pl**. Репозиторий: [modx-pro/modx-ace](https://github.com/modx-pro/modx-ace).
+Пакет: **1.9.11-pl**. Репозиторий: [modx-pro/modx-ace](https://github.com/modx-pro/modx-ace).
 
 ## Возможности
 
 - **Редактор кода:** PHP, JS, HTML, CSS/SCSS/LESS, SQL, JSON, Markdown и другие режимы
-- **Темы, табы, fold, невидимые символы:** настраиваются ключами `ace.*`
+- **Темы, табы, fold, невидимые символы:** ключи `ace.*`
 - **Поиск и замена** с регулярными выражениями, мультикурсоры, Emmet
-- **MODX:** подсветка тегов, автодополнение (Ctrl+Space), Tab-сниппеты (`getr`, `pdoResources`, `chunk`, …)
-- **TV-тип Ace** для полей с кодом
+- **MODX:** подсветка тегов, автодополнение (Ctrl+Space, Ctrl+Shift+Space, Alt+Space), Tab-сниппеты (`getr`, `pdoResources`, `chunk`, …)
+- **Тип ввода Ace** для полей с кодом
 - **Черновики** (`ace.draft_restore`), превью CSS-цветов (`ace.color_preview`)
-- Работает в **MODX 2.8+** и **MODX 3.x**
 
 ## Системные требования
 
 | Требование | Версия |
 | --- | --- |
-| MODX Revolution | 2.8+ или 3.x |
-| Браузер | современный, ES5+ |
+| MODX Revolution | 2 или 3 |
 
 ## Установка
 
 1. Установите пакет через **Extras → Installer** ([modstore.pro](https://modstore.pro/packages/content/ace), бесплатно)
-2. Проверьте `which_element_editor = Ace` (resolver ставит при установке)
+2. Проверьте `which_element_editor = Ace`. Resolver ставит это значение при установке и при каждом обновлении
 3. **Управление → Очистить кэш**
 
-После установки: плагин **Ace**, системные настройки namespace `ace`, TV input type **Ace**.
+После установки: плагин **Ace**, системные настройки namespace `ace`, тип ввода **Ace**.
 
 ## Быстрые ссылки
 
@@ -56,11 +54,11 @@ items: [
 | [Быстрый старт](quick-start) | Редактор для элементов и ресурсов |
 | [Системные настройки](settings) | Ключи `ace.*` |
 | [Интеграция](integration) | RTE vs Ace, mime, Tab-сниппеты, TV |
-| [Горячие клавиши](hotkeys) | Ctrl+Alt+H и основные шорткаты |
+| [Горячие клавиши](hotkeys) | Ctrl+Alt+H и основные сочетания |
 | [Решение проблем](troubleshooting) | Fullscreen, TinyMCE, сохранение |
 
 Тема в стиле Material: [FAQ](/faq/ace/modx-ace-material-theme).
 
 ## История
 
-Автор первой версии: Danil Kostin. Текущая ветка поддерживается в [modx-pro/modx-ace](https://github.com/modx-pro/modx-ace).
+Автор первой версии: Danil Kostin.
