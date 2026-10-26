@@ -221,7 +221,7 @@ switch ($modx->event->name) {
         $draft = $scriptProperties['draft'];
 
         // Get the delivery city from the draft address
-        $address = $draft ? $draft->getOne('Address') : null;
+        $address = $draft->getOne('Address');
         $city = $address ? $address->get('city') : '';
 
         // Delivery zones
