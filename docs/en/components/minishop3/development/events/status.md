@@ -28,13 +28,13 @@ switch ($modx->event->name) {
         $oldStatus = $scriptProperties['old_status'];
         $newStatus = $scriptProperties['status'];
 
-        // 5 is ms3_status_canceled, 3 is ms3_status_paid.
-        // The order has no payment_status field: judge by the current status.
-        if ($newStatus == 5 && $oldStatus == 3) {
-            $modx->event->output('Refund a paid order instead of cancelling it');
+        // 5 is ms3_status_canceled. The order has no payment_status field.
+        if ($newStatus == 5) {
+            $modx->event->output('Order cancellation is not allowed');
             return;
         }
 
+        // Status changes only during working hours
         $hour = (int)date('G');
         if ($hour < 9 || $hour > 18) {
             $modx->event->output('Status change available from 9:00 to 18:00');
@@ -112,7 +112,7 @@ flowchart TD
   save["Save status and inventory movements"] --> history["Write history"]
   history --> event["msOnChangeOrderStatus"]
   event --> notify["Notifications"]
-  event --> out{"output() is not empty?"}
+  notify --> out{"output() is not empty?"}
   out -->|yes| err["Error to the customer, status is not rolled back"]
   out -->|no| ok["Successful response"]
 ```
@@ -126,6 +126,8 @@ If a plugin calls `output()`, the caller receives the error message but the stat
 
 Put any check that should abort the transition into `msOnBeforeChangeOrderStatus`.
 :::
+
+Do not touch stock in this event. Before the plugin runs, `OrderStatusService` has already called `applyStatusChange()`: `ms3_status_new` reserves, `ms3_status_paid` writes off the reserve, and `ms3_status_canceled` returns it. Writing `stock` again from the plugin changes the quantity a second time.
 
 ### Parameters
 
@@ -146,6 +148,7 @@ switch ($modx->event->name) {
         $oldStatus = $scriptProperties['old_status'];
         $newStatus = $scriptProperties['status'];
 
+        // Log the status change
         $modx->log(modX::LOG_LEVEL_INFO, sprintf(
             '[Status] Order #%s: status %d → %d',
             $order->get('num'),

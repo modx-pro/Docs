@@ -34,9 +34,9 @@ Since 1.14.2-beta1 `OrderFieldManager` rejects the internal draft columns before
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `draft` | `msOrder` \| `null` | Order draft |
 | `key` | `string` | Field key |
 | `value` | `mixed` | Field value |
+| `draft` | `msOrder` \| `null` | Current order draft (may be absent on the first step) |
 
 ### Aborting the operation
 
@@ -67,9 +67,11 @@ switch ($modx->event->name) {
 
         $values = &$modx->event->returnedValues;
 
+        // Phone: keep the digits only
         if ($key === 'phone') {
             $values['value'] = preg_replace('/\D/', '', $value);
         }
+        // Email in lower case
         if ($key === 'email') {
             $values['value'] = strtolower(trim($value));
         }
@@ -81,15 +83,15 @@ switch ($modx->event->name) {
 
 ## msOnAddToOrder
 
-Fired **after** adding a field to the order (after successful validation).
+Fired after successful validation and before the draft is saved. `output()` cancels the save. If nothing cancelled it, the draft receives the value from `returnedValues['value']`.
 
 ### Parameters
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `draft` | `msOrder` \| `null` | Order draft |
 | `key` | `string` | Field key |
 | `value` | `mixed` | Validated value |
+| `draft` | `msOrder` \| `null` | Current order draft |
 
 ### Example
 
@@ -99,12 +101,16 @@ switch ($modx->event->name) {
     case 'msOnAddToOrder':
         $key = $scriptProperties['key'];
         $value = $scriptProperties['value'];
+        /** @var \MiniShop3\Model\msOrder|null $draft */
+        $draft = $scriptProperties['draft'];
 
-        $modx->log(modX::LOG_LEVEL_INFO, "[Order] Field {$key} set: {$value}");
+        // Log the field change
+        $modx->log(modX::LOG_LEVEL_INFO,
+            "[Order] Field {$key} set: {$value}"
+        );
 
-        if ($key === 'delivery_id' && !empty($value)) {
-            $controller = $scriptProperties['controller'];
-            // Auto-select first payment...
+        if ($key === 'delivery_id' && !empty($value) && $draft) {
+            // ... through MS3 services when needed
         }
         break;
 }
@@ -122,6 +128,7 @@ Fired **before** validating a field value.
 | --- | --- | --- |
 | `key` | `string` | Field key |
 | `value` | `mixed` | Value to validate |
+| `orderData` | `array` | Snapshot of the current order fields (neighbouring values, for example `delivery_id` while validating `payment_id`) |
 
 ### Modifying data
 
@@ -134,6 +141,7 @@ switch ($modx->event->name) {
 
         $values = &$modx->event->returnedValues;
 
+        // Strip spaces out of the postcode
         if ($key === 'index') {
             $values['value'] = str_replace(' ', '', $value);
         }
@@ -165,6 +173,7 @@ switch ($modx->event->name) {
 
         $values = &$modx->event->returnedValues;
 
+        // Append the region to the city
         if ($key === 'city') {
             $values['value'] = $value . ', Moscow Region';
         }
@@ -197,6 +206,7 @@ switch ($modx->event->name) {
 
         $values = &$modx->event->returnedValues;
 
+        // A custom email error message
         if ($key === 'email') {
             $values['error'] = [$key => 'Enter a valid email to receive the receipt'];
         }
@@ -214,10 +224,11 @@ switch ($modx->event->name) {
 switch ($modx->event->name) {
     case 'msOnErrorValidateOrderValue':
         $key = $scriptProperties['key'];
+        $value = $scriptProperties['value'];
 
         if ($key === 'comment') {
             $values = &$modx->event->returnedValues;
-            $values['error'] = [];
+            $values['error'] = []; // Empty array means no error
         }
         break;
 }
@@ -233,8 +244,8 @@ Fired **before** removing a field from the order.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `draft` | `msOrder` \| `null` | Order draft |
 | `key` | `string` | Field key to remove |
+| `draft` | `msOrder` | Current order draft |
 
 ### Aborting the operation
 
@@ -244,6 +255,7 @@ switch ($modx->event->name) {
     case 'msOnBeforeRemoveFromOrder':
         $key = $scriptProperties['key'];
 
+        // Fields the draft must have
         $required = ['delivery_id', 'payment_id', 'email'];
         if (in_array($key, $required)) {
             $modx->event->output('This field cannot be removed');
@@ -263,8 +275,8 @@ Fired **after** removing a field from the order.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `draft` | `msOrder` \| `null` | Order draft |
 | `key` | `string` | Removed field key |
+| `draft` | `msOrder` | Current order draft |
 
 ### Example
 
@@ -273,10 +285,11 @@ Fired **after** removing a field from the order.
 switch ($modx->event->name) {
     case 'msOnRemoveFromOrder':
         $key = $scriptProperties['key'];
+        /** @var \MiniShop3\Model\msOrder $draft */
+        $draft = $scriptProperties['draft'];
 
         if ($key === 'delivery_id') {
-            $controller = $scriptProperties['controller'];
-            // Reset payment...
+            // ... through MS3 services when needed
         }
         break;
 }
@@ -336,8 +349,8 @@ Fired on order **submission** (Submit button).
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Submit handler |
-| `draft` | `msOrder` | Order draft |
-| `orderData` | `array` | Draft fields as an array |
+| `draft` | `msOrder` | Order draft at submit time |
+| `orderData` | `array` | Snapshot of the current order fields, including address fields |
 | `data` | `array` | Extra form data |
 
 ### Aborting the operation
@@ -346,15 +359,17 @@ Fired on order **submission** (Submit button).
 <?php
 switch ($modx->event->name) {
     case 'msOnSubmitOrder':
-        $controller = $scriptProperties['controller'];
-        $data = $scriptProperties['data'];
+        /** @var \MiniShop3\Model\msOrder $draft */
+        $draft = $scriptProperties['draft'];
+        $orderData = $scriptProperties['orderData'];
 
-        $response = $controller->getCost();
-        if ($response['success'] && $response['data']['cart_cost'] < 1000) {
+        // Minimum total
+        if (($draft->get('cart_cost') ?? 0) < 1000) {
             $modx->event->output('Minimum order amount is 1000');
             return;
         }
 
+        // Order-taking hours
         $hour = (int)date('G');
         if ($hour < 9 || $hour > 21) {
             $modx->event->output('Orders accepted from 9:00 to 21:00');
@@ -366,6 +381,8 @@ switch ($modx->event->name) {
 
 ### Modifying data
 
+Return extra order fields in the `data` key. The core applies them to the draft through `add()` before the order is created.
+
 ```php
 <?php
 switch ($modx->event->name) {
@@ -374,11 +391,13 @@ switch ($modx->event->name) {
 
         $values = &$modx->event->returnedValues;
 
+        // UTM out of the session into the order properties
         if (!empty($_SESSION['utm'])) {
             $data['properties']['utm'] = $_SESSION['utm'];
             $values['data'] = $data;
         }
 
+        // Referrer
         $data['properties']['source'] = $_SERVER['HTTP_REFERER'] ?? 'direct';
         $values['data'] = $data;
         break;
@@ -402,9 +421,9 @@ Fired when the order number is already assigned and the status is still draft. T
 
 The event arrives in three scenarios, and the parameter set differs:
 
-1. Frontend submit — `OrderSubmitHandler` (params have **no** `origin` / `from_manager`; has `handler`, `customFields`)
-2. Finalization in the admin — `OrderFinalizeService` (`origin=manager`, `from_manager=true`, `service`)
-3. Programmatic creation — `ProgrammaticOrderService` → `finalize` (`origin=integration`, `from_manager=false`, `service`)
+1. Frontend submit: `OrderSubmitHandler`.
+2. Finalization in the admin: `OrderFinalizeService`.
+3. Programmatic creation: `ProgrammaticOrderService` → `finalize`.
 
 ### Parameters
 
@@ -414,7 +433,7 @@ The event arrives in three scenarios, and the parameter set differs:
 | `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Frontend submit only |
 | `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Finalize paths only (admin / integration) |
 | `origin` | `string` | Finalize paths only: `manager` from the admin, `integration` from programmatic creation. The `OrderOrigin::STOREFRONT` constant exists but no path sets it — a frontend submit carries no `origin` key at all |
-| `from_manager` | `bool` | Present on both finalize paths (`true` with `origin=manager`, `false` with `origin=integration`); missing only on the frontend submit |
+| `from_manager` | `bool` | Finalize paths only: `true` when `origin=manager`, `false` when `origin=integration` |
 | `customFields` | `array` | Frontend only — fields from `properties._validated` |
 
 ::: tip Distinguishing scenarios
@@ -470,6 +489,7 @@ switch ($modx->event->name) {
     case 'msOnBeforeCreateOrder':
         $order = $scriptProperties['msOrder'];
 
+        // A note for the manager in properties
         $properties = $order->get('properties') ?? [];
         $properties['manager_note'] = 'Order created ' . date('d.m.Y H:i');
         $order->set('properties', $properties);
@@ -481,7 +501,7 @@ switch ($modx->event->name) {
 
 ## msOnCreateOrder
 
-Fired right after `msOnBeforeCreateOrder`, while the order is still a draft. Pair to `msOnBeforeCreateOrder` — same three scenarios and the same parameter set (frontend has no `origin`). `msOnMgrCreateOrder` runs later, after the status change.
+Fired right after `msOnBeforeCreateOrder`, while the status is still draft: the same three scenarios and the same parameter set. `msOnMgrCreateOrder` arrives after the status change.
 
 ### Parameters
 
@@ -491,7 +511,7 @@ Fired right after `msOnBeforeCreateOrder`, while the order is still a draft. Pai
 | `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Frontend only |
 | `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Admin or integration |
 | `origin` | `string` | Finalize paths only |
-| `from_manager` | `bool` | Present on both finalize paths (`true`/`false`); missing only on the frontend submit |
+| `from_manager` | `bool` | Finalize paths only: `true` in the admin, `false` for programmatic creation |
 | `customFields` | `array` | Frontend only |
 
 ### Example
@@ -521,7 +541,7 @@ switch ($modx->event->name) {
 Fired **before** finalizing an order in the admin — when a manager turns a draft into a full order with the "Submit" button on the order page. This is the admin counterpart of `msOnSubmitOrder`.
 
 ::: tip Relation to msOnBeforeCreateOrder
-After `msOnBeforeMgrCreateOrder`, the universal `msOnBeforeCreateOrder` still runs with the same four parameters (`service`, `msOrder`, `origin`, `from_manager`). Take `msOnBeforeMgrCreateOrder` for admin-only logic, and `msOnBeforeCreateOrder` when the same logic is needed both on the frontend and in the admin.
+After `msOnBeforeMgrCreateOrder`, the universal `msOnBeforeCreateOrder` still runs with the same parameters. Use `msOnBeforeMgrCreateOrder` when the logic is admin-only, and `msOnBeforeCreateOrder` when the same logic is needed on the frontend and in the admin.
 :::
 
 ### Parameters

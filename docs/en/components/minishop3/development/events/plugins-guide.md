@@ -7,17 +7,19 @@ A plugin on MiniShop3 events: how to get the parameters, return data, abort an o
 
 ## Component plugin (MODX events)
 
-The package ships a system plugin `minishop3.php` on core MODX events (not to be confused with `msOn*`):
+The package installs a system plugin `minishop3.php` on core MODX events (not to be confused with `msOn*`):
 
 | MODX event | Purpose |
 | --- | --- |
-| `OnMODXInit` | Service registration, namespace |
-| `OnLoadWebDocument` | Frontend assets, `registerFrontend()` |
-| `OnDocFormSave` | Resource-to-product conversion via `ProductService::handleConversion()` |
-| `OnBeforeUserFormSave` / `OnUserSave` | Sync `msCustomer` ↔ `modUser` when `ms3_customer_sync_enabled` |
-| `OnUserRemove` | Cleanup of related customer data |
+| `OnMODXInit` | The `ms3` service is already registered. The plugin calls `loadMap()`, and in the `mgr` context it schedules a reset of the catalog ACL cache |
+| `OnManagerPageBeforeRender` | Loads the lexicon and `ms3.manager.js`. If the files on disk are older than the installed package, it shows a banner |
+| `OnLoadWebDocument` | Loads frontend files through `registerFrontend()` |
+| `OnDocFormSave` | Converts a resource into a product through `ProductService::handleConversion()` |
+| `OnBeforeUserFormSave` / `OnUserSave` | Syncs `msCustomer` and `modUser` when `ms3_customer_sync_enabled` is on |
+| `OnUserRemove` | When both `ms3_customer_sync_enabled` and `ms3_customer_sync_delete_with_user` are on, it clears `msCustomer.user_id`. It does not delete the customer. Without the second flag the handler does nothing |
+| `OnResourceGroupSave`, `OnResourceGroupRemove`, `OnResourceAddToResourceGroup`, `OnResourceRemoveFromResourceGroup`, `OnUserGroupRemove` | Resets the catalog ACL cache |
 
-For cart and order business logic, subscribe to events from the [events hub](../events).
+For cart and order business logic, subscribe to the events in [Events](../events).
 
 ## Basic plugin structure
 
@@ -30,11 +32,11 @@ For cart and order business logic, subscribe to events from the [events hub](../
 
 switch ($modx->event->name) {
     case 'msOnBeforeAddToCart':
-        // Code for "before add" event
+        // Before adding to the cart
         break;
 
     case 'msOnAddToCart':
-        // Code for "after add" event
+        // After adding to the cart
         break;
 }
 ```
@@ -42,8 +44,6 @@ switch ($modx->event->name) {
 ## Getting incoming parameters
 
 ### Method 1: $scriptProperties array
-
-All event parameters are in `$scriptProperties`:
 
 ```php
 <?php
@@ -64,7 +64,7 @@ switch ($modx->event->name) {
 switch ($modx->event->name) {
     case 'msOnBeforeAddToCart':
         extract($scriptProperties);
-        // Now available: $msProduct, $count, $options, $controller
+        // Available: $msProduct, $count, $options, $controller
         break;
 }
 ```
@@ -74,13 +74,14 @@ switch ($modx->event->name) {
 ```php
 <?php
 $modx->log(modX::LOG_LEVEL_ERROR, '[' . $modx->event->name . '] Parameters: ' . print_r(array_keys($scriptProperties), true));
+
 $modx->log(modX::LOG_LEVEL_ERROR, '[' . $modx->event->name . '] ' . print_r($scriptProperties, true));
 ```
 
 ## controller parameter
 
 ::: info Passed automatically
-Every MiniShop3 controller event receives a `controller` parameter — the instance of the current controller (Cart, Order, Customer).
+Every MiniShop3 controller event receives a `controller` parameter: the current controller instance (Cart, Order, Customer).
 :::
 
 The controller gives access to MiniShop3 and MODX:
@@ -94,14 +95,15 @@ switch ($modx->event->name) {
 
         $ms3 = $controller->ms3;
         $modx = $controller->modx;
-        // Use public controller methods for cart data
+
+        // Cart internals: public controller methods only
         break;
 }
 ```
 
 ## Aborting the operation
 
-An event with the `Before` prefix is aborted by returning an error message:
+Aborting works only where the calling code reads the response. The `Before` prefix does not guarantee that by itself. `msOnBeforeSaveOrder` and `msOnBeforeRemoveOrder` do not read the plugin response, and `msOnBeforeValidateOrderValue` takes only `value` from it.
 
 ### $modx->event->output()
 
@@ -111,11 +113,13 @@ switch ($modx->event->name) {
     case 'msOnBeforeAddToCart':
         $product = $scriptProperties['msProduct'];
 
+        // Disallow a product with a zero price
         if ($product->get('price') <= 0) {
             $modx->event->output('Product is not available for order');
-            return;
+            return; // leave the switch, otherwise the code below still runs
         }
 
+        // No more than 10 units
         if ($scriptProperties['count'] > 10) {
             $modx->event->output('Maximum 10 units per product');
             return;
@@ -134,9 +138,17 @@ flowchart LR
   check -->|no| go["The operation continues"]
 ```
 
-1. MiniShop3's `invokeEvent()` collects all plugin outputs
-2. If any output is non-empty, the operation is aborted
-3. The message is returned to the user (frontend or API response)
+1. MiniShop3 `invokeEvent()` collects every plugin output.
+2. If there is at least one non-empty output, the operation is aborted.
+3. The message is returned to the user, on the frontend or in the API response.
+
+::: warning A plugin `return` does not cancel the operation
+Only what the plugin passed to `output()` reaches the event result. `modX::invokeEvent()` puts `$this->event->_output` into the result array and uses the plugin's return value for something else. A string is written to `error.log` as an event error, and `false` as "Plugin … failed!".
+
+So `return 'cancel'` does not cancel. It also adds an error line to the log. Cancel through `output()`, and use `return` only to leave the `switch`.
+
+`output()` has one more property. A second call **appends** text to what is already stored. It does not replace it. Two calls in one plugin are joined into one message.
+:::
 
 ### Events that support aborting
 
@@ -154,7 +166,6 @@ flowchart LR
 - `msOnSubmitOrder`
 - `msOnBeforeCreateOrder`
 - `msOnBeforeChangeOrderStatus`
-- Other events with the `Before` prefix
 
 ## Modifying data
 
@@ -168,10 +179,12 @@ switch ($modx->event->name) {
     case 'msOnBeforeAddToCart':
         $values = &$modx->event->returnedValues;
 
+        // At least 2 units
         if ($scriptProperties['count'] < 2) {
             $values['count'] = 2;
         }
 
+        // Source mark in the options
         $options = $scriptProperties['options'] ?? [];
         $options['source'] = 'promo_landing';
         $values['options'] = $options;
@@ -179,112 +192,101 @@ switch ($modx->event->name) {
 }
 ```
 
+Changing `$scriptProperties` by reference does nothing. `modX::invokeEvent()` builds the parameters with `array_merge()`, and the reference never reaches the caller. The only channel is `returnedValues`. After the merge the caller reads `$response['data']['count']`.
+
 ### Take returnedValues by reference (&)
 
 ```php
-// Correct — changes apply
+// Correct: the changes apply
 $values = &$modx->event->returnedValues;
 $values['count'] = 5;
 
-// Wrong — changes are lost
+// Wrong: the changes are lost
 $values = $modx->event->returnedValues;
 $values['count'] = 5;
 ```
 
-## Utils::invokeEvent
+## Utils::invokeEvent and EventGate
 
 ```mermaid
 flowchart TD
   subgraph utils [Utils invokeEvent]
-    text["output with text"] --> fail["success false, the text lands in message"]
-    values["returnedValues"] --> data["The fields land in data"]
+    text["output with text"] --> fail["success false, text in message"]
+    values["returnedValues"] --> data["Fields land in data"]
   end
   subgraph gate [EventGate invokeRaw]
     cancel["output cancel or false"] --> stopped["isCancelled"]
-    channel["A named channel"] --> apply["applyReturnedArray"]
+    channel["Named channel"] --> apply["applyReturnedArray"]
   end
-``` and EventGate
+```
 
-Most cart, order, cost and customer events go through `MiniShop3\Utils\Utils::invokeEvent()`, not raw `$modx->invokeEvent()`. Core clears `returnedValues` before the call and normalizes the response:
+Most cart, order, cost and customer events go through `MiniShop3\Utils\Utils::invokeEvent()`, not directly through `$modx->invokeEvent()`. The core clears `returnedValues` before the call and builds the response afterwards:
 
 | Response field | Meaning |
 | --- | --- |
-| `success` | `true` when no plugin returned non-empty `output` |
-| `message` | Plugin `output` strings joined with `<br/>` |
-| `data` | Original `$scriptProperties` shallow-merged with `returnedValues` |
-| `values` | Raw merged `returnedValues` from all plugins |
+| `success` | `true` when no plugin returned a non-empty `output` |
+| `message` | `output` texts joined with `<br/>` |
+| `data` | The original `$scriptProperties`, with `returnedValues` keys laid on top (a shallow merge) |
+| `values` | The raw `returnedValues` array from all plugins |
 
-Shallow merge: if two plugins set `returnedValues['count']`, the plugin with **higher** priority wins (MODX runs plugins in ascending priority order; later plugins overwrite keys).
-
-### Two ways to change data
-
-1. **By reference** in `$scriptProperties` (the older MS2 way; still works where params are passed with `&`).
-2. **`returnedValues`** — preferred contract since 1.11+.
-
-```php
-<?php
-switch ($modx->event->name) {
-    case 'msOnBeforeAddToCart':
-        $values = &$modx->event->returnedValues;
-        $values['count'] = min(99, (int) $scriptProperties['count']);
-        break;
-}
-```
-
-Callers read `$response['data']['count']` after merge.
+The merge is shallow. If two plugins return `returnedValues['count']`, the plugin with the **higher** priority wins. MODX runs plugins in ascending priority order, and each next plugin overwrites the key.
 
 ### Abort: output, false and cancel
 
-| Signal | Where | Effect |
+| Signal | Where it works | Effect |
 | --- | --- | --- |
-| `$modx->event->output('text')` | `Utils::invokeEvent` | `success = false`, text in `message` |
-| `$modx->event->output(false)` or `output('cancel')` | import, notifications, some raw calls | `EventGate::isCancelled()` → `true` |
+| `$modx->event->output('cancel')` or `output(false)` | import, notifications | `EventGate::isCancelled()` becomes `true` |
+| `$modx->event->output('text')` | `Utils::invokeEvent` | `success = false`, the text is in `message`. Any non-empty output does this |
 
-::: warning A plugin's `return` cancels nothing
-Only what a plugin passed to `output()` reaches the event result: `modX::invokeEvent()` collects `$this->event->_output`, while the plugin's return value is used for something else — a string is written to `error.log` as an event error, `false` as "Plugin … failed!".
-
-So `return 'cancel'` not only fails to cancel, it also pollutes the log. Cancel through `output()` and use `return` only to leave the `switch`.
-:::
-
-For `isCancelled()`, `false` and the string `'cancel'` are equivalent. What the cancellation means is decided by the calling code:
+`return false` and `return 'cancel'` do not cancel. The core reads only `output()`. For `isCancelled()`, `false` and the string `cancel` are equivalent. What the cancellation means is decided by the calling code:
 
 | Event | What the core does on cancellation |
 | --- | --- |
 | `msOnBeforeImport` | The whole import aborts with the `ms3_utilities_import_cancelled` error |
-| `msOnImportRow` | The current row goes into the `skipped` counter, the import continues |
-| `msOnBeforeSendNotification` | The notification is not sent, no error is raised |
+| `msOnImportRow` | The current row goes into the `skipped` counter, and the import continues |
+| `msOnBeforeSendNotification` | The notification is not sent, and there is no error |
 
 ```php
 <?php
+// Import: skip the row without an error
 case 'msOnImportRow':
     if (empty($scriptProperties['data']['price'])) {
         $modx->event->output('cancel');
-        return;
     }
     break;
 ```
 
 ::: warning After-events in the order manager
-`msOnCreateOrderProduct`, `msOnUpdateOrderProduct`, `msOnRemoveOrderProduct` run **after** `save()` / `remove()`. A plugin error is only logged, and the HTTP response to the client stays successful. The operation can be aborted only in the paired `msOnBefore*`. See [Order product events](order-product).
+`msOnCreateOrderProduct`, `msOnUpdateOrderProduct` and `msOnRemoveOrderProduct` run **after** `save()` / `remove()`. In the Manager API a plugin error is written to the log, and the HTTP response stays successful. `OrderDraftManager::addProductFromSnapshot()` does not read the after-event response and does not write it to the log. The operation can be aborted only in the paired `msOnBefore*`. See [Order product events](order-product).
 :::
 
 ### Named returnedValues channels (import, msProducts, notifications)
 
-Some events apply `EventGate::applyReturnedArray()` per key instead of a global merge:
+For some events the core does not use the general merge. It applies a channel by key through `EventGate::applyReturnedArray()`:
 
-| Event | `returnedValues` key | Behavior |
+| Event | Key in `returnedValues` | Behaviour |
 | --- | --- | --- |
-| `msOnBeforeImport` | `params` | list → replace; assoc → `array_replace` |
-| `msOnImportRow` | `data`, `tvData`, `optionData`, `gallery` | same |
-| `msOnProductsLoad` | `rows` | same |
-| `msOnProductPrepare` | `row` | same |
-| `msOnBeforeSendNotification` | `recipient`, `channels` | same; list `channels` replaces the channel list |
+| `msOnBeforeImport` | `params` | A list replaces the channel entirely. An associative array is applied with `array_replace` |
+| `msOnImportRow` | `data`, `tvData`, `optionData`, `gallery` | The same |
+| `msOnProductsLoad` | `rows` | The same |
+| `msOnProductPrepare` | `row` | The same |
+| `msOnBeforeSendNotification` | `recipient`, `channels` | The same. A list in `channels` replaces the channel set entirely |
 
-Import / msProducts / notifications use `EventGate::invokeRaw()`, not `Utils::invokeEvent()`.
+```php
+<?php
+case 'msOnImportRow':
+    $modx->event->returnedValues = [
+        'data' => ['vendor_id' => 1],           // patch individual resource fields
+        // 'gallery' => ['/path/a.jpg', '/path/b.jpg'], // a list: full gallery replacement
+    ];
+    break;
+```
+
+These events are called through `EventGate::invokeRaw()`, not through `Utils::invokeEvent()`.
 
 ## Passing data between plugins
 
-Use `$modx->eventData` to pass data between plugins of the same event or between events in one request.
+`$modx->eventData` passes data between plugins of one event, or between different events of one request.
 
 ### Example: price modification
 
@@ -345,8 +347,8 @@ $modx->eventData = [
 ];
 ```
 
-::: warning Data lives for one request
-`$modx->eventData` is cleared after the request. Use `$_SESSION` or the database to persist data between requests.
+::: warning The data lives for one request
+`$modx->eventData` is cleared when the request ends. To keep data between requests, use `$_SESSION` or the database.
 :::
 
 ## Showing messages in the manager
@@ -364,7 +366,7 @@ switch ($modx->event->name) {
 
             $controller->addHtml('<script>
                 Ext.onReady(function() {
-                    MODx.msg.alert("Notice", "Remember to check prices!");
+                    MODx.msg.alert("Notice", "Remember to check the prices!");
                 });
             </script>');
         }
@@ -372,7 +374,7 @@ switch ($modx->event->name) {
 }
 ```
 
-### Toast notifications
+### Toast notification
 
 ```php
 <?php
@@ -384,7 +386,7 @@ switch ($modx->event->name) {
         if ($page === 'orders') {
             $controller->addHtml('<script>
                 Ext.onReady(function() {
-                    Ext.Msg.notify("MiniShop3", "You have new orders!");
+                    Ext.Msg.notify("MiniShop3", "There are new orders!");
                 });
             </script>');
         }
@@ -394,17 +396,13 @@ switch ($modx->event->name) {
 
 ## Plugin priority
 
-Execution order is determined by the plugin **priority** setting:
-
-- Lower value = runs first
-- Default: 0
-- Any integer
+The order is the **priority** field in the plugin settings. A smaller value runs earlier. The default is 0, and any integer is allowed.
 
 ### When priority matters
 
-1. **Price modification** — plugins apply discounts in sequence
-2. **Validation** — one plugin may depend on another's result
-3. **Data passing** — source plugin must run before consumer
+- **Price modification:** plugins apply discounts one after another.
+- **Validation:** one plugin can depend on the result of another.
+- **Passing data:** the source plugin must run before the plugin that reads the data.
 
 ## Debugging plugins
 
@@ -412,10 +410,10 @@ Execution order is determined by the plugin **priority** setting:
 
 ```php
 <?php
-$modx->log(modX::LOG_LEVEL_ERROR, 'Error');
-$modx->log(modX::LOG_LEVEL_WARN, 'Warning');
-$modx->log(modX::LOG_LEVEL_INFO, 'Info');
-$modx->log(modX::LOG_LEVEL_DEBUG, 'Debug');
+$modx->log(modX::LOG_LEVEL_ERROR, 'Error');     // Always visible
+$modx->log(modX::LOG_LEVEL_WARN, 'Warning');    // Important warnings
+$modx->log(modX::LOG_LEVEL_INFO, 'Info');       // Informational messages
+$modx->log(modX::LOG_LEVEL_DEBUG, 'Debug');     // Detailed debugging
 
 $modx->log(modX::LOG_LEVEL_ERROR,
     '[MyPlugin::' . $modx->event->name . '] ' . $message
@@ -426,24 +424,29 @@ $modx->log(modX::LOG_LEVEL_ERROR,
 
 ```php
 <?php
-// At the top of the plugin
 $modx->log(modX::LOG_LEVEL_ERROR, '=== PLUGIN START: ' . $modx->event->name . ' ===');
 
 switch ($modx->event->name) {
     case 'msOnBeforeAddToCart':
         $modx->log(modX::LOG_LEVEL_ERROR, 'msOnBeforeAddToCart triggered');
-        // ...
         break;
 }
 
 $modx->log(modX::LOG_LEVEL_ERROR, '=== PLUGIN END ===');
 ```
 
-### Listing the plugins subscribed to an event
+In `core/cache/logs/error.log` after a product is added:
+
+```text
+[2026-10-15 18:00:01] (ERROR) === PLUGIN START: msOnBeforeAddToCart ===
+[2026-10-15 18:00:01] (ERROR) msOnBeforeAddToCart triggered
+[2026-10-15 18:00:01] (ERROR) === PLUGIN END ===
+```
+
+### Checking whether the event exists
 
 ```php
 <?php
-// Fetch every plugin subscribed to the event
 $plugins = $modx->getCollection('modPluginEvent', [
     'event' => 'msOnBeforeAddToCart'
 ]);
@@ -461,11 +464,10 @@ foreach ($plugins as $pluginEvent) {
 ### 1. Forgot return after output()
 
 ```php
-// Wrong — execution continues
+// Wrong: the code below still runs
 if ($error) {
     $modx->event->output('Error');
 }
-// This runs even on error
 doSomething();
 
 // Correct
@@ -475,113 +477,34 @@ if ($error) {
 }
 ```
 
-### 2. Not using a reference for returnedValues
+### 2. Checking in an after-event instead of a before-event
 
 ```php
-// Wrong
-$values = $modx->event->returnedValues;
-$values['count'] = 10; // Changes are lost
-
-// Correct
-$values = &$modx->event->returnedValues;
-$values['count'] = 10;
-```
-
-### 3. Checking in an after-event instead of a before-event
-
-```php
-// msOnAddToCart — event AFTER add.
-// The product is already in the cart and output() will not take it back.
-// The response still turns into an error, so the shopper sees a message
-// while the cart has already changed
+// msOnAddToCart fires AFTER the add.
+// The product is already in the cart, and output() will not remove it.
+// The response still becomes an error: the customer sees a message while the cart has changed
 case 'msOnAddToCart':
     $modx->event->output('Error');
     break;
 
-// msOnBeforeAddToCart — event BEFORE add
+// msOnBeforeAddToCart fires BEFORE the add
 case 'msOnBeforeAddToCart':
     $modx->event->output('Error'); // Stops the add
     break;
 ```
 
-A cart that disagrees with the response is worse than an honest refusal: the frontend shows an error while the item counter has already gone up. Put the checks in `msOnBefore*`.
+A cart that no longer matches the response is worse than an honest refusal. The frontend shows an error, and the product counter has already grown. Put checks in `msOnBefore*`.
 
-### 4. Forgot break in switch
+### 3. Forgot break in switch
 
 ```php
 switch ($modx->event->name) {
     case 'msOnBeforeAddToCart':
         // code
-        // Forgot break — next case runs too!
+        // Missing break: the next case runs too
 
     case 'msOnAddToCart':
-        // This also runs for msOnBeforeAddToCart
-        break;
-}
-```
-
-## Full plugin example
-
-```php
-<?php
-/**
- * Plugin: Cart add control
- *
- * Events: msOnBeforeAddToCart, msOnAddToCart
- *
- * - Disallow adding products without price
- * - Cap maximum quantity
- * - Log adds
- */
-
-switch ($modx->event->name) {
-
-    case 'msOnBeforeAddToCart':
-        /** @var \MiniShop3\Model\msProduct $product */
-        $product = $scriptProperties['msProduct'];
-        $count = $scriptProperties['count'];
-        $options = $scriptProperties['options'] ?? [];
-
-        if ($product->get('price') <= 0) {
-            $modx->event->output($modx->lexicon('ms3_cart_product_not_available'));
-            return;
-        }
-
-        $maxCount = 99;
-        if ($count > $maxCount) {
-            $values = &$modx->event->returnedValues;
-            $values['count'] = $maxCount;
-
-            $modx->eventData['cartControl']['count_limited'] = true;
-            $modx->eventData['cartControl']['original_count'] = $count;
-        }
-
-        $values = &$modx->event->returnedValues;
-        $options['added_timestamp'] = time();
-        $values['options'] = $options;
-        break;
-
-    case 'msOnAddToCart':
-        $product = $scriptProperties['msProduct'];
-        $count = $scriptProperties['count'];
-        $productKey = $scriptProperties['product_key'];
-
-        $modx->log(modX::LOG_LEVEL_INFO, sprintf(
-            '[CartControl] Product added: %s (ID: %d), qty: %d, key: %s',
-            $product->get('pagetitle'),
-            $product->get('id'),
-            $count,
-            $productKey
-        ));
-
-        if (!empty($modx->eventData['cartControl']['count_limited'])) {
-            $original = $modx->eventData['cartControl']['original_count'];
-            $modx->log(modX::LOG_LEVEL_WARN, sprintf(
-                '[CartControl] Quantity capped: requested %d, added %d',
-                $original,
-                $count
-            ));
-        }
+        // This code also runs for msOnBeforeAddToCart
         break;
 }
 ```
