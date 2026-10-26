@@ -8,20 +8,6 @@ MiniShop3 uses [FastRoute](https://github.com/nikic/FastRoute) for API request r
 
 ## Architecture
 
-```mermaid
-flowchart TB
-  subgraph web [Web API]
-    w1[web.php] --> w2[ms3_routes_web.custom.php]
-    w2 --> w3["ms3.routes.d/web"]
-    w3 --> wb[build]
-  end
-  subgraph mgr [Manager API]
-    m1[manager.php] --> m2[ms3_routes_manager.custom.php]
-    m2 --> m3["ms3.routes.d/manager"]
-    m3 --> mb[build]
-  end
-```
-
 ### Two API types
 
 | Parameter | Manager API | Web API |
@@ -655,6 +641,8 @@ function addFilterParam(params, key, value) {
 
 When adding a new direct filter on the backend, **always** add its key to the `DIRECT_FILTER_KEYS` constant in the corresponding controller. Otherwise the frontend sends it with a prefix and filtering will not work.
 
+For a new grid the constant alone is not enough: `GridConfigController` serves `direct_filter_keys` only for the grids listed in its provider map, which today holds orders and customers. For orders the constant itself lives in `ManagerOrderListService`, and the controller points at it.
+
 #### Orders (`/orders`)
 
 Read and write are split into two middleware groups.
@@ -988,6 +976,20 @@ $router->group('/api/mgr/promocodes', function($router) use ($modx) {
 ```
 
 ## Modular addon routes (`ms3.routes.d`)
+
+```mermaid
+flowchart TB
+  subgraph web [Web API]
+    w1[web.php] --> w2[ms3_routes_web.custom.php]
+    w2 --> w3["ms3.routes.d/web"]
+    w3 --> wb["build() of the dispatcher"]
+  end
+  subgraph mgr [Manager API]
+    m1[manager.php] --> m2[ms3_routes_manager.custom.php]
+    m2 --> m3["ms3.routes.d/manager"]
+    m3 --> mb["build() of the dispatcher"]
+  end
+```
 
 `ms3_routes_*.custom.php` files suit manual customization but **not addons** — if two components write to the same file, install/uninstall conflicts occur.
 
