@@ -5,8 +5,6 @@ description: "Delivery, payment, order draft, cost, and submit"
 
 # Checkout
 
-Headless chain: catalog → cart → delivery/payment choice → order fields → cost → submit.
-
 ## Public lists
 
 No customer token:
@@ -18,9 +16,16 @@ No customer token:
 | `GET` | `/payment/list` |
 | `GET` | `/payment/get/{id}` |
 
-Only active methods are listed. The delivery↔payment link is checked at checkout: without a valid pair, `submit` fails.
+Only active methods (`active = 1`) appear in the lists.
 
-Provider webhooks are authenticated by the handler's own signature, not by a customer token. API prefix: `/api/v1`.
+| Endpoint | Parameters |
+| --- | --- |
+| `GET /delivery/list` | `include_payments` (default 1), `include_required_fields` (default 0) |
+| `GET /payment/list` | `delivery_id`, `include_delivery_ids` (default 0) |
+
+The server checks the delivery and payment pair at checkout. Without a valid pair, `POST /order/submit` returns an error.
+
+## Webhooks
 
 ```mermaid
 flowchart TD
@@ -33,6 +38,8 @@ flowchart TD
   kind -->|payment| papply["verifyWebhook, parseWebhook, applyWebhook"]
   papply --> pok["attempt_id, status, order_id"]
 ```
+
+A webhook comes from the payment service or the delivery service and is authorized by the `handler` signature, not by a customer token. The path prefix is the same: `/api/v1`.
 
 | Method | Path | Condition |
 | --- | --- | --- |
@@ -91,12 +98,12 @@ What happens on a closed key:
 | `POST /order/submit` | the key in `data` is dropped silently, checkout continues |
 
 ::: tip Writing an internal order field from an add-on
-`OrderFieldManager` constants hold the closed list. To change it, override the `ms3_order_field_manager` DI key with your own subclass in [`core/config/ms3.services.d/*.php`](/en/components/minishop3/development/services) — that directory sits outside the component and survives upgrades. From PHP the internal fields are reachable without the override: `OrderDraftManager::updateField()`, `attachCustomer()`, `setDeliveryCost()`.
+The closed columns are the `OrderFieldManager` constants. To change the list, replace the `ms3_order_field_manager` DI key with your own subclass in [`core/config/ms3.services.d/*.php`](/en/components/minishop3/development/services). That directory sits outside the component and survives upgrades. From PHP the internal fields are reachable without the override: `OrderDraftManager::updateField()`, `attachCustomer()`, `setDeliveryCost()`.
 :::
 
-## Submit
+## POST /order/submit
 
-A successful `submit` puts the URL in the JSON body, under `data.redirect`. There is no `Location` header on submit — `Response::redirect` is only used by email confirmation with `html=1`.
+On success the URL arrives in JSON, under `data.redirect`. Submit has no `Location` header: `Response::redirect` is used when email is confirmed with `html=1`.
 
 Online payment is handled by a payment extra. A base method without `class` only records the choice.
 
@@ -112,9 +119,9 @@ flowchart LR
 ```
 
 1. `GET /delivery/list`, `GET /payment/list`
-2. `POST /order/set` with `delivery_id` / `payment_id` and address
+2. `POST /order/set` with a `fields` object: `delivery_id`, `payment_id`, address
 3. `GET /order/delivery/required-fields` if needed
 4. `GET /order/cost`
 5. `POST /order/submit`
 
-A Fenom frontend can build the form with `msOrder`; headless clients use the lists above. See [Examples](examples).
+A Fenom frontend can build the form with `msOrder`. A headless client uses the lists above. See [Examples](examples).
