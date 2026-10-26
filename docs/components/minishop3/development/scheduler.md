@@ -24,7 +24,7 @@ Scheduler 1.8.0 или выше. На более ранних версиях з�
 
 Программно настройку меняют через объект `modSystemSetting`:
 
-<!-- MEDIA: screenshot-admin | must | Системные настройки, пространство имён `minishop3`, список отфильтрован по ключу `ms3_use_scheduler`: видна строка настройки с названием, описанием и значением «Да». | На стенде открыть системные настройки, выбрать пространство имён `minishop3`, в поиске ввести `ms3_use_scheduler`, включить настройку. -->
+![Настройка ms3_use_scheduler в системных настройках](/components/minishop3/screenshots/mgr-scheduler-setting.png)
 
 ```php
 $setting = $modx->getObject(\MODX\Revolution\modSystemSetting::class, 'ms3_use_scheduler');
@@ -177,7 +177,9 @@ flowchart TB
 
 Запуск встанет в очередь. Один проход cron берёт `scheduler.tasks_per_run` запусков — по умолчанию один, поэтому при непустой очереди ваш запуск подождёт несколько проходов.
 
-<!-- MEDIA: screenshot-admin | nice | Scheduler: список задач с отфильтрованным пространством имён `minishop3`, на экране видны все вкладки интерфейса; у одной из задач открыто контекстное меню с пунктом «Запланировать запуск». Вторым кадром — окно, которое открывается после выбора пункта. | На стенде открыть Scheduler через меню «Дополнения», вызвать контекстное меню на `ms3_cleanup_tokens`. Окно снять, не сохраняя запуск. -->
+![Задания MiniShop3 в Планировщике и контекстное меню задания](/components/minishop3/screenshots/mgr-scheduler-tasks.png)
+
+![Окно «Запланировать запуск»](/components/minishop3/screenshots/mgr-scheduler-schedule-dialog.png)
 
 ### Через PHP
 
