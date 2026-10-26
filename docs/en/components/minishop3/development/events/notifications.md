@@ -131,6 +131,7 @@ switch ($modx->event->name) {
         $statusName = $status ? $status->get('name') : (string) $statusId;
         $orderNum = $order->get('num');
 
+        // The message text
         $message = "Order #{$orderNum}\n";
         $message .= "Status changed to: {$statusName}";
 
