@@ -159,34 +159,14 @@ The `ms3` object is created when `ms3.js` loads. Selectors are built from `getSe
 const ms3 = {
   config: {},
   selectors: {},
-
-  // Core
-  tokenManager: null,
-  apiClient: null,
-
-  // API modules
-  cartAPI: null,
-  orderAPI: null,
-  customerAPI: null,
-
-  // UI modules
-  cartUI: null,
-  orderUI: null,
-  customerUI: null,
-  authUI: null,
-  quantityUI: null,
-  productCardUI: null,
-
-  // Utilities
-  hooks: null,
-  message: null,
+  // Slots for the modules: tokenManager, apiClient, cartAPI, orderAPI, customerAPI,
+  // cartUI, orderUI, customerUI, authUI, quantityUI, productCardUI, hooks, message
 
   async init() {
     this.config = window.ms3Config || {}
     // Selectors from Selectors.js, overridable through ms3Config.selectors
     this.config.selectors = { ...window.Ms3DefaultSelectors, ...getSelectors() }
 
-    // Hooks and messages
     this.hooks = window.ms3Hooks
     this.message = window.ms3Message
 
@@ -201,25 +181,16 @@ const ms3 = {
     this.tokenManager.setApiClient(this.apiClient)
     await this.tokenManager.ensureToken()
 
-    // API modules
+    // The API modules all get the same client
     this.cartAPI = new CartAPI(this.apiClient)
-    this.orderAPI = new OrderAPI(this.apiClient)
-    this.customerAPI = new CustomerAPI(this.apiClient)
+    // orderAPI and customerAPI are created the same way
 
-    // UI modules
+    // The UI modules get an API, the hooks, the messages and the config
     this.cartUI = new CartUI(this.cartAPI, this.hooks, this.message, this.config)
-    this.orderUI = new OrderUI(this.orderAPI, this.hooks, this.message, this.config)
-    this.customerUI = new CustomerUI(this.customerAPI, this.hooks, this.message, this.config)
-    this.authUI = new AuthUI(this.customerAPI, this.hooks, this.message, this.config)
-    this.quantityUI = new QuantityUI(this.cartAPI, this.hooks, this.message, this.config)
-    this.productCardUI = new ProductCardUI(this.cartAPI, this.hooks, this.message, this.config)
+    // orderUI, customerUI, authUI, quantityUI, productCardUI — the same
 
-    // Init
+    // Start: init() on every module; on productCardUI it is asynchronous
     this.cartUI.init()
-    this.orderUI.init()
-    this.customerUI.init()
-    this.authUI.init()
-    this.quantityUI.init()
     await this.productCardUI.init()
 
     // Quantity controls are re-bound after every cart redraw
@@ -227,7 +198,6 @@ const ms3 = {
 
     this.initFormHandler()
 
-    // Ready event
     document.dispatchEvent(new Event('ms3:ready'))
   }
 }
@@ -642,25 +612,9 @@ class CartUI {
 
   }
 
-  // Clearing the cart
-  async handleClean() {
-    const hookData = {}
-    await this.hooks.runHooks('beforeCleanCart', hookData)
+  // handleChange(), handleRemove() and handleClean() follow the same shape:
+  // before hook → CartAPI call → after hook → renderCart + dispatchCartUpdated
 
-    if (hookData.cancel) return
-
-    const renderTokens = this.getRenderTokens()
-    const response = await this.cart.clean(renderTokens)
-
-    await this.hooks.runHooks('afterCleanCart', { response })
-
-    if (response.success) {
-      if (response.data?.render) {
-        this.renderCart(response.data.render)
-      }
-      this.dispatchCartUpdated(response.data)
-    }
-  }
   // The cart-updated event
   dispatchCartUpdated(data) {
     document.dispatchEvent(new CustomEvent('ms3:cart:updated', {
@@ -831,29 +785,10 @@ class CustomerUI {
     })
   }
 
-  // Address management
-  initAddressManagement() {
-    // Set default
-    document.querySelectorAll(this.selectors.addressSetDefault).forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const id = btn.dataset.addressId
-        const response = await this.customer.setDefaultAddress(id)
-        if (response.success) window.location.reload()
-      })
-    })
-
-    // Delete address
-    document.querySelectorAll(this.selectors.addressDelete).forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const id = btn.dataset.addressId
-        const confirmed = await ms3Confirm(btn.dataset.confirm)
-        if (!confirmed) return
-
-        const response = await this.customer.deleteAddress(id)
-        if (response.success) window.location.reload()
-      })
-    })
-  }
+  // Address management works the same way: handlers on the addressSetDefault
+  // and addressDelete selectors, the id from data-address-id, ms3Confirm() with
+  // the text from data-confirm before a delete, and a reload on success
+  initAddressManagement() { /* … */ }
 }
 ```
 

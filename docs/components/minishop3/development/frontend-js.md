@@ -158,86 +158,54 @@ const cancelBtns = document.querySelectorAll(this.selectors.orderCancel)
 
 Объект `ms3` создаётся сам при загрузке `ms3.js`. Селекторы собираются из `getSelectors()` и `ms3Config.selectors`.
 
-<!-- EXAMPLE? 55 строк исходника ms3.js: список полей объекта и шесть однотипных `new ...UI(...)` + шесть `init()` -->
-
 ```javascript
 // assets/components/minishop3/js/web/ms3.js
 
 const ms3 = {
   config: {},
   selectors: {},
-  // Ядро
-  tokenManager: null,
-  apiClient: null,
+  // Поля под модули: tokenManager, apiClient, cartAPI, orderAPI, customerAPI,
+  // cartUI, orderUI, customerUI, authUI, quantityUI, productCardUI, hooks, message
 
-  // Модули API
-  cartAPI: null,
-  orderAPI: null,
-  customerAPI: null,
+  async init() {
+    this.config = window.ms3Config || {}
+    // Селекторы из Selectors.js, переопределяются через ms3Config.selectors
+    this.config.selectors = { ...window.Ms3DefaultSelectors, ...getSelectors() }
 
-  // Модули интерфейса
-  cartUI: null,
-  orderUI: null,
-  customerUI: null,
-  authUI: null,
-  quantityUI: null,
-  productCardUI: null,
+    this.hooks = window.ms3Hooks
+    this.message = window.ms3Message
 
-  // Вспомогательное
-  hooks: null,
-  message: null,
+    // Токены и клиент API: сначала создаётся клиент, менеджер получает его
+    // через setApiClient(), и только потом запрашивается токен
+    this.tokenManager = new TokenManager({ tokenName: this.config.tokenName || 'ms3_token' })
+    this.apiClient = new ApiClient({
+      baseUrl: this.config.actionUrl || '/assets/components/minishop3/api.php',
+      tokenManager: this.tokenManager,
+      ctx: this.config.ctx,
+    })
+    this.tokenManager.setApiClient(this.apiClient)
+    await this.tokenManager.ensureToken()
 
-async init() {
-  this.config = window.ms3Config || {}
-  // Селекторы из Selectors.js, переопределяются через ms3Config.selectors
-  this.config.selectors = { ...window.Ms3DefaultSelectors, ...getSelectors() }
+    // Модули API получают один и тот же клиент
+    this.cartAPI = new CartAPI(this.apiClient)
+    // orderAPI и customerAPI создаются так же
 
-  this.hooks = window.ms3Hooks
-  this.message = window.ms3Message
+    // Модули интерфейса получают API, хуки, уведомления и конфиг
+    this.cartUI = new CartUI(this.cartAPI, this.hooks, this.message, this.config)
+    // orderUI, customerUI, authUI, quantityUI, productCardUI — так же
 
-  // Токены и клиент API: сначала создаётся клиент, менеджер получает его
-  // через setApiClient(), и только потом запрашивается токен
-  this.tokenManager = new TokenManager({
-    tokenName: this.config.tokenName || 'ms3_token',
-  })
-  this.apiClient = new ApiClient({
-    baseUrl: this.config.actionUrl || '/assets/components/minishop3/api.php',
-    tokenManager: this.tokenManager,
-    ctx: this.config.ctx,
-  })
-  this.tokenManager.setApiClient(this.apiClient)
-  await this.tokenManager.ensureToken()
+    // Запуск: init() у каждого модуля, у productCardUI он асинхронный
+    this.cartUI.init()
+    await this.productCardUI.init()
 
-  // Модули API
-  this.cartAPI = new CartAPI(this.apiClient)
-  this.orderAPI = new OrderAPI(this.apiClient)
-  this.customerAPI = new CustomerAPI(this.apiClient)
+    // Кнопки количества перепривязываются после каждой перерисовки корзины
+    document.addEventListener('ms3:cart:updated', () => this.quantityUI.reinit())
 
-  // Модули интерфейса
-  this.cartUI = new CartUI(this.cartAPI, this.hooks, this.message, this.config)
-  this.orderUI = new OrderUI(this.orderAPI, this.hooks, this.message, this.config)
-  this.customerUI = new CustomerUI(this.customerAPI, this.hooks, this.message, this.config)
-  this.authUI = new AuthUI(this.customerAPI, this.hooks, this.message, this.config)
-  this.quantityUI = new QuantityUI(this.cartAPI, this.hooks, this.message, this.config)
-  this.productCardUI = new ProductCardUI(this.cartAPI, this.hooks, this.message, this.config)
+    this.initFormHandler()
 
-  // Запуск
-  this.cartUI.init()
-  this.orderUI.init()
-  this.customerUI.init()
-  this.authUI.init()
-  this.quantityUI.init()
-  await this.productCardUI.init()
-
-  // Кнопки количества перепривязываются после каждой перерисовки корзины
-  document.addEventListener('ms3:cart:updated', () => this.quantityUI.reinit())
-
-  this.initFormHandler()
-
-  document.dispatchEvent(new Event('ms3:ready'))
+    document.dispatchEvent(new Event('ms3:ready'))
+  }
 }
-}
-
 ```
 
 ### Конфигурация ms3Config
@@ -600,8 +568,6 @@ class CustomerAPI {
 
 Обработчик интерфейса корзины:
 
-<!-- EXAMPLE? 85 строк исходника: `handleClean()` повторяет `handleAdd()` почти целиком -->
-
 ```javascript
 class CartUI {
   constructor(cartAPI, hooks, message, config) {
@@ -660,25 +626,8 @@ class CartUI {
 
   }
 
-  // Очистка корзины
-  async handleClean() {
-    const hookData = {}
-    await this.hooks.runHooks('beforeCleanCart', hookData)
-
-    if (hookData.cancel) return
-
-    const renderTokens = this.getRenderTokens()
-    const response = await this.cart.clean(renderTokens)
-
-    await this.hooks.runHooks('afterCleanCart', { response })
-
-    if (response.success) {
-      if (response.data?.render) {
-        this.renderCart(response.data.render)
-      }
-      this.dispatchCartUpdated(response.data)
-    }
-  }
+  // handleChange(), handleRemove() и handleClean() устроены так же:
+  // хук before → вызов CartAPI → хук after → renderCart + dispatchCartUpdated
 
   // Событие обновления корзины
   dispatchCartUpdated(data) {
@@ -788,8 +737,6 @@ class OrderUI {
 
 Обработчик интерфейса покупателя. Управляет профилем, адресами, отменой заказов и повторной отправкой письма подтверждения:
 
-<!-- EXAMPLE? 90 строк исходника: `initOrderCancel()` и два обработчика в `initAddressManagement()` показывают один и тот же приём -->
-
 ```javascript
 class CustomerUI {
   init() {
@@ -853,29 +800,10 @@ class CustomerUI {
     })
   }
 
-  // Управление адресами
-  initAddressManagement() {
-    // Установить по умолчанию
-    document.querySelectorAll(this.selectors.addressSetDefault).forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const id = btn.dataset.addressId
-        const response = await this.customer.setDefaultAddress(id)
-        if (response.success) window.location.reload()
-      })
-    })
-
-    // Удалить адрес
-    document.querySelectorAll(this.selectors.addressDelete).forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const id = btn.dataset.addressId
-        const confirmed = await ms3Confirm(/* сообщение из data-confirm */)
-        if (!confirmed) return
-
-        const response = await this.customer.deleteAddress(id)
-        if (response.success) window.location.reload()
-      })
-    })
-  }
+  // Управление адресами устроено так же, приём тот же: обработчики на селекторы
+  // addressSetDefault и addressDelete, id из data-address-id, перед удалением
+  // ms3Confirm() с текстом из data-confirm, после успеха перезагрузка страницы
+  initAddressManagement() { /* … */ }
 }
 
 ```

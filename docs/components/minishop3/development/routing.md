@@ -923,8 +923,6 @@ $router->get('/api/mgr/health', function() use ($modx) {
 
 Сторонний компонент добавляет роуты тем же файлом — но так делают только при ручной правке сайта. Распространяемый аддон кладёт свой файл в `ms3.routes.d/`, см. раздел ниже.
 
-<!-- EXAMPLE? три CRUD-обработчика на 35 строк повторяют пример из «Добавления своих роутов»; механизм показывает уже первый из них -->
-
 ```php
 <?php
 // core/config/ms3_routes_manager.custom.php
@@ -944,25 +942,9 @@ $router->group('/api/mgr/promocodes', function($router) use ($modx) {
         return Response::success(['codes' => $result]);
     });
 
-    $router->post('', function($params) use ($modx) {
-        $data = json_decode(file_get_contents('php://input'), true);
-
-        $code = $modx->newObject('msPromoCode');
-        $code->fromArray($data);
-
-        if ($code->save()) {
-            return Response::success(['id' => $code->get('id')]);
-        }
-        return Response::error('Failed to create promo code', 400);
-    });
-
-    $router->delete('/{id}', function($params) use ($modx) {
-        $code = $modx->getObject('msPromoCode', $params['id']);
-        if ($code && $code->remove()) {
-            return Response::success(['deleted' => true]);
-        }
-        return Response::error('Not found', 404);
-    });
+    // POST '' и DELETE '/{id}' описываются так же: тело запроса читается
+    // из php://input, ответ собирается через Response::success()
+    // или Response::error() с нужным кодом
 
 }, [
     new AuthMiddleware($modx, 'mgr')

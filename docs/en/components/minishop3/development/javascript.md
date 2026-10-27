@@ -700,58 +700,37 @@ export function useCart() {
   const status = ref({ total_count: 0, total_cost: 0 })
   const loading = ref(false)
 
-  async function loadCart() {
-    loading.value = true
-    const response = await ms3.cartAPI.get()
+  // The shared shape: call a cartAPI method and move the answer into cart and status
+  function apply(response) {
     if (response.success) {
       cart.value = response.data.cart
       status.value = response.data.status
     }
+    return response
+  }
+
+  async function loadCart() {
+    loading.value = true
+    apply(await ms3.cartAPI.get())
     loading.value = false
   }
 
   async function addToCart(id, count = 1, options = {}) {
     loading.value = true
-    const response = await ms3.cartAPI.add(id, count, options)
-    if (response.success) {
-      cart.value = response.data.cart
-      status.value = response.data.status
-    }
+    const response = apply(await ms3.cartAPI.add(id, count, options))
     loading.value = false
     return response
   }
 
-  async function removeFromCart(productKey) {
-    const response = await ms3.cartAPI.remove(productKey)
-    if (response.success) {
-      cart.value = response.data.cart
-      status.value = response.data.status
-    }
-    return response
-  }
-
-  async function changeQuantity(productKey, count) {
-    const response = await ms3.cartAPI.change(productKey, count)
-    if (response.success) {
-      cart.value = response.data.cart
-      status.value = response.data.status
-    }
-    return response
-  }
-
-  async function clearCart() {
-    const response = await ms3.cartAPI.clean()
-    if (response.success) {
-      cart.value = []
-      status.value = { total_count: 0, total_cost: 0 }
-    }
-    return response
-  }
+  // removeFromCart(productKey) → cartAPI.remove()
+  // changeQuantity(productKey, count) → cartAPI.change()
+  // clearCart() → cartAPI.clean(); on success cart and status are reset by hand:
+  // the clean response carries no data
 
   onMounted(() => {
     loadCart()
 
-    // Subscribe to external updates
+    // Subscribe to outside updates
     document.addEventListener('ms3:cart:updated', (e) => {
       if (!e.detail) {
         return
