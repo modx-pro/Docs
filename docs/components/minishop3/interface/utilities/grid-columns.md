@@ -7,6 +7,8 @@ title: Колонки гридов
 
 ## Назначение
 
+![Утилита «Колонки гридов»](/components/minishop3/screenshots/mgr-grid-columns.png)
+
 ::: tip Cookbook
 Пошаговые примеры badge-колонки в заказах и редактирование прямо в таблице: [Cookbook колонок грида](/components/minishop3/manager/grid-config/cookbook).
 :::

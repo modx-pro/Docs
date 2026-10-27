@@ -7,7 +7,7 @@ description: Создание своих полей, xtype, repeater и key-valu
 
 Своё поле добавляет колонку в таблицу модели и виджет в Vue-форме. Справочник всех параметров: [Свои поля](/components/minishop3/interface/utilities/extra-fields).
 
-<!-- ![Утилита «Свои поля»](/components/minishop3/screenshots/mgr-extra-fields.png) -->
+![Утилита «Свои поля»](/components/minishop3/screenshots/mgr-extra-fields.png)
 
 ## Цель
 

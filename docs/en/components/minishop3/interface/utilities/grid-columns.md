@@ -11,7 +11,7 @@ Column setup for MiniShop3 manager tables.
 Badge column in orders and inline editing: [Grid columns cookbook](/en/components/minishop3/manager/grid-config/cookbook).
 :::
 
-<!-- ![Grid columns utility](/components/minishop3/screenshots/mgr-grid-columns.png) -->
+![Grid columns utility](/components/minishop3/screenshots/mgr-grid-columns.png)
 
 - Turn columns on and off
 - Change column order

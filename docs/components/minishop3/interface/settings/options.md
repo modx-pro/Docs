@@ -15,9 +15,9 @@ title: Опции товаров
 
 ## Интерфейс
 
-<!-- ![Справочник опций](/components/minishop3/screenshots/mgr-options.png) -->
+![Справочник опций](/components/minishop3/screenshots/mgr-options.png)
 
-<!-- ![Группы опций](/components/minishop3/screenshots/mgr-option-groups.png) -->
+![Группы опций](/components/minishop3/screenshots/mgr-option-groups.png)
 
 ### Вкладка «Опции»
 

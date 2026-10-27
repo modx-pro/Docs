@@ -3,7 +3,7 @@ title: Product fields
 ---
 # Utilities: Product fields
 
-<!-- ![Utilities → Product fields](/components/minishop3/screenshots/mgr-product-fields.png) -->
+![Utilities → Product fields](/components/minishop3/screenshots/mgr-product-fields.png)
 
 Field layout on the **Data** tab of the product card.
 

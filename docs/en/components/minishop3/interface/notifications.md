@@ -3,7 +3,7 @@ title: Notification center
 ---
 # Notification center
 
-<!-- ![Notification center](/components/minishop3/screenshots/mgr-notifications.png) -->
+![Notification center](/components/minishop3/screenshots/mgr-notifications.png)
 
 Open **Extras → MiniShop3 → Notifications**. Here you set who gets a message on an order status change, through which channel and from which template.
 

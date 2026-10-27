@@ -3,6 +3,8 @@ title: Импорт
 ---
 # Утилиты: Импорт
 
+![Утилиты → Импорт](/components/minishop3/screenshots/mgr-import.png)
+
 Пошаговый мастер импорта товаров из CSV.
 
 ## Назначение
@@ -212,7 +214,7 @@ pagetitle;gallery;gallery;gallery
 - Путь указан относительно корня сайта
 - Права на чтение файлов
 
-При программной загрузке в галерею используйте процессор `MiniShop3\Processors\Gallery\Upload` (см. [API товара](../../development/backend-api/product#изображения-галерея)).
+При программной загрузке в галерею используйте процессор `MiniShop3\Processors\Gallery\Upload` (см. [API товара](../../development/backend-api/product#images-gallery)).
 
 ## Программное использование
 

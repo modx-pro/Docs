@@ -9,7 +9,7 @@ description: Секции, sort_order, visible list и связь с page-fields
 
 Справочник: [Поля модели](/components/minishop3/interface/utilities/model-fields).
 
-<!-- ![Утилита «Поля модели»: секции и список полей](/components/minishop3/screenshots/mgr-model-fields.png) -->
+![Утилита «Поля модели»: секции и список полей](/components/minishop3/screenshots/mgr-model-fields.png)
 
 ## Цель
 

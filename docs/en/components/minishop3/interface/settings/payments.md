@@ -3,7 +3,7 @@ title: Payment methods
 ---
 # Payment methods
 
-<!-- ![Settings → Payments](/components/minishop3/screenshots/mgr-payments.png) -->
+![Settings → Payments](/components/minishop3/screenshots/mgr-payments.png)
 
 Open **Extras → MiniShop3 → Settings → Payments**.
 

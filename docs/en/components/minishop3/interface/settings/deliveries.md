@@ -3,7 +3,7 @@ title: Delivery methods
 ---
 # Delivery methods
 
-<!-- ![Settings → Deliveries](/components/minishop3/screenshots/mgr-deliveries.png) -->
+![Settings → Deliveries](/components/minishop3/screenshots/mgr-deliveries.png)
 
 Open **Extras → MiniShop3 → Settings → Deliveries**.
 

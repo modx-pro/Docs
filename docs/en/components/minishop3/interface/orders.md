@@ -30,7 +30,7 @@ Scheduler cleans old drafts by `ms3_delete_drafts_after`. See [Scheduler](/en/co
 
 The `OrderView` card holds tabs: items, customer, delivery and payment, comments, plus addon tabs if you registered them.
 
-<!-- ![Order card](/components/minishop3/screenshots/mgr-order.png) -->
+![Order card](/components/minishop3/screenshots/mgr-order.png)
 
 ### Status
 

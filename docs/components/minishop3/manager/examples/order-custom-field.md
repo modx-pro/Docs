@@ -36,7 +36,7 @@ description: Пошагово — своё поле на заказе и сох�
 
 Сохраните форму. Пакет создаст миграцию и добавит колонку в таблицу заказов.
 
-<!-- ![Утилита «Свои поля»](/components/minishop3/screenshots/mgr-extra-fields.png) -->
+![Утилита «Свои поля»](/components/minishop3/screenshots/mgr-extra-fields.png)
 
 ::: tip Класс в БД
 В UI класс сохраняется как `MiniShop3\Model\msOrder`. В API создания укажите то же значение в поле `class`.

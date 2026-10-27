@@ -7,7 +7,7 @@ description: Badge в списке заказов и inline-edit с select в ca
 
 Настройка колонок административных таблиц: видимость, тип, badge, relation, inline-edit. Полный справочник: [Колонки гридов](/components/minishop3/interface/utilities/grid-columns).
 
-<!-- ![Утилита «Колонки гридов»](/components/minishop3/screenshots/mgr-grid-columns.png) -->
+![Утилита «Колонки гридов»](/components/minishop3/screenshots/mgr-grid-columns.png)
 
 ## Цель
 
@@ -100,7 +100,7 @@ POST /api/mgr/grid-config/orders/field
 
 Один из двух источников обязателен, без него сохранение вернёт ошибку.
 
-<!-- ![Inline-edit в таблице товаров категории](/components/minishop3/screenshots/mgr-category-products.png) -->
+![Inline-edit в таблице товаров категории](/components/minishop3/screenshots/mgr-category-products.png)
 
 ## Кейс: колонка опции товара
 
