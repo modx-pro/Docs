@@ -3,6 +3,8 @@ title: Свои поля
 ---
 # Утилиты: Свои поля
 
+![Утилита «Свои поля»](/components/minishop3/screenshots/mgr-extra-fields.png)
+
 Свои колонки к моделям MiniShop3 без правки ядра. Поле пишется в БД и появляется в формах админки.
 
 ::: tip Cookbook

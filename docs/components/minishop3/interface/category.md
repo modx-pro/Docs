@@ -9,6 +9,8 @@ title: Категория
 
 ### Товары
 
+![Таблица товаров категории](/components/minishop3/screenshots/mgr-category-products.png)
+
 | Функция | Описание |
 | --- | --- |
 | Drag-and-drop | Сортировка товаров перетаскиванием |

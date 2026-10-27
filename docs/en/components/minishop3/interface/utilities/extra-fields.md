@@ -9,7 +9,7 @@ Your own columns on MiniShop3 models, without editing the core. The field is wri
 Step-by-step cases (order, repeater, key-value): [Extra fields cookbook](/en/components/minishop3/manager/extra-fields/cookbook). Examples: [order field](/en/components/minishop3/manager/examples/order-custom-field), [product wholesale price](/en/components/minishop3/manager/examples/product-extra-field).
 :::
 
-<!-- ![Extra fields utility](/components/minishop3/screenshots/mgr-extra-fields.png) -->
+![Extra fields utility](/components/minishop3/screenshots/mgr-extra-fields.png)
 
 ## Purpose
 

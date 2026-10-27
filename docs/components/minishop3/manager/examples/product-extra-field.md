@@ -19,7 +19,7 @@ description: Пошагово — своё поле на msProductData, раск
 
 ## Шаг 1. Создайте своё поле
 
-<!-- ![Утилита «Свои поля»](/components/minishop3/screenshots/mgr-extra-fields.png) -->
+![Утилита «Свои поля»](/components/minishop3/screenshots/mgr-extra-fields.png)
 
 1. **Пакеты → MiniShop3 → Утилиты → Свои поля**.
 2. Класс **msProductData (Данные товара)**.
@@ -43,9 +43,9 @@ description: Пошагово — своё поле на msProductData, раск
 
 ## Шаг 2. Раскладка на вкладке «Данные»
 
-<!-- ![Утилита «Поля товара»](/components/minishop3/screenshots/mgr-product-fields.png) -->
+![Утилита «Поля товара»](/components/minishop3/screenshots/mgr-product-fields.png)
 
-<!-- ![Вкладка «Данные» на карточке товара](/components/minishop3/screenshots/mgr-product-data.png) -->
+![Вкладка «Данные» на карточке товара](/components/minishop3/screenshots/mgr-product-data.png)
 
 1. **Утилиты → Поля товара**.
 2. Найдите **Оптовая цена** (или перенесите из «Без секции»).
@@ -57,7 +57,7 @@ description: Пошагово — своё поле на msProductData, раск
 
 ## Шаг 3. Колонка в таблице категории (опционально)
 
-<!-- ![Inline-edit в таблице товаров категории](/components/minishop3/screenshots/mgr-category-products.png) -->
+![Inline-edit в таблице товаров категории](/components/minishop3/screenshots/mgr-category-products.png)
 
 1. **Утилиты → Колонки гридов** → грид **category-products**.
 2. Добавьте колонку `wholesale_price`, тип **price**.

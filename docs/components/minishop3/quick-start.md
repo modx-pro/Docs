@@ -97,7 +97,7 @@ description: Установка MiniShop3, служебные страницы, 
 
 **Системные настройки** → namespace `minishop3` (поиск `page_id`):
 
-<!-- ![Настройки page_id](/components/minishop3/screenshots/mgr-system-settings.png) -->
+![Настройки page_id](/components/minishop3/screenshots/mgr-system-settings.png)
 
 | Настройка | Что указать |
 | --- | --- |
@@ -147,7 +147,7 @@ JS фронтенда использует `ms3_cart_page_id` и `ms3_order_page
 3. Вкладка **Свойства товара**: артикул, цена, вес, изображение.
 4. Отметьте **Опубликовано**.
 
-<!-- ![Категория](/components/minishop3/screenshots/mgr-category-products.png) -->
+![Категория](/components/minishop3/screenshots/mgr-category-products.png)
 
 ## Доставка и оплата
 

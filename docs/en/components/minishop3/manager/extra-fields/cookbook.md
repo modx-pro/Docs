@@ -7,7 +7,7 @@ description: Creating extra fields, xtypes, repeater and key-value for orders an
 
 An extra field adds a column to the model table and a widget in the Vue form. Full parameter reference: [Extra fields](/en/components/minishop3/interface/utilities/extra-fields).
 
-<!-- ![Extra fields utility](/components/minishop3/screenshots/mgr-extra-fields.png) -->
+![Extra fields utility](/components/minishop3/screenshots/mgr-extra-fields.png)
 
 ## Goal
 

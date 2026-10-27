@@ -15,9 +15,9 @@ Options store product attributes (EAV): color, size, material, any key of your o
 
 ## Interface
 
-<!-- ![Options directory](/components/minishop3/screenshots/mgr-options.png) -->
+![Options directory](/components/minishop3/screenshots/mgr-options.png)
 
-<!-- ![Option groups](/components/minishop3/screenshots/mgr-option-groups.png) -->
+![Option groups](/components/minishop3/screenshots/mgr-option-groups.png)
 
 ### Options tab
 

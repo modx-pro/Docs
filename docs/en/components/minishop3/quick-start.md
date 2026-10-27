@@ -97,7 +97,7 @@ Usually the thanks page needs only `msGetOrder` plus `msOrderTotal` in the heade
 
 **System settings** → namespace `minishop3` (search `page_id`):
 
-<!-- ![page_id settings](/components/minishop3/screenshots/mgr-system-settings.png) -->
+![page_id settings](/components/minishop3/screenshots/mgr-system-settings.png)
 
 | Setting | What to set |
 | --- | --- |
@@ -147,7 +147,7 @@ The `/api/v1` group has CORS and rate limit. Docs: [Web API](development/web-api
 3. **Product properties** tab: SKU, price, weight, image.
 4. Mark **Published**.
 
-<!-- ![Category](/components/minishop3/screenshots/mgr-category-products.png) -->
+![Category](/components/minishop3/screenshots/mgr-category-products.png)
 
 ## Delivery and payment
 

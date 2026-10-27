@@ -9,7 +9,7 @@ Configure admin table columns: visibility, type, badge, relation, inline edit.
 
 Full reference: [Grid columns](/en/components/minishop3/interface/utilities/grid-columns).
 
-<!-- ![Grid columns utility](/components/minishop3/screenshots/mgr-grid-columns.png) -->
+![Grid columns utility](/components/minishop3/screenshots/mgr-grid-columns.png)
 
 ## Goal
 
@@ -106,7 +106,7 @@ Aggregations: `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`. Relation aggregation is **not
 
 For a combo editor backed by an API reference, use `editor_type: combo` and a key from `editor_references` in `GET /api/mgr/grid-config/category-products`.
 
-<!-- ![Inline edit in the category products grid](/components/minishop3/screenshots/mgr-category-products.png) -->
+![Inline edit in the category products grid](/components/minishop3/screenshots/mgr-category-products.png)
 
 ## Case: product option column
 

@@ -13,7 +13,7 @@ You edit labels, widgets, and sections of existing fields. Data in the tables do
 [Product fields](/en/components/minishop3/interface/utilities/product-fields) (`ms3_product_fields`, `page_key=product_data`) configure only the Product properties tab on the product card. [Extra fields](/en/components/minishop3/interface/utilities/extra-fields) create new database columns. Cookbook: [Model fields](/en/components/minishop3/manager/model-fields/cookbook).
 :::
 
-<!-- ![Model fields utility](/components/minishop3/screenshots/mgr-model-fields.png) -->
+![Model fields utility](/components/minishop3/screenshots/mgr-model-fields.png)
 
 ## Difference from extra fields
 
