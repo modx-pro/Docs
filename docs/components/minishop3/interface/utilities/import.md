@@ -214,7 +214,7 @@ pagetitle;gallery;gallery;gallery
 - Путь указан относительно корня сайта
 - Права на чтение файлов
 
-При программной загрузке в галерею используйте процессор `MiniShop3\Processors\Gallery\Upload` (см. [API товара](../../development/backend-api/product#изображения-галерея)).
+При программной загрузке в галерею используйте процессор `MiniShop3\Processors\Gallery\Upload` (см. [API товара](../../development/backend-api/product#images-gallery)).
 
 ## Программное использование
 
