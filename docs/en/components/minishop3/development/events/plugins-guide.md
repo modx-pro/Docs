@@ -227,9 +227,17 @@ Most cart, order, cost and customer events go through `MiniShop3\Utils\Utils::in
 | `success` | `true` when no plugin returned a non-empty `output` |
 | `message` | `output` texts joined with `<br/>` |
 | `data` | The original `$scriptProperties`, with `returnedValues` keys laid on top (a shallow merge) |
-| `values` | The raw `returnedValues` array from all plugins |
+| `values` | The raw `returnedValues` array — **of the last plugin that ran only**, see the warning below |
 
-The merge is shallow. If two plugins return `returnedValues['count']`, the plugin with the **higher** priority wins. MODX runs plugins in ascending priority order, and each next plugin overwrites the key.
+The merge is shallow. If two plugins return `returnedValues['count']`, the plugin with the **higher** priority wins. MODX runs plugins in ascending priority order.
+
+::: warning returnedValues does not accumulate across plugins
+What wins is not the last value per key but the last plugin as a whole: `modX::invokeEvent()` calls `resetEventObject()` before every plugin, and that nulls `returnedValues`. The calling code receives the set of the last plugin that ran.
+
+For a single key the outcome matches the expectation — the higher priority wins. Different keys from different plugins, however, **do not add up**: if the plugin with priority 0 wrote `count` and the plugin with priority 10 wrote `options`, `count` disappears silently.
+
+To let plugins build on each other, use `$modx->eventData` — see [Passing data between plugins](#passing-data).
+:::
 
 ### Abort: output, false and cancel
 
@@ -284,7 +292,7 @@ case 'msOnImportRow':
 
 These events are called through `EventGate::invokeRaw()`, not through `Utils::invokeEvent()`.
 
-## Passing data between plugins
+## Passing data between plugins {#passing-data}
 
 `$modx->eventData` passes data between plugins of one event, or between different events of one request.
 
