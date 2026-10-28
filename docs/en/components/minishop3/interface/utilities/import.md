@@ -126,7 +126,6 @@ Import complete!
 | `parent` | Parent category ID (required) |
 | `template` | Template ID |
 | `published` | Published (0/1) |
-| `deleted` | Deleted (0/1) |
 | `hidemenu` | Hidden from the menu (0/1) |
 
 ### Product fields (msProductData)

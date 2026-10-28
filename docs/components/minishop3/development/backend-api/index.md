@@ -63,7 +63,6 @@ flowchart LR
 | `Settings/Vendor/*`, `Settings/Delivery/*`, `Settings/Payment/*`, `Settings/Status/*`, `Settings/Link/*` | Справочники: производители, способы доставки, способы оплаты, статусы, типы связей |
 | `Utilities/Import/*` | Импорт товаров из CSV |
 | `System/*`, `System/Element/*`, `System/User/*` | Служебные операции |
-| `Resource/*` | Ресурсы MODX |
 
 Исключение: Vue-CRUD настроек **не** вызывает `Processors/Settings/Vendor/*`. См. [События производителей](../events/vendor).
 

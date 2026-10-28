@@ -21,9 +21,9 @@ In the UI you pick a short name. The database and POST store the full `MiniShop3
 
 | Short name | Class in API / DB | Description |
 | --- | --- | --- |
-| `msProduct` | `MiniShop3\Model\msProduct` | Product resource (not in the UI dropdown, API only) |
+| `msProduct` | `MiniShop3\Model\msProduct` | An extra field **cannot** be added: the model has no table of its own, it extends `modResource`. Product columns belong on `msProductData` |
 | `msProductData` | `MiniShop3\Model\msProductData` | Product data |
-| `msCategory` | `MiniShop3\Model\msCategory` | Category (not in the UI dropdown, API only) |
+| `msCategory` | `MiniShop3\Model\msCategory` | An extra field **cannot** be added, for the same reason: a category also extends `modResource`. For custom category data use MODX TVs |
 | `msVendor` | `MiniShop3\Model\msVendor` | Vendor |
 | `msOption` | `MiniShop3\Model\msOption` | Option |
 | `msLink` | `MiniShop3\Model\msLink` | Link type |
@@ -82,7 +82,7 @@ Since v1.12. In `properties` or the widget config, set `repeater_config`:
 {
   "columns": [
     { "key": "name", "label": "Name" },
-    { "key": "qty", "label": "Qty", "type": "number" }
+    { "key": "qty", "label": "Qty", "xtype": "numberfield" }
   ],
   "minRows": 0,
   "maxRows": 50,

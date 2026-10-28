@@ -51,7 +51,9 @@ CRUD в этом разделе идёт через Manager API (`VendorsControl
 
 ### Вывод в сниппетах
 
-В сниппете `msProducts` доступны плейсхолдеры производителя — для них нужен параметр `includeVendor` (без него `{if $vendor_name?}` всегда ложно):
+В сниппете `msProducts` плейсхолдеры производителя доступны **по умолчанию**: join и колонки `vendor_*` подключает параметр `includeVendorFields`, у которого зарегистрированное значение по умолчанию — `*`. Отдельного параметра `includeVendor` в свойствах сниппета нет.
+
+Перечислите поля через запятую, если нужны не все:
 
 ```fenom
 {if $vendor_name?}
@@ -66,7 +68,7 @@ CRUD в этом разделе идёт через Manager API (`VendorsControl
 ```fenom
 {$_modx->runSnippet('msProducts', [
     'parents' => 0,
-    'includeVendor' => 1,  {* подключает джойн и колонки производителя *}
+    'includeVendorFields' => 'name,logo',  {* по умолчанию * — все колонки производителя *}
     'tpl' => 'tpl.msProducts.row'
 ])}
 ```

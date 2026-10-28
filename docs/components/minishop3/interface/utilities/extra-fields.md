@@ -21,9 +21,9 @@ title: Свои поля
 
 | Короткое имя | Класс в API / БД | Описание |
 | --- | --- | --- |
-| `msProduct` | `MiniShop3\Model\msProduct` | Ресурс товара (в выпадающем списке интерфейса нет — только через API) |
+| `msProduct` | `MiniShop3\Model\msProduct` | Своё поле добавить **нельзя**: у модели нет собственной таблицы, она наследует `modResource`. Колонки товара заводят на `msProductData` |
 | `msProductData` | `MiniShop3\Model\msProductData` | Данные товара |
-| `msCategory` | `MiniShop3\Model\msCategory` | Категория (в выпадающем списке интерфейса нет — только через API) |
+| `msCategory` | `MiniShop3\Model\msCategory` | Своё поле добавить **нельзя** по той же причине: категория тоже наследует `modResource`. Для своих данных категории используйте TV MODX |
 | `msVendor` | `MiniShop3\Model\msVendor` | Производитель |
 | `msOption` | `MiniShop3\Model\msOption` | Опция |
 | `msLink` | `MiniShop3\Model\msLink` | Тип связи |
@@ -82,7 +82,7 @@ title: Свои поля
 {
   "columns": [
     { "key": "name", "label": "Название" },
-    { "key": "qty", "label": "Кол-во", "type": "number" }
+    { "key": "qty", "label": "Кол-во", "xtype": "numberfield" }
   ],
   "minRows": 0,
   "maxRows": 50,

@@ -12,7 +12,7 @@ title: Утилиты
 | [Галерея](utilities/gallery) | Перегенерация миниатюр: после смены настроек превью, миграции сайта, массового обновления изображений |
 | [Импорт](utilities/import) | Мастер CSV: автоопределение кодировки, сопоставление колонок, режим отладки первой строки, [Scheduler](/components/scheduler/) для больших файлов |
 | [Поля товара (админка)](utilities/product-fields) | Раскладка вкладки «Свойства товара»: секции, видимость, порядок. Новые колонки — через [Свои поля](utilities/extra-fields) |
-| [Свои поля](utilities/extra-fields) | Новые поля моделей `msProductData`, `msVendor`, `msOrder`, `msOrderAddress`, `msCategory` |
+| [Свои поля](utilities/extra-fields) | Новые поля моделей `msProductData`, `msVendor`, `msOrder`, `msOrderAddress` |
 | [Конфигурация гридов](utilities/grid-columns) | Видимость, сортировка, фильтрация, ширина и шаблоны колонок в таблицах админки |
 | [Поля форм (админка)](utilities/model-fields) | Настройка существующих полей: секции, виджеты (`xtype`) |
 

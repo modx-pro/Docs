@@ -126,8 +126,10 @@ GET /api/v1/order/get
 
 ### Payment cost
 
+The endpoint computes the fee for the payment method already set on the draft and reads no request parameters. To price another method, write it first through `order/add` or `order/set`.
+
 ```http
-GET /api/v1/order/cost/payment?payment_id=2
+GET /api/v1/order/cost/payment
 ```
 
 **Response:**

@@ -63,7 +63,6 @@ Processor groups:
 | `Settings/Vendor/*`, `Settings/Delivery/*`, `Settings/Payment/*`, `Settings/Status/*`, `Settings/Link/*` | Reference data: vendors, delivery methods, payment methods, statuses, link types |
 | `Utilities/Import/*` | Product import from CSV |
 | `System/*`, `System/Element/*`, `System/User/*` | Service operations |
-| `Resource/*` | MODX resources |
 
 Exception: Vue settings CRUD does **not** call `Processors/Settings/Vendor/*`. See [Vendor events](../events/vendor).
 

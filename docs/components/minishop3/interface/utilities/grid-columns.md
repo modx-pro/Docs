@@ -558,7 +558,9 @@ $modx->regClientStartupScript(
 
 #### Пример 2: Копирование товара
 
-Штатного процессора дублирования в MiniShop3 нет — вызываем ядерный MODX `resource/duplicate` (`msProduct` наследует ресурс):
+Свой обработчик здесь нужен не всегда: `duplicate` входит в семь встроенных действий реестра, и в гриде товаров категории он уже открывает окно `modx-window-resource-duplicate` и перезагружает таблицу. Зарегистрировать своё действие под именем `duplicate` без `options.override` реестр не даст.
+
+Пример ниже пригодится для другого грида или если нужно своё поведение. Штатного процессора дублирования в MiniShop3 нет, поэтому вызывается ядерный MODX `resource/duplicate` (`msProduct` наследует ресурс):
 
 ```javascript
 MS3ActionRegistry.register('duplicateProduct', async (data, context) => {

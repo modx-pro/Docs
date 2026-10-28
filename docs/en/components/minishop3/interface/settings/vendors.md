@@ -51,7 +51,9 @@ The vendor is set on the product card in the **Vendor** field. A product has onl
 
 ### Output in snippets
 
-`msProducts` can print vendor placeholders. That needs the `includeVendor` parameter. Without it, `{if $vendor_name?}` is always false:
+`msProducts` prints vendor placeholders **by default**: the join and the `vendor_*` columns come from `includeVendorFields`, whose registered default is `*`. There is no `includeVendor` property on the snippet.
+
+List the fields with commas when you do not need all of them:
 
 ```fenom
 {if $vendor_name?}
@@ -66,7 +68,7 @@ The vendor is set on the product card in the **Vendor** field. A product has onl
 ```fenom
 {$_modx->runSnippet('msProducts', [
     'parents' => 0,
-    'includeVendor' => 1,  {* attaches the join and the vendor columns *}
+    'includeVendorFields' => 'name,logo',  {* the default is * — every vendor column *}
     'tpl' => 'tpl.msProducts.row'
 ])}
 ```
