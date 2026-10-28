@@ -409,7 +409,6 @@ const response = await ms3.orderAPI.getCost()
 | --- | --- |
 | `get` | `order` — the whole draft |
 | `add` | the written field only: `{ "first_name": "Ivan" }` |
-| `set` | `order` |
 | `remove` | `removed` — the name of the removed key |
 | `clean` | empty |
 | `submit` | `order_id`, `order_num`, `redirect`, plus `payment_link` with the built-in payment |

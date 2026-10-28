@@ -116,8 +116,8 @@ A static list:
   "source": {
     "type": "static",
     "options": [
-      ["value1", "Option 1"],
-      ["value2", "Option 2"]
+      { "value": "value1", "label": "Option 1" },
+      { "value": "value2", "label": "Option 2" }
     ]
   }
 }

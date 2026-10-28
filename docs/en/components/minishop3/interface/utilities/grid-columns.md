@@ -558,7 +558,9 @@ $modx->regClientStartupScript(
 
 #### Example 2: Duplicate a product
 
-MiniShop3 has no duplicate processor of its own. Call the MODX core processor `resource/duplicate` (`msProduct` extends a resource):
+A handler of your own is not always needed here: `duplicate` is one of the seven built-in registry actions, and in the category products grid it already opens the `modx-window-resource-duplicate` window and reloads the table. Registering your own action named `duplicate` without `options.override` is refused by the registry.
+
+The example below is for another grid, or for behaviour of your own. MiniShop3 has no duplicate processor of its own, so it calls the MODX core processor `resource/duplicate` (`msProduct` extends a resource):
 
 ```javascript
 MS3ActionRegistry.register('duplicateProduct', async (data, context) => {

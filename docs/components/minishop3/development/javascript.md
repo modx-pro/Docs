@@ -397,7 +397,6 @@ const response = await ms3.orderAPI.getCost()
 | --- | --- |
 | `get` | `order` — черновик целиком |
 | `add` | только записанное поле: `{ "first_name": "Иван" }` |
-| `set` | `order` |
 | `remove` | `removed` — имя удалённого ключа |
 | `clean` | пусто |
 | `submit` | `order_id`, `order_num`, `redirect`, у штатной оплаты ещё `payment_link` |

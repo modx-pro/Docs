@@ -116,8 +116,8 @@ title: Поля модели
   "source": {
     "type": "static",
     "options": [
-      ["value1", "Вариант 1"],
-      ["value2", "Вариант 2"]
+      { "value": "value1", "label": "Вариант 1" },
+      { "value": "value2", "label": "Вариант 2" }
     ]
   }
 }

@@ -19,7 +19,7 @@ The tool controls the **layout** of fields on the Data tab:
 - groups by section
 - labels and widget xtypes
 
-A new column in `ms3_product_data` is created in [Extra fields](/en/components/minishop3/interface/utilities/extra-fields). After you create the field, a row appears here on its own.
+A new column in `ms3_products` — the physical table behind `msProductData` — is created in [Extra fields](/en/components/minishop3/interface/utilities/extra-fields). After you create the field, a row appears here on its own.
 
 ## Interface
 
@@ -116,7 +116,7 @@ Defaults (seed `product_data`):
 
 ## Saving changes
 
-- Dragging saves **automatically**
+- Dragging **does not save** the order: the interface shows a reminder, and the save button is what writes the change
 - When you edit a field or a section, click **Save**
 - **Reload the page** to see the change on the product card
 
@@ -206,7 +206,11 @@ PUT /api/mgr/config/sections/product_data
 DELETE /api/mgr/config/sections/product_data/{section_key}
 ```
 
-Base sections cannot be deleted. There is no `POST /config/sections/...` in 1.13.x.
+A base section (`main`, `pricing`, `seo`, `additional`) can be deleted, and the deletion is permanent: this utility has no route for creating sections — only `GET`, `PUT` and `DELETE` on `/config/sections/{page_key}`. Recreating one means doing it by hand, with the same `section_key`.
+
+::: tip The guard exists, but in another utility
+A default section is protected from deletion only in Form fields: `ModelFieldSectionService` refuses to delete a section with `is_default`. Product fields has no such check, neither in the service nor in the interface — the delete button is available for every section.
+:::
 
 ## Configuration examples
 
