@@ -45,7 +45,7 @@ items: [
     text: 'Фронтенд',
     link: 'frontend/',
     items: [
-      { text: 'Шаблоны', link: 'frontend/templates' },
+      { text: 'Чанки', link: 'frontend/templates' },
       { text: 'Плейсхолдеры', link: 'frontend/placeholders' },
       { text: 'Пагинация', link: 'frontend/pagination' },
     ],
