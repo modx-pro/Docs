@@ -28,6 +28,8 @@ description: Список заказов в админке, черновики, 
 
 ## Карточка
 
+![Карточка заказа](/components/minishop3/screenshots/mgr-order.png)
+
 Карточка `OrderView` держит вкладки (ключи `useOrderPluginTabs`):
 
 | Ключ | Содержимое |
@@ -53,6 +55,8 @@ description: Список заказов в админке, черновики, 
 Свои колонки на заказе создают через [свои поля](/components/minishop3/manager/examples/order-custom-field). В утилите «Свои поля» класс хранится как `MiniShop3\Model\msOrder`.
 
 Карточка заказа запрашивает `GET /api/mgr/extra-fields?class=msOrder` (короткий алиас), а фильтр в контроллере сравнивает строку точно. Поле создаётся корректно, но секция на заказе может остаться пустой — известная проблема [MiniShop3#812](https://github.com/modx-pro/MiniShop3/issues/812). Обход: создавать поле с классом `msOrder` или выровнять query на FQCN в коде.
+
+![Секция дополнительных полей на карточке заказа](/components/minishop3/screenshots/mgr-order-extra-field.png)
 
 Сохранение: `PUT /api/mgr/orders/{id}` ключом поля на верхнем уровне JSON (`msorder_save`). Чтение схемы своих полей (`GET /api/mgr/extra-fields`) доступно любому авторизованному менеджеру. Право `mssetting_save` нужно только на создание, правку и удаление полей.
 

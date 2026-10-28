@@ -57,7 +57,7 @@ GET /api/mgr/extra-fields?class=MiniShop3\Model\msOrder
 3. Введите текст в **Комментарий менеджера**.
 4. Сохраните карточку.
 
-<!-- ![Секция дополнительных полей на карточке заказа](/components/minishop3/screenshots/mgr-order-extra-field.png) -->
+![Секция дополнительных полей на карточке заказа](/components/minishop3/screenshots/mgr-order-extra-field.png)
 
 Vue-форма отправляет значение на верхнем уровне тела запроса:
 

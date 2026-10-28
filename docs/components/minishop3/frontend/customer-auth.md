@@ -4,7 +4,7 @@ description: Формы входа и регистрации покупател�
 ---
 # Вход и регистрация
 
-<!-- ![ЛК: вход и регистрация](/components/minishop3/screenshots/fe-customer-auth.png) -->
+![ЛК: вход и регистрация](/components/minishop3/screenshots/fe-customer-auth.png)
 
 Откройте страницу ЛК без сессии. Вы увидите чанк `tpl.msCustomer.unauthorized`: вкладки «Вход» и «Регистрация». Любой вызов `msCustomer` для гостя отдаёт тот же чанк.
 

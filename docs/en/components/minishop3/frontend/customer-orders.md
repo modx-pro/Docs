@@ -3,7 +3,7 @@ title: Order history
 ---
 # Order history
 
-<!-- ![Account: order history](/components/minishop3/screenshots/fe-customer-orders.png) -->
+![Account: order history](/components/minishop3/screenshots/fe-customer-orders.png)
 
 Customer order history page. Shows all orders with status filtering and pagination, plus detailed information for a specific order.
 

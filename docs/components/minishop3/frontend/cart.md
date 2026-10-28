@@ -5,7 +5,7 @@ title: Корзина
 
 Параметры вызова, плейсхолдеры и структура данных — в справочнике сниппета [msCart](/components/minishop3/snippets/mscart).
 
-<!-- ![Корзина на фронтенде](/components/minishop3/screenshots/fe-cart.png) -->
+![Корзина на фронтенде](/components/minishop3/screenshots/fe-cart.png)
 
 [![](https://file.modx.pro/files/3/f/b/3fb27bc4fb74bcbbfad003ba2165498cs.jpg)](https://file.modx.pro/files/3/f/b/3fb27bc4fb74bcbbfad003ba2165498c.png)
 

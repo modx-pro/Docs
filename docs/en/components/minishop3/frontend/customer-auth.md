@@ -4,7 +4,7 @@ description: Customer login and registration forms, AuthUI, password reset, and 
 ---
 # Login and registration
 
-<!-- ![Account: login and registration](/components/minishop3/screenshots/fe-customer-auth.png) -->
+![Account: login and registration](/components/minishop3/screenshots/fe-customer-auth.png)
 
 Open an account page without a session and you get the `tpl.msCustomer.unauthorized` chunk: the Login and Register tabs. Any `msCustomer` call returns the same chunk for a guest.
 

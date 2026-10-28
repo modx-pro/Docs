@@ -57,7 +57,7 @@ The list should include `manager_comment` with `"active": true` and `"column_exi
 3. Enter text in **Manager comment**.
 4. Save the card.
 
-<!-- ![Additional order fields section on the order card](/components/minishop3/screenshots/mgr-order-extra-field.png) -->
+![Additional order fields section on the order card](/components/minishop3/screenshots/mgr-order-extra-field.png)
 
 The Vue form sends the value at the top level of the request body:
 
