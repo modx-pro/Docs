@@ -71,7 +71,7 @@
 `tplEmpty` получает `$total` и `$filters` — применённые фильтры; в режиме с `&element` переменная `$filters` пуста. Обычно `tplEmpty` выводится внутри обёртки `tplOuter`. Два исключения:
 
 - с `&element`, если элемент не нашёл ни одного товара — например, раздел пуст, — сниппет выводит только `tplEmpty`, без обёртки;
-- без `&element` после AJAX-запроса `tplEmpty` не используется — пустую выдачу показывает блок с классом `mfilter-empty`, если он есть в разметке. См. [CSS-классы](/components/mfilter/frontend/index#sostoyaniya).
+- без `&element` после AJAX-запроса `tplEmpty` не используется — пустую выдачу показывает блок с классом `mfilter-empty`, если он есть в разметке. См. [Чанки и разметка](/components/mfilter/frontend/templates#neobyazatelnye-atributy-i).
 
 ### AJAX
 
