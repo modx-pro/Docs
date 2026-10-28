@@ -13,7 +13,7 @@ The package installs a system plugin `minishop3.php` on core MODX events (not to
 | --- | --- |
 | `OnMODXInit` | The `ms3` service is already registered. The plugin calls `loadMap()`, and in the `mgr` context it schedules a reset of the catalog ACL cache |
 | `OnManagerPageBeforeRender` | Loads the lexicon and `ms3.manager.js`. If the files on disk are older than the installed package, it shows a banner |
-| `OnLoadWebDocument` | Loads frontend files through `registerFrontend()` |
+| `OnLoadWebDocument` | Initialises the frontend and loads its files through `initialize()` and `registerFrontend()`; the context key goes into `ms3Config.ctx`. On a product page the `msProductData` fields are merged into the resource metadata, so the template reaches them as `[[*article]]`, `[[*price]]` and the rest |
 | `OnDocFormSave` | Converts a resource into a product through `ProductService::handleConversion()` |
 | `OnBeforeUserFormSave` / `OnUserSave` | Syncs `msCustomer` and `modUser` when `ms3_customer_sync_enabled` is on |
 | `OnUserRemove` | When both `ms3_customer_sync_enabled` and `ms3_customer_sync_delete_with_user` are on, it clears `msCustomer.user_id`. It does not delete the customer. Without the second flag the handler does nothing |

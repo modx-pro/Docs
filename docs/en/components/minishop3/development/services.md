@@ -775,7 +775,7 @@ These keys are not in the transport package. `ServiceRegistry` reads the path fr
 
 Those two lines appear only when the option is set and the file or directory is missing. On a normal install the options are empty, so the lines are absent.
 
-You will see a third line, `No addon configs found in: …`, on a normal install too. The installer creates `ms3.services.d/`, and while that directory has no add-on file the line is written on every request.
+The third line, `No addon configs found in: …`, does not appear on a normal install: the installer **does not create** `ms3.services.d/` — the resolver only makes `ms3.routes.d/web` and `ms3.routes.d/manager`. While the directory is missing, `loadAddonConfigs()` returns straight away and writes nothing. The line shows up only for someone who created the directory by hand or removed the add-on file from it.
 
 A missing file or directory at these paths is not an error. `ServiceRegistry` continues.
 

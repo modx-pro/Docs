@@ -13,7 +13,7 @@ title: Работа с плагинами
 | --- | --- |
 | `OnMODXInit` | Сервис `ms3` уже зарегистрирован: плагин вызывает `loadMap()`, а в контексте `mgr` планирует сброс ACL-кэша каталога |
 | `OnManagerPageBeforeRender` | Подключение лексикона и `ms3.manager.js`. Если версия файлов на диске отстаёт от установленного пакета, показывает баннер |
-| `OnLoadWebDocument` | Подключение файлов фронтенда через `registerFrontend()` |
+| `OnLoadWebDocument` | Инициализация и подключение файлов фронтенда через `initialize()` и `registerFrontend()`; ключ контекста уходит в `ms3Config.ctx`. На странице товара поля `msProductData` подмешиваются в метаданные ресурса, поэтому в шаблоне они доступны как `[[*article]]`, `[[*price]]` и остальные |
 | `OnDocFormSave` | Конвертация ресурса в товар через `ProductService::handleConversion()` |
 | `OnBeforeUserFormSave` / `OnUserSave` | Синхронизация `msCustomer` ↔ `modUser` при `ms3_customer_sync_enabled` |
 | `OnUserRemove` | Если включены `ms3_customer_sync_enabled` и `ms3_customer_sync_delete_with_user`, обнуляет `msCustomer.user_id`. Покупателя не удаляет. Без второго флага обработчик ничего не делает |
