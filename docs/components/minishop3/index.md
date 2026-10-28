@@ -29,6 +29,7 @@ items: [
       { text: 'msOrderTotal', link: 'snippets/msordertotal' },
     ],
   },
+  { text: 'Плагины', link: 'development/events/plugins-guide' },
   {
     text: 'Интерфейс админки',
     items: [

@@ -13,7 +13,7 @@ The package installs a system plugin `minishop3.php` on core MODX events (not to
 | --- | --- |
 | `OnMODXInit` | The `ms3` service is already registered. The plugin calls `loadMap()`, and in the `mgr` context it schedules a reset of the catalog ACL cache |
 | `OnManagerPageBeforeRender` | Loads the lexicon and `ms3.manager.js`. If the files on disk are older than the installed package, it shows a banner |
-| `OnLoadWebDocument` | Loads frontend files through `registerFrontend()` |
+| `OnLoadWebDocument` | Initialises the frontend and loads its files through `initialize()` and `registerFrontend()`; the context key goes into `ms3Config.ctx`. On a product page the `msProductData` fields are merged into the resource metadata, so the template reaches them as `[[*article]]`, `[[*price]]` and the rest |
 | `OnDocFormSave` | Converts a resource into a product through `ProductService::handleConversion()` |
 | `OnBeforeUserFormSave` / `OnUserSave` | Syncs `msCustomer` and `modUser` when `ms3_customer_sync_enabled` is on |
 | `OnUserRemove` | When both `ms3_customer_sync_enabled` and `ms3_customer_sync_delete_with_user` are on, it clears `msCustomer.user_id`. It does not delete the customer. Without the second flag the handler does nothing |
@@ -227,9 +227,17 @@ Most cart, order, cost and customer events go through `MiniShop3\Utils\Utils::in
 | `success` | `true` when no plugin returned a non-empty `output` |
 | `message` | `output` texts joined with `<br/>` |
 | `data` | The original `$scriptProperties`, with `returnedValues` keys laid on top (a shallow merge) |
-| `values` | The raw `returnedValues` array from all plugins |
+| `values` | The raw `returnedValues` array — **of the last plugin that ran only**, see the warning below |
 
-The merge is shallow. If two plugins return `returnedValues['count']`, the plugin with the **higher** priority wins. MODX runs plugins in ascending priority order, and each next plugin overwrites the key.
+The merge is shallow. If two plugins return `returnedValues['count']`, the plugin with the **higher** priority wins. MODX runs plugins in ascending priority order.
+
+::: warning returnedValues does not accumulate across plugins
+What wins is not the last value per key but the last plugin as a whole: `modX::invokeEvent()` calls `resetEventObject()` before every plugin, and that nulls `returnedValues`. The calling code receives the set of the last plugin that ran.
+
+For a single key the outcome matches the expectation — the higher priority wins. Different keys from different plugins, however, **do not add up**: if the plugin with priority 0 wrote `count` and the plugin with priority 10 wrote `options`, `count` disappears silently.
+
+To let plugins build on each other, use `$modx->eventData` — see [Passing data between plugins](#passing-data).
+:::
 
 ### Abort: output, false and cancel
 
@@ -284,7 +292,7 @@ case 'msOnImportRow':
 
 These events are called through `EventGate::invokeRaw()`, not through `Utils::invokeEvent()`.
 
-## Passing data between plugins
+## Passing data between plugins {#passing-data}
 
 `$modx->eventData` passes data between plugins of one event, or between different events of one request.
 
