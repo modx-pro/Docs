@@ -5,7 +5,7 @@ title: Страница товара
 
 Страница товара — подробное представление одного товара: галерея, цена, опции и форма добавления в корзину.
 
-<!-- ![Страница товара на фронтенде](/components/minishop3/screenshots/fe-product.png) -->
+![Страница товара на фронтенде](/components/minishop3/screenshots/fe-product.png)
 
 [![](https://file.modx.pro/files/2/5/a/25aa24b8959c026826d65090b57111c8s.jpg)](https://file.modx.pro/files/2/5/a/25aa24b8959c026826d65090b57111c8.png)
 

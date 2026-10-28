@@ -3,7 +3,7 @@ title: Профиль покупателя
 ---
 # Профиль покупателя
 
-<!-- ![ЛК: профиль](/components/minishop3/screenshots/fe-customer-profile.png) -->
+![ЛК: профиль](/components/minishop3/screenshots/fe-customer-profile.png)
 
 Авторизованный покупатель правит имя, email, телефон и видит статус подтверждения email. Страница строится на `msCustomer` с `service=profile`.
 

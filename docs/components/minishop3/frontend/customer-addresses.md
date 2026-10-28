@@ -3,7 +3,7 @@ title: Адреса доставки
 ---
 # Адреса доставки
 
-<!-- ![ЛК: адреса](/components/minishop3/screenshots/fe-customer-addresses.png) -->
+![ЛК: адреса](/components/minishop3/screenshots/fe-customer-addresses.png)
 
 Страница управления адресами доставки покупателя. Позволяет создавать, редактировать, удалять адреса и устанавливать адрес по умолчанию.
 

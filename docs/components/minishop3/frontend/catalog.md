@@ -7,7 +7,7 @@ title: Каталог товаров
 
 Для SPA или мобильного клиента без msProducts используйте публичный Web API: `GET /api/v1/product/list`, `GET /api/v1/category/list` / `tree`, `GET /api/v1/product/filters`. Ответ каталога проходит через `ProductCatalogService` с allowlist полей. См. [Web API: каталог](/components/minishop3/development/web-api/catalog).
 
-<!-- ![Каталог на фронтенде](/components/minishop3/screenshots/fe-catalog.png) -->
+![Каталог на фронтенде](/components/minishop3/screenshots/fe-catalog.png)
 
 [![](https://file.modx.pro/files/e/4/2/e42014d3fca7e7073ef6e30d7709cff6s.jpg)](https://file.modx.pro/files/e/4/2/e42014d3fca7e7073ef6e30d7709cff6.png)
 
@@ -59,7 +59,7 @@ title: Каталог товаров
 {/block}
 ```
 
-Ниже в файле лежит закомментированный пример разметки пагинации — рабочий вариант через pdoPage описан [в конце страницы](#пагинация).
+Ниже в файле лежит закомментированный пример разметки пагинации — рабочий вариант через pdoPage описан [в конце страницы](#pagination).
 
 ### Ключевые параметры вызова
 
@@ -223,7 +223,7 @@ flowchart TB
 ]}
 ```
 
-## Пагинация
+## Пагинация {#pagination}
 
 Для постраничной навигации оберните вызов в pdoPage:
 

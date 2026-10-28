@@ -3,7 +3,7 @@ title: Delivery addresses
 ---
 # Delivery addresses
 
-<!-- ![Account: addresses](/components/minishop3/screenshots/fe-customer-addresses.png) -->
+![Account: addresses](/components/minishop3/screenshots/fe-customer-addresses.png)
 
 Page for managing customer delivery addresses. Lets customers create, edit, delete addresses, and set a default address.
 

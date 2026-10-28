@@ -123,7 +123,7 @@ Repeater в CSV-импорт не попадает.
 
 Сохранение: ключ поля на верхнем уровне `PUT /api/mgr/orders/{id}` (см. [пример](/components/minishop3/manager/examples/order-custom-field)).
 
-<!-- ![Дополнительные поля заказа на карточке](/components/minishop3/screenshots/mgr-order-extra-field.png) -->
+![Дополнительные поля заказа на карточке](/components/minishop3/screenshots/mgr-order-extra-field.png)
 
 ## API appendix
 

@@ -44,7 +44,7 @@ Create custom order columns via [extra fields](/en/components/minishop3/manager/
 
 Save: `PUT /api/mgr/orders/{id}` with the field key at the top level of the JSON body (`msorder_save`). Extra-field metadata loads only with `mssetting_save`.
 
-<!-- ![Additional order fields section on the order card](/components/minishop3/screenshots/mgr-order-extra-field.png) -->
+![Additional order fields section on the order card](/components/minishop3/screenshots/mgr-order-extra-field.png)
 
 ### Cost recalculation
 
