@@ -157,7 +157,7 @@ switch ($modx->event->name) {
 Ext.onReady(function() {
     // Wait for the panel to initialise
     var checkPanel = setInterval(function() {
-        var panel = Ext.getCmp('ms3-product-panel');
+        var panel = Ext.getCmp('modx-panel-resource');
         if (panel && panel.getTopToolbar) {
             clearInterval(checkPanel);
 
@@ -227,46 +227,9 @@ Ext.onReady(function() {
 });
 ```
 
-### Add a column to the orders grid
+### A column in the orders grid
 
-```php
-<?php
-switch ($modx->event->name) {
-    case 'msOnManagerCustomCssJs':
-        $page = $scriptProperties['page'];
-
-        if ($page === 'orders') {
-            $controller = $scriptProperties['controller'];
-            $controller->addJavascript('/assets/components/mycomponent/js/orders-grid.js');
-        }
-        break;
-}
-```
-
-```javascript
-// orders-grid.js
-Ext.onReady(function() {
-    // Extend the orders grid configuration
-    var originalGetColumns = ms3.grid.Orders.prototype.getColumns;
-
-    ms3.grid.Orders.prototype.getColumns = function() {
-        var columns = originalGetColumns.apply(this, arguments);
-
-        // Add a column of your own
-        columns.splice(3, 0, {
-            header: 'Source',
-            dataIndex: 'source',
-            width: 100,
-            sortable: true,
-            renderer: function(value) {
-                return value || '-';
-            }
-        });
-
-        return columns;
-    };
-});
-```
+The orders screen is built entirely in Vue — there is no ExtJS grid and no prototype to override. Columns come from the `msGridField` configuration: see [Grid columns](../../interface/utilities/grid-columns).
 
 ---
 
@@ -443,25 +406,15 @@ window.MyComponent.init = function() {
 };
 
 // Check element existence
-var panel = Ext.getCmp('ms3-product-panel');
+var panel = Ext.getCmp('modx-panel-resource');
 if (panel) {
     // Safe to use panel
 }
 ```
 
-### Use ExtJS events
+### MiniShop3 has no event bus
 
-```javascript
-/ Subscribing to the component events
-Ext.onReady(function() {
-    if (typeof ms3 !== 'undefined') {
-        // Subscribe to the load event
-        ms3.on('load', function() {
-            console.log('MiniShop3 loaded');
-        });
-    }
-});
-```
+The global `ms3` in the manager is a plain object literal holding configuration and a token; it does not extend `Ext.util.Observable`. A `typeof ms3 !== 'undefined'` check passes, and the very next `ms3.on(...)` throws a `TypeError`. Subscribe to the native ExtJS or Vue events of the screen you need.
 
 ### Load order
 

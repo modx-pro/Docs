@@ -20,7 +20,7 @@ Vue OrderView (корневой компонент)
 ├── Информация (position: 0)
 ├── Товары (position: 1, скрыта при создании)
 ├── Адрес (position: 2)
-├── Отгрузка (position: 3, скрыта при создании)
+├── Отслеживание (position: 3, скрыта при создании)
 ├── История (position: 4, скрыта при создании)
 └── [Ваши вкладки] (position: 100 по умолчанию)
 ```
@@ -133,7 +133,7 @@ $controller->addHtml('
 
     window.MS3OrderTabsRegistry.register({
         key: "delivery-tracking",
-        title: "Отслеживание",
+        title: "Трекинг перевозчика",
         type: "vue",
         component: {
             props: ["orderId", "order", "config", "isCreateMode"],
@@ -205,7 +205,7 @@ import OrderTrackingTab from '../components/OrderTrackingTab.vue'
 
   window.MS3OrderTabsRegistry.register({
     key: 'tracking',
-    title: 'Отслеживание',
+    title: 'Трекинг перевозчика',
     type: 'vue',
     component: OrderTrackingTab, // объект SFC, не строка
     position: 5,
@@ -320,7 +320,7 @@ ExtJS-вкладка создаётся **один раз** при первом 
 | Информация | `info` | 0 | Нет |
 | Товары | `products` | 1 | Да |
 | Адрес | `address` | 2 | Нет |
-| Отгрузка | `ms3_shipment` | 3 | Да |
+| Отслеживание | `ms3_shipment` | 3 | Да |
 | История | `history` | 4 | Да |
 
 Своя вкладка без указанного `position` получает `100`. Значение из диапазона **5–99** поставит её после встроенных, но раньше вкладок с позицией по умолчанию.

@@ -313,7 +313,7 @@ $router->post('/multiple', $handler, [
 
 #### ServiceCheckMiddleware
 
-Checks that the `ms3` service started. If it did not, the answer is `503` with `error_code: internal_error` and the handler never runs. It sits first in the Web API stack.
+Checks that the `ms3` service started. If it did not, the answer is `503` with `error_code: internal_error` and the handler never runs. In the Web API stack it is the third of the three group layers — after `CorsMiddleware` and `RateLimitMiddleware`, but before the route-level `TokenMiddleware`. One consequence: when `ms3` fails to start, the request still consumes a rate-limit slot.
 
 #### TokenMiddleware
 
@@ -679,13 +679,13 @@ Read and write are split into two middleware groups.
 | GET | `/{id}/shipment` | Get the shipment data of an order | `msorder_list` |
 | PUT | `/{id}/shipment` | Save or update the shipment of an order | `msorder_save` |
 
-**Form references** (no separate PermissionMiddleware, mgr session):
+**Form references** (no separate PermissionMiddleware, mgr session). These routes are declared on the `/api/mgr` group, not inside `/orders`, so the full path is given:
 
 | Method | Route | Description |
 | --- | --- | --- |
-| GET | `/statuses-dropdown` | Statuses with translations |
-| GET | `/deliveries-active` | Active deliveries for select |
-| GET | `/payments-active` | Active payment methods for select |
+| GET | `/api/mgr/statuses-dropdown` | Statuses with translations |
+| GET | `/api/mgr/deliveries-active` | Active deliveries for select |
+| GET | `/api/mgr/payments-active` | Active payment methods for select |
 
 #### Model field metadata (`/model-fields`)
 

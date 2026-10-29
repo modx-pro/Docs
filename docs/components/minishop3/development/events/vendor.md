@@ -34,13 +34,13 @@ switch ($modx->event->name) {
         /** @var \MiniShop3\Model\msVendor $vendor */
         $vendor = $scriptProperties['msVendor'];
 
-        // Проверка уникальности названия
-        $existing = $modx->getObject(\MiniShop3\Model\msVendor::class, [
-            'name' => $vendor->get('name'),
-        ]);
+        // Дубль названия сюда не дойдёт: Vendor\Create::beforeSet() отбивает его
+        // раньше ошибкой поля name. Проверяем то, чего процессор не знает, —
+        // например, свой справочник разрешённых брендов.
+        $allowed = $modx->getOption('my_allowed_vendors', null, '');
 
-        if ($existing) {
-            $modx->event->output('Производитель с таким названием уже существует');
+        if ($allowed !== '' && !in_array($vendor->get('name'), explode(',', $allowed), true)) {
+            $modx->event->output('Этого производителя нет в справочнике');
             return;
         }
         break;

@@ -194,7 +194,7 @@ flowchart TB
 
 ### Остатки (inventory)
 
-При `ms3_inventory_enabled=1` работает `ProductStockInventory` (`ms3_inventory`), контракт — `InventoryServiceInterface`. Параметры событий: `key` (`InventoryKey`), `qty`, `ctx` (`InventoryContext`: `orderId`, `origin`). Before-событие с `success=false` приводит к `InventoryException` (`ms3_err_inventory_cancelled`). `$notify=false` у reserve и release пропускает пару событий — компенсация идёт внутри SQL-транзакции.
+При `ms3_inventory_enabled=1` работает `ProductStockInventory` (`ms3_inventory`), контракт — `InventoryServiceInterface`. Параметры событий: `key` (`InventoryKey`), `qty`, `ctx` (`InventoryContext`: `orderId`, `origin` — по умолчанию `'order'`, `holdState` — по умолчанию `null`). Before-событие с `success=false` приводит к `InventoryException` (`ms3_err_inventory_cancelled`). `$notify=false` у reserve и release пропускает пару событий — компенсация идёт внутри SQL-транзакции.
 
 | Событие | Когда в статусах заказа |
 | --- | --- |
@@ -233,8 +233,8 @@ flowchart TB
 | `product` | `msProduct` | Переименован параметр |
 | `msOnGetOrderCost` | Остался + 3 частичных | Рядом: `msOnGetCartCost`, `msOnGetDeliveryCost`, `msOnGetPaymentCost`. Итог по-прежнему правите в `msOnGetOrderCost` |
 | — | `controller` | Параметр во многих событиях контроллеров |
-| — | `msOnBeforeEmptyOrder` / `msOnEmptyOrder` | Очистка черновика |
-| — | `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder` | Финализация из админки |
+| `msOnBeforeEmptyOrder` / `msOnEmptyOrder` | Те же имена | Перенесены из miniShop2 как есть. Очистка черновика |
+| `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder` | Те же имена | Перенесены из miniShop2 как есть. Финализация из админки |
 | — | `msOnBeforeGetOrderUser` / `msOnGetOrderUser` | `modUser` при оформлении заказа |
 | — | `msOnBeforeValidateCustomerValue` | Новое событие |
 | — | `msOnCreateCustomer` | Новое событие |

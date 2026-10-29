@@ -527,8 +527,8 @@ switch ($modx->event->name) {
 | `msCustomer` | `msCustomer` | Ссылка на объект покупателя |
 | `object` | `msCustomer` | Та же ссылка, что и `msCustomer` (MS2-style алиас) |
 
-::: tip Возврат значения, а не `$modx->event->output()`
-В отличие от событий `Customer/*` выше (они построены на `Utils::invokeEvent()` и читают `output()`/`returnedValues`), это событие — часть стандартного MODX `UpdateProcessor` и читает **непосредственно возвращаемое значение** обработчика. Верните непустую строку или непустой массив сообщений, чтобы отменить сохранение.
+::: tip Отмена — через `$modx->event->output()`
+Событие относится к стандартному MODX `UpdateProcessor`, но канал отмены тот же, что у событий `Customer/*` выше: `fireBeforeSaveEvent()` собирает `$modx->event->_output` всех плагинов. Значение, просто возвращённое обработчиком, ядро лишь пишет в журнал ошибок события — `return 'строка'` сохранение не отменит.
 :::
 
 ### Прерывание операции
@@ -548,7 +548,8 @@ switch ($modx->event->name) {
             ]);
 
             if ($existing) {
-                return 'Email уже используется другим покупателем';
+                $modx->event->output('Email уже используется другим покупателем');
+                return;
             }
         }
         break;

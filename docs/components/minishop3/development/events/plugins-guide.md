@@ -80,8 +80,10 @@ $modx->log(modX::LOG_LEVEL_ERROR, '[' . $modx->event->name . '] ' . print_r($scr
 
 ## Параметр controller
 
-::: info Приходит автоматически
-Во всех событиях контроллеров MiniShop3 передаётся параметр `controller`: экземпляр текущего контроллера (Cart, Order, Customer).
+::: info Приходит не во все события
+Параметр `controller` — экземпляр контроллера — подмешивают `Cart::invokeEvent()` и `CartMutationHandler::invokeEvent()`, поэтому он есть во всех событиях корзины. Кроме них его передаёт только пара `msOnBeforeGetOrderCustomer` / `msOnGetOrderCustomer`.
+
+В остальных группах контроллер приходит под другим именем или не приходит вовсе: у событий покупателя это `customer`, у событий стоимости — `cart` либо `cartController`, у событий полей заказа контроллера нет. Точный состав параметров смотрите в таблице нужной страницы.
 :::
 
 Через контроллер доступны MiniShop3 и MODX:
@@ -166,6 +168,8 @@ flowchart LR
 - `msOnSubmitOrder`
 - `msOnBeforeCreateOrder`
 - `msOnBeforeChangeOrderStatus`
+
+Список не исчерпывающий — это события корзины, заказа и статуса. Ответ плагина читают ещё около тридцати событий: все события стоимости, покупателя, остатков и отгрузки, события позиций заказа в админке, импорта и производителя. Для них смотрите таблицу «Реакция на `output()`» на странице нужного раздела.
 
 ## Модификация данных
 
@@ -278,7 +282,8 @@ case 'msOnImportRow':
 | `msOnImportRow` | `data`, `tvData`, `optionData`, `gallery` | То же |
 | `msOnProductsLoad` | `rows` | То же |
 | `msOnProductPrepare` | `row` | То же |
-| `msOnBeforeSendNotification` | `recipient`, `channels` | То же; список в `channels` заменяет набор каналов целиком |
+| `msOnBeforeSendNotification` | `recipient` | То же |
+| `msOnBeforeSendNotification` | `channels` | Канала `applyReturnedArray()` здесь нет: любой массив заменяет набор каналов целиком, ассоциативный в том числе |
 
 ```php
 <?php

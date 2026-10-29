@@ -626,9 +626,11 @@ class CartUI {
 
 The `+`/`−` buttons and the quantity inputs belong to a separate class, `QuantityUI` (`initButtons()`, `initInputs()`). `CartUI.init()` does not touch them. The handlers survive a cart redraw on their own: `initOptionSelects()` listens for `change` on the document, and `QuantityUI` binds its handlers again on `ms3:cart:updated`.
 
-When a token in `ms3Config.render.cart` has no selector, or the element is not found, `renderCart()` tries the fallbacks: `#ms3oc-cart-live`, `#msb-test-cart`, `#msCart`, `[data-ms-cart]`, `.msCart`. The substitution happens only when exactly one such node exists in the whole document. Otherwise one cart's markup would land inside another.
+When a token in `ms3Config.render.cart` has no selector, or the element is not found, only `CartUI.renderCart()` tries the fallbacks: `#ms3oc-cart-live`, `#msb-test-cart`, `#msCart`, `[data-ms-cart]`, `.msCart`. The substitution happens only when exactly one such node exists in the whole document. Otherwise one cart's markup would land inside another.
 
 The package does not render markup for the first two identifiers. No chunk and no snippet outputs them. In practice the last three work, and `#ms3oc-cart-live` and `#msb-test-cart` are meant for markup you provide.
+
+`QuantityUI.renderCart()` has no fallbacks: with no selector, or when the element is missing, the loop simply skips the token. The `+`/`−` buttons and the quantity inputs are driven by `QuantityUI`, so a selector in `ms3Config.render.cart[].selector` is required for the redraw after a quantity change.
 
 ::: tip Clearing the cart from an outside script
 A direct `cartAPI.clean()` call only performs the API request. It does not render and it does not fire `ms3:cart:updated`. For a full interface update (mini cart, counters, product cards) use `cartUI.handleClean()`:
@@ -786,8 +788,11 @@ class CustomerUI {
   }
 
   // Address management works the same way: handlers on the addressSetDefault
-  // and addressDelete selectors, the id from data-address-id, ms3Confirm() with
-  // the text from data-confirm before a delete, and a reload on success
+  // and addressDelete selectors, the id from data-address-id, a reload on success.
+  // BOTH actions ask for confirmation, and the text comes from the
+  // .list-group-item parent: data-confirm-set-default and data-confirm-delete
+  // (delete adds confirmClass: btn-danger). The data-confirm attribute on the
+  // button itself is only read by order cancellation
   initAddressManagement() { /* … */ }
 }
 ```
