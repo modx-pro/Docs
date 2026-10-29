@@ -36,9 +36,9 @@ flowchart TB
 
 Current gallery state:
 
-- **Media source** shows the file source name and ID
-- **Products with images** counts products that have a gallery
-- **Total files** counts images in those galleries
+- **Selected file source** shows the source name and ID
+- **Total products** counts every product in the catalogue, whether or not it has a gallery
+- **Images** counts originals only (`msProductFile` with `parent_id = 0`); previews are not included
 
 ### Preview settings
 
@@ -109,18 +109,20 @@ For each product the utility reads the originals, builds thumbnails for the keys
 
 ### File storage
 
-Directory names are the keys of the `thumbnails` property on your Media Source. With the default settings the tree looks like this:
+Directory names are the keys of the `thumbnails` property on your Media Source, and the file extension comes from that key's `format`. The package ships four keys: `thumb`, `small`, `medium` (webp) and `large` (jpg). The file name matches the uploaded one — that is the default `imageNameType: friendly` mode. The tree looks like this:
 
 ```text
 assets/images/products/
 ├── {product_id}/
-│   ├── original.jpg       # Original
-│   ├── small/             # Small previews
-│   │   └── original.jpg
-│   ├── medium/            # Medium previews
-│   │   └── original.jpg
-│   └── large/             # Large previews
-│       └── original.jpg
+│   ├── smartphone.jpg     # Original (the uploaded file name)
+│   ├── thumb/             # 150×150 webp
+│   │   └── smartphone.webp
+│   ├── small/             # 300×300 webp
+│   │   └── smartphone.webp
+│   ├── medium/            # 600×600 webp
+│   │   └── smartphone.webp
+│   └── large/             # 1200×1200 jpg
+│       └── smartphone.jpg
 ```
 
 ## Troubleshooting
@@ -151,6 +153,6 @@ assets/images/products/
 
 **Causes:**
 
-- The catalog has no products with images
-- The media source is set up wrong
-- The gallery table is empty
+- The catalogue has no products at all, or `offset` ran past the end of the set
+
+There is no other cause: neither the presence of images nor the state of the gallery table affects this error, and products without images are processed silently.

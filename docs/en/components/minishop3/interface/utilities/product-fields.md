@@ -5,7 +5,7 @@ title: Product fields
 
 ![Utilities → Product fields](/components/minishop3/screenshots/mgr-product-fields.png)
 
-Field layout on the **Data** tab of the product card.
+Field layout on the **Product Properties** tab of the product card — it sits inside the outer ExtJS tab named Product.
 
 ::: tip Cookbook
 Sections, hiding fields, and the link to extra fields: [Product fields cookbook](/en/components/minishop3/manager/product-fields/cookbook). End-to-end example: [Wholesale price](/en/components/minishop3/manager/examples/product-extra-field).
@@ -13,7 +13,7 @@ Sections, hiding fields, and the link to extra fields: [Product fields cookbook]
 
 ## Purpose
 
-The tool controls the **layout** of fields on the Data tab:
+The tool controls the **layout** of fields on the Product Properties tab:
 
 - visibility and order
 - groups by section
@@ -23,20 +23,26 @@ A new column in `ms3_products` — the physical table behind `msProductData` —
 
 ## Interface
 
+Two cards stacked one above the other; the interface has no section selector.
+
 ### Sections
 
-The left panel lists sections. Drag them to sort.
+The upper card holds the sections table with drag sorting. Columns: drag handle, Visibility, Key, Title, Actions.
 
 ### Fields
 
-The right panel lists fields of the selected section.
+The lower card lists **all** fields at once, with a Section column. There is no filter by the selected section.
 
-**In the row:**
+**Row columns:**
 
-- Field name (key)
-- Label
-- Widget type (xtype)
-- Visibility
+- drag handle
+- Visibility — a checkbox right in the row, followed by Save changes
+- Field (key)
+- Title (label)
+- Type (xtype)
+- Section
+- Description
+- Actions
 
 ## Section management
 
@@ -48,8 +54,8 @@ The right panel lists fields of the selected section.
 | Field | Description | Required |
 | --- | --- | --- |
 | Section key | Unique identifier (Latin letters) | Yes |
-| Lexicon key | Key for the translated title | No |
-| Title | Display name | No |
+| Lexicon key | Key for the translated title | One of the two is required |
+| Title | Display name | One of the two is required |
 | Hidden | The section is hidden on the product card | No |
 
 ::: tip Lexicon
@@ -82,7 +88,7 @@ Click a field. The edit dialog opens.
 | Section | Which section the field belongs to |
 | Widget type (xtype) | Only while creating the field. The edit dialog locks this control |
 | Visibility | Whether the field shows on the card |
-| Width | Grid columns: 3, 4, 6, 8, 12 |
+| Width | Grid columns: any integer from 1 to 12 |
 
 ### Widget types (xtype)
 
@@ -91,10 +97,19 @@ Click a field. The edit dialog opens.
 | `textfield` | Single-line text |
 | `numberfield` | Number |
 | `textarea` | Multiline text |
-| `xcheckbox` | Checkbox |
+| `xcheckbox`, `checkbox` | Checkbox |
+| `switch` | Toggle |
+| `combobox` | Dropdown |
+| `colorpicker` | Colour picker |
+| `datefield` | Date field |
 | `ms3-combo-vendor` | Vendor picker |
 | `ms3-combo-autocomplete` | Autocomplete from a list |
 | `ms3-combo-options` | Pick from product options |
+| `ms3-combo-select` | Pick from a fixed set of values |
+| `ms3-repeater` | Table of rows (JSON) |
+| `ms3-key-value` | Key-to-value set (JSON) |
+
+That is everything `DynamicField.vue` can render.
 
 ### Moving fields
 

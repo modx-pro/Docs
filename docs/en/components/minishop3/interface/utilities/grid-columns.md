@@ -133,7 +133,7 @@ Data from a related table.
 
 | Parameter | Description |
 | --- | --- |
-| Table | Related table name |
+| Table | A short MiniShop3 model name (`msOrder`), a fully qualified class name, or a table name without the prefix |
 | Foreign key | Field used for the link |
 | Display field | Field to show |
 | Aggregation | COUNT, SUM, AVG, MIN, MAX |
@@ -188,13 +188,15 @@ A numeric field shown as a price. Parameters live in the **displayConfig** JSON:
 | `currency` | Currency symbol |
 | `currency_position` | `before` or `after` |
 | `thousands_separator` | Thousands separator |
-| `decimal_separator` | Decimal separator (default comes from the price setting) |
+| `decimal_separator` | Decimal separator |
 
 ```text
 Type: price
 Field name: price
 displayConfig: {"decimals":2,"currency":"₽","currency_position":"after","thousands_separator":" "}
 ```
+
+The defaults are hard-coded: `decimals` 2, a space for thousands, a comma for decimals, an empty currency and `after` for its position. The grid reads no price system settings. Weight has its own defaults — 2 digits and «kg».
 
 ### Weight (`weight`)
 
@@ -214,7 +216,7 @@ Field name: createdon
 displayConfig: {"format":"dd.MM.yyyy HH:mm"}
 ```
 
-The format is a PrimeVue date formatter template (`dd`, `MM`, `yyyy`, `HH`, `mm`).
+The format is a MiniShop3 template of its own, not PrimeVue. The supported tokens are `yyyy`, `yy`, `MM`, `dd`, `HH`, `mm`, `ss`; each is replaced exactly once, so repeating a token in the template does not work.
 
 ### Actions (`actions`)
 
@@ -266,7 +268,11 @@ A column of action buttons. Built-in handlers and your own.
 | `delete` | Delete the record |
 | `view` | View the record |
 | `addresses` | Manage addresses (customers) |
+| `publish` | Toggle publication, works with `toggleField` |
+| `duplicate` | Open the MODX resource duplication window |
 | `refresh` | Refresh the grid |
+
+`publish` and `duplicate` ship in the category products grid configuration.
 
 ## Configuration examples
 
@@ -313,16 +319,19 @@ GET /api/mgr/grid-config/{grid_name}
         "filterable": false,
         "frozen": true,
         "width": 60,
+        "minWidth": "80px",
+        "isSystem": true,
         "type": "model"
       }
     ],
-    "direct_filter_keys": ["query", "status_id"],
-    "editor_references": []
+    "direct_filter_keys": ["query", "status_id"]
   }
 }
 ```
 
-`editor_references` is filled only for `grid_key=category-products`.
+`minWidth` and `isSystem` come back in camelCase; the database column is `min_width`, and the save request body also uses `minWidth`. The JSON from `config` is spread on top of them.
+
+`editor_references` is present only for `grid_key=category-products`. For the other grids the key is missing from the response entirely — not an empty array, an absent key.
 
 ### Save configuration
 
@@ -366,8 +375,8 @@ System columns (`is_system`) cannot be deleted.
 System columns are limited:
 
 - You cannot delete them
-- You cannot change the field name
-- You can only hide them
+- You cannot edit one through the column dialog: `PUT /api/mgr/grid-config/{grid}/field/{name}` answers «Cannot modify system field»
+- Through the whole-configuration save (`PUT /api/mgr/grid-config/{grid_key}` with the full `fields` array) the label, visibility, sorting, filtering, freezing, width and order all change
 
 Usually that is `id` and the actions column.
 
@@ -444,7 +453,7 @@ MS3ActionRegistry.registerAfterHook('delete', (data, context, result) => {
 | --- | --- |
 | `has(name)` | Check that a handler exists |
 | `get(name)` | Get the handler |
-| `unregister(name)` | Remove a handler (built-in handlers stay) |
+| `unregister(name)` | Remove a handler. Only `edit`, `delete`, `view` and `refresh` are protected; `addresses`, `publish` and `duplicate` can be removed |
 | `getRegisteredActions()` | List every registered action |
 | `execute(name, data, context)` | Run an action from code |
 
@@ -543,18 +552,30 @@ $modx->regClientStartupScript(
 );
 ```
 
-**Step 3. Configure the actions column** in the UI:
+**Step 3. Configure the actions column.**
 
-1. Open **Utilities → Grid columns**
-2. Select the `customers` grid
-3. Find the `actions` column and open the editor
-4. Add an action:
-   - Name: `blockCustomer`
-   - Handler: `blockCustomer`
-   - Icon: `pi-ban`
-   - Style: `danger`
-   - Confirmation: Yes
-   - Message: `Block customer {email}?`
+::: danger The dialog cannot save the `actions` column
+In all six seeded grids the `actions` column carries `is_system = 1`. The pencil icon next to it is not disabled, the dialog opens and even lets you add an action, but saving sends `PUT /api/mgr/grid-config/{grid}/field/actions` and gets back «Cannot modify system field».
+
+The working path is the whole-configuration save: `PUT /api/mgr/grid-config/customers` with the full `fields` array and the `actions` key replaced on that column. System status is not checked there.
+:::
+
+The new entry in the column's `actions` array:
+
+```json
+{
+  "name": "blockCustomer",
+  "handler": "blockCustomer",
+  "icon": "pi-ban",
+  "severity": "danger",
+  "confirm": true,
+  "confirmMessage": "Block customer {email}?"
+}
+```
+
+::: warning Your handler will not be in the list
+The Handler field in the actions editor is a dropdown with no free input, and it shows only what is already registered in the registry **on the current page**. The plugin from step 2 loads the script on the customers page only, so `blockCustomer` will not appear on the utilities page. Either drop the controller filter in the plugin, or set `handler` by editing the JSON through the API.
+:::
 
 #### Example 2: Duplicate a product
 
@@ -686,4 +707,6 @@ MS3ActionRegistry.registerBeforeHook('delete', (data, context) => {
 
 ### Available icons
 
-Icons are [PrimeIcons](https://primevue.org/icons): `pi-pencil`, `pi-trash`, `pi-eye`, `pi-copy`, `pi-download`, `pi-send`, `pi-lock`, `pi-unlock`, `pi-ban`, `pi-check`, `pi-times`, `pi-refresh`, `pi-cog`.
+Icons are [PrimeIcons](https://primevue.org/icons). The actions editor dropdown offers seventeen: `pi-pencil`, `pi-trash`, `pi-eye`, `pi-check`, `pi-times`, `pi-ban`, `pi-lock`, `pi-unlock`, `pi-user`, `pi-cog`, `pi-copy`, `pi-download`, `pi-external-link`, `pi-list`, `pi-refresh`, `pi-send`, `pi-print`.
+
+Any other PrimeIcons class can only be set by editing the column configuration JSON through the API.

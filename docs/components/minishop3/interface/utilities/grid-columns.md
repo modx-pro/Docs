@@ -133,7 +133,7 @@ option.key: color
 
 | Параметр | Описание |
 | --- | --- |
-| Таблица | Имя связанной таблицы |
+| Таблица | Короткое имя модели MiniShop3 (`msOrder`), полное имя класса или имя таблицы без префикса |
 | Внешний ключ | Поле для связи |
 | Отображаемое поле | Какое поле показывать |
 | Агрегация | COUNT, SUM, AVG, MIN, MAX |
@@ -188,13 +188,15 @@ option.key: color
 | `currency` | Символ валюты |
 | `currency_position` | `before` или `after` |
 | `thousands_separator` | Разделитель тысяч |
-| `decimal_separator` | Разделитель дробной части (по умолчанию из настройки цены) |
+| `decimal_separator` | Разделитель дробной части |
 
 ```text
 Тип: price
 Имя поля: price
 displayConfig: {"decimals":2,"currency":"₽","currency_position":"after","thousands_separator":" "}
 ```
+
+Значения по умолчанию зашиты в код: `decimals` 2, разделитель тысяч — пробел, дробной части — запятая, валюта пустая, позиция `after`. Системных настроек цены грид не читает. У веса дефолты свои — 2 знака и «кг».
 
 ### Вес (`weight`)
 
@@ -214,7 +216,7 @@ displayConfig: {"decimals":2,"unit":"кг","unit_position":"after"}
 displayConfig: {"format":"dd.MM.yyyy HH:mm"}
 ```
 
-Формат — шаблон PrimeVue date formatter (`dd`, `MM`, `yyyy`, `HH`, `mm`).
+Формат — собственный шаблон MiniShop3, а не PrimeVue. Поддерживаются токены `yyyy`, `yy`, `MM`, `dd`, `HH`, `mm`, `ss`; каждый заменяется ровно один раз, поэтому повтор токена в шаблоне не отработает.
 
 ### Действия (`actions`)
 
@@ -266,7 +268,11 @@ displayConfig: {"format":"dd.MM.yyyy HH:mm"}
 | `delete` | Удалить запись |
 | `view` | Просмотр записи |
 | `addresses` | Управление адресами (для покупателей) |
+| `publish` | Переключить публикацию, работает с `toggleField` |
+| `duplicate` | Открыть окно дублирования ресурса MODX |
 | `refresh` | Обновить грид |
+
+`publish` и `duplicate` поставляются в конфигурации грида товаров категории.
 
 ## Примеры настройки
 
@@ -313,16 +319,19 @@ GET /api/mgr/grid-config/{grid_name}
         "filterable": false,
         "frozen": true,
         "width": 60,
+        "minWidth": "80px",
+        "isSystem": true,
         "type": "model"
       }
     ],
-    "direct_filter_keys": ["query", "status_id"],
-    "editor_references": []
+    "direct_filter_keys": ["query", "status_id"]
   }
 }
 ```
 
-Поле `editor_references` заполняется только для `grid_key=category-products`.
+Ключи `minWidth` и `isSystem` приходят в camelCase; в базе колонка называется `min_width`, и в теле запроса на сохранение тоже используется `minWidth`. Поверх них разворачивается JSON из `config`.
+
+Ключ `editor_references` присутствует только у `grid_key=category-products`. У остальных гридов его в ответе нет вовсе — не пустой массив, а отсутствующий ключ.
 
 ### Сохранение конфигурации
 
@@ -366,8 +375,8 @@ DELETE /api/mgr/grid-config/{grid_key}/{field_name}
 Системные колонки ограничены:
 
 - Нельзя удалить
-- Нельзя изменить имя поля
-- Можно только скрыть
+- Нельзя править точечно через диалог колонки: `PUT /api/mgr/grid-config/{grid}/field/{name}` отвечает «Cannot modify system field»
+- Через общее сохранение конфигурации (`PUT /api/mgr/grid-config/{grid_key}` со всем массивом `fields`) меняются подпись, видимость, сортировка, фильтрация, закрепление, ширина и порядок
 
 Обычно это `id` и колонки действий.
 
@@ -444,7 +453,7 @@ MS3ActionRegistry.registerAfterHook('delete', (data, context, result) => {
 | --- | --- |
 | `has(name)` | Проверить наличие обработчика |
 | `get(name)` | Получить обработчик |
-| `unregister(name)` | Удалить обработчик (кроме встроенных) |
+| `unregister(name)` | Удалить обработчик. Не снимаются только `edit`, `delete`, `view` и `refresh`; `addresses`, `publish` и `duplicate` снять можно |
 | `getRegisteredActions()` | Получить список всех зарегистрированных действий |
 | `execute(name, data, context)` | Выполнить действие программно |
 
@@ -543,18 +552,30 @@ $modx->regClientStartupScript(
 );
 ```
 
-**Шаг 3. Настройка колонки действий** через интерфейс:
+**Шаг 3. Настройка колонки действий.**
 
-1. Откройте **Утилиты → Конфигурация гридов**
-2. Выберите грид `customers`
-3. Найдите колонку `actions` и откройте редактор
-4. Добавьте новое действие:
-   - Имя: `blockCustomer`
-   - Обработчик: `blockCustomer`
-   - Иконка: `pi-ban`
-   - Стиль: `danger`
-   - Подтверждение: Да
-   - Сообщение: `Заблокировать покупателя {email}?`
+::: danger Через диалог колонка `actions` не сохраняется
+Во всех шести гридах из поставки колонка `actions` помечена `is_system = 1`. Иконка карандаша рядом с ней не заблокирована, диалог откроется и даже даст добавить действие, но сохранение шлёт `PUT /api/mgr/grid-config/{grid}/field/actions` и получает «Cannot modify system field».
+
+Рабочий путь — общее сохранение конфигурации: `PUT /api/mgr/grid-config/customers` с полным массивом `fields`, где у колонки `actions` подменён ключ `actions`. Системность там не проверяется.
+:::
+
+Новое действие в массиве `actions` колонки:
+
+```json
+{
+  "name": "blockCustomer",
+  "handler": "blockCustomer",
+  "icon": "pi-ban",
+  "severity": "danger",
+  "confirm": true,
+  "confirmMessage": "Заблокировать покупателя {email}?"
+}
+```
+
+::: warning Своего обработчика не будет в списке
+Поле «Обработчик» в редакторе действий — выпадающий список без свободного ввода, и он показывает только то, что уже зарегистрировано в реестре **на текущей странице**. Плагин из шага 2 подключает скрипт лишь на странице покупателей, поэтому на странице утилит `blockCustomer` в списке не появится. Либо снимите в плагине фильтр по контроллеру, либо задавайте `handler` правкой JSON через API.
+:::
 
 #### Пример 2: Копирование товара
 
@@ -686,4 +707,6 @@ MS3ActionRegistry.registerBeforeHook('delete', (data, context) => {
 
 ### Доступные иконки
 
-Иконки — [PrimeIcons](https://primevue.org/icons): `pi-pencil`, `pi-trash`, `pi-eye`, `pi-copy`, `pi-download`, `pi-send`, `pi-lock`, `pi-unlock`, `pi-ban`, `pi-check`, `pi-times`, `pi-refresh`, `pi-cog`.
+Иконки — [PrimeIcons](https://primevue.org/icons). В выпадающем списке редактора действий их семнадцать: `pi-pencil`, `pi-trash`, `pi-eye`, `pi-check`, `pi-times`, `pi-ban`, `pi-lock`, `pi-unlock`, `pi-user`, `pi-cog`, `pi-copy`, `pi-download`, `pi-external-link`, `pi-list`, `pi-refresh`, `pi-send`, `pi-print`.
+
+Произвольный класс PrimeIcons задаётся только правкой JSON конфигурации колонки через API.
