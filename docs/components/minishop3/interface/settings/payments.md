@@ -10,7 +10,7 @@ title: Способы оплаты
 ## Для владельца магазина
 
 1. Создайте способ оплаты: название, описание, логотип, активность.
-2. Привяжите его к нужным [доставкам](/components/minishop3/interface/settings/deliveries). Без связки покупатель не сможет выбрать пару на фронтенде.
+2. Привяжите его к нужным [доставкам](/components/minishop3/interface/settings/deliveries). Без связки несвязанную пару всё равно удастся выбрать на шаге `order/add` — отказ приходит позже, при `order/submit`, с лексиконом `ms3_order_err_payment_delivery`.
 3. Для оплаты «при получении» оставьте поле `class` пустым. Заказ получит выбранный `payment_id`.
 4. Для онлайн-оплаты установите платёжное дополнение из каталога (например [msp3YooKassa](/components/msp3yookassa/), [mspTBank](/components/msptbank/), [msp3Sberbank](/components/msp3sberbank/)) и укажите класс обработчика в поле `class`, как в инструкции пакета.
 5. Проверьте переход после оплаты: `ms3_order_success_page_id` и страницу «Спасибо» с `msGetOrder`.
@@ -18,7 +18,10 @@ title: Способы оплаты
 Наценка в поле `price`:
 
 - `100`: фиксированная сумма к заказу
-- `3%`: процент от суммы
+- `3%`: процент от стоимости корзины — доставка в базу комиссии не входит
+- `-5%`: отрицательное значение работает как скидка
+
+Допустимый процент — от −100 до 100. За пределами диапазона наценка обнуляется, а значение пишется в журнал ошибок.
 
 ## Поля оплаты
 
@@ -80,7 +83,7 @@ class MyPayment extends Payment
 MyComponent\Payment\MyPayment
 ```
 
-Секреты платёжного сервиса задают в `properties` (JSON) карточки оплаты:
+Секреты платёжного сервиса задают в `properties` (JSON) карточки оплаты. Через интерфейс настроек это поле не редактируется — ни в карточке оплаты, ни в карточке доставки его нет: записывайте значение через Manager API (`PUT /api/mgr/payments/{id}`), со страницы платёжного дополнения или прямо в БД.
 
 ```json
 {
@@ -94,7 +97,11 @@ MyComponent\Payment\MyPayment
 
 ## Уведомления об оплате (webhook / callback)
 
-В ядре MiniShop3 **нет** готового `payment/handler.php`. URL уведомлений задаёт платёжное дополнение (например `webhook.php` / `callback.php` в `assets/components/{ns}/`). Смотрите документацию конкретного платёжного сервиса ([msp3YooKassa](/components/msp3yookassa/), [mspTBank](/components/msptbank/) и т.д.).
+В ядре есть штатный приёмник: `POST /api/v1/payment/webhook/{payment_method_id}`. Маршрут публичный — `TokenMiddleware` его пропускает, подпись проверяет сам обработчик.
+
+Класс оплаты реализует `PaymentWebhookHandlerInterface` с двумя методами: `verifyWebhook()` — проверка подлинности по сырому телу, разобранному payload и заголовкам, и `parseWebhook()` — разбор в `PaymentWebhookEvent`. Для HMAC в базовом классе есть `Payment::verifyWebhookHmac()`, секрет берётся из `properties` карточки оплаты по ключам `secret`, `secret_key`, `webhook_secret`, а если их нет — из системной настройки `ms3_payment_secret`. Применяет событие `PaymentLifecycleService` (сервис `ms3_payment_lifecycle`).
+
+Часть платёжных дополнений по-прежнему держит собственный приёмник (`webhook.php` / `callback.php` в `assets/components/{ns}/`) — смотрите документацию конкретного сервиса ([msp3YooKassa](/components/msp3yookassa/), [mspTBank](/components/msptbank/) и т.д.).
 
 Класс оплаты реализует `send()` и приём уведомления, по полученному уведомлению он меняет статус заказа. Ссылка на оплату в письмах и `msGetOrder` строится через `PaymentLinkResolver`.
 

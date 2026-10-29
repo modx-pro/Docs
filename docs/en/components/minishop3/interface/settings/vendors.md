@@ -80,7 +80,7 @@ List the fields with commas when you do not need all of them:
 ```fenom
 {$_modx->runSnippet('msProducts', [
     'parents' => 0,
-    'where' => ['Data.vendor_id:IN' => '1,2,3'],  {* vendor IDs *}
+    'where' => ['Data.vendor_id:IN' => [1, 2, 3]],  {* an array: xPDO binds a string as one value *}
     'tpl' => 'tpl.msProducts.row'
 ])}
 ```

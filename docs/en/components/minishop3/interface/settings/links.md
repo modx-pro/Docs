@@ -38,13 +38,16 @@ The package does not ship ready-made keys such as `similar` or `upsell`. You set
 
 ```php
 // Create a link
+// msProductLink has a composite primary key link + master + slave,
+// and fromArray() skips key fields — use set()
 $link = $modx->newObject(\MiniShop3\Model\msProductLink::class);
-$link->fromArray([
-    'link' => 1,           // Link type ID (msLink)
-    'master' => 10,        // Master product ID
-    'slave' => 20,         // Related product ID
-]);
+$link->set('link', 1);      // Link type ID (msLink)
+$link->set('master', 10);   // Master product ID
+$link->set('slave', 20);    // Related product ID
 $link->save();
+
+// Shorter, and it honours the link cardinality:
+$modx->services->get('ms3_product_link_service')->create(10, 20, 1);
 ```
 
 ## Showing related products
@@ -71,7 +74,9 @@ Behavior depends on the `type` of the `msLink` row:
 | `many_to_one` | One row with master and slave swapped |
 | `one_to_one`, `many_to_many` | Two rows: A to B and B to A (`ProductLinkService` creates them) |
 
-For `many_to_many` the second row is created automatically. The service keeps both rows in sync, so you do not set the master/slave pair yourself. An edit of one row is overwritten by the service.
+For `many_to_many` the service goes beyond the pair of rows: after creating a link it builds the **full graph** between every product already linked by that type. Add a third product to a pair and you get six rows, not two. You do not set the master/slave pair yourself, and an edit of one row is overwritten by the service.
+
+Deletion for `many_to_many` is symmetric: every row where `slave` appears is removed regardless of `master` — the product leaves the whole group at once.
 
 ## Use in the cart
 
@@ -131,11 +136,9 @@ foreach ($siblings as $sibling) {
 
     if (!$existing) {
         $link = $modx->newObject(\MiniShop3\Model\msProductLink::class);
-        $link->fromArray([
-            'link' => 1,
-            'master' => $product->get('id'),
-            'slave' => $sibling->get('id'),
-        ]);
+        $link->set('link', 1);
+        $link->set('master', $product->get('id'));
+        $link->set('slave', $sibling->get('id'));
         $link->save();
     }
 }

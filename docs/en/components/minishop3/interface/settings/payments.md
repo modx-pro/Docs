@@ -10,7 +10,7 @@ Open **Extras → MiniShop3 → Settings → Payments**.
 ## For the store owner
 
 1. Create a payment method: name, description, logo, and the active flag.
-2. Link it to the [deliveries](/en/components/minishop3/interface/settings/deliveries) you need. Without that link the customer cannot pick the pair on the storefront.
+2. Link it to the [deliveries](/en/components/minishop3/interface/settings/deliveries) you need. Without that link an unlinked pair can still be selected at the `order/add` step — the refusal comes later, at `order/submit`, with the `ms3_order_err_payment_delivery` lexicon entry.
 3. For payment on delivery, leave `class` empty. The order stores the selected `payment_id`.
 4. For online payment, install a payment extra from the catalog (for example [msp3YooKassa](/en/components/msp3yookassa/), [mspTBank](/en/components/msptbank/), [msp3Sberbank](/components/msp3sberbank/)) and set the handler class in `class`, as that package's docs describe.
 5. Check the redirect after payment: `ms3_order_success_page_id` and the Thank-you page with `msGetOrder`.
@@ -18,7 +18,10 @@ Open **Extras → MiniShop3 → Settings → Payments**.
 Surcharge in the `price` field:
 
 - `100` is a fixed amount added to the order
-- `3%` is a percent of the total
+- `3%` is a percent of the cart total — delivery is not part of the commission base
+- `-5%` — a negative value works as a discount
+
+The allowed percent runs from −100 to 100. Outside that range the surcharge is zeroed and the value is written to the error log.
 
 ## Payment fields
 
@@ -80,7 +83,7 @@ Registration in the `class` field:
 MyComponent\Payment\MyPayment
 ```
 
-Payment service secrets go in `properties` (JSON) on the payment card:
+Payment service secrets go in `properties` (JSON) on the payment card. The settings interface does not edit that field — it is absent from both the payment and the delivery dialog: write the value through the Manager API (`PUT /api/mgr/payments/{id}`), from the payment extra's own page, or directly in the database.
 
 ```json
 {
@@ -94,7 +97,11 @@ In code: `$this->config['payment']->get('properties')`.
 
 ## Payment notifications (webhook / callback)
 
-MiniShop3 core has **no** ready-made `payment/handler.php`. The payment extra sets the notification URL (for example `webhook.php` or `callback.php` under `assets/components/{ns}/`). See the docs of that payment service ([msp3YooKassa](/en/components/msp3yookassa/), [mspTBank](/en/components/msptbank/), and others).
+The core ships a receiver of its own: `POST /api/v1/payment/webhook/{payment_method_id}`. The route is public — `TokenMiddleware` lets it through, and the handler verifies the signature itself.
+
+The payment class implements `PaymentWebhookHandlerInterface` with two methods: `verifyWebhook()` for authenticity, taking the raw body, the parsed payload and the headers, and `parseWebhook()` which turns the payload into a `PaymentWebhookEvent`. For HMAC the base class offers `Payment::verifyWebhookHmac()`; the secret comes from the payment card `properties` under `secret`, `secret_key` or `webhook_secret`, and falls back to the `ms3_payment_secret` system setting. `PaymentLifecycleService` (the `ms3_payment_lifecycle` service) applies the event.
+
+Some payment extras still keep a receiver of their own (`webhook.php` or `callback.php` under `assets/components/{ns}/`) — see the docs of that service ([msp3YooKassa](/en/components/msp3yookassa/), [mspTBank](/en/components/msptbank/), and others).
 
 The payment class implements `send()` and accepts the notification. From that notification it changes the order status. The payment link in emails and in `msGetOrder` is built by `PaymentLinkResolver`.
 
