@@ -20,7 +20,7 @@ Unlike the [cart events](cart), the core reads the plugin response almost everyw
 
 So `msOnRemoveFromOrder`, `msOnEmptyOrder` and `msOnCreateOrder` can fail an operation that already happened: the field is removed or the order is created, yet the client gets an error.
 
-The validation events use the response differently — not to abort the operation but to substitute the value: `msOnBeforeValidateOrderValue` and `msOnValidateOrderValue` return `value`, `msOnErrorValidateOrderValue` returns `error`.
+The validation events use the response differently — not to abort the operation but to substitute the value: `msOnBeforeValidateOrderValue` and `msOnValidateOrderValue` return `value`. `msOnErrorValidateOrderValue` returns `error` and, alongside it, `value` as well — that is what lands in the draft once the error is cleared.
 
 ## msOnBeforeAddToOrder
 
@@ -229,10 +229,13 @@ switch ($modx->event->name) {
         if ($key === 'comment') {
             $values = &$modx->event->returnedValues;
             $values['error'] = []; // Empty array means no error
+            $values['value'] = mb_substr((string) $value, 0, 500); // and what to store instead
         }
         break;
 }
 ```
+
+Return `value` together with the empty `error`: that is what the core writes to the draft. Leave `value` alone and the order keeps the original value — the one the validator has just rejected.
 
 ---
 

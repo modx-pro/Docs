@@ -382,6 +382,10 @@ switch ($modx->event->name) {
 
 Вызывается **после** создания нового покупателя.
 
+::: warning Ответ плагина только пишется в журнал
+При `success=false` ядро пишет `WARN` и всё равно возвращает созданного покупателя. Отменить создание можно только в парном `msOnBeforeCreateCustomer` — там `output()` возвращает `null` вместо объекта.
+:::
+
 ### Параметры
 
 | Параметр | Тип | Описание |
@@ -481,6 +485,10 @@ switch ($modx->event->name) {
 ## msOnAddCustomerAddress
 
 Вызывается **после** добавления адреса покупателю.
+
+::: warning Ответ плагина только пишется в журнал
+При `success=false` ядро пишет `WARN`, а `add()` всё равно возвращает `true`. Отменяет добавление только парное `msOnBeforeAddCustomerAddress`.
+:::
 
 ### Параметры
 
@@ -685,7 +693,25 @@ switch ($modx->event->name) {
 
 ### Подмена пользователя
 
-Плагин может вернуть готового `modUser` через `returnedValues['user']`, чтобы обойти стандартный поиск/создание:
+У события два канала. Первый — готовый `modUser` в `returnedValues['user']`, он обходит стандартный поиск и создание. Второй — `returnedValues['orderData']`: подменённый массив полей заказа, из которого ядро само возьмёт `address_email`, `address_first_name`, `address_last_name` и `address_phone` и по ним найдёт или создаст пользователя.
+
+Второй канал обычно удобнее: достаточно поправить контакты, не собирая `modUser` руками.
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnBeforeGetOrderUser':
+        $orderData = $scriptProperties['orderData'];
+
+        // Нормализуем телефон до того, как ядро начнёт искать пользователя
+        $orderData['address_phone'] = preg_replace('/\D+/', '', $orderData['address_phone'] ?? '');
+
+        $modx->event->returnedValues = ['orderData' => $orderData];
+        break;
+}
+```
+
+Готовый `modUser` возвращают так:
 
 ```php
 <?php

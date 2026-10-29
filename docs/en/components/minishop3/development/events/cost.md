@@ -5,6 +5,12 @@ title: Cost events
 
 Calculating and modifying the cost of the cart, the delivery and the payment.
 
+::: danger All eight events are storefront and Web API only
+Cost events are raised by `OrderCostCalculator`, which serves customer checkout only. Recalculating the total on the order card in the manager — editing lines, changing the delivery or payment method, finalising — goes through `ManagerOrderCostRecalculator`, which raises no events at all.
+
+The consequence: a discount applied by a plugin on `msOnGetCartCost` or `msOnGetOrderCost` is not applied to an order a manager assembled by hand. When a discount must work on both paths, move its logic into a service and call it from the event plugin **and** from your own manager code.
+:::
+
 ::: warning The cart controller arrives under two different names
 In the cart and order-total events the parameter is called `cart`, while in the delivery and payment events it is `cartController`. This is a historical inconsistency of the core: a plugin copied from `msOnGetCartCost` to `msOnGetDeliveryCost` receives `null` instead of the controller. Check the parameter table of the event you need.
 :::

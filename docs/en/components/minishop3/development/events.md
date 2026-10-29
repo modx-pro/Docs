@@ -169,7 +169,7 @@ All six vendor events are fired only by the older `Settings/Vendor/*` processors
 
 ### Shipments
 
-The logic lives in `ShipmentLifecycleService` (`ms3_shipment_lifecycle`), the tables are `ms3_shipments` and `ms3_shipment_events`. Creating a shipment and `setTracking` work even with `ms3_shipment_enabled=0`, while the delivery webhook answers 404 in that case. Before-events are aborted with `success=false` in the `invokeEvent` response.
+The logic lives in `ShipmentLifecycleService` (`ms3_shipment_lifecycle`), the tables are `ms3_shipments` and `ms3_shipment_events`. Creating a shipment and `setTracking` work even with `ms3_shipment_enabled=0`, while the delivery webhook answers 404 in that case. Before-events are aborted with `success=false` in the `invokeEvent` response. The response of after-events is not read at all: an error raised by a plugin on `msOnCreateShipment`, `msOnChangeShipmentStatus` or `msOnUpdateShipmentTracking` neither aborts the operation nor reaches the log.
 
 | Event | Parameters | When |
 | --- | --- | --- |
@@ -195,6 +195,18 @@ flowchart TB
 ### Inventory
 
 With `ms3_inventory_enabled=1` the work is done by `ProductStockInventory` (`ms3_inventory`), the contract is `InventoryServiceInterface`. Event parameters: `key` (`InventoryKey`), `qty`, `ctx` (`InventoryContext`: `orderId`, `origin` — defaults to `'order'`, `holdState` — defaults to `null`). A before-event returning `success=false` raises an `InventoryException` (`ms3_err_inventory_cancelled`). Passing `$notify=false` to reserve and release skips the event pair — compensation happens inside the SQL transaction.
+
+::: danger Inventory after-events abort the operation too
+Reserve, commit and release share one dispatch method, so `success=false` in an **after**-event raises the same `InventoryException` — after the database write. An `output()` in `msOnInventoryCommit` breaks the status change when the stock decrement is already committed.
+
+The `Adjust` pair behaves differently: the after-event response only goes to the error log. For an analytics plugin that subscribes to after-events just to observe, the difference matters.
+:::
+
+::: warning Reserve: before per line, after in a batch
+`reserveBatch()` fires `msOnBeforeInventoryReserve` for every order line, while `msOnInventoryReserve` fires once per held line — but only after the whole batch has been held. If the third line runs out of stock, the first two are rolled back through an internal release with `notify = false`.
+
+A plugin that pairs before with after will see a before without an after on a partial failure — and no release event either.
+:::
 
 | Event | When, in terms of order status |
 | --- | --- |
