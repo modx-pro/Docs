@@ -129,7 +129,9 @@ $optionService->addOptionToCategory(
     $categoryId,
     '',       // значение по умолчанию
     true,     // active
-    0         // position
+    0,        // position
+    null,     // caption — своя подпись опции в этой категории
+    null      // description — своё описание в этой категории
 );
 
 // Удалить опцию из категории
@@ -352,8 +354,8 @@ $categoryService = $optionService->getCategory();
 // Назначить опцию категориям
 $assigned = $categoryService->assignToCategories($optionId, [5, 12]);
 
-// Добавить с параметрами
-$categoryService->addToCategory($optionId, $categoryId, '', true, 0);
+// Добавить с параметрами: ..., position, caption, description
+$categoryService->addToCategory($optionId, $categoryId, '', true, 0, null, null);
 
 // Удалить из категории
 $categoryService->removeFromCategory($optionId, $categoryId);

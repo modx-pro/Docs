@@ -35,11 +35,15 @@ $customer = $modx->getObject(msCustomer::class, ['email' => $email]);
 | --- | --- | --- | --- |
 | `msProduct` | `Data` | 1:1 | данные товара (`msProductData`) |
 | `msProduct` | `Options` | 1:N | значения опций |
+| `msProduct` | `Categories` | 1:N | дополнительные категории (`msCategoryMember`), composite |
+| `msProduct` | `Category` | N:1 | родительскую категорию (`msCategory`) |
+| `msProductData` | `Categories` | 1:N | дополнительные категории того же товара |
 | `msProductData` | `Files` | 1:N | файлы галереи |
 | `msOrder` | `Address` | 1:1 | адрес заказа (`msOrderAddress`) |
 | `msOrder` | `Products` | 1:N | товары в заказе |
 | `msOrder` | `Customer` | N:1 | покупателя (`msCustomer`) |
 | `msCustomer` | `Tokens` | 1:N | токены авторизации |
+| `msCustomer` | `CustomerGroup` | N:1 | группу покупателя |
 | `msCustomerAddress` | `Customer` | N:1 | покупателя — обратная связь от адреса |
 | `msCustomerToken` | `Customer` | N:1 | покупателя — обратная связь от токена |
 

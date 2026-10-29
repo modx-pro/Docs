@@ -168,6 +168,7 @@ Other public methods:
 | `transferDraftToToken($fromToken, $toToken, $customerId, $ctx)` | Move the draft to a new token after the session changes |
 | `fillAddressFromArray($order, $addressData)` | Fill the address from an array |
 | `addProductFromSnapshot($order, $snapshot, $origin)` | Add a line from a snapshot, without a product resource |
+| `createSessionlessDraft($data)` | A draft with no session and no token — for integrations that create orders from their own code. Takes `context`, `delivery_cost`, `origin`, `properties` |
 
 ## Fields and validation (OrderFieldManager)
 
@@ -260,8 +261,18 @@ Modes (`mode`):
 | Mode | Behavior |
 | --- | --- |
 | `auto` (default) | Recalculates only for `DefaultDelivery` / `DefaultPayment` (from `price`, `weight_price`, `free_delivery_amount` and the percentages). For custom handlers it returns the warning `delivery_manual_required` / `payment_manual_required` and keeps the previous `delivery_cost` and a fee of 0 — it calls no external API. |
-| `manual` | Takes the `manual_delivery_cost` you pass. The payment fee is still calculated automatically, from the field. |
+| `manual` | Takes the `manual_delivery_cost` you pass — the key is **required**, and without it the call fails with `ms3_mgr_order_recalc_manual_delivery_missing`. The payment fee is still calculated automatically, from the field. |
 | `force_provider` | Explicitly calls `loadController()` → `getCost()` and `loadHandler()` → `getCost()` in `try/catch`. A delivery failure keeps the previous `delivery_cost` and adds the warning `delivery_provider_error`. A payment failure sets the fee to 0, rebuilds `cost` and adds `payment_provider_error` ([#897](https://github.com/modx-pro/MiniShop3/issues/897)) |
+
+::: tip Calculate without writing
+The endpoint writes the result to the order. When you only need the numbers — to show a manager what changing the delivery would cost, for instance — the service offers `calculateBreakdown($order, $options)`: the same three modes and the same checks, without saving. Next to it, `calculateProductTotals($order)` returns the line total and the order weight.
+
+```php
+$recalculator = $modx->services->get('ms3_manager_order_cost_recalculator');
+$preview = $recalculator->calculateBreakdown($order, ['mode' => 'force_provider']);
+```
+
+:::
 
 The response repeats the order data from `GET /api/mgr/orders/{id}` and adds:
 
@@ -400,6 +411,15 @@ $result = $statusService->change($orderId, $newStatusId);
 
 // Change status without notifications
 $result = $statusService->change($orderId, $newStatusId, true);
+
+// Bring the status to a target value — idempotent
+$result = $statusService->ensure($orderId, $paidStatusId);
+// When the order is already in that status, it returns true with no side effects.
+// The payment webhook receiver and the shipment lifecycle rely on this:
+// a repeated notification from the payment service must not fail.
+
+// Statuses an order is allowed to be cancelled from
+$ids = $statusService->getAllowedCancelStatusIds();
 
 ```
 
@@ -745,6 +765,7 @@ The `ms3_order_user_groups` setting defines the groups for new users. The format
 | `Delivery` | msDelivery | aggregate | Delivery method |
 | `Payment` | msPayment | aggregate | Payment method |
 | `User` | modUser | aggregate | MODX user |
+| `UserProfile` | modUserProfile | aggregate (one) | MODX user profile, by `user_id` → `internalKey` |
 
 ::: info Composite vs Aggregate
 Composite relations are deleted with the order (address, products, log). Aggregate relations are references only; related objects are not deleted.

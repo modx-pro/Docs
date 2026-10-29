@@ -96,6 +96,23 @@ On sites with no such setting in the database, the code before 1.14.2-beta1 fell
 | `POST /customer/forgot-password` | `email` |
 | `POST /customer/reset-password` | `token`, `password`, `password_confirm` |
 
+A successful response of both endpoints has the same shape:
+
+```json
+{
+  "success": true,
+  "message": "",
+  "data": {
+    "customer": { "id": 12, "email": "ivan@example.com", "first_name": "Ivan" },
+    "token": "a1b2c3…",
+    "expires_at": 1793452800,
+    "redirect_url": "https://shop.example.com/cabinet"
+  }
+}
+```
+
+`customer` carries the public customer fields — the same set as [`GET /customer/me`](customer). `redirect_url` comes from the call's `redirect_page_id` property, or from the `ms3_customer_redirect_after_login` setting when that property is absent; with no page set it arrives as an empty string.
+
 The per-IP login attempt limit is hardcoded in the processor: 5 attempts in 300 seconds. It does not read `ms3_customer_max_login_attempts` or `ms3_customer_block_duration` ([bug #902](https://github.com/modx-pro/MiniShop3/issues/902)). Account lockout does use those settings. If the `ms3_customer_block_duration` row is missing from the database, the code uses a lock of 3600 seconds, while the installer writes 300 ([bug #898](https://github.com/modx-pro/MiniShop3/issues/898)).
 
 After a successful login the server rotates the token: it revokes the old guest token and moves the cart draft to the customer session. The new token goes into the cookie.

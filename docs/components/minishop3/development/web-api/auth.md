@@ -96,6 +96,23 @@ flowchart TD
 | `POST /customer/forgot-password` | `email` |
 | `POST /customer/reset-password` | `token`, `password`, `password_confirm` |
 
+Успешный ответ обоих эндпоинтов одинаков по составу:
+
+```json
+{
+  "success": true,
+  "message": "",
+  "data": {
+    "customer": { "id": 12, "email": "ivan@example.com", "first_name": "Иван" },
+    "token": "a1b2c3…",
+    "expires_at": 1793452800,
+    "redirect_url": "https://shop.example.com/cabinet"
+  }
+}
+```
+
+В `customer` приходят публичные поля покупателя — тот же набор, что у [`GET /customer/me`](customer). `redirect_url` берётся из свойства `redirect_page_id` вызова, а если его нет — из настройки `ms3_customer_redirect_after_login`; когда страница не задана, приходит пустая строка.
+
 Лимит попыток входа по IP зашит в процессор: 5 попыток за 300 секунд. Настройки `ms3_customer_max_login_attempts` и `ms3_customer_block_duration` он не читает ([баг #902](https://github.com/modx-pro/MiniShop3/issues/902)). Блокировка учётной записи эти настройки учитывает. Если строки `ms3_customer_block_duration` в базе нет, код берёт длительность блокировки 3600 секунд, а установщик пишет 300 ([баг #898](https://github.com/modx-pro/MiniShop3/issues/898)).
 
 После успешного входа сервер ротирует токен: отзывает старый гостевой и переносит черновик корзины на сессию покупателя. Новый токен уходит в cookie.

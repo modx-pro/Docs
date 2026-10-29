@@ -357,6 +357,7 @@ Three controllers serve these routes: `CustomerProfileController` for `/profile`
 | Method | Path | Description |
 | --- | --- | --- |
 | `POST` | `/api/v1/customer/add` | Updates a single profile field: `key` + `value`. Since 1.11.0 any `msCustomer` column from the xPDO map is allowed (Object Extension included), except the 18 fields listed in `CustomerPublicDto::SYSTEM_NON_EDITABLE_FIELDS`: `id`, `user_id`, `customer_group_id`, `token`, `password`, `email_verified_at`, the blocking flags and counters, the order aggregates and the service timestamps. `first_name`, `last_name`, `email` and `phone` go through Rakit validation; other values are normalized by the `phptype` from the field metadata. Changing the email resets `email_verified_at`. |
+| `PUT` | `/api/v1/customer/profile` | Updates the whole profile. The full list of fields and responses is in the [customer Web API](/en/components/minishop3/development/web-api/customer). |
 | `POST` | `/api/v1/customer/changeAddress` | Picks a saved address for the order draft. Takes `address_hash`. |
 | `GET` | `/api/v1/customer/email/verify` | Confirms the email with the token from the verification email. Parameters: `token`, `html=1` (an HTML redirect instead of JSON), `format=json`. By default redirects to the site with `ms3_email_verified=1\|0`. Custom URL — the `ms3_email_verification_url` setting, success URL — `ms3_email_verification_success_url`. |
 | `POST` | `/api/v1/customer/email/resend-verification` | Resends the verification email to the authenticated customer. The service allows one send per 5 minutes. |
@@ -388,6 +389,15 @@ if ($limiter->isBlocked('login', $clientIp, 5)) {
 // Reset counter (after successful login)
 $limiter->reset('login', $clientIp);
 ```
+
+The other public methods:
+
+| Method | Description |
+| --- | --- |
+| `getAttempts($action, $identifier)` | How many attempts are already recorded |
+| `getTimeUntilUnblock($action, $identifier, $window)` | Seconds left until the block lifts — for the message shown to the customer |
+| `attempt($action, $identifier, $max, $window, $increment = true)` | The same as `check()`, but with a controllable increment: `false` lets you look without spending an attempt |
+| `clearAction($action)` | Reset the counters of an action for every identifier |
 
 ## Customer addresses (CustomerAddressManager)
 

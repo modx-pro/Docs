@@ -168,6 +168,18 @@ $updated = $service->updateProductData($productId, [
 ]);
 ```
 
+The other public methods of the service — product processors call them, but they are available from your own code too:
+
+| Method | Description |
+| --- | --- |
+| `prepareObject($product, $data)` | Split the incoming array between `msProduct` and `msProductData` before saving |
+| `saveCategories($productId, $categories)` | Rewrite the set of extra categories |
+| `saveOptions($productId, $options)` | Rewrite the product option values. This is what `Product\Create` calls |
+| `saveLinks($productId, $links)` | Rewrite the product links |
+| `removeProduct($productId)` | Delete the product together with its data |
+| `getModifiedPrice()`, `getModifiedWeight()`, `getModifiedFields()` | What changed in the last save — for events and the log |
+| `getOptionKeys($productId)`, `getOptionFields($productId)` | Keys and descriptions of the product options |
+
 ### msProductData fields
 
 | Field | DB type | PHP type | Default | Description |
@@ -306,6 +318,15 @@ $imageService->rankProductImages($productData, [
 
 // Remove product folder from media source
 $imageService->removeProductCatalog($productData);
+
+// Bring up the product media source (needed before working with files directly)
+$source = $imageService->initializeMediaSource($productData);
+
+// Reorder images by file name
+$imageService->sortProductImagesByName($productData);
+
+// Which file becomes the product preview
+$fileId = $imageService->resolvePreviewFileId($productData);
 ```
 
 ### Gallery processors
@@ -348,6 +369,7 @@ use MiniShop3\Model\msCategoryMember;
 $member = $modx->newObject(msCategoryMember::class);
 $member->set('product_id', $productId);
 $member->set('category_id', $categoryId);
+$member->set('menuindex', 10); // product order inside that category, 0 by default
 $member->save();
 
 // Get product additional categories
@@ -389,7 +411,7 @@ $productData->save();
 
 Links join products: "Similar", "Bought with this". Two models:
 
-- **msLink**: the link type (id, type, name)
+- **msLink**: the link type (id, type, name, description)
 - **msProductLink**: one link between products (link, master, slave)
 
 ```mermaid
@@ -541,6 +563,20 @@ $productData->save();
 $vendor = $productData->getOne('Vendor');
 echo $vendor->get('name');  // "Samsung"
 ```
+
+### Vendor Manager API
+
+These are the endpoints the vendors grid calls. The whole group is protected by the `mssetting_save` permission.
+
+| Method | Route | Description |
+| --- | --- | --- |
+| `GET` | `/api/mgr/vendors` | List. Parameters: `start`, `limit`, `query` (LIKE on name, description, country and email) |
+| `POST` | `/api/mgr/vendors` | Create |
+| `GET` | `/api/mgr/vendors/{id}` | Read one |
+| `PUT` | `/api/mgr/vendors/{id}` | Update |
+| `DELETE` | `/api/mgr/vendors/{id}` | Delete |
+| `DELETE` | `/api/mgr/vendors/bulk` | Delete several, an `ids` list in the body |
+| `POST` | `/api/mgr/vendors/sort` | Save the order after a drag |
 
 ### Vendor processors
 

@@ -67,6 +67,10 @@ The body of `POST /customer/add` is `key` and `value`. The body of `POST /custom
 
 `POST` answers 201. `name`, `city`, and `street` are required. Without them the server returns 422 with `validation_failed`.
 
+An address matching one already saved is refused with **409** and `error_code: conflict`; `data` carries `existing_id`, the id of the existing record, so the client can simply select it instead of creating a duplicate. The match is computed from the address hash, not from an id.
+
+The address list comes back as `{ "items": [...], "total": N }`.
+
 ## Account orders
 
 | Method | Path |
