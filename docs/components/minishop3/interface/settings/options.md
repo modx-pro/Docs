@@ -43,13 +43,21 @@ title: Опции товаров
 
 | Поле | Тип | Описание |
 | --- | --- | --- |
-| `key` | string | Уникальный ключ опции (латиница, цифры, `_`, `-`) |
+| `key` | string | Уникальный ключ опции (латиница, цифры, `_`, `-`). Не может начинаться с цифры или не-буквенного символа, и не может совпадать с зарезервированным именем — см. ниже |
 | `caption` | string | Название для отображения |
 | `description` | text | Описание опции |
 | `measure_unit` | string | Единица измерения (шт, кг, см) |
 | `option_group_id` | int / null | Группа `msOptionGroup`. Необязательно |
 | `type` | string | Тип значения (см. ниже) |
 | `properties` | JSON | Дополнительные настройки (для типов со списком значений) |
+
+### Ограничения ключа
+
+Модель проверяет `key` двумя правилами. Первое — формат: латиница, цифры, `_` и `-`; ключ не может начинаться с цифры или не-буквенного символа и не может заканчиваться пробелом. Нарушение даёт `ms3_option_err_invalid_key`.
+
+Второе — список зарезервированных имён, их около шестидесяти. Туда входят все поля ресурса MODX (`id`, `pagetitle`, `alias`, `parent`, `template`, `menuindex`, `published`, `content`, `uri`, `class_key` и прочие) и все колонки товара (`article`, `price`, `old_price`, `weight`, `image`, `thumb`, `vendor`, `made_in`, `new`, `popular`, `favorite`, `tags`, `color`, `size`), а также `type`, `description`, `source` и `action`. Совпадение даёт `ms3_option_err_reserved_key`.
+
+Запрет не произвольный: плейсхолдеры опций и поля товара попадают в один массив, и совпадение ключа перекрыло бы поле товара. Если нужна опция с таким смыслом, добавьте префикс — `opt_color`, `my_size`.
 
 ## Типы опций
 
@@ -242,7 +250,7 @@ await ms3.cartAPI.add(123, 1, { color: 'Красный', size: 'L' })
 
 | Метод | Путь | Описание |
 | --- | --- | --- |
-| `GET` | `/api/mgr/options` | Список. Параметры: `start`, `limit`, `option_group_id` (`0` = без группы), `category_id`, `categories[]` |
+| `GET` | `/api/mgr/options` | Список. Параметры: `start`, `limit`, `query` (LIKE по `key` и `caption`), `option_group_id` (`0` = без группы), `category_id`, `categories[]` |
 | `GET` | `/api/mgr/options/{id}` | Одна опция + карта `categories` |
 | `POST` | `/api/mgr/options` | Создать (`key`, `caption`, `type`, `option_group_id`, `properties`, `categories`, …) |
 | `PUT` | `/api/mgr/options/{id}` | Частичное обновление |

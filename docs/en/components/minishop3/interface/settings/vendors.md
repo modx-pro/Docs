@@ -18,6 +18,12 @@ The directory is there so you can:
 - filter the catalog by vendor
 - build brand pages
 
+::: warning Deletion does not clean up products
+The vendor-to-products relation is an aggregate with no cascade, and the controller cleans nothing on delete. After the record is gone, `msProductData.vendor_id` on those products still points at a vendor that no longer exists: the `vendor_*` placeholders in snippets go empty and a filter by vendor stops finding those products.
+
+Reassign the products to another vendor, or clear their `vendor_id`, before deleting.
+:::
+
 ## Vendor fields
 
 | Field | Type | Description |

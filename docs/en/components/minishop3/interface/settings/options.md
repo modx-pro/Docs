@@ -43,13 +43,21 @@ Existing groups are migrated during the upgrade. Two things you have to fix by h
 
 | Field | Type | Description |
 | --- | --- | --- |
-| `key` | string | Unique option key (Latin letters, digits, `_`, `-`) |
+| `key` | string | Unique option key (Latin letters, digits, `_`, `-`). It cannot start with a digit or a non-letter character, and it cannot match a reserved name — see below |
 | `caption` | string | Display name |
 | `description` | text | Option description |
 | `measure_unit` | string | Unit of measure (pcs, kg, cm) |
 | `option_group_id` | int / null | `msOptionGroup` group. Optional |
 | `type` | string | Value type (see below) |
 | `properties` | JSON | Extra settings (for list-based types) |
+
+### Key restrictions
+
+The model checks `key` with two rules. The first is the format: Latin letters, digits, `_` and `-`; the key cannot start with a digit or a non-letter character and cannot end with a space. A violation raises `ms3_option_err_invalid_key`.
+
+The second is a list of reserved names, about sixty of them. It covers every MODX resource field (`id`, `pagetitle`, `alias`, `parent`, `template`, `menuindex`, `published`, `content`, `uri`, `class_key` and the rest) and every product column (`article`, `price`, `old_price`, `weight`, `image`, `thumb`, `vendor`, `made_in`, `new`, `popular`, `favorite`, `tags`, `color`, `size`), plus `type`, `description`, `source` and `action`. A match raises `ms3_option_err_reserved_key`.
+
+The ban is not arbitrary: option placeholders and product fields land in the same array, and a clashing key would shadow the product field. When you need an option with that meaning, add a prefix — `opt_color`, `my_size`.
 
 ## Option types
 
@@ -242,7 +250,7 @@ All UI operations go through the Manager API (`/assets/components/minishop3/conn
 
 | Method | Path | Description |
 | --- | --- | --- |
-| `GET` | `/api/mgr/options` | List. Params: `start`, `limit`, `option_group_id` (`0` = no group), `category_id`, `categories[]` |
+| `GET` | `/api/mgr/options` | List. Params: `start`, `limit`, `query` (LIKE on `key` and `caption`), `option_group_id` (`0` = no group), `category_id`, `categories[]` |
 | `GET` | `/api/mgr/options/{id}` | One option + `categories` map |
 | `POST` | `/api/mgr/options` | Create (`key`, `caption`, `type`, `option_group_id`, `properties`, `categories`, …) |
 | `PUT` | `/api/mgr/options/{id}` | Update (partial) |

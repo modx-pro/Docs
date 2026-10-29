@@ -45,6 +45,7 @@ items: [
         items: [
           { text: 'Доставки', link: 'interface/settings/deliveries' },
           { text: 'Оплаты', link: 'interface/settings/payments' },
+          { text: 'Статусы заказа', link: 'interface/settings/statuses' },
           { text: 'Производители', link: 'interface/settings/vendors' },
           { text: 'Связи', link: 'interface/settings/links' },
           { text: 'Опции', link: 'interface/settings/options' },
