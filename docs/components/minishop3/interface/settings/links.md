@@ -38,13 +38,16 @@ title: Связи товаров
 
 ```php
 // Создание связи
+// У msProductLink составной первичный ключ link + master + slave,
+// а fromArray() поля ключа пропускает — пишем через set()
 $link = $modx->newObject(\MiniShop3\Model\msProductLink::class);
-$link->fromArray([
-    'link' => 1,           // ID типа связи (msLink)
-    'master' => 10,        // ID основного товара
-    'slave' => 20,         // ID связанного товара
-]);
+$link->set('link', 1);      // ID типа связи (msLink)
+$link->set('master', 10);   // ID основного товара
+$link->set('slave', 20);    // ID связанного товара
 $link->save();
+
+// Короче и с учётом кратности связи:
+$modx->services->get('ms3_product_link_service')->create(10, 20, 1);
 ```
 
 ## Вывод связанных товаров
@@ -71,7 +74,9 @@ $link->save();
 | `many_to_one` | Одна строка с переставленными master/slave |
 | `one_to_one`, `many_to_many` | Две строки: A→B и B→A (создаёт `ProductLinkService`) |
 
-Для `many_to_many` вторая строка создаётся автоматически: сервис синхронизирует обе строки, поэтому пару master/slave задавать не нужно. Правка одной из строк перезаписывается сервисом.
+Для `many_to_many` сервис идёт дальше пары строк: после создания связи он достраивает **полный граф** между всеми товарами, уже связанными этим типом. Добавили третий товар к паре — получите шесть строк, а не две. Пару master/slave задавать не нужно, правка одной из строк перезаписывается сервисом.
+
+Удаление для `many_to_many` симметрично: вычищаются все строки, где участвует `slave`, независимо от `master`, — товар вынимается из всей группы сразу.
 
 ## Использование в корзине
 
@@ -131,11 +136,9 @@ foreach ($siblings as $sibling) {
 
     if (!$existing) {
         $link = $modx->newObject(\MiniShop3\Model\msProductLink::class);
-        $link->fromArray([
-            'link' => 1,
-            'master' => $product->get('id'),
-            'slave' => $sibling->get('id'),
-        ]);
+        $link->set('link', 1);
+        $link->set('master', $product->get('id'));
+        $link->set('slave', $sibling->get('id'));
         $link->save();
     }
 }

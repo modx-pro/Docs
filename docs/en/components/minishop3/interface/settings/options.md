@@ -21,7 +21,7 @@ Options store product attributes (EAV): color, size, material, any key of your o
 
 ### Options tab
 
-- **Left:** MODX category tree (`class_key = msCategory`). Checkboxes are independent: checking a parent does not select its children. The context menu works on a branch — five items: Refresh Directory, Expand tree, Collapse tree, Select All, Clear All. There is also a search by name.
+- **Left:** the catalogue tree. Only categories (`class_key = msCategory`) can be picked; navigation containers and web links are shown for navigation and carry `selectable: false`. Checkboxes are independent: checking a parent does not select its children. The context menu works on a branch — five items: Refresh Directory, Expand tree, Collapse tree, Select All, Clear All. There is also a search by name.
 - **Right:** options grid. Filters: selected categories and group (`option_group_id`). Bulk actions: assign options to categories, delete.
 
 Create and edit dialog: form on the left (key, caption, description, type, `msOptionGroup` group, unit), category tree on the right for binding. For `combobox` / `comboMultiple` / `comboColors` there is a value editor with drag-and-drop ordering. For `comboColors`, a `ColorPicker` sits next to the hex field.
@@ -89,7 +89,7 @@ Type is stored in `msOption.type` as `lowerCamelCase`. All 10 supported types:
 }
 ```
 
-`comboOptions` does not require a preset list. On the product card you type any text. Enter, a comma, or a click outside the field commits the value. Autocomplete takes values of the same key from **other products** via `/api/mgr/options/suggestions`.
+`comboOptions` does not require a preset list. On the product card you type any text. Enter, a comma, or a click outside the field commits the value. Autocomplete takes values of the same key from **all products** via `/api/mgr/options/suggestions` — the current product is not excluded from the set.
 
 ## Category binding
 

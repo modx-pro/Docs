@@ -80,7 +80,7 @@ CRUD в этом разделе идёт через Manager API (`VendorsControl
 ```fenom
 {$_modx->runSnippet('msProducts', [
     'parents' => 0,
-    'where' => ['Data.vendor_id:IN' => '1,2,3'],  {* ID производителей *}
+    'where' => ['Data.vendor_id:IN' => [1, 2, 3]],  {* именно массив: строку xPDO подставит целиком *}
     'tpl' => 'tpl.msProducts.row'
 ])}
 ```

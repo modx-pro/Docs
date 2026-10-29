@@ -13,7 +13,7 @@ Open **Extras → MiniShop3 → Settings → Deliveries**.
 | --- | --- | --- |
 | `name` | string | Delivery method name |
 | `description` | text | Description for the customer |
-| `price` | string | Base delivery cost (stored as `varchar(11)`, cast to a number in the calculation) |
+| `price` | string | Delivery surcharge: a fixed amount, a percent of the cart total (`5%`), or a negative value acting as a discount. The allowed percent runs from −100 to 100; anything else zeroes the surcharge and is logged. The interface labels the field «Additional cost». Stored as `varchar(11)` |
 | `weight_price` | float | Cost per unit of weight |
 | `distance_price` | float | Cost per unit of distance. The calculation does not use it now (reserved field) |
 | `free_delivery_amount` | float | Order total for free delivery |
@@ -39,10 +39,12 @@ When the customer picks a delivery, the payment list is filtered.
 Delivery cost is calculated with this formula:
 
 ```text
-Total cost = price + (weight_price × weight)
+Total cost = weight_price × weight + (price as an amount or a percent of the cart)
 ```
 
-If the order total is greater than or equal to `free_delivery_amount`, the delivery cost is 0.
+The order weight is the sum of `weight × count` across all lines. A negative `weight_price` is zeroed and logged.
+
+When the free-delivery threshold is set (`free_delivery_amount` above zero) and the order total reaches it, the delivery cost is 0. The field defaults to 0, so an empty threshold means free delivery never applies.
 
 ### Custom calculation
 
@@ -232,7 +234,17 @@ Validation is done by the built-in `PipeRuleValidator` (`src/Services/Validation
 | `required_with_all` | Required when all of the fields are set | `required_with_all:city,street` |
 | `required_without_all` | Required when none of the fields are set | `required_without_all:phone,email` |
 
+::: warning Some rules have no message of their own
+The checks work, but `PipeRuleValidator::DEFAULT_MESSAGES` has no text for `after`, `before`, `digits_between` and all six `required_*`. On failure the customer sees the generic «The :attribute has unsupported validation rule», and a text of your own cannot be set (see [Error messages](#error-messages)).
+:::
+
 ### Configuration examples
+
+::: danger Identical rule strings collapse
+`OrderFieldManager::validate()` merges the sets through `array_unique(array_merge(...))`, and `array_unique` works by value. When two fields carry the same rule string, only the first survives in the set — the others lose their format checks (`min`, `email`, `regex`). A required field is still enforced at submit through another path.
+
+The examples below contain such repeats; for the rules to apply to every field the strings must differ — `required|min:2` and `required|min:3`, for instance. The defect is filed as [modx-pro/MiniShop3#949](https://github.com/modx-pro/MiniShop3/issues/949).
+:::
 
 #### Courier delivery
 
@@ -293,7 +305,11 @@ Contact details only:
 
 ### Error messages
 
-The default messages are **English** (`PipeRuleValidator::DEFAULT_MESSAGES`). They do not follow the interface language. Set them through `setValidationRules()` / `setValidationMessages()` (`OrderFieldManager`) or through the delivery `properties`.
+The default messages are **English** and do not follow the interface language. Order fields use four texts hard-coded in `OrderFieldManager::validate()` — for `required`, `numeric`, `min` and `email`; the rest come from `PipeRuleValidator::DEFAULT_MESSAGES`.
+
+::: warning Custom messages cannot be set
+`setValidationMessages()` and `setValidationRules()` are overwritten at the start of every `validate()` call, and the delivery `properties` are never read by validation: rules come only from the `validation_rules` column. There is no working way to replace the texts in the current code — the defect is filed as [modx-pro/MiniShop3#950](https://github.com/modx-pro/MiniShop3/issues/950).
+:::
 
 ## API
 
