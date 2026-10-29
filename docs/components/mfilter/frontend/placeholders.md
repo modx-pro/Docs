@@ -1,36 +1,43 @@
 # Плейсхолдеры
 
-Справочник по всем плейсхолдерам и переменным, которые mFilter выставляет в MODX и чанки.
+Какие плейсхолдеры ставят плагин и сниппеты mFilter и как читать их в шаблоне ресурса и в чанках.
 
 ## Синтаксис
 
-MODX-плейсхолдер `mfilter.something` доступен из шаблона тремя способами:
+Плейсхолдер `mfilter.something` читается тремя способами:
 
 - **MODX-тег:** `[[+mfilter.something]]`
-- **Fenom (`pdoTools`), через массив `$_pls`:** `{$_pls['mfilter.something']}`
 - **Fenom, явным вызовом:** `{$_modx->getPlaceholder('mfilter.something')}`
+- **Fenom, через массив `$_pls`:** `{$_pls['mfilter.something']}` — только то, что поставлено до начала разбора шаблона, см. ниже
 
 ::: warning
-Записи вида `{$mfilter.something}` (dot-notation через переменную `$mfilter`) **не работают** — такой переменной в Fenom-scope нет. Используйте `$_pls['mfilter.something']`.
+Запись `{$mfilter.something}` — через точку от переменной `$mfilter` — **не работает**: такой переменной в Fenom нет.
 :::
 
 ### `$_pls` в шаблоне и в чанке — это разные массивы
 
-Одна и та же запись `{$_pls['ключ']}` читает разные данные в зависимости от того, где стоит.
+`$_pls` — не сами плейсхолдеры MODX, а их копия, которую pdoTools снимает в начале разбора шаблона или чанка. `$_modx->getPlaceholder()` читает текущее значение.
 
 | Где | Что лежит в `$_pls` | Как читать плейсхолдер `mfilter.hash` |
 |-----|---------------------|----------------------------------------|
-| Шаблон ресурса | глобальные плейсхолдеры MODX | `{$_pls['mfilter.hash']}` |
+| Шаблон ресурса | плейсхолдеры, поставленные до начала разбора шаблона, — то есть плагином | `{$_modx->getPlaceholder('mfilter.hash')}` ниже вызова `mFilter` |
 | Чанк, отрисованный через `getChunk` (`tplOuter`, `tpl`, `tplPagination` и прочие) | **только данные, переданные этому чанку** | `{$hash}` — как переменная |
 
-Причина в `pdoTools`: парсер шаблона передаёт Fenom массив `$modx->placeholders`, а `getChunk()` — массив свойств чанка, и в обоих случаях кладёт его копию в `$_pls`. Глобальные плейсхолдеры в чанк не подмешиваются.
+pdoTools разбирает шаблон за один проход. Сниппет `mFilter`, вызванный внутри шаблона, ставит свои плейсхолдеры, когда копия в `$_pls` уже снята. Через `$_pls` их не видно даже ниже вызова — читайте через `$_modx->getPlaceholder()` или MODX-тегом:
 
-Отсюда две типовые ошибки:
+```fenom
+{set $results = '!mFilter' | snippet : ['element' => 'msProducts', 'parents' => $_modx->resource.id]}
+
+{$_pls['mfilter.hash']}                    {* пусто *}
+{$_modx->getPlaceholder('mfilter.hash')}   {* хеш вызова *}
+```
+
+Ещё две типовые ошибки:
 
 - `{$_pls['hash']}` **в шаблоне** — пусто: глобальный плейсхолдер называется `mfilter.hash`, ключа `hash` там нет. Так выглядит разметка, скопированная из чанка `mfilter.outer` в шаблон.
-- `{$_pls['mfilter.sort']}` **в чанке** — пусто: чанку передана переменная `$currentSort`, а глобальных плейсхолдеров он не видит.
+- `{$_pls['mfilter.sort']}` **в чанке** — пусто: чанку передана переменная `$currentSort`, а глобальных плейсхолдеров в его `$_pls` нет.
 
-Внутри чанка глобальный плейсхолдер всё же доступен MODX-тегом `[[+mfilter.sort]]` — но переменная чанка быстрее и надёжнее, если она есть. Списки переменных для каждого чанка — в секциях ниже.
+В чанке надёжнее брать переменную чанка. Если её нет, глобальный плейсхолдер доступен через `{$_modx->getPlaceholder()}` или MODX-тегом.
 
 ::: danger Не дублируйте обёртку результатов в шаблоне
 Обёртку с `data-mfilter-results` рисует чанк `tplOuter`. Если скопировать её ещё и в шаблон, на странице окажется два вложенных `[data-mfilter-results]`, и JS привяжется к внешнему — из шаблона. Ссылки пагинации внутри чанка тогда идут мимо AJAX: каждый клик перезагружает страницу целиком.
@@ -40,27 +47,22 @@ MODX-плейсхолдер `mfilter.something` доступен из шабло
 
 ## Глобальные плейсхолдеры
 
-Устанавливаются плагином `mfilter` при `OnHandleRequest` для страницы каталога с активными фильтрами, и/или сниппетом `mFilter` во время рендера. Доступны в шаблоне ресурса — через `$_pls` или MODX-тегом; внутри чанков `pdoTools` — только MODX-тегом, см. выше.
+Их ставят двое:
 
-Плейсхолдеры сниппета появляются только после того, как он отработал. Если шаблон читает их выше по коду, чем стоит вызов, — получит пустоту. Поэтому в примере шаблона вызов вынесен наверх, а вывод кладётся в переменную:
+- **плагин `mFilter`** — при разборе адреса, до шаблона. На любой странице — значения по умолчанию: пустые фильтры и SEO, сортировка `pagetitle-asc`, лимит 24, вид `tpl1`. На странице каталога — значения из SEO-адреса, а лимит и сортировка без адреса — из настроек;
+- **сниппет `mFilter`** — во время отрисовки. Перезаписывает значения плагина значениями своего вызова.
 
-```fenom
-{set $mfilterOutput = '!mFilter' | snippet : ['element' => 'msProducts', 'parents' => $_modx->resource.id]}
-
-<h1>{$_pls['mfilter.seo.h1'] ?: $_modx->resource.pagetitle}</h1>
-...
-<div class="catalog-content">{$mfilterOutput}</div>
-```
+Читайте их ниже вызова сниппета через `$_modx->getPlaceholder()` — тогда получите значения сниппета.
 
 ### Активные фильтры и URL
 
 | Плейсхолдер | Тип | Описание |
 |-------------|-----|----------|
-| `mfilter.filters` | array | Активные фильтры: `['brand' => ['apple'], 'color' => ['red']]` |
-| `mfilter.activeFilters` | array | Синоним `mfilter.filters` |
-| `mfilter.base_uri` | string | URI страницы каталога без сегмента фильтров (`/catalog/`) |
-| `mfilter.filter_uri` | string | Сегмент фильтров, добавляемый после `base_uri` (`brand--apple/color--red/`) |
-| `mfilter.baseIds` | array | ID товаров текущей выборки (устанавливается сниппетом `mFilter`) |
+| `mfilter.activeFilters` | array | Активные фильтры — из SEO-адреса и из строки запроса. Значения настоящие: у производителя — id, а не слаг |
+| `mfilter.filters` | array | Активные фильтры **только из SEO-адреса**. С фильтрами в строке запроса пуст. Ставит плагин |
+| `mfilter.base_uri` | string | Адрес страницы каталога без сегмента фильтров, без `/` в начале и в конце: `catalog`. Ставит плагин, только на странице каталога |
+| `mfilter.filter_uri` | string | Сегмент фильтров, тоже без `/` по краям: `brand--apple/color--red` |
+| `mfilter.baseIds` | array | ID всех товаров вызова **до** применения фильтров. Ставится только с `&element`; нужен сниппету `mFilterForm`, поэтому форму вызывают ниже `mFilter` |
 
 ### Сортировка и пагинация
 
@@ -70,113 +72,112 @@ MODX-плейсхолдер `mfilter.something` доступен из шабло
 | `mfilter.sortBy` | string | Только поле: `"pagetitle"`, `"price"` |
 | `mfilter.sortDir` | string | Только направление: `"asc"` / `"desc"` |
 | `mfilter.limit` | int | Текущий лимит на странице |
-| `mfilter.defaultLimit` | int | Дефолтный лимит из настроек (для сравнения) |
+| `mfilter.defaultLimit` | int | Лимит вызова сниппета — чтобы отличить его от выбранного посетителем |
 | `mfilter.page` | int | Текущая страница |
-| `mfilter.tpl` | string | Активный шаблон карточки (`"tpl1"`, `"tpl2"`) |
+| `mfilter.tpl` | string | Текущий вид из `&tpls` (`"tpl1"`, `"tpl2"`) |
+| `mfilter.total`, `mfilter.pageCount` | int | Всего найдено и всего страниц. Имена меняются параметрами `&totalVar` и `&pageCountVar` |
+
+До вызова сниппета в этих плейсхолдерах — значения плагина (см. выше). Значения вызова — например, `'limit' => 12` — появятся только после сниппета.
 
 ### SEO
 
-Устанавливаются, когда есть хотя бы один активный фильтр. На нефильтрованных страницах — пустые (`noindex` — `false`).
+Сниппет ставит их всегда. Плагин считает их заранее только на SEO-адресе с фильтрами, в остальных случаях оставляет пустыми.
+
+С фильтрами значения берутся из [SEO-шаблона](../interface/seo-templates) или [индивидуальной SEO-страницы](../interface/seo-pages). Если нет ни того ни другого, заголовок собирается из заголовка ресурса и значений фильтров.
 
 | Плейсхолдер | Тип | Описание |
 |-------------|-----|----------|
-| `mfilter.seo.title` | string | SEO title из SEO Templates |
-| `mfilter.seo.h1` | string | SEO H1 |
-| `mfilter.seo.description` | string | SEO meta description |
-| `mfilter.seo.canonical` | string | Canonical URL (при `noindex` указывает на страницу без фильтров) |
-| `mfilter.seo.noindex` | bool | Флаг noindex (см. [Системные настройки](../settings.md#seo-optimizaciya)) |
-| `mfilter.seo.text` | string | Произвольный SEO-текст из SEO Templates |
+| `mfilter.seo.title` | string | Заголовок для `<title>`. Без фильтров — «заголовок \| название сайта» |
+| `mfilter.seo.h1` | string | Заголовок `<h1>`. Без фильтров — заголовок ресурса |
+| `mfilter.seo.description` | string | Мета description. Без фильтров — описание ресурса |
+| `mfilter.seo.canonical` | string | Канонический адрес. Без фильтров — полный адрес ресурса; при `noindex` указывает на страницу без фильтров |
+| `mfilter.seo.noindex` | bool | Флаг `noindex` (см. [Системные настройки](../settings.md#seo-optimizaciya)) |
+| `mfilter.seo.text` | string | Произвольный SEO-текст |
 
 ### Прочее
 
 | Плейсхолдер | Тип | Описание |
 |-------------|-----|----------|
 | `mfilter.hash` | string | Хеш конфигурации вызова `mFilter`; по нему AJAX воспроизводит тот же вызов |
-| `mfilter.results` | string | HTML отрендеренных карточек (только при `&toPlaceholders=1` в сниппете `mFilter`) |
-| `mfilter.pagination` | string | HTML пагинации (только при `&toPlaceholders=1`) |
+| `mfilter.results` | string | HTML карточек — только без `&element` и при `&toPlaceholders=1` |
+| `mfilter.pagination` | string | HTML пагинации — там же |
+| `mse.query`, `mse.total` | string, int | Поисковая фраза и сколько товаров нашёл поиск — с `&element` и mSearch, см. [mFilter](../snippets/mfilter#integraciya-s-msearch) |
+| `mfilter.form`, `mfilter.activeCount` | string, int | HTML формы и число применённых фильтров — ставит `mFilterForm`, см. [Плейсхолдеры](../snippets/mfilterform#pleysholdery) |
+| `mfilter.selected.hash` | string | Хеш вызова `mFilterSelected` |
 
 ::: warning `toPlaceholders=1`
-Использование `&toPlaceholders=1` в вызове сниппета `mFilter` разбивает вывод на `mfilter.results` и `mfilter.pagination` **без оборачивающего** `tplOuter`-чанка. Теряются `data-mfilter-results`, `data-page-count` и вся SSR-инициализация — фронтенд-JS не сможет её подхватить. Используйте обычный вывод сниппета и оборачивающий чанк `tplOuter`.
+С `&toPlaceholders=1` сниппет `mFilter` выводит `mfilter.results` и `mfilter.pagination` **без оборачивающего** чанка `tplOuter`. Теряются `data-mfilter-results`, `data-page-count` и вся начальная разметка с сервера — скрипт не сможет её подхватить. Используйте обычный вывод сниппета и оборачивающий чанк `tplOuter`. С `&element` параметр ничего не делает.
 :::
 
+## После фильтрации без перезагрузки
+
+После AJAX-запроса плейсхолдеров нет: шаблон ресурса и `tplOuter` не перерисовываются. Скрипт обновляет на странице:
+
+- выдачу, пагинацию, число в `.mfilter-total` и блок `.mfilter-empty`;
+- `<title>`, мета description, canonical и robots;
+- элементы с `data-mfilter-h1` и `data-mfilter-seo-text`;
+- форму, кнопку сброса и блок «Выбрано».
+
+Всё остальное, что выведено из плейсхолдеров, — крошки, условия `{if}`, подписи — остаётся как при загрузке страницы.
+
 ## Использование в шаблоне ресурса
+
+Вызовите `mFilter` в начале шаблона, сохраните вывод в переменную и выведите его ниже. Тогда плейсхолдеры сниппета читаются через `$_modx->getPlaceholder()` во всём шаблоне, включая `<head>`.
 
 ### SEO-теги в `<head>`
 
 ```html
-<title>{$_pls['mfilter.seo.title'] ?: $_modx->resource.pagetitle}</title>
-<meta name="description" content="{$_pls['mfilter.seo.description'] ?: $_modx->resource.description}">
+{set $results = '!mFilter' | snippet : ['element' => 'msProducts', 'parents' => $_modx->resource.id]}
+<head>
+    <title>{$_modx->getPlaceholder('mfilter.seo.title') ?: $_modx->resource.pagetitle}</title>
+    <meta name="description" content="{$_modx->getPlaceholder('mfilter.seo.description') | esc}">
 
-{if $_pls['mfilter.seo.canonical']}
-    <link rel="canonical" href="{$_pls['mfilter.seo.canonical']}">
-{/if}
+    {if $_modx->getPlaceholder('mfilter.seo.canonical')}
+        <link rel="canonical" href="{$_modx->getPlaceholder('mfilter.seo.canonical') | esc}">
+    {/if}
 
-{if $_pls['mfilter.seo.noindex']}
-    <meta name="robots" content="noindex, follow">
-{/if}
+    {if $_modx->getPlaceholder('mfilter.seo.noindex')}
+        <meta name="robots" content="noindex, follow">
+    {/if}
+</head>
 ```
 
-Логика фолбэков: если фильтров нет, `mfilter.seo.*` пусты, и `?:` возвращает стандартное значение ресурса.
-
 ::: tip Почему `noindex, follow`, а не `noindex, nofollow`
-JS-часть при AJAX-обновлении фильтров всегда выставляет `content="noindex, follow"` — это лучше для SEO, чем `nofollow` (link equity со страницы каталога с фильтрами продолжает распределяться по товарам). Чтобы SSR-разметка не рассогласовывалась с AJAX-состоянием, в шаблоне тоже указывайте `follow`.
+При AJAX-обновлении фильтров скрипт всегда ставит `content="noindex, follow"`. Указывайте `follow` и в шаблоне, иначе разметка первой загрузки страницы разойдётся с состоянием после AJAX.
 :::
 
 ### H1 и SEO-текст в теле страницы
 
 ::: warning Обязательные маркеры для AJAX
-`<h1>` и контейнер SEO-текста нужно **явно пометить** атрибутом или классом — иначе JS не найдёт их при AJAX-фильтрации и они обновятся только после `F5`. У страницы может быть несколько `<h1>` (hero, sidebar), поэтому просто «первый h1» не подходит.
+`<h1>` и контейнер SEO-текста нужно **явно пометить** атрибутом или классом — иначе JS не найдёт их при AJAX-фильтрации и они обновятся только после `F5`. У страницы может быть несколько `<h1>` (в шапке, в боковой колонке), поэтому просто «первый h1» не подходит.
 
 - `<h1>` — атрибут `data-mfilter-h1` или класс `mfilter-h1`
 - SEO-текст — атрибут `data-mfilter-seo-text` или класс `mfilter-seo-text`
 :::
 
 ```html
-<h1 data-mfilter-h1>{$_pls['mfilter.seo.h1'] ?: $_modx->resource.pagetitle}</h1>
+<h1 data-mfilter-h1>{$_modx->getPlaceholder('mfilter.seo.h1') ?: $_modx->resource.pagetitle}</h1>
 
-<div data-mfilter-seo-text{if !$_pls['mfilter.seo.text']} style="display:none"{/if}>
-    {$_pls['mfilter.seo.text']}
+<div data-mfilter-seo-text{if !$_modx->getPlaceholder('mfilter.seo.text')} style="display:none"{/if}>
+    {$_modx->getPlaceholder('mfilter.seo.text')}
 </div>
 ```
 
-При AJAX-фильтрации JS сам управляет `display` контейнера SEO-текста (скрывает при пустом значении, показывает при заполненном), поэтому inline-`display:none` при пустом SSR-значении — только чтобы контейнер не мелькал до первой фильтрации.
+`display:none` нужен, чтобы пустой контейнер не мелькал до первой фильтрации. Дальше скрипт сам скрывает его при пустом SEO-тексте и показывает при заполненном.
 
-### Хлебные крошки с фильтрами
+### Хлебные крошки и сброс фильтров
 
-```html
-<nav class="breadcrumbs">
-    <a href="/">Главная</a>
-    /
-    <a href="{$_pls['mfilter.base_uri'] ?: $_modx->makeUrl($_modx->resource.id)}">
-        {$_modx->resource.pagetitle}
-    </a>
-    {if $_pls['mfilter.seo.h1']}
-        / <span>{$_pls['mfilter.seo.h1']}</span>
-    {/if}
-</nav>
-```
+Хлебные крошки с выбранными фильтрами выводит сниппет [mFilterCrumbs](../snippets/mfiltercrumbs). Кнопку «Сбросить фильтры» делайте с атрибутом `data-mfilter-reset`. Скрипт показывает её при выбранных фильтрах и прячет без них, в том числе после фильтрации без перезагрузки, — см. [mFilterForm](../snippets/mfilterform#knopka-sbrosa-tolko-pri-aktivnyh).
 
-### Проверка «есть ли активные фильтры»
+### Сортировка и лимит в своей разметке
 
-Отдельного плейсхолдера `hasFilters` нет — проверяйте сам массив:
+Код ставьте ниже вызова `mFilter`:
 
 ```html
-{if $_pls['mfilter.filters']}
-    <a href="{$_pls['mfilter.base_uri']}" class="reset-all">Сбросить все фильтры</a>
-{/if}
-```
-
-### Условная сортировка/лимит в UI-контролах
-
-```html
+{var $sort = $_modx->getPlaceholder('mfilter.sort')}
 <select data-mfilter-sort>
-    <option value="pagetitle-asc" {if $_pls['mfilter.sort'] == 'pagetitle-asc'}selected{/if}>А-Я</option>
-    <option value="price-asc" {if $_pls['mfilter.sort'] == 'price-asc'}selected{/if}>Сначала дешевле</option>
-</select>
-
-<select data-mfilter-limit>
-    <option value="12" {if $_pls['mfilter.limit'] == 12}selected{/if}>12</option>
-    <option value="24" {if $_pls['mfilter.limit'] == 24}selected{/if}>24</option>
+    <option value="pagetitle-asc" {if $sort == 'pagetitle-asc'}selected{/if}>А-Я</option>
+    <option value="price-asc" {if $sort == 'price-asc'}selected{/if}>Сначала дешевле</option>
 </select>
 ```
 
@@ -188,13 +189,11 @@ JS-часть при AJAX-обновлении фильтров всегда в�
 <a href="#" data-mfilter-sort="pagetitle-asc">По названию</a>
 ```
 
-JS обрабатывает `<select>` по событию `change`, а `<button>` и `<a>` — по клику, с отменой перехода.
-
-Подсветку активной кнопки JS не делает — её ставит вёрстка. В шаблоне сравнивайте значение атрибута с плейсхолдером `mfilter.sort`, в чанке `tplOuter` — с переменной `$currentSort`; формат `поле-направление` у обоих одинаковый.
+Скрипт обрабатывает `<select>` по событию `change`, а `<button>` и `<a>` — по клику, с отменой перехода. При загрузке страницы класс `active` текущей кнопке ставит вёрстка, дальше его переключает скрипт. Лимит `data-mfilter-limit` работает так же.
 
 ## Переменные внутри чанков
 
-При рендере своих чанков `pdoTools` передаёт им данные напрямую как Fenom-переменные (не через `$_pls`).
+Чанк сниппета получает данные как переменные Fenom; они же лежат в его `$_pls`. Глобальных плейсхолдеров среди них нет.
 
 ### Чанки `mFilter` (карточки товаров)
 
@@ -209,206 +208,34 @@ JS обрабатывает `<select>` по событию `change`, а `<button
 | `$pageCount` | Всего страниц |
 | `$limit` | Товаров на странице |
 | `$hash` | Хеш конфигурации вызова; выводится в `data-mfilter-hash` |
-| `$currentSort` | Текущая сортировка в формате `поле-направление` (`price-asc`) — для подсветки активного пункта в селекте или кнопках |
-| `$currentTpl` | Текущий алиас вида из `&tpls` (`tpl1`, `tpl2`) — для подсветки переключателя сетка/список |
+| `$currentSort` | Текущая сортировка в формате `поле-направление` (`price-asc`) — для подсветки активного пункта в списке или кнопках |
+| `$currentTpl` | Текущий вид из `&tpls` (`tpl1`, `tpl2`) — для подсветки переключателя сетка/список |
 | `$filterKeys` | Ключи фильтров страницы через запятую; выводится в `data-mfilter-keys` |
 | `$filters` | Применённые фильтры массивом, **в исходном виде**: на SEO-адресе диапазон приходит двумя ключами (`price\|min`, `price\|max`). Свёрнутый набор есть у формы — `$appliedFilters` |
 
-`tpl1`, `tpl2` и другие (карточка одного товара) — обычные `pdoResources`/`msProducts`-переменные ресурса:
+После фильтрации без перезагрузки `tplOuter` не перерисовывается — заново приходят только строки и пагинация. Переменные `tplEmpty` — на странице [mFilter](../snippets/mfilter#chanki).
+
+Карточка одного товара (`tpl`, `tpl1`, `tpl2` и другие) получает:
+
+- с `&element` — переменные элемента, например `msProducts`;
+- без `&element` — поля `id`, `pagetitle`, `longtitle`, `description`, `introtext`, `uri`, `alias`, а с MiniShop3 ещё `price`, `old_price`, `thumb`, `vendor_id`, `article`. TV в карточку не приходят.
 
 ```html
 <div class="product-card" data-id="{$id}">
-    <img src="{$image}" alt="{$pagetitle}">
-    <h3>{$pagetitle}</h3>
+    <img src="{$thumb}" alt="{$pagetitle | esc}">
+    <h3>{$pagetitle | esc}</h3>
     <div class="price">{$price | number:0} ₽</div>
 </div>
 ```
 
 ### Чанки `mFilterForm` (форма фильтров)
 
-`tplOuter`:
-
-| Переменная | Описание |
-|------------|----------|
-| `$filters` | HTML всех фильтров, склеенных вместе |
-| `$resourceId` | ID текущего ресурса каталога |
-| `$formAttrs` | Готовая строка атрибутов тега `<form>` |
-| `$formId`, `$formClass` | Значения параметров `&formId` и `&formClass` |
-| `$ajax`, `$ajaxMode` | Включён ли AJAX и его режим |
-| `$autoSubmit` | Включена ли автоотправка формы |
-| `$debugProfiler` | Включён ли профилировщик — служебная, для отладки |
-| `$hasFilters` | Применён ли хотя бы один фильтр (bool) |
-| `$activeFiltersCount` | Сколько фильтров применено; диапазон считается за один |
-| `$appliedFilters` | Применённые фильтры массивом, диапазоны свёрнуты в один ключ |
-
-::: tip Кнопка сброса
-`$hasFilters` и `$activeFiltersCount` нужны, чтобы отрисовать кнопку сброса со счётчиком — см. [mFilterForm](../snippets/mfilterform#knopka-sbrosa-tolko-pri-aktivnyh).
-:::
-
-`&tpl` — обёртка одного фильтра (по умолчанию чанк `mfilter.filter`):
-
-| Переменная | Описание |
-|------------|----------|
-| `$key` | Ключ фильтра (`vendor`, `color`, `price`…) |
-| `$label` | Название фильтра |
-| `$type` | Тип: `default`, `number`, `boolean`, `parents`, `ms3_categories`, `colors`, `vendors`, `date`… |
-| `$items` | HTML значений фильтра |
-| `$itemCount` | Сколько значений отрисовано |
-| `$activeCount` | Сколько значений этого фильтра выбрано |
-| `$multiple` | Множественный выбор (checkbox vs radio) |
-| `$collapsed` | Свёрнут ли блок; сейчас всегда `false` |
-
-`tplItem` (одно значение — checkbox/radio):
-
-| Переменная | Описание |
-|------------|----------|
-| `$key` | Ключ фильтра |
-| `$value` | Значение |
-| `$slug` | Слаг для URL |
-| `$label` | Отображаемый текст |
-| `$count` | Количество товаров |
-| `$active` | Значение выбрано (bool) |
-| `$disabled` | Значение недоступно (нет товаров при текущих остальных фильтрах) |
-| `$multiple` | Множественный выбор (checkbox vs radio) |
-
-`tplBoolean` (переключатель да/нет):
-
-| Переменная | Описание |
-|------------|----------|
-| `$key`, `$value`, `$label`, `$count`, `$active` | Как в `tplItem` |
-
-`tplColor` (цветовой свотч):
-
-| Переменная | Описание |
-|------------|----------|
-| `$key`, `$value`, `$label`, `$active` | Как в `tplItem` |
-| `$hex` | HEX-код цвета; пустая строка, если у значения он не задан |
-
-`tplSlider` (range-фильтр):
-
-| Переменная | Описание |
-|------------|----------|
-| `$key` | Ключ фильтра |
-| `$label` | Название фильтра — то же значение, что в `tplFilter` |
-| `$min`, `$max` | Доступный диапазон в текущей выборке |
-| `$minValue`, `$maxValue` | Выбранные пользователем значения |
-| `$step` | Шаг |
-| `$prefix`, `$suffix` | Префикс/суффикс единицы измерения |
+Переменные обёртки формы, блока фильтра, значения и диапазона — на странице [mFilterForm](../snippets/mfilterform#chanki-filtrov).
 
 ### Чанки `mFilterSelected` (блок «Выбрано»)
 
-`tplOuter`:
-
-| Переменная | Описание |
-|------------|----------|
-| `$items` | HTML всех выбранных значений |
-| `$reset` | HTML кнопки сброса, отрисованной через `tplReset` |
-| `$total`, `$count` | Сколько фильтров применено; два имени одного значения. Диапазон считается за один и чипа не даёт |
-| `$empty` | Нет применённых фильтров (bool) |
-| `$hidden` | Блок следует скрыть — при `$empty` и включённом `&hideWhenEmpty` |
-| `$hash` | Хеш конфигурации блока; выводится в `data-mfilter-selected-hash` |
-| `$filterLabels` | JSON-карта «ключ → название» для инициализации JS |
-
-`tplGroup` (группа значений одного фильтра):
-
-| Переменная | Описание |
-|------------|----------|
-| `$key`, `$label` | Ключ и название фильтра |
-| `$items` | HTML значений внутри группы |
-| `$count` | Сколько значений в группе |
-| `$showLabel` | Выводить ли название фильтра — из параметра `&showLabels` |
-
-`tplItem` (одна chip):
-
-| Переменная | Описание |
-|------------|----------|
-| `$key` | Ключ фильтра |
-| `$value` | Значение (машиночитаемое) |
-| `$valueLabel` | Отображаемый текст значения |
-| `$label` | Синоним `$valueLabel` |
-| `$filterLabel` | Название фильтра, которому принадлежит значение |
-
-`tplReset` (кнопка «сбросить всё»):
-
-| Переменная | Описание |
-|------------|----------|
-| `$text` | Подпись кнопки — из `&resetText` или лексикона |
-| `$url` | Адрес страницы без фильтров |
-
-Стандартный чанк рисует `<button>`, который обрабатывает JS. `$url` нужен, если сброс делается ссылкой — тогда он работает и без JS:
-
-```fenom
-<a href="{$url}" class="mfilter-selected-reset" data-mfilter-reset-selected>{$text}</a>
-```
+Переменные чанков блока «Выбрано» — на странице [mFilterSelected](../snippets/mfilterselected#pleysholdery-v-chankah).
 
 ## Использование в JavaScript
 
-Есть два пути.
-
-### Через `window.mFilter` (клиентский API)
-
-```javascript
-const instance = window.mFilter.getInstance();
-
-instance.state.filters;      // текущие фильтры
-instance.state.sort;         // сортировка
-instance.state.limit;        // лимит
-instance.setFilter('brand', ['apple']);
-instance.submit();
-```
-
-Полный список методов — в [JS API](../development/js-api.md).
-
-### Через события
-
-```javascript
-document.addEventListener('mfilter:success', function (e) {
-    console.log(e.detail.filters, e.detail.total, e.detail.seo);
-});
-```
-
-`e.detail.seo` содержит те же данные, что попадают в `mfilter.seo.*` плейсхолдеры при SSR. Полный список событий — в [Events](../development/events.md).
-
-## Примеры
-
-### Пустые результаты
-
-```html
-{if $total == 0}
-    <div class="empty-results">
-        <p>По вашему запросу ничего не найдено.</p>
-        {if $_pls['mfilter.filters']}
-            <p>Попробуйте <a href="{$_pls['mfilter.base_uri']}">сбросить фильтры</a>.</p>
-        {/if}
-    </div>
-{/if}
-```
-
-`$total` — из `tplOuter` чанка `mFilter`. `mfilter.filters` — глобальный плейсхолдер.
-
-### Условная канонизация
-
-Если у фильтрованной страницы `noindex`, canonical указывает на исходный ресурс (без фильтров). Иначе — на текущий URL.
-
-```html
-{if $_pls['mfilter.seo.canonical']}
-    <link rel="canonical" href="{$_pls['mfilter.seo.canonical']}">
-{else}
-    <link rel="canonical" href="{$_modx->makeUrl($_modx->resource.id, '', '', 'full')}">
-{/if}
-```
-
-### Логирование фильтрации в аналитику
-
-```html
-<script>
-document.addEventListener('mfilter:success', function (e) {
-    if (typeof gtag !== 'undefined') {
-        gtag('event', 'filter_apply', {
-            filter_count: Object.keys(e.detail.filters).length,
-            total: e.detail.total,
-        });
-    }
-});
-</script>
-```
+Состояние фильтра, методы и события — на странице [JS API](../development/js-api). SEO-данные после фильтрации приходят в событии `mfilter:success` в `e.detail.response.seo`.
