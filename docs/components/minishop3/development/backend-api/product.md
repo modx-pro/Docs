@@ -194,7 +194,7 @@ $updated = $service->updateProductData($productId, [
 :::
 
 ::: warning `preview_file_id` напрямую не записывается
-Поле исключено из разрешённых к записи: процессоры сохранения товара убирают его из входных данных (`getAllowedProductDataFieldNames()`), поэтому `PUT /api/mgr/product-data/{id}` и сохранение карточки его не меняют.
+Поле исключено из разрешённых к записи двумя разными фильтрами: `ProductDataColumnPolicy::writableNames()` — для REST (`PUT /api/mgr/product-data/{id}`), `getAllowedProductDataFieldNames()` — для процессоров сохранения товара. Тем же фильтром REST закрыты `id`, `source_id`, `image` и `thumb`.
 
 Записать значение можно только через `Gallery\SetPreview` — процессор отдаёт работу `ProductImageService::setProductPreview()`, а тот сначала проверяет, что файл действительно принадлежит галерее этого товара.
 
@@ -544,7 +544,9 @@ echo $vendor->get('name');  // "Samsung"
 
 ### Процессоры производителей
 
-Производителями управляют процессоры `MiniShop3\Processors\Settings\Vendor\*`:
+Процессоры `MiniShop3\Processors\Settings\Vendor\*` остаются рабочим входом для `runProcessor()`, но Vue-админка ими не пользуется: грид производителей ходит в Manager REST `/api/mgr/vendors`.
+
+Состав процессоров:
 
 | Процессор | Описание |
 | --- | --- |
@@ -583,14 +585,29 @@ echo $vendor->get('name');  // "Samsung"
 ### Пример вызова из PHP
 
 ```php
+// combo обязателен: без него initialize() добавляет ошибку поля
+// ms3_err_processor_combo_required и процессор не запускается
 $response = $modx->runProcessor('MiniShop3\\Processors\\Product\\GetList', [
-    'parent' => 5,
+    'combo' => true,
+    'query' => 'футболка',   // поиск по подстроке
     'limit' => 20,
-    'sort' => 'price',
-    'dir' => 'ASC',
 ]);
 
 if (!$response->isError()) {
     $products = json_decode($response->getResponse(), true);
 }
 ```
+
+::: warning Чего процессор не делает
+Свойство `parent` он не читает — фильтра по категории здесь нет. Сортировка проходит через allowlist `ProductComboSort::COLUMNS` (`id`, `pagetitle`, `longtitle`, `alias`, `menuindex`, `published`, `context_key`, `createdon`): значения вне списка, в том числе `price`, молча подменяются на `menuindex`.
+
+Товары категории берут другим путём — `GET /api/mgr/categories/{id}/products` (право `view_document`) или напрямую:
+
+```php
+$products = $modx->getIterator(msProduct::class, [
+    'class_key' => msProduct::class,  // getIterator не добавляет его сам
+    'parent' => $categoryId,
+]);
+```
+
+:::

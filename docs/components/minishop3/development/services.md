@@ -523,7 +523,7 @@ if (!$result['success']) {
 1. **Существовать** и быть доступным через автозагрузчик
 2. **Наследовать** базовый класс MiniShop3 — но только у сервисов без объявленного интерфейса
 
-У сервисов, для которых в конфигурации указан `interface` (`ms3_inventory`, `ms3_order_lifecycle_ports`, `ms3_webhook_dispatcher`), наследование не нужно: достаточно реализовать интерфейс с нуля. Проверка идёт по `is_a()`, и ветка с наследованием в этом случае не выполняется. Своя реализация склада от `ProductStockInventory` не наследуется — так сделано и в примере из поставки.
+У сервисов, для которых в конфигурации указан `interface` (`ms3_inventory`, `ms3_order_lifecycle_ports`, `ms3_webhook_dispatcher`), наследование не нужно: достаточно реализовать интерфейс с нуля. Проверка идёт по `is_a()`, и ветка с наследованием в этом случае не выполняется. Своя реализация склада от `ProductStockInventory` не наследуется.
 
 Пример для склада — свой класс реализует интерфейс и ничего не наследует:
 
@@ -540,6 +540,8 @@ return [
 ```php
 namespace MyCompany\Warehouse;
 
+use MiniShop3\Services\Inventory\InventoryContext;
+use MiniShop3\Services\Inventory\InventoryKey;
 use MiniShop3\Services\Inventory\InventoryServiceInterface;
 
 class WmsInventory implements InventoryServiceInterface
@@ -552,7 +554,7 @@ class WmsInventory implements InventoryServiceInterface
 }
 ```
 
-Тот же приём у `ms3_order_lifecycle_ports` (`OrderLifecyclePortsInterface`) и `ms3_webhook_dispatcher` (`WebhookDispatcherInterface`). Готовые закомментированные заготовки лежат в `core/components/minishop3/config/ms3.services.example.php`.
+Тот же приём у `ms3_order_lifecycle_ports` (`OrderLifecyclePortsInterface`) и `ms3_webhook_dispatcher` (`WebhookDispatcherInterface`). Закомментированная заготовка в `core/components/minishop3/config/ms3.services.example.php` есть только у `ms3_webhook_dispatcher`; для склада и портов жизненного цикла образцом служат примеры этой страницы.
 
 ::: warning Указывайте `interface` в своём конфиге
 Слияние конфигураций заменяет значение целиком. Если в `ms3.services.php` оставить у такого сервиса `'interface' => null`, валидатор потребует наследовать стандартный класс и отвергнет честную реализацию интерфейса. Переносите строку `interface` в свой конфиг вместе с `class`.

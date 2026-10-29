@@ -26,7 +26,9 @@ description: "Профиль, адреса, заказы ЛК, email verify, me 
 }
 ```
 
-После входа `authenticated` становится `true`, а в `customer` приходят публичные поля: `id`, `first_name`, `last_name`, `email`, `phone`, `email_verified_at`, `is_active`, `created_at`, `updated_at`.
+После входа `authenticated` становится `true`, а в `customer` приходят публичные поля: `id`, `first_name`, `last_name`, `email`, `phone`, `email_verified_at`, `is_active`, `created_at`, `updated_at`, `last_login_at`, `orders_count`, `total_spent`, `last_order_at`, `privacy_accepted_at`.
+
+Список расширяется активными [своими полями](../../interface/utilities/extra-fields) покупателя: ключи полей `msCustomer` с `active = 1` добавляются к публичным автоматически.
 
 | Метод | Путь | Заметки |
 | --- | --- | --- |
@@ -46,7 +48,9 @@ description: "Профиль, адреса, заказы ЛК, email verify, me 
 | `POST` | `/customer/add` | Одно поле профиля |
 | `POST` | `/customer/changeAddress` | Адрес в черновик заказа |
 
-Сервер принимает только поля профиля из своего списка разрешённых. С гостевым токеном `profile`, `add` и `changeAddress` отвечают ошибкой авторизации; для гостя успешны лишь `me` и `token/refresh`.
+Сервер принимает только поля профиля из своего списка разрешённых. С гостевым токеном `profile` и `add` отвечают `401` (`ms3_customer_err_login_required`), а `changeAddress` — `400` с `error_code: business_rule` и ключом `ms3_err_customer_required`: это отказ бизнес-правила, не авторизации.
+
+Гостю доступны `me`, `token/refresh`, `logout` (токен необязателен, в ответ выдаётся новый гостевой) и `email/verify` — последний вообще идёт без `TokenMiddleware`, по токену подтверждения из ссылки.
 
 В теле `POST /customer/add` — `key` и `value`, в теле `POST /customer/changeAddress` — `address_hash` или `value`.
 

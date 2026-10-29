@@ -207,12 +207,13 @@ $rules = $fieldManager->getDeliveryValidationRules($deliveryId);
 $required = $fieldManager->getDeliveryRequiredFields($deliveryId);
 // array_keys($required['data']['requires'])
 
-// Добавить свои правила
-$fieldManager->setValidationRules([
-    'company_name' => 'required|min:3',
-]);
-
 ```
+
+::: warning Сеттеры правил и сообщений ни на что не влияют
+`setValidationRules()` и `setValidationMessages()` записывают значения в свойства объекта, но `validate()` в начале каждого вызова перезаписывает оба массива своими: правила — `['delivery_id' => 'required|numeric', 'payment_id' => 'required|numeric']`, сообщения — четыре английских текста для `required`, `numeric`, `min` и `email`. До проверки поля заданное через сеттер не доживает.
+
+Единственный рабочий способ задать своё правило — колонка `validation_rules` способа доставки (`msDelivery`), откуда их читает `getDeliveryValidationRules()`. Дефект заведён как [modx-pro/MiniShop3#950](https://github.com/modx-pro/MiniShop3/issues/950).
+:::
 
 ## Расчёт стоимости (OrderCostCalculator)
 
@@ -366,7 +367,7 @@ $result = $submitHandler->submit($draft, $orderData, $token);
 | Где сбой | Номер заказа |
 | --- | --- |
 | Шаги 13–14, включая повторную проверку остатка перед сменой статуса | Снимается через `revertAllocatedNumber()`, но только при включённом складском учёте |
-| Шаги 15–16 — вызов оплаты и редирект | Остаётся за заказом. Обработчик снимает лишь складской резерв (`abortInventoryHold()`) и отдаёт ошибку |
+| Шаги 15–16 — вызов оплаты и редирект | Остаётся за заказом. Дальше работает `abortInventoryHold()`: при выключенном складском учёте он не делает ничего, при включённом — переводит заказ в статус `ms3_status_canceled` (запасной id 5), а если смена статуса не удалась, сам снимает резерв, до двух попыток |
 
 ### Генерация номера заказа
 
@@ -424,7 +425,7 @@ $result = $statusService->change($orderId, $newStatusId, true);
 При смене статуса `NotificationManager` сам рассылает уведомления:
 
 - **Покупателю**: email, телефон из `msCustomer` или `modUserProfile`
-- **Менеджерам**: из настроек `ms3_email_manager`, `ms3_phone_manager`, `ms3_telegram_manager`
+- **Менеджерам**: из настроек `ms3_email_manager`, `ms3_phone_manager`, `ms3_telegram_manager`. Транспортный пакет создаёт только `ms3_email_manager` и `ms3_telegram_manager`; `ms3_phone_manager` заводят сами
 
 ## Позиции заказа (msOrderProduct)
 
@@ -542,7 +543,7 @@ $result = $addressManager->setCustomerAddress($draft, $orderData, $addressHash);
 $result = $addressManager->cleanCustomerAddress($draft, $orderData);
 
 // Сохранить адрес заказа в адреса клиента
-$savedAddress = $addressManager->saveToCustomerAddresses($customerId, $orderData);
+$saved = $addressManager->saveToCustomerAddresses($customerId, $orderData); // bool
 
 ```
 
@@ -735,7 +736,7 @@ $user = $userResolver->createUser([
 | `Address` | msOrderAddress | composite (one) | Адрес заказа |
 | `Products` | msOrderProduct | composite (many) | Позиции заказа |
 | `Log` | msOrderLog | composite (many) | Журнал изменений |
-| `msCustomer` | msCustomer | aggregate | Покупатель. Алиас именно такой, `getOne('Customer')` вернёт `null` |
+| `Customer` | msCustomer | aggregate | Покупатель. Рабочий вызов — `$order->getOne('Customer')` |
 | `Status` | msOrderStatus | aggregate | Статус |
 | `Delivery` | msDelivery | aggregate | Способ доставки |
 | `Payment` | msPayment | aggregate | Способ оплаты |
@@ -820,11 +821,12 @@ $origin = $params['origin'] ?? 'storefront'; // ключа нет — значи
 ::: warning Правка позиций сверяется с остатком {#inventory-reconcile}
 При включённом учёте остатков (`ms3_inventory_enabled`) добавление, изменение количества и удаление позиции приводят резерв склада к итоговому количеству по каждому товару, а остаток двигают на разницу. С 1.14.3-beta1 это делается до сохранения строки: если остатка не хватает, строка не сохраняется, резерв и остаток остаются прежними.
 
-Отказ приходит с кодом `409 Conflict` и одним из двух ключей:
+Отказ приходит с кодом `409 Conflict` и одним из трёх ключей:
 
 | Ключ | Когда |
 | --- | --- |
-| `ms3_err_inventory_short` | Остатка не хватает на запрошенное количество |
+| `ms3_err_inventory_short` | Остатка не хватает на запрошенное количество — отказ списания в `tryDecrement()` |
+| `ms3_err_inventory_insufficient` | Остатка не хватает по проверке `assertAvailable()` / `reserve()`. В `data` приходят только `product_id` и `required`, `available` остаётся нулём |
 | `ms3_err_inventory_adjust_unsupported` | Складской сервис подменён своим и не реализует `AdjustableInventoryInterface`, а заказ уже держит остаток |
 
 В `data` отказа приходят подробности, в том числе флаг `can_override` — есть ли у текущего пользователя право `msorder_inventory_override`. Интерфейс по нему решает, предлагать ли повтор операции:

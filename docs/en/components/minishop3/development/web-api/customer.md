@@ -26,7 +26,9 @@ Customer account and profile. Auth flows: [Authorization](auth).
 }
 ```
 
-After login `authenticated` becomes `true`, and `customer` carries the public fields: `id`, `first_name`, `last_name`, `email`, `phone`, `email_verified_at`, `is_active`, `created_at`, `updated_at`.
+After login `authenticated` becomes `true`, and `customer` carries the public fields: `id`, `first_name`, `last_name`, `email`, `phone`, `email_verified_at`, `is_active`, `created_at`, `updated_at`, `last_login_at`, `orders_count`, `total_spent`, `last_order_at`, `privacy_accepted_at`.
+
+The list grows with the customer's active [extra fields](../../interface/utilities/extra-fields): keys of `msCustomer` fields with `active = 1` are added to the public set automatically.
 
 | Method | Path | Notes |
 | --- | --- | --- |
@@ -46,7 +48,9 @@ After login `authenticated` becomes `true`, and `customer` carries the public fi
 | `POST` | `/customer/add` | Quick single field |
 | `POST` | `/customer/changeAddress` | Address into order draft |
 
-The server accepts only profile fields from its allowlist. With a guest token, `profile`, `add`, and `changeAddress` return an authorization error. For a guest only `me` and `token/refresh` succeed.
+The server accepts only profile fields from its allowlist. With a guest token, `profile` and `add` return `401` (`ms3_customer_err_login_required`), while `changeAddress` returns `400` with `error_code: business_rule` and the key `ms3_err_customer_required` — a business-rule refusal, not an authorization one.
+
+A guest can reach `me`, `token/refresh`, `logout` (the token is optional, and a fresh guest token comes back) and `email/verify`, which runs without `TokenMiddleware` at all, on the confirmation token from the link.
 
 The body of `POST /customer/add` is `key` and `value`. The body of `POST /customer/changeAddress` is `address_hash` or `value`.
 

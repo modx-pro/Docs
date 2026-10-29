@@ -345,7 +345,9 @@ $result = $verification->resendVerificationEmail($customer);
 
 ## Web API покупателя — `/api/v1/customer/*`
 
-Контроллер: `CustomerProfileController`. Методы появились в 1.10.x / 1.11.0.
+Маршруты обслуживают три контроллера: `CustomerProfileController` — `/profile` и `/add`, `OrderController::changeCustomerAddress()` — `/changeAddress`, `CustomerEmailController` — оба `/email/*`.
+
+`/add` и `/changeAddress` появились в 1.11.0, `/email/verify` и `/email/resend-verification` существуют с 1.4.0-beta1.
 
 | Метод | Путь | Описание |
 | --- | --- | --- |

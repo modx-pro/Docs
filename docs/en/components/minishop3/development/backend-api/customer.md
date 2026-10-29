@@ -350,7 +350,9 @@ Setting `ms3_email_verification_token_ttl` (default 86400) — verification toke
 
 ## Customer Web API — `/api/v1/customer/*`
 
-Controller: `CustomerProfileController`. These endpoints appeared in 1.10.x / 1.11.0.
+Three controllers serve these routes: `CustomerProfileController` for `/profile` and `/add`, `OrderController::changeCustomerAddress()` for `/changeAddress`, and `CustomerEmailController` for both `/email/*`.
+
+`/add` and `/changeAddress` appeared in 1.11.0; `/email/verify` and `/email/resend-verification` have existed since 1.4.0-beta1.
 
 | Method | Path | Description |
 | --- | --- | --- |
