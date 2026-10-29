@@ -36,7 +36,7 @@ flowchart TB
 
 Current gallery state:
 
-- **Selected file source** shows the source name and ID
+- **Selected file source** shows the source name and ID. It comes from the `ms3_product_source_default` system setting (1 by default). When a source with that id has been deleted, the panel and the preview settings block stay empty even though the catalogue has products
 - **Total products** counts every product in the catalogue, whether or not it has a gallery
 - **Images** counts originals only (`msProductFile` with `parent_id = 0`); previews are not included
 
@@ -52,7 +52,7 @@ The collapsible section prints the JSON of each key in the product Media Source 
 
 | Parameter | Description | Default |
 | --- | --- | --- |
-| Products per step | How many products one iteration processes | 10 |
+| Products per step | How many products one iteration processes. Allowed range 1 to 100, and the arrows move it in steps of 5 | 10 |
 
 ::: warning Recommendations
 
@@ -68,6 +68,8 @@ The numbers are empirical and depend on the server. The code only fixes the defa
 1. Check preview settings and free disk space. Run this when the site is quiet.
 2. Click **Regenerate previews**. The utility processes products in batches. The page shows the percent and the current iteration.
 3. Closing the page stops the run. When it finishes, the page shows how many products were processed. **Reset** prepares another run.
+
+The start button stays disabled while «Total products» is zero. Iterations go out as recursive requests with no pauses: the next one leaves as soon as the previous answers, so the step size is the only load control.
 
 ## Technical details
 
@@ -105,7 +107,11 @@ The route requires `msproductfile_generate`.
 
 ### Processing
 
-For each product the utility reads the originals, builds thumbnails for the keys of `thumbnails`, and updates metadata in the database.
+For each product the utility first **deletes every child preview row from the database**, then reads the originals, builds thumbnails for the keys of `thumbnails`, and updates the product `thumb` field.
+
+::: warning An interrupted run leaves products without previews
+The deletion happens before the generation, so a break in the middle (the page was closed, PHP died) leaves some products with their old rows removed but no new ones created. Running the utility again over the same products fixes it.
+:::
 
 ### File storage
 

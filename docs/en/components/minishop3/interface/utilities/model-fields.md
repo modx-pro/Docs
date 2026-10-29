@@ -63,10 +63,14 @@ Click a row. The edit dialog opens.
 
 | Parameter | Description |
 | --- | --- |
+| Field name | The system column name. Required, set at creation |
 | Label | Display name of the field |
 | Description | Hint under the input |
+| Placeholder | Hint text inside the input |
 | Section | Group the field is shown in |
 | Visibility | Show the field on the form |
+| Required | The field cannot be left empty |
+| Order | Position of the field inside the section |
 
 ### Widget type (xtype)
 
@@ -105,10 +109,15 @@ A model (a class from the registry):
     "valueField": "id",
     "labelTemplate": "{caption}",
     "where": {"active": true},
+    "sort": {"caption": "ASC"},
     "limit": 500
   }
 }
 ```
+
+Besides `valueField` and `labelTemplate`, a source accepts `labelField` — a single column for the label, `name` by default — and `sort` written as «field: direction». `limit` defaults to 500: that is a guard against pulling thousands of rows, not a ceiling to remove lightly.
+
+Sources are read in order of priority: the database row, then `custom/combos/{model}.php`, then the shipped `config/combos/{model}.php`. The first one found wins.
 
 A static list:
 
@@ -135,8 +144,11 @@ A `url` field is not required. There is no ready route `GET /api/mgr/options/lis
 
 | Field | Description |
 | --- | --- |
-| Key | Unique identifier |
+| Model | Which model the section belongs to. Required, fixed after creation |
+| Key | Unique identifier. Fixed after creation |
+| Lexicon key | Key for the translated title |
 | Label | Display name |
+| Hidden | The section is not shown on the form |
 | Order | Position in the section list |
 
 ### Editing a section
@@ -147,6 +159,8 @@ Click the edit icon next to the section name.
 
 ::: warning Caution
 Deleting a section does not delete the fields. They move to No section.
+
+A section flagged as default (`is_default`) cannot be deleted — the server answers `Cannot delete default section`. Such sections are marked in the System column.
 :::
 
 ### Section order
@@ -198,6 +212,18 @@ POST /api/mgr/model-fields
 ```
 
 The body is the field parameters (the same ones as in the dialog: `label`, `xtype`, `section_id`, `visible`, `width`, …). It requires `mssetting_save`.
+
+### The other endpoints
+
+| Method | Route | Description |
+| --- | --- | --- |
+| `GET` | `/api/mgr/model-fields/{id}` | One field |
+| `DELETE` | `/api/mgr/model-fields/{id}` | Delete a field |
+| `GET` | `/api/mgr/model-fields/visible/{model}` | Visible fields of the model only — this is what the order forms use |
+| `GET` | `/api/mgr/model-fields/combo-options/{model}` | Choices for every combo field of the model |
+| `GET` | `/api/mgr/model-fields/combo-options/{model}/{field_name}` | Choices for a single combo field |
+
+The gate on `visible` and `combo-options` is softer: any one of the nine MiniShop3 permissions is enough, while writes require `mssetting_save`. Otherwise the order form would not open for a manager without the settings permission.
 
 ### Update a field
 

@@ -49,10 +49,12 @@ Reading the schema (`GET /api/mgr/extra-fields`) is available to any authenticat
 
 | Parameter | Description | Required |
 | --- | --- | --- |
-| Key | Unique field name (Latin letters, snake_case) | Yes |
+| Key | Unique field name. The pattern is `^[a-z0-9_]+$`, case-insensitive; MySQL 8 reserved words are refused | Yes |
 | Label | Display name | No — an empty one falls back to the field key |
 | Description | Hint for the user | No |
 | Active | The field is in use | Yes |
+| Allow NULL (null) | The column accepts `NULL` | No |
+| Attributes (attributes) | `unsigned` for an unsigned number, `auto_increment` for an identity column. They reach the migration as `signed => false` and `identity => true` | No |
 
 ::: warning Field key
 The key must be unique within the model. Use Latin letters and underscores. For example: `wholesale_price`, `external_id`, `custom_field`.
@@ -73,6 +75,18 @@ The key must be unique within the model. Use Latin letters and underscores. For 
 | `ms3-repeater` | Table of rows (JSON) | Composition, a list of characteristics |
 | `ms3-key-value` | Key to value (JSON) | A set of named properties |
 | `datefield` | Date field | Dates. The interface sets `dbtype` to `date` or `datetime` itself |
+
+#### Dropdown (`ms3-combo-select`)
+
+The choices are entered in the «Select options» field of the dialog and stored in `select_options`. The format is one line per choice, value and label separated by `==`:
+
+```text
+value1==First option
+value2==Second option
+value3==Third option
+```
+
+With no label the list shows the value itself. Unlike the combo fields of [Model fields](model-fields), there is no database source here — only a fixed list.
 
 #### Repeater (`ms3-repeater`)
 
@@ -212,6 +226,10 @@ Default: NULL
 Index: NONE
 ```
 
+::: tip Where «Precision» goes
+The value reaches the migration differently depending on the database type: for `varchar`, `char`, `int`, `tinyint` and `smallint` it becomes `limit`; for `decimal`, `float` and `double` written with a comma (`12,2`) it becomes a `limit` and `scale` pair. For other types the field is ignored.
+:::
+
 ## Editing a field
 
 Click the field row. The edit dialog opens.
@@ -220,6 +238,12 @@ Click the field row. The edit dialog opens.
 After creation only the label, the description, the widget type, the active flag and the widget configs can change — `label`, `description`, `xtype`, `active`, `select_options`, `repeater_config`, `key_value_config`.
 
 Everything else is fixed: the field key, `class`, `dbtype`, `phptype`, `precision`, `null`, `default`, `default_value`, `attributes`, `index_type`. To change them, delete the field and create it again.
+:::
+
+::: info What else happens on creation
+For `msProductData` fields the service also creates a row in `ms3_product_fields` — which is why the field appears in the [Product fields](product-fields) utility right away, with no section, width 6 (12 for `ms3-repeater` and `ms3-key-value`) and order 999. Deleting the field removes that row.
+
+For classes without a table of their own no `DROP COLUMN` runs: only the field metadata is deleted.
 :::
 
 ## Deleting a field

@@ -32,6 +32,18 @@ Step-by-step wizard for importing products from CSV.
 
 After upload you see the row count, the encoding, and a warning when the file is large.
 
+### System settings
+
+| Setting | Default | What it sets |
+| --- | --- | --- |
+| `ms3_import_sync_limit` | 300 | The threshold above which the import goes to a background task instead of running synchronously |
+| `ms3_import_preview_rows` | 5 | How many rows the preview shows |
+| `ms3_import_upload_path` | `assets/import/` | Where the uploaded CSV files go |
+| `ms3_utility_import_fields` | `pagetitle,parent,price,article` | The default column mapping |
+| `ms3_utility_import_fields_delimiter` | `;` | The default delimiter |
+
+The 300 threshold is a setting value, not a constant: on a capable server it can be raised.
+
 ::: info Encoding
 Windows-1251 files are converted to UTF-8 during processing.
 :::
@@ -126,6 +138,16 @@ Import complete!
 | `template` | Template ID |
 | `published` | Published (0/1) |
 | `hidemenu` | Hidden from the menu (0/1) |
+| `menuindex` | Menu position |
+| `menutitle` | Menu item title |
+| `searchable` | Searchable (0/1) |
+| `cacheable` | Cacheable (0/1) |
+| `link_attributes` | Menu link attributes |
+| `pub_date` | Publication date |
+| `unpub_date` | Date the resource is unpublished |
+| `uri` | Ready resource URI |
+| `uri_override` | Use a custom URI (0/1) |
+| `show_in_tree` | Show in the resource tree (0/1) |
 
 ### Product fields (msProductData)
 
@@ -144,6 +166,16 @@ Import complete!
 | `new` | New (0/1) |
 | `popular` | Popular (0/1) |
 | `favorite` | Favorite (0/1) |
+| `image` | Main image |
+| `thumb` | Thumbnail |
+| `tags` | Tags. Type `json`: a comma-separated value is parsed into an array |
+| `source_id` | Product media source id |
+
+::: warning What ends up in the TV and option lists
+The mapping dropdowns are built with limits: 50 entries each, TVs come only from the template named by the `ms3_template_product_default` setting, and options only cover keys that already appear on at least one product.
+
+So a TV from another template, or an option never used yet, will not be in the list. The import itself is unaffected: a `tv.name` or `option.key` written into the CSV by hand is processed.
+:::
 
 ### Special fields
 
@@ -233,6 +265,8 @@ For a programmatic gallery upload, use the processor `MiniShop3\Processors\Galle
 ```http
 POST /api/mgr/import/start
 ```
+
+Every `/api/mgr/import/*` route requires the `msproduct_save` permission.
 
 **Parameters:**
 
