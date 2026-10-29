@@ -526,7 +526,7 @@ A custom class **must**:
 1. **Exist** and be loadable via autoloader
 2. **Extend** the MiniShop3 base class — but only for services without a declared interface
 
-Services that declare an `interface` (`ms3_inventory`, `ms3_order_lifecycle_ports`, `ms3_webhook_dispatcher`) need no inheritance: implementing the interface from scratch is enough. The check runs through `is_a()`, and the inheritance branch is skipped in that case. The shipped example does exactly that — its inventory implementation does not extend `ProductStockInventory`.
+Services that declare an `interface` (`ms3_inventory`, `ms3_order_lifecycle_ports`, `ms3_webhook_dispatcher`) need no inheritance: implementing the interface from scratch is enough. The check runs through `is_a()`, and the inheritance branch is skipped in that case. A custom stock implementation does not extend `ProductStockInventory`.
 
 An inventory example — the class implements the interface and extends nothing:
 
@@ -543,6 +543,8 @@ return [
 ```php
 namespace MyCompany\Warehouse;
 
+use MiniShop3\Services\Inventory\InventoryContext;
+use MiniShop3\Services\Inventory\InventoryKey;
 use MiniShop3\Services\Inventory\InventoryServiceInterface;
 
 class WmsInventory implements InventoryServiceInterface
@@ -555,7 +557,7 @@ class WmsInventory implements InventoryServiceInterface
 }
 ```
 
-The same applies to `ms3_order_lifecycle_ports` (`OrderLifecyclePortsInterface`) and `ms3_webhook_dispatcher` (`WebhookDispatcherInterface`). Commented-out stubs ship in `core/components/minishop3/config/ms3.services.example.php`.
+The same applies to `ms3_order_lifecycle_ports` (`OrderLifecyclePortsInterface`) and `ms3_webhook_dispatcher` (`WebhookDispatcherInterface`). The commented-out stub in `core/components/minishop3/config/ms3.services.example.php` exists only for `ms3_webhook_dispatcher`; for stock and lifecycle ports the examples on this page are the only samples.
 
 ::: warning Repeat `interface` in your own config
 Merging configs replaces the value as a whole. Leaving `'interface' => null` for such a service in `ms3.services.php` makes the validator demand inheritance from the stock class and reject an honest implementation of the interface. Carry the `interface` line over together with `class`.

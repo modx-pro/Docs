@@ -194,7 +194,7 @@ $updated = $service->updateProductData($productId, [
 :::
 
 ::: warning `preview_file_id` cannot be written directly
-The field is excluded from the writable set: the product save processors strip it from the incoming data (`getAllowedProductDataFieldNames()`), so neither `PUT /api/mgr/product-data/{id}` nor saving the product card changes it.
+The field is excluded from the writable set by two different filters: `ProductDataColumnPolicy::writableNames()` for REST (`PUT /api/mgr/product-data/{id}`) and `getAllowedProductDataFieldNames()` for the product save processors. The same REST filter also closes `id`, `source_id`, `image` and `thumb`.
 
 The only way to set it is `Gallery\SetPreview`, which hands the work to `ProductImageService::setProductPreview()` — and that first verifies the file really belongs to this product's gallery.
 
@@ -544,7 +544,9 @@ echo $vendor->get('name');  // "Samsung"
 
 ### Vendor processors
 
-Vendors are managed by processors `MiniShop3\Processors\Settings\Vendor\*`:
+The `MiniShop3\Processors\Settings\Vendor\*` processors remain a working entry point for `runProcessor()`, but the Vue manager does not use them: the vendors grid calls the Manager REST endpoint `/api/mgr/vendors`.
+
+The processors are:
 
 | Processor | Description |
 | --- | --- |
@@ -583,14 +585,29 @@ Autocomplete (product search) is not a processor. It is a Manager API method: `G
 ### Calling from PHP
 
 ```php
+// combo is required: without it initialize() adds the field error
+// ms3_err_processor_combo_required and the processor does not run
 $response = $modx->runProcessor('MiniShop3\\Processors\\Product\\GetList', [
-    'parent' => 5,
+    'combo' => true,
+    'query' => 't-shirt',   // substring search
     'limit' => 20,
-    'sort' => 'price',
-    'dir' => 'ASC',
 ]);
 
 if (!$response->isError()) {
     $products = json_decode($response->getResponse(), true);
 }
 ```
+
+::: warning What the processor does not do
+It never reads the `parent` property — there is no category filter here. Sorting goes through the `ProductComboSort::COLUMNS` allowlist (`id`, `pagetitle`, `longtitle`, `alias`, `menuindex`, `published`, `context_key`, `createdon`): anything outside it, `price` included, is silently replaced with `menuindex`.
+
+Category products come from another route — `GET /api/mgr/categories/{id}/products` (the `view_document` permission) or directly:
+
+```php
+$products = $modx->getIterator(msProduct::class, [
+    'class_key' => msProduct::class,  // getIterator does not add it for you
+    'parent' => $categoryId,
+]);
+```
+
+:::

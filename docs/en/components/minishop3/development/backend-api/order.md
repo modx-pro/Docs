@@ -206,14 +206,15 @@ $rules = $fieldManager->getDeliveryValidationRules($deliveryId);
 
 // Get required fields list
 $required = $fieldManager->getDeliveryRequiredFields($deliveryId);
-// ['city', 'street', 'building', 'phone']
-
-// Add custom rules
-$fieldManager->setValidationRules([
-    'company_name' => 'required|min:3',
-]);
+// array_keys($required['data']['requires'])
 
 ```
+
+::: warning The rule and message setters have no effect
+`setValidationRules()` and `setValidationMessages()` write to object properties, but `validate()` overwrites both arrays with its own at the start of every call: rules become `['delivery_id' => 'required|numeric', 'payment_id' => 'required|numeric']`, and messages become four English texts for `required`, `numeric`, `min` and `email`. Whatever a setter wrote never reaches the check.
+
+The only working way to add a rule of your own is the `validation_rules` column on the delivery method (`msDelivery`), which `getDeliveryValidationRules()` reads. The defect is filed as [modx-pro/MiniShop3#950](https://github.com/modx-pro/MiniShop3/issues/950).
+:::
 
 ## Cost calculation (OrderCostCalculator)
 
@@ -370,7 +371,7 @@ From step 11 the order holds a number. What happens to that number on failure:
 | Where it fails | Order number |
 | --- | --- |
 | Steps 13–14, including the repeated stock check before the status change | Released through `revertAllocatedNumber()`, but only when inventory tracking is on |
-| Steps 15–16, the payment call and the redirect | Stays with the order. The handler only releases the stock hold (`abortInventoryHold()`) and returns an error |
+| Steps 15–16, the payment call and the redirect | Stays with the order. Then `abortInventoryHold()` runs: with stock tracking off it does nothing, with it on the order moves to `ms3_status_canceled` (fallback id 5), and if the status change fails the method releases the hold itself, up to two attempts |
 
 ### Order number generation
 
@@ -428,7 +429,7 @@ If the setting cannot be parsed, **every** status change is blocked with the `ms
 On a status change, `NotificationManager` sends the notifications itself:
 
 - **To customer** — email, phone from `msCustomer` or `modUserProfile`
-- **To managers** — from settings `ms3_email_manager`, `ms3_phone_manager`, `ms3_telegram_manager`
+- **To managers** — from settings `ms3_email_manager`, `ms3_phone_manager`, `ms3_telegram_manager`. The transport package creates only `ms3_email_manager` and `ms3_telegram_manager`; `ms3_phone_manager` is one you add yourself
 
 ## Order products (msOrderProduct)
 
@@ -546,7 +547,7 @@ $result = $addressManager->setCustomerAddress($draft, $orderData, $addressHash);
 $result = $addressManager->cleanCustomerAddress($draft, $orderData);
 
 // Save order address to customer addresses
-$savedAddress = $addressManager->saveToCustomerAddresses($customerId, $orderData);
+$saved = $addressManager->saveToCustomerAddresses($customerId, $orderData); // bool
 
 ```
 
@@ -739,7 +740,7 @@ The `ms3_order_user_groups` setting defines the groups for new users. The format
 | `Address` | msOrderAddress | composite (one) | Order address |
 | `Products` | msOrderProduct | composite (many) | Order products |
 | `Log` | msOrderLog | composite (many) | Change log |
-| `msCustomer` | msCustomer | aggregate | Customer. That is the actual alias — `getOne('Customer')` returns `null` |
+| `Customer` | msCustomer | aggregate | Customer. The working call is `$order->getOne('Customer')` |
 | `Status` | msOrderStatus | aggregate | Status |
 | `Delivery` | msDelivery | aggregate | Delivery method |
 | `Payment` | msPayment | aggregate | Payment method |
@@ -824,11 +825,12 @@ Reading the list, the card, filters, stats, lines, the log, and the shipment req
 ::: warning Editing lines is checked against stock {#inventory-reconcile}
 With inventory tracking on (`ms3_inventory_enabled`), adding a line, changing its quantity, and deleting it bring the warehouse reserve to the final quantity of each product, and move the stock by the difference. Since 1.14.3-beta1 this happens before the row is saved. If stock is short, the row is not saved, and the reserve and the stock stay as they were.
 
-The refusal comes as `409 Conflict` with one of two keys:
+The refusal comes as `409 Conflict` with one of three keys:
 
 | Key | When |
 | --- | --- |
-| `ms3_err_inventory_short` | Stock is short of the requested quantity |
+| `ms3_err_inventory_short` | Stock is short of the requested quantity — the decrement in `tryDecrement()` is refused |
+| `ms3_err_inventory_insufficient` | Stock is short according to `assertAvailable()` / `reserve()`. Only `product_id` and `required` arrive in `data`, `available` stays zero |
 | `ms3_err_inventory_adjust_unsupported` | The stock service was replaced and does not implement `AdjustableInventoryInterface`, and the order already holds stock |
 
 The refusal `data` includes details, among them `can_override`: whether the current user has the `msorder_inventory_override` permission. The interface uses it to decide whether to offer a retry:

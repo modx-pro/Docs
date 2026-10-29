@@ -11,7 +11,9 @@ description: "Обзор Web API MiniShop3: api.php, формат ответа �
 /assets/components/minishop3/api.php?route=/api/v1/{path}
 ```
 
-Параметр `route` обязателен. Запросы группы `/api/v1` всегда проходят три middleware: CORS → RateLimit → ServiceCheck. `TokenMiddleware` добавляется только к cart, order и части customer.
+Параметр `route` обязателен. Запросы группы `/api/v1` проходят три middleware: CORS → RateLimit → ServiceCheck. `TokenMiddleware` добавляется только к cart, order и части customer.
+
+Исключение — preflight `OPTIONS`: маршрут по этому методу не находится, и роутер выполняет **только** слои `CorsMiddleware`. RateLimit, ServiceCheck, `TokenMiddleware` и сам обработчик пропускаются.
 
 Manager API (`connector.php`) на этой странице не описан.
 
@@ -57,7 +59,10 @@ Manager API (`connector.php`) на этой странице не описан.
 
 ```mermaid
 flowchart TD
-  req["api.php?route="] --> cors["CORS"]
+  req["api.php?route="] --> method{"Метод OPTIONS?"}
+  method -->|да: preflight| corsonly["Только слои CORS"]
+  corsonly --> answer["Ответ без обработчика"]
+  method -->|нет| cors["CORS"]
   cors --> limit["RateLimit"]
   limit --> service["ServiceCheck"]
   service --> token{"TokenMiddleware?"}

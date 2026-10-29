@@ -11,7 +11,9 @@ Frontend and headless entry point:
 /assets/components/minishop3/api.php?route=/api/v1/{path}
 ```
 
-The `route` parameter is required. The `/api/v1` group always runs three middleware layers: CORS → RateLimit → ServiceCheck. `TokenMiddleware` is not applied to the whole group; it is attached to cart, order, and part of customer.
+The `route` parameter is required. The `/api/v1` group runs three middleware layers: CORS → RateLimit → ServiceCheck. `TokenMiddleware` is not applied to the whole group; it is attached to cart, order, and part of customer.
+
+One exception is the `OPTIONS` preflight: no route matches that method, so the router runs **only** the `CorsMiddleware` layers. RateLimit, ServiceCheck, `TokenMiddleware` and the handler itself are skipped.
 
 Manager API (`connector.php`) is not documented on this page.
 
@@ -57,7 +59,10 @@ The `errors` and `error_code` keys are always present in a router response, alth
 
 ```mermaid
 flowchart TD
-  req["api.php?route="] --> cors["CORS"]
+  req["api.php?route="] --> method{"OPTIONS method?"}
+  method -->|yes: preflight| corsonly["CORS layers only"]
+  corsonly --> answer["Response without a handler"]
+  method -->|no| cors["CORS"]
   cors --> limit["RateLimit"]
   limit --> service["ServiceCheck"]
   service --> token{"TokenMiddleware?"}

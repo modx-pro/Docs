@@ -283,7 +283,7 @@ curl -sS "${API}?route=/api/v1/health"
   "message": null,
   "data": {
     "status": "ok",
-    "version": "1.14.3-beta1",
+    "version": "1.14.3-beta2",
     "timestamp": 1760544000,
     "api": "web"
   }
