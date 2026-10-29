@@ -20,7 +20,7 @@ Vue OrderView (root component)
 ├── Info (position: 0)
 ├── Products (position: 1, hidden on create)
 ├── Address (position: 2)
-├── Shipment (position: 3, hidden on create)
+├── Tracking (position: 3, hidden on create)
 ├── History (position: 4, hidden on create)
 └── [Your tabs] (position: 100 by default)
 ```
@@ -133,7 +133,7 @@ $controller->addHtml('
 
     window.MS3OrderTabsRegistry.register({
         key: "delivery-tracking",
-        title: "Tracking",
+        title: "Carrier tracking",
         type: "vue",
         component: {
             props: ["orderId", "order", "config", "isCreateMode"],
@@ -205,7 +205,7 @@ import OrderTrackingTab from '../components/OrderTrackingTab.vue'
 
   window.MS3OrderTabsRegistry.register({
     key: 'tracking',
-    title: 'Tracking',
+    title: 'Carrier tracking',
     type: 'vue',
     component: OrderTrackingTab, // SFC object, not a string
     position: 5,
@@ -320,7 +320,7 @@ Built-in tabs have fixed positions:
 | Info | `info` | 0 | No |
 | Products | `products` | 1 | Yes |
 | Address | `address` | 2 | No |
-| Shipment | `ms3_shipment` | 3 | Yes |
+| Tracking | `ms3_shipment` | 3 | Yes |
 | History | `history` | 4 | Yes |
 
 A custom tab with no `position` gets `100`. A value from the **5–99** range puts it after the built-in tabs but ahead of the ones left at the default.

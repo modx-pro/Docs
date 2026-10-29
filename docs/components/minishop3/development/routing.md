@@ -307,7 +307,7 @@ $router->post('/multiple', $handler, [
 
 #### ServiceCheckMiddleware
 
-Проверяет, что сервис `ms3` поднялся. Если нет — отвечает `503` с `error_code: internal_error`, не доходя до обработчика. Стоит в стеке Web API перед остальными.
+Проверяет, что сервис `ms3` поднялся. Если нет — отвечает `503` с `error_code: internal_error`, не доходя до обработчика. В стеке Web API стоит третьим из трёх групповых — после `CorsMiddleware` и `RateLimitMiddleware`, но до маршрутного `TokenMiddleware`. Отсюда следствие: если сервис `ms3` не поднялся, запрос всё равно съедает счётчик лимита.
 
 #### TokenMiddleware
 
@@ -671,13 +671,13 @@ function addFilterParam(params, key, value) {
 | GET | `/{id}/shipment` | Получить данные отгрузки заказа | `msorder_list` |
 | PUT | `/{id}/shipment` | Сохранить/обновить отгрузку заказа | `msorder_save` |
 
-**Справочники для форм заказа** (без отдельного PermissionMiddleware, достаточно сессии mgr):
+**Справочники для форм заказа** (без отдельного PermissionMiddleware, достаточно сессии mgr). Роуты объявлены на уровне группы `/api/mgr`, а не внутри `/orders`, поэтому путь указан целиком:
 
 | Метод | Роут | Описание |
 | --- | --- | --- |
-| GET | `/statuses-dropdown` | Статусы с переводами |
-| GET | `/deliveries-active` | Активные доставки для select |
-| GET | `/payments-active` | Активные способы оплаты для select |
+| GET | `/api/mgr/statuses-dropdown` | Статусы с переводами |
+| GET | `/api/mgr/deliveries-active` | Активные доставки для select |
+| GET | `/api/mgr/payments-active` | Активные способы оплаты для select |
 
 #### Поля моделей (`/model-fields`)
 

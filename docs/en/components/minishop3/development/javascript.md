@@ -252,7 +252,7 @@ Each product in the cart has a unique `product_key`. Same product with different
 
 #### changeOption(productKey, options, render)
 
-Change the options of a line. A new set of options changes the line key: the server returns the new one in `data.product_key` and the old one in `data.old_product_key`.
+Change the options of a line. A new set of options changes the line key: the server returns the new one in `data.last_key`. The old key never comes back to the client — the calling code already has it, it is the first argument of `changeOption()`.
 
 ```javascript
 await ms3.cartAPI.changeOption('ms43ce202fd27c84c28230cc771328e37f', { color: 'Pink' })
@@ -286,7 +286,7 @@ await ms3.cartAPI.clean()
 | `add`, `change`, `changeOption`, `remove` | `last_key`, `cart`, `status`, `items` |
 | `clean` | `cart`, `status`, `items` — no `last_key` |
 
-`last_key` is the key of the line the operation touched. `changeOption` adds `old_product_key` next to it: a new set of options changes the key. When the request carries `render`, a `render` key with the ready markup joins the list.
+`last_key` is the key of the line the operation touched; for `changeOption` it is the new key. The old key is not in the response: only a PHP plugin on `msOnChangeOptionInCart` sees it, as `old_product_key`. When the request carries `render`, a `render` key with the ready markup joins the list.
 
 ## OrderAPI
 
@@ -723,8 +723,8 @@ export function useCart() {
 
   // removeFromCart(productKey) → cartAPI.remove()
   // changeQuantity(productKey, count) → cartAPI.change()
-  // clearCart() → cartAPI.clean(); on success cart and status are reset by hand:
-  // the clean response carries no data
+  // clearCart() → cartAPI.clean(); the response carries an empty cart, items: []
+  // and a zeroed status — handled by the same apply(response) as the rest
 
   onMounted(() => {
     loadCart()

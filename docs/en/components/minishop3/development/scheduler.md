@@ -8,7 +8,7 @@ MiniShop3 runs background tasks through the [Scheduler](https://modstore.pro/pac
 
 ## Requirements
 
-Scheduler 1.8.0 or higher. Tasks also work on older versions, but recurring ones are not restarted automatically.
+Scheduler 1.8.0 or higher. On older versions the installer registers the token and draft cleanups as one-off tasks — no interval and no first run — so they never execute until a run is scheduled by hand through «Schedule run». For `ms3_csv_import` and `ms3_send_notification` nothing changes: they are one-off anyway and are queued from code.
 
 ## Enabling integration
 

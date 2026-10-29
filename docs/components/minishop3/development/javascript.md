@@ -240,7 +240,7 @@ await ms3.cartAPI.change('ms43ce202fd27c84c28230cc771328e37f', 5)
 
 #### changeOption(productKey, options, render)
 
-Изменить опции позиции. Новый набор опций меняет ключ позиции: сервер возвращает его в `data.product_key`, а старый — в `data.old_product_key`.
+Изменить опции позиции. Новый набор опций меняет ключ позиции: сервер возвращает его в `data.last_key`. Старый ключ клиенту не возвращается — он и так известен вызывающему коду, это первый аргумент `changeOption()`.
 
 ```javascript
 await ms3.cartAPI.changeOption('ms43ce202fd27c84c28230cc771328e37f', { color: 'Розовый' })
@@ -274,7 +274,7 @@ await ms3.cartAPI.clean()
 | `add`, `change`, `changeOption`, `remove` | `last_key`, `cart`, `status`, `items` |
 | `clean` | `cart`, `status`, `items` — без `last_key` |
 
-`last_key` — ключ позиции, которой коснулась операция. У `changeOption` рядом приходит `old_product_key`: смена набора опций меняет ключ. Когда в запросе передан `render`, к этим ключам добавляется `render` с готовой разметкой.
+`last_key` — ключ позиции, которой коснулась операция; у `changeOption` это новый ключ. Старый ключ в ответе не приходит: он доступен только PHP-плагину на `msOnChangeOptionInCart`, где лежит в `old_product_key`. Когда в запросе передан `render`, к ключам ответа добавляется `render` с готовой разметкой.
 
 ## OrderAPI
 
@@ -711,8 +711,8 @@ export function useCart() {
 
   // removeFromCart(productKey) → cartAPI.remove()
   // changeQuantity(productKey, count) → cartAPI.change()
-  // clearCart() → cartAPI.clean(), после успеха cart и status сбрасываются вручную:
-  // ответ на очистку корзины данных не несёт
+  // clearCart() → cartAPI.clean(); ответ несёт пустую корзину, items: [] и
+  // обнулённый status — обрабатывается тем же apply(response), что и остальные
 
   onMounted(() => {
     loadCart()
