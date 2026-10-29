@@ -538,7 +538,7 @@ ms3Hooks.addHook('hookName', async (context) => {
 | `afterCleanCart` | `{ response }` | После очистки корзины |
 | `beforeChangeOptionCart` | `{ productKey, options }` | Перед сменой опции позиции |
 | `afterChangeOptionCart` | `{ productKey, options, response }` | После смены опции |
-| `beforeQuantityChange` | `{ productKey, count, form }` | Перед изменением количества кнопками «+» и «−» |
+| `beforeQuantityChange` | `{ productKey, count, form }` | Перед изменением количества кнопками «+» и «−». Единственный хук корзины, у которого правка контекста влияет на запрос: `count` читается обратно, так что обработчик может не только отменить операцию через `cancel`, но и подменить количество |
 | `afterQuantityChange` | `{ productKey, count, response, form }` | После изменения количества |
 
 #### Заказ

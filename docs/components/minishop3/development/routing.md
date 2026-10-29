@@ -51,6 +51,16 @@ $router->get('/api/mgr/my-endpoint', function($params) use ($modx) {
     return Response::success(['data' => 'value']);
 });
 
+// Middleware можно навесить и флюентно, на возвращённый Route
+$router->get('/api/mgr/other', $handler)
+    ->middleware(new AuthMiddleware($modx, 'mgr'));
+
+// Middleware принимается и строкой — роутер создаст объект с $modx
+$router->get('/api/mgr/third', $handler, [\My\Addon\Middleware\Check::class]);
+
+// Обработчик тоже можно задать строкой 'Класс@метод'
+$router->get('/api/mgr/fourth', '\My\Addon\Controller@index');
+
 // POST роут
 $router->post('/api/mgr/items', function($params) use ($modx) {
     $data = json_decode(file_get_contents('php://input'), true);
@@ -158,8 +168,17 @@ use MiniShop3\Router\Response;
 Response::success($data, $message, $statusCode);
 
 // Ответ с ошибкой
-Response::error($message, $statusCode, $errors);
+Response::error($message, $statusCode, $errors, $errorCode, $data);
+
+// То же, но машинный код обязателен — так удобнее для Web API
+Response::errorWithCode($errorCode, $message, $statusCode, $errors, $data);
+
+// Редирект и ответ из процессора MODX
+Response::redirect($url);
+Response::fromProcessor($processorResponse);
 ```
+
+Четвёртый аргумент `error()` — тот самый `error_code`, который ниже обещан в каждом ответе об ошибке; без него роутер подставит код по HTTP-статусу. Пятый, `data`, несёт контекст, не привязанный к полю: `existing_id` у конфликта, состояние корзины у отказа по остатку. Заголовки добавляет `->header()` на готовом ответе.
 
 ### Формат ответа
 
@@ -326,6 +345,16 @@ $router->group('/api/v1/cart', function($router) use ($modx) {
 ```
 
 В самом middleware есть список `publicRoutes` из пятнадцати префиксов и один шаблон пути. Путь из списка проходит без гостевого токена и без 401. Отдельного режима `optional` в коде нет: поведение определяет попадание пути в этот список.
+
+Список не зашит намертво. Свой публичный роут делают так: создают собственный экземпляр middleware, расширяют список и передают его в группу.
+
+```php
+$tokenMiddleware = new TokenMiddleware($modx);
+$tokenMiddleware->addPublicRoute('/api/v1/myaddon/callback');
+// или заменить список целиком: setPublicRoutes([...])
+```
+
+Preflight `OPTIONS` middleware пропускает насквозь: токен не выпускается, сессия не поднимается, обработчик не вызывается.
 
 ```text
 /api/v1/product/get          /api/v1/delivery/get
@@ -588,7 +617,7 @@ CRUD колонок административных гридов. Чтение:
 
 | Метод | Роут | Описание |
 | --- | --- | --- |
-| GET | `/{grid_key}` | Получить конфигурацию грида |
+| GET | `/{grid_key}` | Получить конфигурацию грида. Параметр `include_hidden=1` добавляет скрытые колонки — в этом режиме конфигурацию читает редактор |
 | PUT | `/{grid_key}` | Обновить конфигурацию грида (тело: `fields`) |
 | POST | `/{grid_key}/field` | Добавить колонку |
 | PUT | `/{grid_key}/field/{field_name}` | Обновить колонку |
