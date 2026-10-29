@@ -80,8 +80,10 @@ $modx->log(modX::LOG_LEVEL_ERROR, '[' . $modx->event->name . '] ' . print_r($scr
 
 ## controller parameter
 
-::: info Passed automatically
-Every MiniShop3 controller event receives a `controller` parameter: the current controller instance (Cart, Order, Customer).
+::: info Not passed to every event
+The `controller` parameter — the controller instance — is mixed in by `Cart::invokeEvent()` and `CartMutationHandler::invokeEvent()`, so every cart event carries it. Apart from those, only the `msOnBeforeGetOrderCustomer` / `msOnGetOrderCustomer` pair passes it.
+
+In the other groups the controller arrives under a different name, or not at all: customer events carry `customer`, cost events carry `cart` or `cartController`, and order field events carry no controller. Check the parameter table on the page you need.
 :::
 
 The controller gives access to MiniShop3 and MODX:
@@ -166,6 +168,8 @@ So `return 'cancel'` does not cancel. It also adds an error line to the log. Can
 - `msOnSubmitOrder`
 - `msOnBeforeCreateOrder`
 - `msOnBeforeChangeOrderStatus`
+
+The list is not exhaustive — these are the cart, order and status events. Around thirty more events read the plugin response: every cost, customer, stock and shipment event, plus the manager order line, import and vendor events. For those, see the «Reaction to `output()`» table on the page of the section you need.
 
 ## Modifying data
 
@@ -278,7 +282,8 @@ For some events the core does not use the general merge. It applies a channel by
 | `msOnImportRow` | `data`, `tvData`, `optionData`, `gallery` | The same |
 | `msOnProductsLoad` | `rows` | The same |
 | `msOnProductPrepare` | `row` | The same |
-| `msOnBeforeSendNotification` | `recipient`, `channels` | The same. A list in `channels` replaces the channel set entirely |
+| `msOnBeforeSendNotification` | `recipient` | The same |
+| `msOnBeforeSendNotification` | `channels` | No `applyReturnedArray()` channel here: any array replaces the channel set entirely, an associative one included |
 
 ```php
 <?php

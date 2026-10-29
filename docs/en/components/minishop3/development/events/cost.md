@@ -73,49 +73,46 @@ switch ($modx->event->name) {
 
 ```php
 <?php
+// The discount code lives in the draft properties — put it there from your own
+// handler when the customer types a code into the checkout form.
+$codes = [
+    'SALE10'   => ['type' => 'percent', 'value' => 10],
+    'MINUS500' => ['type' => 'fixed', 'value' => 500],
+];
+
 switch ($modx->event->name) {
     case 'msOnGetCartCost':
         $cost = $scriptProperties['cost'];
+        /** @var \MiniShop3\Model\msOrder|null $draft */
+        $draft = $scriptProperties['draft'] ?? null;
 
-        // Check promo code in session
-        if (empty($_SESSION['ms3']['promocode'])) {
+        $properties = $draft ? ($draft->get('properties') ?: []) : [];
+        $code = (string)($properties['promocode'] ?? '');
+
+        if ($code === '' || !isset($codes[$code])) {
             return;
         }
 
-        $promocode = $modx->getObject('msPromocode', [
-            'code' => $_SESSION['ms3']['promocode'],
-            'active' => 1,
-        ]);
-
-        if (!$promocode) {
-            unset($_SESSION['ms3']['promocode']);
-            return;
-        }
-
-        $discount = 0;
-        $type = $promocode->get('type');
-        $value = $promocode->get('value');
-
-        switch ($type) {
-            case 'percent':
-                $discount = $cost * ($value / 100);
-                break;
-            case 'fixed':
-                $discount = $value;
-                break;
-        }
+        $promo = $codes[$code];
+        $discount = $promo['type'] === 'percent'
+            ? $cost * ($promo['value'] / 100)
+            : $promo['value'];
 
         $values = &$modx->event->returnedValues;
         $values['cost'] = max(0, $cost - $discount);
 
-        // Save discount info
+        // Discount info for the later cost events
         $modx->eventData['promocode'] = [
-            'code' => $promocode->get('code'),
+            'code' => $code,
             'discount' => $discount,
         ];
         break;
 }
 ```
+
+::: tip Real promo codes have a ready-made component
+The example above deliberately keeps the codes inside the plugin. Full promo codes with rules, limits and usage tracking come from [ms3PromoCode](https://modstore.pro/packages/ecommerce/ms3promocode): it has its own `ms3PromoCode\Model\msPromoCode` model with the `discount_type` and `discount_value` fields, and its own calculation services. There is no need to reimplement that in a plugin.
+:::
 
 ---
 
@@ -400,6 +397,10 @@ For a products-only discount prefer `msOnGetCartCost`. For a rule that must touc
  * Events: msOnGetCartCost, msOnGetDeliveryCost
  */
 
+$codes = [
+    'SALE10' => ['type' => 'percent', 'value' => 10],
+];
+
 switch ($modx->event->name) {
 
     case 'msOnGetCartCost':
@@ -409,17 +410,15 @@ switch ($modx->event->name) {
         $discount = 0;
         $discountInfo = [];
 
-        // 1. Promo code discount
-        if (!empty($_SESSION['ms3']['promocode'])) {
-            $promocode = $modx->getObject('msPromocode', [
-                'code' => $_SESSION['ms3']['promocode'],
-                'active' => 1,
-            ]);
-            if ($promocode && $promocode->get('type') === 'percent') {
-                $promoDiscount = $cost * ($promocode->get('value') / 100);
-                $discount += $promoDiscount;
-                $discountInfo['promocode'] = $promoDiscount;
-            }
+        // 1. Discount by the code in the draft properties
+        $draft = $scriptProperties['draft'] ?? null;
+        $properties = $draft ? ($draft->get('properties') ?: []) : [];
+        $code = (string)($properties['promocode'] ?? '');
+
+        if ($code !== '' && isset($codes[$code]) && $codes[$code]['type'] === 'percent') {
+            $promoDiscount = $cost * ($codes[$code]['value'] / 100);
+            $discount += $promoDiscount;
+            $discountInfo['promocode'] = $promoDiscount;
         }
 
         // 2. VIP customer discount

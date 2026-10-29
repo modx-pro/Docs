@@ -34,13 +34,13 @@ switch ($modx->event->name) {
         /** @var \MiniShop3\Model\msVendor $vendor */
         $vendor = $scriptProperties['msVendor'];
 
-        // Check that the name is unique
-        $existing = $modx->getObject(\MiniShop3\Model\msVendor::class, [
-            'name' => $vendor->get('name'),
-        ]);
+        // A duplicate name never reaches here: Vendor\Create::beforeSet() rejects it
+        // earlier with a field error on name. Check what the processor does not know —
+        // a reference list of allowed brands, for instance.
+        $allowed = $modx->getOption('my_allowed_vendors', null, '');
 
-        if ($existing) {
-            $modx->event->output('A vendor with this name already exists');
+        if ($allowed !== '' && !in_array($vendor->get('name'), explode(',', $allowed), true)) {
+            $modx->event->output('This vendor is not in the reference list');
             return;
         }
         break;

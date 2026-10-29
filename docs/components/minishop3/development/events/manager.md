@@ -157,7 +157,7 @@ switch ($modx->event->name) {
 Ext.onReady(function() {
     // Ждём инициализации панели
     var checkPanel = setInterval(function() {
-        var panel = Ext.getCmp('ms3-product-panel');
+        var panel = Ext.getCmp('modx-panel-resource');
         if (panel && panel.getTopToolbar) {
             clearInterval(checkPanel);
 
@@ -227,46 +227,9 @@ Ext.onReady(function() {
 });
 ```
 
-### Добавление колонки в грид заказов
+### Колонка в гриде заказов
 
-```php
-<?php
-switch ($modx->event->name) {
-    case 'msOnManagerCustomCssJs':
-        $page = $scriptProperties['page'];
-
-        if ($page === 'orders') {
-            $controller = $scriptProperties['controller'];
-            $controller->addJavascript('/assets/components/mycomponent/js/orders-grid.js');
-        }
-        break;
-}
-```
-
-```javascript
-// orders-grid.js
-Ext.onReady(function() {
-    // Расширяем конфигурацию грида заказов
-    var originalGetColumns = ms3.grid.Orders.prototype.getColumns;
-
-    ms3.grid.Orders.prototype.getColumns = function() {
-        var columns = originalGetColumns.apply(this, arguments);
-
-        // Добавляем свою колонку
-        columns.splice(3, 0, {
-            header: 'Источник',
-            dataIndex: 'source',
-            width: 100,
-            sortable: true,
-            renderer: function(value) {
-                return value || '-';
-            }
-        });
-
-        return columns;
-    };
-});
-```
+Экран заказов собран целиком на Vue — ExtJS-грида там нет, и прототип переопределять нечего. Колонки задаёт конфигурация `msGridField`: см. [Колонки гридов](../../interface/utilities/grid-columns).
 
 ---
 
@@ -443,25 +406,15 @@ window.MyComponent.init = function() {
 };
 
 // Проверяйте существование элементов
-var panel = Ext.getCmp('ms3-product-panel');
+var panel = Ext.getCmp('modx-panel-resource');
 if (panel) {
     // Безопасно работаем с панелью
 }
 ```
 
-### Используйте события ExtJS
+### Шины событий у MiniShop3 нет
 
-```javascript
-// Подписка на события компонента
-Ext.onReady(function() {
-    if (typeof ms3 !== 'undefined') {
-        // Подписываемся на событие загрузки
-        ms3.on('load', function() {
-            console.log('MiniShop3 loaded');
-        });
-    }
-});
-```
+Глобальный `ms3` в админке — обычный объектный литерал с конфигурацией и токеном, он не наследует `Ext.util.Observable`. Проверка `typeof ms3 !== 'undefined'` пройдёт, а следующий же `ms3.on(...)` упадёт с `TypeError`. Подписывайтесь на штатные события ExtJS или Vue конкретного экрана.
 
 ### Учитывайте порядок загрузки
 

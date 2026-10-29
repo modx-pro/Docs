@@ -194,7 +194,7 @@ flowchart TB
 
 ### Inventory
 
-With `ms3_inventory_enabled=1` the work is done by `ProductStockInventory` (`ms3_inventory`), the contract is `InventoryServiceInterface`. Event parameters: `key` (`InventoryKey`), `qty`, `ctx` (`InventoryContext`: `orderId`, `origin`). A before-event returning `success=false` raises an `InventoryException` (`ms3_err_inventory_cancelled`). Passing `$notify=false` to reserve and release skips the event pair — compensation happens inside the SQL transaction.
+With `ms3_inventory_enabled=1` the work is done by `ProductStockInventory` (`ms3_inventory`), the contract is `InventoryServiceInterface`. Event parameters: `key` (`InventoryKey`), `qty`, `ctx` (`InventoryContext`: `orderId`, `origin` — defaults to `'order'`, `holdState` — defaults to `null`). A before-event returning `success=false` raises an `InventoryException` (`ms3_err_inventory_cancelled`). Passing `$notify=false` to reserve and release skips the event pair — compensation happens inside the SQL transaction.
 
 | Event | When, in terms of order status |
 | --- | --- |
@@ -233,8 +233,8 @@ flowchart TB
 | `product` | `msProduct` | Parameter renamed |
 | `msOnGetOrderCost` | Kept + 3 partials | Also `msOnGetCartCost`, `msOnGetDeliveryCost`, `msOnGetPaymentCost`. Override the total in `msOnGetOrderCost` |
 | — | `controller` | Parameter on many controller events |
-| — | `msOnBeforeEmptyOrder` / `msOnEmptyOrder` | Draft cleanup |
-| — | `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder` | Manager finalization |
+| `msOnBeforeEmptyOrder` / `msOnEmptyOrder` | Same names | Carried over from miniShop2 unchanged. Draft cleanup |
+| `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder` | Same names | Carried over from miniShop2 unchanged. Manager finalization |
 | — | `msOnBeforeGetOrderUser` / `msOnGetOrderUser` | `modUser` on submit |
 | — | `msOnBeforeValidateCustomerValue` | New event |
 | — | `msOnCreateCustomer` | New event |

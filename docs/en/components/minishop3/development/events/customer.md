@@ -527,8 +527,8 @@ The event is registered (`_build/elements/events.php`) and the `MiniShop3\Proces
 | `msCustomer` | `msCustomer` | Reference to the customer object |
 | `object` | `msCustomer` | The same reference as `msCustomer` (MS2-style alias) |
 
-::: tip Return a value instead of `$modx->event->output()`
-The `Customer/*` events above are built on `Utils::invokeEvent()` and read `output()`/`returnedValues`. This one belongs to the standard MODX `UpdateProcessor` and reads the plugin's **return value** directly: return a non-empty string or a non-empty array of messages to abort the save.
+::: tip Aborting goes through `$modx->event->output()`
+The event belongs to the standard MODX `UpdateProcessor`, but the abort channel is the same as for the `Customer/*` events above: `fireBeforeSaveEvent()` collects `$modx->event->_output` from every plugin. A value simply returned by the handler only goes to the event error log — `return 'string'` does not abort the save.
 :::
 
 ### Aborting the operation
@@ -548,7 +548,8 @@ switch ($modx->event->name) {
             ]);
 
             if ($existing) {
-                return 'This email is already used by another customer';
+                $modx->event->output('This email is already used by another customer');
+                return;
             }
         }
         break;
