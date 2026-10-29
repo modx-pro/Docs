@@ -39,20 +39,21 @@ The filter at the top of the page offers 4 models:
 
 ### Sections panel
 
-The left panel lists sections of the selected model.
+A collapsible Manage sections panel above the fields table. Columns: drag handle, Key, Title, Hidden, System, Actions.
 
 ### Fields table
 
-The right side lists fields and their settings.
+Below the sections panel: fields and their settings.
 
 | Column | Description |
 | --- | --- |
-| Name | System field name |
-| Label | Display name |
-| Type (xtype) | Widget type |
+| Field name | System field name |
+| Title | Display name |
 | Section | Which section the field belongs to |
-| Visibility | Whether the field is shown |
-| Width | Grid width (3-12) |
+| Width | Grid width (1–12) |
+| Field type | Widget type |
+| Visible | Whether the field is shown |
+| Required | The field must be filled in |
 
 ## Editing a field
 
@@ -80,7 +81,7 @@ Click a row. The edit dialog opens.
 
 ### Grid width
 
-The grid has 12 columns:
+The grid has 12 columns and the width is set with a slider — any integer from 1 to 12. Common values:
 
 | Value | Width | Description |
 | --- | --- | --- |

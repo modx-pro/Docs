@@ -9,7 +9,7 @@ Step-by-step wizard for importing products from CSV.
 
 ## Purpose
 
-- Encoding detection (UTF-8, Windows-1251, KOI8-R)
+- Encoding detection (UTF-8, Windows-1251, KOI8-R, ISO-8859-5, ASCII; UTF-16 by BOM). When detection fails, Windows-1251 is assumed
 - Mapping columns to product fields
 - Update by a key field
 - TV fields, options (`option.*`), images into the gallery
@@ -61,7 +61,7 @@ The system maps columns by their headers. A column named "name" goes to `pagetit
 | Update existing | If a product is found by the key, update it |
 | Lookup key | Field used to find duplicates |
 
-Lookup keys: `article` (better), `pagetitle`, `id`.
+Lookup keys: `article` (better), `pagetitle`, `alias`, `id`.
 
 ### Extra fields
 
@@ -108,7 +108,6 @@ Import complete!
 - Created: 120
 - Updated: 25
 - Errors: 3
-- Skipped: 2
 ```
 
 ## Available fields
@@ -138,7 +137,8 @@ Import complete!
 | `weight` | Weight |
 | `color` | Color |
 | `size` | Size |
-| `stock` | Stock (`remains` is the CSV alias) |
+| `stock` | Stock |
+| `remains` | Stock, a separate entry in the mapping list kept for miniShop2 compatibility — the value is written to `stock` |
 | `vendor` | Vendor (name or ID) |
 | `made_in` | Country of origin |
 | `new` | New (0/1) |
@@ -238,7 +238,7 @@ POST /api/mgr/import/start
 
 ```json
 {
-  "importfile": "assets/import/products.csv",
+  "importfile": "assets/import/2026-10-29_10-15-42_products_a1b2c3d4.csv",
   "mapping": "{\"0\":\"pagetitle\",\"1\":\"parent\",\"2\":\"price\"}",
   "delimiter": ";",
   "skip_header": true,

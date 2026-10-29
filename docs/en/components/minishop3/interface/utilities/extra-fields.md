@@ -50,7 +50,7 @@ Reading the schema (`GET /api/mgr/extra-fields`) is available to any authenticat
 | Parameter | Description | Required |
 | --- | --- | --- |
 | Key | Unique field name (Latin letters, snake_case) | Yes |
-| Label | Display name | Yes |
+| Label | Display name | No — an empty one falls back to the field key |
 | Description | Hint for the user | No |
 | Active | The field is in use | Yes |
 
@@ -72,7 +72,7 @@ The key must be unique within the model. Use Latin letters and underscores. For 
 | `ms3-combo-options` | Option picker | Product variants |
 | `ms3-repeater` | Table of rows (JSON) | Composition, a list of characteristics |
 | `ms3-key-value` | Key to value (JSON) | A set of named properties |
-| `datefield` | Date field | Dates (usually with `dbtype: date`) |
+| `datefield` | Date field | Dates. The interface sets `dbtype` to `date` or `datetime` itself |
 
 #### Repeater (`ms3-repeater`)
 
@@ -91,7 +91,7 @@ Since v1.12. In `properties` or the widget config, set `repeater_config`:
 }
 ```
 
-The database column is usually `json`. These fields do not enter CSV import.
+The database type is forced: choosing `ms3-repeater` sets `dbtype: json`, `phptype: json`, an empty `precision` and `null: true`, and a manual choice is ignored. `ms3-key-value` behaves the same. These fields do not enter CSV import.
 
 #### Key-value (`ms3-key-value`)
 
@@ -217,12 +217,9 @@ Index: NONE
 Click the field row. The edit dialog opens.
 
 ::: warning Limits
-Some parameters cannot change after creation:
+After creation only the label, the description, the widget type, the active flag and the widget configs can change — `label`, `description`, `xtype`, `active`, `select_options`, `repeater_config`, `key_value_config`.
 
-- Field key
-- Database type (dbtype)
-
-To change them, delete the field and create it again.
+Everything else is fixed: the field key, `class`, `dbtype`, `phptype`, `precision`, `null`, `default`, `default_value`, `attributes`, `index_type`. To change them, delete the field and create it again.
 :::
 
 ## Deleting a field
