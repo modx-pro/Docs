@@ -483,6 +483,16 @@ Your date: {$date}.
 
 Similar to ordinary script logic.
 
+Read a placeholder that a snippet set in the same template with `$_modx->getPlaceholder()` or the `placeholder` modifier, not with `{$_pls}`. `{$_pls}` is a copy of the placeholders taken when the template starts being parsed: whatever snippets set along the way does not get into it.
+
+```fenom
+{set $list = 'pdoResources' | snippet: ['parents' => 0, 'setTotal' => 1]}
+
+{$_pls['total']}                    {* empty *}
+{$_modx->getPlaceholder('total')}   {* number of resources found *}
+{'total' | placeholder}             {* the same *}
+```
+
 #### Output snippets and chunks
 
 Variable `{$_modx}` is a simple and safe [microMODX class][10]
