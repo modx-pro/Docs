@@ -36,11 +36,15 @@ $customer = $modx->getObject(msCustomer::class, ['email' => $email]);
 | --- | --- | --- | --- |
 | `msProduct` | `Data` | 1:1 | product data (`msProductData`) |
 | `msProduct` | `Options` | 1:N | product option values |
+| `msProduct` | `Categories` | 1:N | extra categories (`msCategoryMember`), composite |
+| `msProduct` | `Category` | N:1 | the parent category (`msCategory`) |
+| `msProductData` | `Categories` | 1:N | extra categories of the same product |
 | `msProductData` | `Files` | 1:N | gallery files |
 | `msOrder` | `Address` | 1:1 | order address (`msOrderAddress`) |
 | `msOrder` | `Products` | 1:N | order line items |
 | `msOrder` | `Customer` | N:1 | the customer (`msCustomer`) |
 | `msCustomer` | `Tokens` | 1:N | auth tokens |
+| `msCustomer` | `CustomerGroup` | N:1 | the customer group |
 | `msCustomerAddress` | `Customer` | N:1 | the customer, the reverse relation from an address |
 | `msCustomerToken` | `Customer` | N:1 | the customer, the reverse relation from a token |
 

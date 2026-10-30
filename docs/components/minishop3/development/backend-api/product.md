@@ -167,6 +167,18 @@ $updated = $service->updateProductData($productId, [
 ]);
 ```
 
+Другие публичные методы сервиса — их зовут процессоры товара, но они доступны и из своего кода:
+
+| Метод | Описание |
+| --- | --- |
+| `prepareObject($product, $data)` | Разложить входной массив по `msProduct` и `msProductData` перед сохранением |
+| `saveCategories($productId, $categories)` | Переписать набор дополнительных категорий |
+| `saveOptions($productId, $options)` | Переписать значения опций товара. Именно его зовёт `Product\Create` |
+| `saveLinks($productId, $links)` | Переписать связи товара |
+| `removeProduct($productId)` | Удалить товар вместе с данными |
+| `getModifiedPrice()`, `getModifiedWeight()`, `getModifiedFields()` | Что изменилось в последнем сохранении — для событий и журнала |
+| `getOptionKeys($productId)`, `getOptionFields($productId)` | Ключи и описания опций товара |
+
 ### Поля msProductData
 
 | Поле | Тип в БД | PHP-тип | По умолчанию | Описание |
@@ -306,6 +318,15 @@ $imageService->rankProductImages($productData, [
 
 // Удалить папку товара из медиа-источника
 $imageService->removeProductCatalog($productData);
+
+// Поднять медиа-источник товара (нужен перед работой с файлами напрямую)
+$source = $imageService->initializeMediaSource($productData);
+
+// Переставить изображения по именам файлов
+$imageService->sortProductImagesByName($productData);
+
+// Какой файл станет превью товара
+$fileId = $imageService->resolvePreviewFileId($productData);
 ```
 
 ### Процессоры галереи
@@ -348,6 +369,7 @@ use MiniShop3\Model\msCategoryMember;
 $member = $modx->newObject(msCategoryMember::class);
 $member->set('product_id', $productId);
 $member->set('category_id', $categoryId);
+$member->set('menuindex', 10); // порядок товара внутри этой категории, по умолчанию 0
 $member->save();
 
 // Получить дополнительные категории товара
@@ -389,7 +411,7 @@ $productData->save();
 
 Связи объединяют товары: «Похожие», «С этим покупают». Две модели:
 
-- **msLink**: тип связи (id, type, name)
+- **msLink**: тип связи (id, type, name, description)
 - **msProductLink**: конкретная связь между товарами (link, master, slave)
 
 ```mermaid
@@ -541,6 +563,20 @@ $productData->save();
 $vendor = $productData->getOne('Vendor');
 echo $vendor->get('name');  // "Samsung"
 ```
+
+### Manager API производителей
+
+Именно эти эндпоинты вызывает грид производителей. Вся группа закрыта правом `mssetting_save`.
+
+| Метод | Роут | Описание |
+| --- | --- | --- |
+| `GET` | `/api/mgr/vendors` | Список. Параметры: `start`, `limit`, `query` (LIKE по названию, описанию, стране и email) |
+| `POST` | `/api/mgr/vendors` | Создать |
+| `GET` | `/api/mgr/vendors/{id}` | Карточка |
+| `PUT` | `/api/mgr/vendors/{id}` | Обновить |
+| `DELETE` | `/api/mgr/vendors/{id}` | Удалить |
+| `DELETE` | `/api/mgr/vendors/bulk` | Удалить несколько, список `ids` в теле |
+| `POST` | `/api/mgr/vendors/sort` | Сохранить порядок после перетаскивания |
 
 ### Процессоры производителей
 

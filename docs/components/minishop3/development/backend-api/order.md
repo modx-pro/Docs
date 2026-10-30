@@ -167,6 +167,7 @@ $draftManager->deleteDraft($draft);
 | `transferDraftToToken($fromToken, $toToken, $customerId, $ctx)` | Перенести черновик на новый токен после смены сессии |
 | `fillAddressFromArray($order, $addressData)` | Заполнить адрес из массива |
 | `addProductFromSnapshot($order, $snapshot, $origin)` | Добавить позицию из снимка, без ресурса товара |
+| `createSessionlessDraft($data)` | Черновик без сессии и без токена — для интеграций, которые создают заказ из своего кода. Принимает `context`, `delivery_cost`, `origin`, `properties` |
 
 ## Поля и валидация (OrderFieldManager)
 
@@ -256,8 +257,18 @@ $result = $calculator->getTotalCost($draft, $orderData, $token);
 | Режим | Поведение |
 | --- | --- |
 | `auto` (по умолчанию) | Пересчитывает только для `DefaultDelivery` / `DefaultPayment` (поля `price`, `weight_price`, `free_delivery_amount` и проценты). Для своих обработчиков возвращает `delivery_manual_required` / `payment_manual_required`, оставляет прежнюю `delivery_cost` и комиссию 0. Внешние API не вызывает. |
-| `manual` | Берёт переданный `manual_delivery_cost`. Комиссию оплаты считает автоматически, по полю. |
+| `manual` | Берёт переданный `manual_delivery_cost` — ключ **обязателен**, без него приходит ошибка `ms3_mgr_order_recalc_manual_delivery_missing`. Комиссию оплаты считает автоматически, по полю. |
 | `force_provider` | Явно вызывает `loadController()` → `getCost()` и `loadHandler()` → `getCost()` в `try/catch`. Сбой доставки оставляет прежнюю `delivery_cost` и пишет `delivery_provider_error`. Сбой оплаты ставит комиссию 0, пересобирает `cost` и пишет `payment_provider_error` ([#897](https://github.com/modx-pro/MiniShop3/issues/897)) |
+
+::: tip Посчитать, не записывая
+Эндпоинт пишет результат в заказ. Если нужен только расчёт — например, показать менеджеру, во что обойдётся смена доставки, — у сервиса есть `calculateBreakdown($order, $options)`: те же три режима и те же проверки, но без сохранения. Рядом `calculateProductTotals($order)` отдаёт сумму позиций и вес заказа.
+
+```php
+$recalculator = $modx->services->get('ms3_manager_order_cost_recalculator');
+$preview = $recalculator->calculateBreakdown($order, ['mode' => 'force_provider']);
+```
+
+:::
 
 Ответ повторяет данные заказа из `GET /api/mgr/orders/{id}` и добавляет:
 
@@ -396,6 +407,15 @@ $result = $statusService->change($orderId, $newStatusId);
 
 // Сменить статус без уведомлений
 $result = $statusService->change($orderId, $newStatusId, true);
+
+// Привести статус к нужному — идемпотентно
+$result = $statusService->ensure($orderId, $paidStatusId);
+// Если заказ уже в этом статусе, вернётся true без побочных эффектов.
+// Этим пользуются приёмник вебхуков оплаты и жизненный цикл отгрузки:
+// повторное уведомление от платёжного сервиса не должно падать.
+
+// Статусы, из которых заказ разрешено отменить
+$ids = $statusService->getAllowedCancelStatusIds();
 
 ```
 
@@ -741,6 +761,7 @@ $user = $userResolver->createUser([
 | `Delivery` | msDelivery | aggregate | Способ доставки |
 | `Payment` | msPayment | aggregate | Способ оплаты |
 | `User` | modUser | aggregate | Пользователь MODX |
+| `UserProfile` | modUserProfile | aggregate (one) | Профиль пользователя MODX, по `user_id` → `internalKey` |
 
 ::: info Composite vs Aggregate
 Composite-связи удаляются каскадно при удалении заказа (адрес, позиции, журнал). Aggregate-связи только ссылаются на объекты и не удаляют их.

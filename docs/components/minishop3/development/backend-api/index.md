@@ -61,6 +61,7 @@ flowchart LR
 | `Customer/*`, `Customer/Address/*` | Покупатели и их адреса |
 | `Api/Customer/*` | Вход, регистрация, сброс пароля, верификация email. Сюда Web API делегирует аутентификацию |
 | `Settings/Vendor/*`, `Settings/Delivery/*`, `Settings/Payment/*`, `Settings/Status/*`, `Settings/Link/*` | Справочники: производители, способы доставки, способы оплаты, статусы, типы связей |
+| `Settings/GetClass` | Список доступных классов обработчиков доставки и оплаты. Сканирует `src/Controllers/{Type}/` и каталоги из настройки `ms3_custom_classes_paths` |
 | `Utilities/Import/*` | Импорт товаров из CSV |
 | `System/*`, `System/Element/*`, `System/User/*` | Служебные операции |
 

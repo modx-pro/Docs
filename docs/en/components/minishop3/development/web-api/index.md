@@ -29,6 +29,12 @@ With an empty `route` the server answers 400 before the router runs:
 }
 ```
 
+The second pre-router response is the emergency one. Any unhandled exception inside `api.php` produces a 500 of the same shape, with `message: "Internal server error"`. Neither has `errors` or `error_code`: those are added by the router, which the request never reached.
+
+::: danger The MODX `debug` setting exposes the stack trace
+With the MODX `debug` system setting on, the emergency response body gains a `debug` key holding the exception class, the message, the file, the line and the full stack trace. On a live site that goes to anyone who triggers a 500 — keep `debug` off.
+:::
+
 A router response carries `success`, `message` and `data`. An error adds `code`, `errors` and `error_code`.
 
 **Success.** `message` is most often `null`: the catalog and account controllers do not pass it. An empty string arrives where the calling code passed `''`, for example `GET /customer/token/get`. Cart and order routes return the lexicon entry of the operation: `GET /cart/get` answers with `Cart data retrieved`.

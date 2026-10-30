@@ -61,6 +61,7 @@ Processor groups:
 | `Customer/*`, `Customer/Address/*` | Customers and their addresses |
 | `Api/Customer/*` | Login, registration, password reset, email verification. Web API delegates authentication here |
 | `Settings/Vendor/*`, `Settings/Delivery/*`, `Settings/Payment/*`, `Settings/Status/*`, `Settings/Link/*` | Reference data: vendors, delivery methods, payment methods, statuses, link types |
+| `Settings/GetClass` | The list of available delivery and payment handler classes. Scans `src/Controllers/{Type}/` and the directories from the `ms3_custom_classes_paths` setting |
 | `Utilities/Import/*` | Product import from CSV |
 | `System/*`, `System/Element/*`, `System/User/*` | Service operations |
 

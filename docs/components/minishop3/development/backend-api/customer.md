@@ -352,6 +352,7 @@ $result = $verification->resendVerificationEmail($customer);
 | Метод | Путь | Описание |
 | --- | --- | --- |
 | `POST` | `/api/v1/customer/add` | Одно поле профиля: `key` + `value`. С 1.11.0 можно все колонки `msCustomer` из xPDO-карты (включая Object Extension), кроме 18 полей из `CustomerPublicDto::SYSTEM_NON_EDITABLE_FIELDS`: `id`, `user_id`, `customer_group_id`, `token`, `password`, `email_verified_at`, флаги и счётчики блокировки, агрегаты заказов, служебные даты. `first_name`, `last_name`, `email`, `phone` проходят Rakit-валидацию, остальные значения нормализуются по `phptype` из метаданных поля. Смена email сбрасывает `email_verified_at`. |
+| `PUT` | `/api/v1/customer/profile` | Обновляет профиль целиком. Полный перечень полей и ответов — в [Web API покупателя](/components/minishop3/development/web-api/customer). |
 | `POST` | `/api/v1/customer/changeAddress` | Выбирает сохранённый адрес в черновике заказа. Принимает `address_hash`. |
 | `GET` | `/api/v1/customer/email/verify` | Подтверждает email по токену из письма. Параметры: `token`, `html=1` (HTML-редирект вместо JSON), `format=json`. По умолчанию редирект на сайт с `ms3_email_verified=1\|0`. Свой URL: `ms3_email_verification_url`. URL успеха: `ms3_email_verification_success_url`. |
 | `POST` | `/api/v1/customer/email/resend-verification` | Повторно отправляет письмо верификации авторизованному покупателю. Сервис не даёт отправлять чаще раза в 5 минут. |
@@ -383,6 +384,15 @@ if ($limiter->isBlocked('login', $clientIp, 5)) {
 // Сбросить счётчик (после успешного входа)
 $limiter->reset('login', $clientIp);
 ```
+
+Остальные публичные методы:
+
+| Метод | Описание |
+| --- | --- |
+| `getAttempts($action, $identifier)` | Сколько попыток уже зафиксировано |
+| `getTimeUntilUnblock($action, $identifier, $window)` | Сколько секунд осталось до снятия блокировки — для сообщения покупателю |
+| `attempt($action, $identifier, $max, $window, $increment = true)` | То же, что `check()`, но с управляемым инкрементом: `false` третьим с конца аргументом даёт «посмотреть, не тратя попытку» |
+| `clearAction($action)` | Сбросить счётчики действия для всех идентификаторов |
 
 ## Адреса покупателя (CustomerAddressManager)
 

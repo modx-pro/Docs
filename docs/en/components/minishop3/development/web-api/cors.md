@@ -64,6 +64,12 @@ The bucket key is `md5()` of `REMOTE_ADDR`. The middleware deliberately ignores 
 
 `ms3_rate_limit_store` picks the counter storage (default `file`). The installer also creates the redis and memcached keys and the file path next to it. The error body is described in [Errors](errors).
 
+::: warning An environment variable overrides the setting, and a backend failure is silent
+When the `MS3_RATE_LIMIT_STORE` environment variable is set, its value wins and the system setting is ignored.
+
+When the chosen backend is unavailable — no `redis` or `memcached` extension, or the connection fails — the factory writes a `WARN` to the log and quietly falls back to file storage. Requests keep working, but on a cluster the counter stops being shared: every node starts counting its own attempts. Check the log after changing the storage.
+:::
+
 ## Nuxt on another origin
 
 1. List the frontend origin (or BFF) in `ms3_cors_allowed_origins`.

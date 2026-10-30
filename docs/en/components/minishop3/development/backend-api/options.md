@@ -129,7 +129,9 @@ $optionService->addOptionToCategory(
     $categoryId,
     '',       // default value
     true,     // active
-    0         // position
+    0,        // position
+    null,     // caption — the option label inside this category
+    null      // description — the option description inside this category
 );
 
 // Remove option from category
@@ -357,7 +359,8 @@ $categoryService = $optionService->getCategory();
 $assigned = $categoryService->assignToCategories($optionId, [5, 12]);
 
 // Add with parameters
-$categoryService->addToCategory($optionId, $categoryId, '', true, 0);
+// ..., position, caption, description
+$categoryService->addToCategory($optionId, $categoryId, '', true, 0, null, null);
 
 // Remove from category
 $categoryService->removeFromCategory($optionId, $categoryId);
