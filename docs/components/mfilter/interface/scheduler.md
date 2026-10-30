@@ -119,25 +119,27 @@ $runId = $warmupManager->schedule(true);
 
 **Когда запускается:** ежесуточно (актуальный sitemap для поисковых ботов).
 
-**Что делает:** обходит все активные FilterSet, генерирует URL для популярных комбинаций фильтров, **сохраняет XML в файл** (в отличие от сниппета, который отдаёт XML в HTTP-ответе).
+**Что делает:** обходит страницы с наборами фильтров, собирает адреса одиночных фильтров (при `maxFilters = 2` — и пар) и **сохраняет XML в файл** (в отличие от сниппета, который отдаёт XML в HTTP-ответе).
+
+Карта задачи отличается от карты сниппета: в неё попадают значения без товаров в разделе, пары собираются из всех сочетаний, а адреса начинаются с `http://` — задача работает из консоли. Подробнее — на странице [mFilterSitemap](/components/mfilter/snippets/mfiltersitemap#scheduler-zadacha).
 
 ### Параметры задачи
-
-Изменяются прямо в файле `core/components/mfilter/elements/tasks/generateSitemap.php` (раздел `// DEFAULT PARAMETERS`):
 
 | Параметр | По умолчанию | Описание |
 |----------|--------------|----------|
 | `filename` | `sitemap-filters.xml` | Имя выходного файла (создаётся в корне сайта) |
-| `parents` | `''` | Ограничение по родительским ресурсам |
+| `parents` | `''` | ID страниц с наборами фильтров; пусто — все |
 | `filterKeys` | `''` | Список ключей фильтров |
-| `maxFilters` | `1` | Максимум фильтров в одном URL |
+| `maxFilters` | `1` | `1` — только одиночные фильтры, `2` — и пары |
 | `priority` | `0.7` | Приоритет URL в sitemap |
 | `changefreq` | `weekly` | Частота обновления |
+
+Значения по умолчанию заданы в файле `core/components/mfilter/elements/tasks/generateSitemap.php`, но правка файла пропадёт при обновлении пакета. Разовому запуску параметры передаются данными запуска; ежесуточный запуск берёт значения из файла:
 
 ```php
 $scheduler = $modx->services->get('scheduler');
 $task = $scheduler->getTask('mfilter', 'mfl_generate_sitemap');
-$task->schedule('+0 seconds');
+$task->schedule('+0 seconds', ['parents' => '5', 'filename' => 'sitemap-catalog.xml']);
 ```
 
 Подробнее про параметры самого сниппета: [mFilterSitemap](/components/mfilter/snippets/mfiltersitemap).
