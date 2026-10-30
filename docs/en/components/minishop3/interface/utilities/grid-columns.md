@@ -34,6 +34,8 @@ The system setting `ms3_category_grid_fields` was removed. Category product tabl
 | `order_products` | Products in an order |
 | `vendors` | Vendor list |
 
+There is a sixth seeded grid as well — `deliveries`. It is absent from the utility dropdown and is configured only through `GET` and `PUT /api/mgr/grid-config/deliveries`.
+
 ## Interface
 
 ### Grid selection
@@ -116,6 +118,10 @@ source_field: status_name
 color_field: status_color
 ```
 
+::: info The template is safe by data
+Substitution only catches `{field_name}` made of letters, digits and underscores, and the value is HTML-escaped. Markup comes from the template alone: HTML that ends up in the row data is printed as text and never executes ([#920](https://github.com/modx-pro/MiniShop3/issues/920)). An empty value and `null` both yield an empty string.
+:::
+
 ### Product option (`option`)
 
 An option column in the `category-products` grid. Set `option.key` (the option key from `msOption`).
@@ -124,6 +130,12 @@ An option column in the `category-products` grid. Set `option.key` (the option k
 Type: option
 option.key: color
 ```
+
+::: warning The column name is checked for collisions
+In the `category-products` grid, the name of your `option` or `relation` column must not match any of the 24 built-in product columns, nor a reserved SQL word. The `color` option above is exactly such a case: a built-in `color` column already exists.
+
+The server refuses the name and suggests an alternative — `option_color` for an option, `vendor_address` for a relation. The `option.key` itself stays as it is; only the grid column name changes.
+:::
 
 ### Relation (`relation`)
 
@@ -136,7 +148,7 @@ Data from a related table.
 | Table | A short MiniShop3 model name (`msOrder`), a fully qualified class name, or a table name without the prefix |
 | Foreign key | Field used for the link |
 | Display field | Field to show |
-| Aggregation | COUNT, SUM, AVG, MIN, MAX |
+| Aggregation | COUNT, SUM, AVG, MIN, MAX. The `category-products` grid does not support aggregation — such a column will not save |
 
 **Example, customer order count:**
 
@@ -245,6 +257,18 @@ A column of action buttons. Built-in handlers and your own.
 ]
 ```
 
+**Column inline-editing parameters:**
+
+| Parameter | Description |
+| --- | --- |
+| `editable` | Allow editing the value right in the row |
+| `editor_type` | Editor: `text`, `number`, `select`, `combo` |
+| `editor_options` | Choices for `select` |
+| `editor_reference` | The related model for `combo` |
+| `editor_combo_endpoint` | Where `combo` takes its choices from. Only paths from an allowlist are accepted |
+
+A worked example is in the [grid configuration cookbook](/en/components/minishop3/manager/grid-config/cookbook).
+
 **Action parameters:**
 
 | Parameter | Type | Description |
@@ -259,6 +283,15 @@ A column of action buttons. Built-in handlers and your own.
 | `visible` | boolean | Button visibility |
 | `disabled` | boolean/function | Disable the button |
 | `disabledField` | string | Row field checked for the disabled state |
+| `confirmTitle` | string | Confirmation dialog title, a lexicon key |
+| `confirmAccept` | string | Accept button label |
+| `confirmReject` | string | Reject button label |
+| `permission` | string | MODX permission: without it the button is not rendered |
+| `toggleField` | string | Row field the button toggles on. This is the mechanism behind the publish button |
+| `iconOff` | string | Icon shown when `toggleField` is true |
+| `labelOff` | string | Label shown when `toggleField` is true |
+
+The confirmation text supports `{field}` substitution — values come from the row.
 
 **Built-in handlers:**
 
@@ -333,6 +366,17 @@ GET /api/mgr/grid-config/{grid_name}
 
 `editor_references` is present only for `grid_key=category-products`. For the other grids the key is missing from the response entirely — not an empty array, an absent key.
 
+### Working with a single column
+
+Besides saving the whole configuration there are two targeted routes:
+
+| Method | Route | Description |
+| --- | --- | --- |
+| `POST` | `/api/mgr/grid-config/{grid_key}/field` | Add a column. The body holds `field_name`, `label`, `type`, `config` and the other column parameters |
+| `PUT` | `/api/mgr/grid-config/{grid_key}/field/{field_name}` | Change one column. System columns cannot be edited this way |
+
+Targeted routes leave the other columns alone — unlike the full save below.
+
 ### Save configuration
 
 ```http
@@ -357,6 +401,12 @@ PUT /api/mgr/grid-config/{grid_key}
   ]
 }
 ```
+
+::: danger The body is the complete column list
+The save compares the `fields` you send against what is in the database and **deletes** every non-system column missing from the array. A partial payload carrying one edited column will wipe the rest of your columns for that grid.
+
+The right order: read the configuration with `GET`, change what you need in the array you got, and send it back whole.
+:::
 
 ::: warning Permissions
 `GET /api/mgr/grid-config/{grid_key}` requires `view_document`. Writes (`PUT`, `POST`, column `DELETE`) require `mssetting_save`.
@@ -456,6 +506,7 @@ MS3ActionRegistry.registerAfterHook('delete', (data, context, result) => {
 | `unregister(name)` | Remove a handler. Only `edit`, `delete`, `view` and `refresh` are protected; `addresses`, `publish` and `duplicate` can be removed |
 | `getRegisteredActions()` | List every registered action |
 | `execute(name, data, context)` | Run an action from code |
+| `getActionInfo(name)` | Handler metadata: the label key and the icon. The actions editor builds its dropdown from them |
 
 ### Custom action examples
 

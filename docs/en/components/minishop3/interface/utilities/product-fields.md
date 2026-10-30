@@ -58,6 +58,10 @@ The lower card lists **all** fields at once, with a Section column. There is no 
 | Title | Display name | One of the two is required |
 | Hidden | The section is hidden on the product card | No |
 
+::: warning The section key is fixed
+The key field is read-only in the edit dialog. Changing a `section_key` means deleting the section and creating it again — and deleting a base section leaves its fields with no section.
+:::
+
 ::: tip Lexicon
 If a lexicon key is set, the title comes from the localization files. The interface is translated into several languages.
 :::
@@ -136,6 +140,8 @@ Defaults (seed `product_data`):
 - **Reload the page** to see the change on the product card
 
 ## API endpoints
+
+Next to the ordinary configuration read sits `GET /api/mgr/config/page-fields/{page_key}/all`, which returns the fields including the hidden ones. The layout editor itself reads the configuration in that mode.
 
 ### Get field configuration
 
