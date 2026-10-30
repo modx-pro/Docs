@@ -1,17 +1,44 @@
 # mFilterSelected
 
-Сниппет для отображения выбранных (активных) фильтров с возможностью их сброса.
+Сниппет выводит блок «Выбрано» — значения фильтров, которые выбрал посетитель. Нажатие на значение снимает его. Кнопка «Сбросить всё» снимает все фильтры и возвращает сортировку по умолчанию.
 
-## Описание
+## Что попадает в блок
 
-mFilterSelected показывает блок с текущими активными фильтрами. Пользователь может удалить отдельные фильтры или сбросить все сразу. Компонент интегрируется с JavaScript для live-обновлений при AJAX-фильтрации.
+- **Фильтры из набора страницы.** Метки `utm_*`, сортировка и номер страницы в блок не попадают.
+- **У диапазона нет своего значения в блоке.** Снять его можно кнопкой «Сбросить всё» или в форме. Если выбран только диапазон, в блоке одна кнопка сброса.
+- **Подписи вместо значений из адреса** — см. [Откуда подписи](#otkuda-podpisi).
 
-**Особенности:**
-- Группировка фильтров по ключам
-- Автоматическое определение меток из лексиконов и конфигурации
-- Кнопка сброса всех фильтров
-- Интеграция с JS-компонентом SelectedFilters
-- Поддержка SEO URL и обычных GET-параметров
+## Где вызывать
+
+На той же странице, что и `mFilterForm`: без формы значения не снимаются, а после фильтрации блок не обновляется.
+
+```fenom
+{set $results = '!mFilter' | snippet : [
+    'element' => 'msProducts',
+    'parents' => $_modx->resource.id
+]}
+
+<aside>{'!mFilterForm' | snippet}</aside>
+<main>
+    {'!mFilterSelected' | snippet}
+    {$results}
+</main>
+```
+
+`mFilter` вызван первым и выведен через переменную — почему так, см. [mFilterForm](mfilterform#gde-vyzyvat).
+
+::: tip Два блока на странице
+Два блока с разными параметрами не работают: после фильтрации все блоки «Выбрано» получают одну разметку — по хешу первого блока на странице. Один блок можно вывести дважды через плейсхолдер:
+
+```fenom
+{'!mFilterSelected' | snippet : ['toPlaceholder' => 'selected']}
+
+{* Ниже по странице — строго после вызова *}
+{$_modx->getPlaceholder('selected')}
+{$_modx->getPlaceholder('selected')}
+```
+
+:::
 
 ## Параметры
 
@@ -19,110 +46,32 @@ mFilterSelected показывает блок с текущими активны
 
 | Параметр | По умолчанию | Описание |
 |----------|--------------|----------|
-| `resourceId` | текущий ресурс | ID ресурса для получения конфигурации фильтров |
+| `resourceId` | текущий ресурс | ID ресурса, чей набор фильтров использовать |
 
-### Шаблоны
+### Чанки
 
 | Параметр | По умолчанию | Описание |
 |----------|--------------|----------|
-| `tplOuter` | `mfilter.selected.outer` | Внешний контейнер |
-| `tplGroup` | `mfilter.selected.group` | Шаблон группы (для группировки по filterKey) |
-| `tplItem` | `mfilter.selected.item` | Шаблон одного элемента фильтра |
-| `tplReset` | `mfilter.selected.reset` | Шаблон кнопки сброса |
+| `tplOuter` | `mfilter.selected.outer` | Контейнер блока |
+| `tplGroup` | `mfilter.selected.group` | Группа значений одного фильтра — при `grouped` |
+| `tplItem` | `mfilter.selected.item` | Одно значение |
+| `tplReset` | `mfilter.selected.reset` | Кнопка «Сбросить всё» |
 
 ### Поведение
 
 | Параметр | По умолчанию | Описание |
 |----------|--------------|----------|
-| `grouped` | `true` | Группировать элементы по ключу фильтра |
-| `showLabels` | `true` | Показывать метки фильтров (Цвет:, Размер:) |
-| `showReset` | `true` | Показывать кнопку "Сбросить всё" |
-| `hideWhenEmpty` | `true` | Скрывать блок при отсутствии фильтров |
-| `resetText` | из лексикона | Текст кнопки сброса |
+| `grouped` | `true` | Группировать значения по фильтрам. При `false` значения идут подряд, и стандартный `tplItem` выводит только значение, без названия фильтра |
+| `showLabels` | `true` | Выводить название фильтра перед группой. Действует только при `grouped` |
+| `showReset` | `true` | Выводить кнопку «Сбросить всё» |
+| `hideWhenEmpty` | `true` | Скрывать блок, пока ничего не выбрано |
+| `resetText` | лексикон `mfl_reset_all` | Текст кнопки сброса |
 
 ### Вывод
 
 | Параметр | По умолчанию | Описание |
 |----------|--------------|----------|
-| `toPlaceholder` | — | Вывести в плейсхолдер |
-
-## Кастомные чанки и AJAX
-
-Блок «Выбрано» рендерится на сервере — и при первой загрузке, и при каждой AJAX-фильтрации. Ваши чанки остаются единственным источником разметки.
-
-Чтобы это работало, в `tplOuter` должен быть атрибут с хешем конфигурации — по нему сервер понимает, какими чанками пересобрать блок:
-
-```html
-{* @FILE chunks/mfilter/selected.outer.tpl *}
-<div class="my-selected"
-     data-mfilter-selected
-     {if $hash} data-mfilter-selected-hash="{$hash}"{/if}
-     {if $filterLabels} data-filter-labels="{$filterLabels | esc}"{/if}>
-
-    {if !$empty}
-        <div class="my-selected__items">{$items}</div>
-        {$reset}
-    {/if}
-</div>
-```
-
-::: warning Без атрибута разметка сбросится
-Если `data-mfilter-selected-hash` в чанке нет, сервер не сможет пересобрать блок, и JS соберёт его сам — стандартной разметкой. Ваш чанк при этом заменится на дефолтный при первом же клике по фильтру.
-
-В стандартном `mfilter.selected.outer` атрибут уже есть. При переносе на свой чанк не забудьте его перенести.
-:::
-
-::: tip Один блок на страницу
-AJAX-ответ несёт одну разметку блока «Выбрано». Если вызвать `mFilterSelected` дважды (например, в сайдбаре и над списком), оба блока получат разметку по конфигу того, чей `data-mfilter-selected-hash` встретится в DOM первым. Для двух блоков с разными настройками используйте один вызов и продублируйте вывод через `toPlaceholder`.
-:::
-
-## Плейсхолдеры в чанках
-
-### tplOuter
-
-| Плейсхолдер | Описание |
-|-------------|----------|
-| `{$items}` | HTML всех элементов/групп |
-| `{$reset}` | HTML кнопки сброса |
-| `{$count}` | Количество активных фильтров |
-| `{$empty}` | true, если фильтры не выбраны |
-| `{$hidden}` | true, если блок должен быть скрыт (при `hideWhenEmpty=1` и пустом состоянии) |
-| `{$total}` | То же число, что `{$count}` — второе имя одного значения |
-| `{$filterLabels}` | JSON-объект меток для JS |
-| `{$hash}` | Хеш конфигурации для AJAX — выводите в `data-mfilter-selected-hash` |
-
-### tplGroup
-
-| Плейсхолдер | Описание |
-|-------------|----------|
-| `{$key}` | Ключ фильтра |
-| `{$label}` | Метка фильтра |
-| `{$items}` | HTML элементов группы |
-| `{$count}` | Количество значений в группе |
-| `{$showLabel}` | Показывать метку |
-
-### tplItem
-
-| Плейсхолдер | Описание |
-|-------------|----------|
-| `{$key}` | Ключ фильтра |
-| `{$value}` | Значение фильтра |
-| `{$filterLabel}` | Метка фильтра |
-| `{$valueLabel}` | Метка значения |
-| `{$label}` | Алиас для valueLabel |
-
-### tplReset
-
-| Плейсхолдер | Описание |
-|-------------|----------|
-| `{$text}` | Текст кнопки |
-| `{$url}` | Адрес страницы без фильтров |
-
-Стандартный чанк рисует `<button>`, который обрабатывает JS. `{$url}` нужен, если сброс делается ссылкой — тогда он работает и без JS:
-
-```fenom
-<a href="{$url}" class="mfilter-selected-reset" data-mfilter-reset-selected>{$text}</a>
-```
+| `toPlaceholder` | — | Имя плейсхолдера. Блок попадёт в него, а сниппет ничего не выведет |
 
 ## Примеры
 
@@ -132,15 +81,7 @@ AJAX-ответ несёт одну разметку блока «Выбрано
 {'!mFilterSelected' | snippet}
 ```
 
-### Без группировки
-
-```fenom
-{'!mFilterSelected' | snippet : [
-    'grouped' => false
-]}
-```
-
-### Без меток и кнопки сброса
+### Без названий фильтров и кнопки сброса
 
 ```fenom
 {'!mFilterSelected' | snippet : [
@@ -149,7 +90,7 @@ AJAX-ответ несёт одну разметку блока «Выбрано
 ]}
 ```
 
-### Кастомный текст сброса
+### Свой текст кнопки сброса
 
 ```fenom
 {'!mFilterSelected' | snippet : [
@@ -157,110 +98,124 @@ AJAX-ответ несёт одну разметку блока «Выбрано
 ]}
 ```
 
-### Кастомные чанки
+## Переменные чанков
+
+### tplOuter
+
+| Переменная | Описание |
+|------------|----------|
+| `{$items}` | Разметка значений или групп |
+| `{$reset}` | Разметка кнопки сброса |
+| `{$count}` | Сколько фильтров выбрано. Фильтр с несколькими значениями и диапазон считаются за один |
+| `{$total}` | То же число, что `{$count}` |
+| `{$empty}` | Ничего не выбрано |
+| `{$hidden}` | Ничего не выбрано и включён `hideWhenEmpty` |
+| `{$filterLabels}` | Названия фильтров в JSON |
+| `{$hash}` | Хеш вызова — выводите в `data-mfilter-selected-hash`. Он же — в плейсхолдере `mfilter.selected.hash` |
+
+### tplGroup
+
+| Переменная | Описание |
+|------------|----------|
+| `{$key}` | Ключ фильтра |
+| `{$label}` | Название фильтра |
+| `{$items}` | Разметка значений фильтра |
+| `{$count}` | Сколько значений выбрано |
+| `{$showLabel}` | Значение параметра `showLabels` |
+
+### tplItem
+
+| Переменная | Описание |
+|------------|----------|
+| `{$key}` | Ключ фильтра |
+| `{$value}` | Значение, как в запросе |
+| `{$filterLabel}` | Название фильтра |
+| `{$valueLabel}` | Подпись значения |
+| `{$label}` | То же, что `{$valueLabel}` |
+
+### tplReset
+
+| Переменная | Описание |
+|------------|----------|
+| `{$text}` | Текст кнопки |
+| `{$url}` | Адрес страницы без фильтров |
+
+Стандартный чанк выводит кнопку `<button>` — её обрабатывает скрипт. Сброс ссылкой на `{$url}` работает и без JS:
+
+```fenom
+<a href="{$url}" class="mfilter-selected-reset" data-mfilter-reset-selected>{$text}</a>
+```
+
+## Откуда подписи
+
+Название фильтра — первое найденное:
+
+1. название из [набора фильтров](../interface/filter-sets);
+2. лексикон `mfilter.field.<поле>`, у полей дат — без суффиксов `_date`, `_day`, `_month`, `_year`;
+3. лексикон MiniShop3 `ms3_product_<поле>`;
+4. имя поля, каждое слово с заглавной буквы.
+
+Подпись значения — первое найденное:
+
+1. подпись [слага](../interface/slugs) значения;
+2. для ID производителя в `vendor_id`, `vendor`, `vendors` — имя производителя;
+3. для ID ресурса в `parent`, `parents`, `category`, `categories`, `ms3_category`, `ms3_categories` — `pagetitle` ресурса;
+4. для других чисел — подпись из индекса TV;
+5. само значение.
+
+## Свои чанки
+
+Начните с копии стандартных чанков `mfilter.selected.*` из `core/components/mfilter/elements/chunks/`. После каждой фильтрации сервер отрисовывает блок заново теми же чанками. Без разметки из таблицы блок ломается:
+
+| Чанк | Разметка | Без неё |
+|------|----------|---------|
+| `tplOuter` | `data-mfilter-selected` | Скрипт не находит блок |
+| `tplOuter` | `data-mfilter-selected-hash="{$hash}"` | После фильтрации блок рисует скрипт — см. предупреждение ниже |
+| `tplOuter` | класс `mfilter-selected-hidden` при `{$hidden}`, `mfilter-selected-empty` при `{$empty}` | Пустой блок не скрывается |
+| `tplItem` | класс `mfilter-selected-item`, `data-key="{$key}"`, `data-value="{$value}"` | Нажатие на значение ничего не снимает |
+| `tplReset` | `data-mfilter-reset-selected` | Кнопка не сбрасывает фильтры |
 
 ```fenom
 {'!mFilterSelected' | snippet : [
-    'tplOuter' => '@INLINE
-        <div class="selected-filters" data-mfilter-selected>
-            {$items}
-            {$reset}
-        </div>',
-    'tplItem' => '@INLINE
-        <span class="filter-tag" data-mfilter-remove="{$key}" data-value="{$value}">
-            {$label} <button type="button">&times;</button>
-        </span>',
-    'tplReset' => '@INLINE
-        <button type="button" data-mfilter-reset-selected class="btn btn-link">{$text}</button>'
+    'grouped' => false,
+    'tplOuter' => '@INLINE <div class="selected{if $hidden} mfilter-selected-hidden{/if}{if $empty} mfilter-selected-empty{/if}"
+        data-mfilter-selected data-mfilter-selected-hash="{$hash}">
+        {$items}
+        {$reset}
+    </div>',
+    'tplItem' => '@INLINE <button type="button" class="mfilter-selected-item"
+        data-key="{$key | esc}" data-value="{$value | esc}">
+        {$filterLabel | esc}: {$valueLabel | esc} &times;
+    </button>',
+    'tplReset' => '@INLINE <button type="button" data-mfilter-reset-selected>{$text}</button>'
 ]}
 ```
 
-## Интеграция с формой
+После фильтрации заменяется только содержимое блока. Классы и атрибуты самого контейнера остаются как при загрузке — кроме `mfilter-selected-hidden`, `mfilter-selected-empty` и `data-filter-labels`.
 
-Рекомендуется размещать над результатами фильтрации:
+::: warning Без хеша чанки и параметры не действуют
+По хешу сервер находит сохранённые параметры вызова. Если в `tplOuter` нет `data-mfilter-selected-hash`, после первой фильтрации блок рисует скрипт своей разметкой. Ваши чанки и параметры `grouped`, `showLabels`, `showReset`, `hideWhenEmpty`, `resetText` перестают действовать, кнопка сброса — всегда «Сбросить всё». Если вдобавок в значениях нет `data-key`, при выбранных фильтрах скрипт заменит разметку уже при загрузке страницы.
 
-```fenom
-<div class="catalog">
-    <aside class="catalog-sidebar">
-        {'!mFilterForm' | snippet}
-    </aside>
+То же бывает со стандартным чанком. [Очистка кэша mFilter](../interface/maintenance) стирает параметры вызовов, которые не запрашивали от двух недель до месяца. Если страница осталась в кэше MODX со старым хешем, очистите кэш сайта.
+:::
 
-    <main class="catalog-content">
-        {* Выбранные фильтры *}
-        {'!mFilterSelected' | snippet}
+## Стандартная разметка
 
-        {* Результаты *}
-        {'!mFilter' | snippet : [
-            'element' => 'msProducts',
-            'paginator' => 'pdoPage',
-            'parents' => $_modx->resource.id
-        ]}
-    </main>
-</div>
-```
-
-## JavaScript интеграция
-
-Блок автоматически обновляется при AJAX-фильтрации благодаря JS-компоненту `SelectedFilters`.
-
-### Data-атрибуты
-
-| Атрибут | Описание |
-|---------|----------|
-| `data-mfilter-selected` | Контейнер выбранных фильтров |
-| `data-mfilter-remove="{key}"` | Кнопка удаления значения |
-| `data-value="{value}"` | Значение для удаления |
-| `data-mfilter-reset-selected` | Кнопка сброса всех фильтров внутри блока «Выбрано» |
-
-### Пример HTML разметки
+Стандартные чанки выводят блок так — один фильтр, группировка включена:
 
 ```html
-<div class="selected-filters" data-mfilter-selected>
-    <div class="filter-group">
-        <span class="filter-label">Цвет:</span>
-        <span class="filter-tag" data-mfilter-remove="color" data-value="red">
-            Красный <button>&times;</button>
-        </span>
-        <span class="filter-tag" data-mfilter-remove="color" data-value="blue">
-            Синий <button>&times;</button>
-        </span>
-    </div>
-    <button data-mfilter-reset-selected>Сбросить всё</button>
-</div>
-```
-
-## Чанки по умолчанию
-
-### mfilter.selected.outer
-
-```html
-<div class="mfilter-selected{if $hidden} mfilter-selected--hidden{/if}"
-     data-mfilter-selected
-     data-filter-labels="{$filterLabels | esc}">
-    {if !$empty}
-        <div class="mfilter-selected__items">
-            {$items}
+<div class="mfilter-selected" data-mfilter-selected data-mfilter-selected-hash="…" data-filter-labels="…">
+    <div class="mfilter-selected-items">
+        <div class="mfilter-selected-group" data-group="color" data-label="Цвет">
+            <span class="mfilter-selected-group-label">Цвет:</span>
+            <button type="button" class="mfilter-selected-item" data-key="color" data-value="red" data-label="Красный" title="Убрать фильтр">
+                <span class="mfilter-selected-item-label">Красный</span>
+                <span class="mfilter-selected-remove">&times;</span>
+            </button>
         </div>
-        {$reset}
-    {/if}
+    </div>
+    <button type="button" class="mfilter-selected-reset" data-mfilter-reset-selected>Сбросить всё</button>
 </div>
 ```
 
-### mfilter.selected.item
-
-```html
-<span class="mfilter-selected__tag"
-      data-mfilter-remove="{$key}"
-      data-value="{$value}">
-    {$label}
-    <button type="button" class="mfilter-selected__remove" aria-label="Удалить">&times;</button>
-</span>
-```
-
-### mfilter.selected.reset
-
-```html
-<button type="button" class="mfilter-selected__reset" data-mfilter-reset-selected>
-    {$text}
-</button>
-```
+Контурный вид значений — класс `mfilter-selected--outline` на контейнере, стили — в `mfilter.css`.

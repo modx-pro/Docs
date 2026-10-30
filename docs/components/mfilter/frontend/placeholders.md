@@ -234,7 +234,7 @@ pdoTools разбирает шаблон за один проход. Снипп�
 
 ### Чанки `mFilterSelected` (блок «Выбрано»)
 
-Переменные чанков блока «Выбрано» — на странице [mFilterSelected](../snippets/mfilterselected#pleysholdery-v-chankah).
+Переменные чанков блока «Выбрано» — на странице [mFilterSelected](../snippets/mfilterselected#peremennye-chankov).
 
 ## Использование в JavaScript
 

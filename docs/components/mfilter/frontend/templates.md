@@ -142,7 +142,7 @@
 
 | Атрибут | Где | Зачем |
 |---------|-----|-------|
-| `data-filter-key` | блок фильтра | По нему скрипт пересчитывает счётчик выбранных, а блок «Выбрано» находит название фильтра |
+| `data-filter-key` | блок фильтра | По нему скрипт пересчитывает счётчик выбранных. Блок «Выбрано», когда его рисует скрипт, а не сервер, находит по нему название фильтра |
 | `data-filter-badge` | внутри блока | Счётчик выбранных значений. При нуле скрипт ставит на него класс `d-none` |
 | `data-mfilter-reset` или класс `mfilter-reset-btn` | кнопка сброса внутри формы | Сбрасывает фильтры; кнопка видна только при выбранных фильтрах. Число в кнопке — `[data-mfilter-reset-count]`. Кнопку вне формы подключайте через JS API — см. [mFilterForm](../snippets/mfilterform#knopka-sbrosa-vne-formy) |
 
@@ -174,11 +174,11 @@
 | `data-mfilter-tpl` | Переключатель вида: значение — ключ из параметра `tpls` сниппета `mFilter` |
 | `data-mfilter-load-more` | Кнопка «Показать ещё» в режиме `data-mfilter-pagination-mode="loadmore"`: скрипт прячет её на последней странице. Нажатие подключайте сами — `mfilterGet().loadMore()` |
 | `data-mfilter-pagination` | На корне формы: переопределяет селектор контейнера пагинации (по умолчанию `.mfilter-pagination`). Это не сам контейнер |
-| `data-mfilter-selected` | Блок «Выбрано» |
+| `data-mfilter-selected` | Блок «Выбрано». Обязательная разметка его чанков — в [mFilterSelected](../snippets/mfilterselected#svoi-chanki) |
 | `data-mfilter-h1`, `data-mfilter-seo-text` | Обновление SEO-блоков при AJAX. То же делают классы `h1.mfilter-h1` и `.mfilter-seo-text` |
 | `mfilter-total` | Число найденных: скрипт обновляет его после фильтрации |
 | `mfilter-empty` | Блок «ничего не найдено»: скрипт показывает его при нуле результатов и прячет в остальных случаях |
-| `mfilter-item-label` или `mfilter-label`, `data-filter-label` | Подписи значения и фильтра для блока «Выбрано», когда тот собирает их из формы |
+| `mfilter-item-label` или `mfilter-label`, `data-filter-label` | Подписи значения и фильтра для блока «Выбрано», когда его рисует скрипт, а не сервер |
 | `data-mfilter-url-separator`, `data-mfilter-values-separator` | Разделители SEO-адреса. Сниппет выводит их на форму из настроек |
 
 Остальные настройки скрипта задаются атрибутами формы — см. [Настройки формы](../development/javascript#form-options).
