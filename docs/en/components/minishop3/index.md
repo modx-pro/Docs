@@ -45,6 +45,7 @@ items: [
         items: [
           { text: 'Deliveries', link: 'interface/settings/deliveries' },
           { text: 'Payments', link: 'interface/settings/payments' },
+          { text: 'Order statuses', link: 'interface/settings/statuses' },
           { text: 'Vendors', link: 'interface/settings/vendors' },
           { text: 'Links', link: 'interface/settings/links' },
           { text: 'Options', link: 'interface/settings/options' },

@@ -15,6 +15,16 @@ Types of relationships between products:
 - **Upsell** is a more expensive alternative
 - **Cross-sell** is a product offered on top of the purchase
 
+::: warning The type is chosen once
+The `type` field is filled in at creation only: the edit dialog disables it, and `PUT /api/mgr/links/{id}` accepts just `name` and `description`. To change the cardinality, delete the type and create it again.
+:::
+
+::: danger Deleting a type takes every product link with it
+`msLink` holds `msProductLink` as a composite relation, so deleting a type cascades into every product link built on it. The controller does have a "type is in use" check, but it counts by a `link_id` column that the model does not have, so it never fires — the defect is filed as [modx-pro/MiniShop3#948](https://github.com/modx-pro/MiniShop3/issues/948).
+
+Before deleting a type, make sure no links are left on it: there will be nothing to restore them from.
+:::
+
 ## Link type fields
 
 | Field | Type | Description |

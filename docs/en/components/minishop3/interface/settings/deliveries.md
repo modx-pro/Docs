@@ -24,6 +24,16 @@ Open **Extras → MiniShop3 → Settings → Deliveries**.
 | `validation_rules` | JSON | Field validation rules |
 | `properties` | JSON | JSON properties for the handler's own data |
 
+## The delivery dialog
+
+The form is split into tabs:
+
+- **Delivery** — name, description, logo, active flag;
+- **Settings** — the handler class, the surcharge, the per-weight price, the free-delivery threshold, the validation rules;
+- **Payment methods** — link toggles. The tab appears only when editing: an unsaved delivery has no id to link a payment to.
+
+Links are written the moment a toggle flips, through `POST` and `DELETE /api/mgr/deliveries/{id}/payments`, without waiting for the save button.
+
 ## Payment linkage
 
 You link each delivery method to the payment methods it needs.
@@ -48,7 +58,16 @@ When the free-delivery threshold is set (`free_delivery_amount` above zero) and 
 
 ### Custom calculation
 
-For a more complex rule, create your own handler class:
+For a more complex rule, create your own handler class. There are two contracts, and they are independent:
+
+| Interface | Method | Purpose |
+| --- | --- | --- |
+| `DeliveryProviderInterface` | `getCost()` | Cost calculation. The class goes into the delivery method `class` field |
+| `ShipmentProviderInterface` | `verifyWebhook()`, `parseWebhook()` | Receiving carrier notifications: signature check and parsing the event into a `ShipmentWebhookEvent` |
+
+Notifications are received by the public core route `POST /api/v1/delivery/webhook/{delivery_id}` — no token is required there, and the handler verifies authenticity itself. A class that only calculates implements the first interface and knows nothing about webhooks.
+
+A cost example:
 
 ```php
 <?php
@@ -303,6 +322,12 @@ Contact details only:
 }
 ```
 
+### Fields in the builder
+
+The field list in the rules builder is not static: on top of the built-in set it pulls `msOrder` and `msOrderAddress` fields from Form fields and from Extra fields. Technical columns such as `id` and the service timestamps are filtered out.
+
+So a custom order field created in the utilities shows up in the builder on its own — there is nothing extra to declare.
+
 ### Error messages
 
 The default messages are **English** and do not follow the interface language. Order fields use four texts hard-coded in `OrderFieldManager::validate()` — for `required`, `numeric`, `min` and `email`; the rest come from `PipeRuleValidator::DEFAULT_MESSAGES`.
@@ -311,9 +336,30 @@ The default messages are **English** and do not follow the interface language. O
 `setValidationMessages()` and `setValidationRules()` are overwritten at the start of every `validate()` call, and the delivery `properties` are never read by validation: rules come only from the `validation_rules` column. There is no working way to replace the texts in the current code — the defect is filed as [modx-pro/MiniShop3#950](https://github.com/modx-pro/MiniShop3/issues/950).
 :::
 
-## API
+## Manager API
 
-Both GET requests require the shop token: a `Bearer` or `MS3Token` header, or the `ms3_token` cookie. A query parameter is not accepted.
+The manager endpoints. The whole group is protected by the `mssetting_save` permission.
+
+| Method | Route | Description |
+| --- | --- | --- |
+| `GET` | `/api/mgr/deliveries` | List. Filters `filter_name` and `filter_active` |
+| `POST` | `/api/mgr/deliveries` | Create |
+| `GET` / `PUT` / `DELETE` | `/api/mgr/deliveries/{id}` | Read, update, delete |
+| `DELETE` | `/api/mgr/deliveries/bulk` | Bulk delete |
+| `POST` | `/api/mgr/deliveries/sort` | Order after a drag |
+| `PUT` | `/api/mgr/deliveries/positions` | Set positions from a list |
+| `POST` / `DELETE` | `/api/mgr/deliveries/{id}/payments` | Link and unlink a payment method |
+| `GET` | `/api/mgr/deliveries-active` | Active deliveries for the order form dropdowns. Returns an allowlist of fields, without `properties` or other secrets |
+
+Payments mirror the set: `/api/mgr/payments`, `/sort`, `/positions`, `/bulk`, `/{id}/deliveries` and `GET /api/mgr/payments-active` (which takes `delivery_id` to keep only the linked ones).
+
+## Web API
+
+Both GET requests carry the shop token: a `Bearer` or `MS3Token` header, or the `ms3_token` cookie. A query parameter is not accepted — `TokenMiddleware` strips it from the query string. Passing a token by hand is not required though: on a route without one the server mints an anonymous token, so the request does not fail.
+
+::: warning Rules come back only for an active delivery
+The rules query carries an `active = 1` condition. For a disabled delivery method both endpoints return an empty set, and that is indistinguishable from "this delivery has no rules of its own".
+:::
 
 ### Get validation rules
 

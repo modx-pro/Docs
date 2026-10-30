@@ -38,7 +38,7 @@ The allowed percent runs from −100 to 100. Outside that range the surcharge is
 
 ## Link with delivery
 
-You edit the pairs on the delivery card. Typical sets:
+You edit the pairs from both sides: on the Payment methods tab of the delivery card and on the Deliveries tab of the payment card (`POST` and `DELETE /api/mgr/payments/{id}/deliveries/{delivery_id}`). Both tabs appear only after the record has been saved once. Typical sets:
 
 - Pickup: cash, card on delivery
 - Courier: cash, card, online
