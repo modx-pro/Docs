@@ -20,7 +20,7 @@ flowchart TD
 
 Поэтому `msOnRemoveFromOrder`, `msOnEmptyOrder` и `msOnCreateOrder` способны провалить уже выполненную операцию: поле удалено или заказ создан, но покупатель получит ошибку.
 
-У событий валидации ответ не прерывает операцию, а подменяет значение: `msOnBeforeValidateOrderValue` и `msOnValidateOrderValue` возвращают `value`, `msOnErrorValidateOrderValue` — `error`.
+У событий валидации ответ не прерывает операцию, а подменяет значение: `msOnBeforeValidateOrderValue` и `msOnValidateOrderValue` возвращают `value`. `msOnErrorValidateOrderValue` возвращает `error` и, вместе с ним, тоже `value` — именно оно уйдёт в черновик, если ошибку снять.
 
 ## msOnBeforeAddToOrder
 
@@ -231,10 +231,13 @@ switch ($modx->event->name) {
         if ($key === 'comment') {
             $values = &$modx->event->returnedValues;
             $values['error'] = []; // Пустой массив = нет ошибки
+            $values['value'] = mb_substr((string) $value, 0, 500); // и чем заменить значение
         }
         break;
 }
 ```
+
+Вместе с пустым `error` стоит вернуть и `value`: именно его ядро запишет в черновик. Если `value` не трогать, в заказ попадёт исходное значение — то самое, которое валидатор только что забраковал.
 
 ---
 

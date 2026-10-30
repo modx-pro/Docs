@@ -169,7 +169,7 @@ MiniShop3 работает на системе событий MODX. Плагин
 
 ### Отгрузки
 
-Логика — `ShipmentLifecycleService` (`ms3_shipment_lifecycle`), таблицы — `ms3_shipments` и `ms3_shipment_events`. Создание отгрузки и `setTracking` работают и при `ms3_shipment_enabled=0`, а вебхук доставки в этом случае отвечает 404. Before-события прерываются через `success=false` в ответе `invokeEvent`.
+Логика — `ShipmentLifecycleService` (`ms3_shipment_lifecycle`), таблицы — `ms3_shipments` и `ms3_shipment_events`. Создание отгрузки и `setTracking` работают и при `ms3_shipment_enabled=0`, а вебхук доставки в этом случае отвечает 404. Before-события прерываются через `success=false` в ответе `invokeEvent`. Ответ after-событий не читается вообще: ошибка плагина в `msOnCreateShipment`, `msOnChangeShipmentStatus` или `msOnUpdateShipmentTracking` не прервёт операцию и даже не попадёт в журнал.
 
 | Событие | Параметры | Когда |
 | --- | --- | --- |
@@ -195,6 +195,18 @@ flowchart TB
 ### Остатки (inventory)
 
 При `ms3_inventory_enabled=1` работает `ProductStockInventory` (`ms3_inventory`), контракт — `InventoryServiceInterface`. Параметры событий: `key` (`InventoryKey`), `qty`, `ctx` (`InventoryContext`: `orderId`, `origin` — по умолчанию `'order'`, `holdState` — по умолчанию `null`). Before-событие с `success=false` приводит к `InventoryException` (`ms3_err_inventory_cancelled`). `$notify=false` у reserve и release пропускает пару событий — компенсация идёт внутри SQL-транзакции.
+
+::: danger After-события остатков тоже прерывают операцию
+Reserve, commit и release обслуживает один и тот же метод, поэтому `success=false` в **after**-событии бросает то же `InventoryException` — уже после записи в базу. `output()` в `msOnInventoryCommit` рушит смену статуса, когда списание остатка уже записано в базу.
+
+У пары `Adjust` поведение другое: ответ after-события только пишется в журнал ошибок. Для плагина-аналитики, который подписывается на after-события «просто посмотреть», разница существенная.
+:::
+
+::: warning Резерв: before построчно, after — пакетом
+`reserveBatch()` вызывает `msOnBeforeInventoryReserve` на каждую строку заказа, а `msOnInventoryReserve` — один раз на каждую удержанную строку, но только после того, как удержался весь пакет. Если на третьей строке остатка не хватило, первые две откатываются через внутренний release с `notify = false`.
+
+Плагин, который считает резерв по парам before/after, при частичном сбое увидит before без after — и без события release.
+:::
 
 | Событие | Когда в статусах заказа |
 | --- | --- |

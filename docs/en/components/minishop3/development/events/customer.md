@@ -382,6 +382,10 @@ switch ($modx->event->name) {
 
 Fired **after** creating a new customer.
 
+::: warning The plugin response only goes to the log
+On `success=false` the core writes a `WARN` and still returns the created customer. Creation can be aborted only in the paired `msOnBeforeCreateCustomer`, where `output()` makes the call return `null` instead of the object.
+:::
+
 ### Parameters
 
 | Parameter | Type | Description |
@@ -481,6 +485,10 @@ switch ($modx->event->name) {
 ## msOnAddCustomerAddress
 
 Fired **after** adding an address to the customer.
+
+::: warning The plugin response only goes to the log
+On `success=false` the core writes a `WARN` and `add()` still returns `true`. Only the paired `msOnBeforeAddCustomerAddress` aborts the addition.
+:::
 
 ### Parameters
 
@@ -685,7 +693,25 @@ Fired **before** resolving the MODX system user (`modUser`) for the order. Runs 
 
 ### Substituting the user
 
-A plugin can return a ready `modUser` in `returnedValues['user']` to bypass the default lookup and creation:
+The event has two channels. The first is a ready `modUser` in `returnedValues['user']`, which bypasses the default lookup and creation. The second is `returnedValues['orderData']`: a replaced array of order fields from which the core itself takes `address_email`, `address_first_name`, `address_last_name` and `address_phone`, and finds or creates the user by them.
+
+The second channel is usually more convenient: you only fix the contacts instead of assembling a `modUser` by hand.
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnBeforeGetOrderUser':
+        $orderData = $scriptProperties['orderData'];
+
+        // Normalise the phone before the core starts looking for a user
+        $orderData['address_phone'] = preg_replace('/\D+/', '', $orderData['address_phone'] ?? '');
+
+        $modx->event->returnedValues = ['orderData' => $orderData];
+        break;
+}
+```
+
+A ready `modUser` is returned like this:
 
 ```php
 <?php

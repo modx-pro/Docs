@@ -171,6 +171,14 @@ switch ($modx->event->name) {
 
 Fired when getting product fields. Lets you add or modify any fields.
 
+::: danger Added fields never reach the public Web API
+Right after the event, `ProductCatalogService` runs the result through `whitelistPublicPayload()` and keeps only the keys of two static lists — `RESOURCE_FIELDS` and `DATA_FIELDS` (twelve names: `article`, `price`, `old_price`, `stock`, `weight`, `image`, `thumb`, `vendor_id`, `made_in`, `new`, `popular`, `favorite`).
+
+So everything a plugin adds to `data` is visible in Fenom snippets and chunks, but is stripped from the `GET /api/v1/products` and `GET /api/v1/products/{id}` responses. On a server-rendered site the example works; on a headless storefront it silently does not.
+
+The allowlist is static: columns created by the [Extra fields](/en/components/minishop3/interface/utilities/extra-fields) utility do not pass either. To expose a field of your own you need your own endpoint or catalogue controller.
+:::
+
 ### Parameters
 
 | Parameter | Type | Description |

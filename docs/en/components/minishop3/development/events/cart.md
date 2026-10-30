@@ -29,7 +29,7 @@ flowchart TD
 | Every `msOnBefore*` | The operation is aborted, the client gets an error |
 | `msOnAddToCart` | The product is already saved, but the request still returns an error |
 | `msOnChangeInCart`, `msOnChangeOptionInCart`, `msOnRemoveFromCart`, `msOnEmptyCart` | Ignored — the operation has already completed |
-| `msOnGetCart`, `msOnGetStatusCart` | Used only to substitute data, not to abort |
+| `msOnGetCart`, `msOnGetStatusCart` | Used only to substitute data, not to abort. But a non-empty `output()` loses the substitution as well: the core keeps the original value |
 
 Put checks in the paired `msOnBefore*` events. Where the response is ignored, a plugin error disappears and the customer never sees it.
 
@@ -516,7 +516,11 @@ switch ($modx->event->name) {
 
 ## msOnGetStatusCart
 
-Fired when calculating cart status (totals). Lets you modify the totals.
+Fired when calculating cart status (totals) — both on cart mutations and on every `Cart::getStatus()`, that is on `cart/get`, on `cart/status` and when the `msCart` snippet renders. Lets you modify the totals.
+
+::: warning `output()` discards the status patch too
+Both call sites read `returnedValues['status']` only on a successful response. If a plugin writes its own status and calls `output()` at the same time, the patch is not applied: the original `calculateStatus()` result comes back and the message lands in the response as an error.
+:::
 
 ### Parameters
 
