@@ -258,6 +258,12 @@ Built-in tabs occupy positions 0–4, and a tab without `position` gets `100`. T
 
 `position: 0` never reaches the tab: the core reads the value as `position || 100` and substitutes `100`. To sit ahead of Product Properties you need a negative number.
 
+::: warning A negative `position` is safe for Vue tabs only
+An ExtJS panel is mounted from the tab-change handler, and that handler is bound to a watcher on the active tab. On page load the active tab is index `0`, the value never changes — and the watcher never fires. A tab of type `extjs` that ends up first stays an empty `div` until the user switches away and back.
+
+For `type: 'extjs'` use a `position` of 5 or above, or create the panel yourself on an event of your own.
+:::
+
 ## If the tab does not appear
 
 The core logs the reason, and the prefix depends on when the tab was rejected:

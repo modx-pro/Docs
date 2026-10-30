@@ -163,17 +163,21 @@ const cancelBtns = document.querySelectorAll(this.selectors.orderCancel)
 
 const ms3 = {
   config: {},
-  selectors: {},
+  // selectors — вычисляемый геттер поверх config.selectors, а не поле
+  get selectors () { return this.config?.selectors || {} },
   // Поля под модули: tokenManager, apiClient, cartAPI, orderAPI, customerAPI,
-  // cartUI, orderUI, customerUI, authUI, quantityUI, productCardUI, hooks, message
+  // cartUI, orderUI, customerUI, authUI, quantityUI, productCardUI,
+  // hooks, message, confirm
 
   async init() {
     this.config = window.ms3Config || {}
     // Селекторы из Selectors.js, переопределяются через ms3Config.selectors
     this.config.selectors = { ...window.Ms3DefaultSelectors, ...getSelectors() }
 
-    this.hooks = window.ms3Hooks
-    this.message = window.ms3Message
+    // Если модуля нет в ms3_frontend_assets, подставляется заглушка
+    this.hooks = window.ms3Hooks || this.createFallbackHooks()
+    this.message = window.ms3Message || this.createFallbackMessage()
+    this.confirm = window.ms3Confirm || (msg => Promise.resolve(window.confirm(msg)))
 
     // Токены и клиент API: сначала создаётся клиент, менеджер получает его
     // через setApiClient(), и только потом запрашивается токен
@@ -202,6 +206,7 @@ const ms3 = {
     document.addEventListener('ms3:cart:updated', () => this.quantityUI.reinit())
 
     this.initFormHandler()
+    this.initLinkHandler()
 
     document.dispatchEvent(new Event('ms3:ready'))
   }
@@ -248,6 +253,25 @@ document.addEventListener('ms3:ready', () => {
 })
 
 ```
+
+### ProductCardUI — контракт разметки
+
+`ProductCardUI` переключает карточку товара между состояниями «в корзине» и «не в корзине». Чтобы он увидел карточку, нужны три вещи:
+
+- на контейнере карточки — селектор из `ms3Config.selectors.productCard` и атрибут `data-product-id`;
+- внутри — форма с `data-cart-state="add"`;
+- и вторая форма с `data-cart-state="change"`.
+
+```html
+<div class="ms3-product-card" data-product-id="123">
+  <form class="ms3-add-to-cart ms3_form" data-cart-state="add">…</form>
+  <form class="ms3-cart-controls ms3_form" data-cart-state="change">…</form>
+</div>
+```
+
+Если нет `data-product-id` или хотя бы одной из форм, карточка **молча пропускается** — ошибки в консоли не будет. Это первое, что стоит проверить, когда кнопка «В корзину» не превращается в счётчик.
+
+Состояние пересчитывается по событию `ms3:cart:updated` и при вызове `ms3.refresh()`. Кнопки «+» и «−» внутри карточки ведёт `QuantityUI`, а не `ProductCardUI`. Узнать, что сейчас в корзине по товару, можно публичным `ms3.productCardUI.getCartInfo(productId)`.
 
 ### Публичный refresh API (с 1.11.0)
 
@@ -640,6 +664,12 @@ class CartUI {
 ```
 
 Кнопки `+`/`−` и поля количества ведёт отдельный класс `QuantityUI` (`initButtons()`, `initInputs()`): `CartUI.init()` их не касается. Перерисовку корзины обработчики переживают сами: `initOptionSelects()` слушает `change` на документе, а `QuantityUI` навешивает свои заново по событию `ms3:cart:updated`.
+
+::: warning Два исключения в форме заказа
+Автосохранение по `blur`/`change` разбирает все поля формы, кроме `address_hash`: его ведёт отдельный `initAddressInput()`, который только снимает классы валидации и ничего не отправляет. Выбранный адрес уходит на сервер через `CustomerAPI.changeAddress()` — это делает `order-addresses.js`, а не `OrderUI`.
+
+Поля `delivery_id` и `payment_id` после успешного сохранения дополнительно тянут пересчёт: `OrderUI` вызывает `updateOrderCosts()`, обновляет `#ms3_order_cost`, `#ms3_order_cart_cost`, `#ms3_order_delivery_cost` и поднимает хук `afterUpdateOrderCosts`. При прямом вызове `ms3.orderAPI.add('delivery_id', 2)` пересчёта не будет — его делает только UI-слой.
+:::
 
 Если у токена в `ms3Config.render.cart` не задан селектор или элемент по нему не найден, запасные пробует только `CartUI.renderCart()`: `#ms3oc-cart-live`, `#msb-test-cart`, `#msCart`, `[data-ms-cart]`, `.msCart`. Подстановка срабатывает, только когда во всём документе нашёлся ровно один такой узел, — иначе разметка одной корзины уехала бы в другую.
 
@@ -1175,7 +1205,28 @@ document.addEventListener('ms3:cart:updated', (e) => {
 
 ### Автоматическая обработка форм
 
-MiniShop3 сам обрабатывает формы с классом `.ms3_form` или `[data-ms3-form]`. Маршрут берётся из поля `ms3_action`:
+MiniShop3 сам обрабатывает формы с классом `.ms3_form` или `[data-ms3-form]`. Что делать, задаёт скрытое поле `ms3_action`. Это **не** путь REST, а пара «сущность/метод» UI-слоя:
+
+| `ms3_action` | Что вызывает |
+| --- | --- |
+| `cart/add` | `CartUI.handleAdd()` — поля `id`, `count`, опции |
+| `cart/change` | `CartUI.handleChange()` — поля `product_key`, `count` |
+| `cart/changeOption` | `CartUI.handleChangeOption()` — `product_key` и опции |
+| `cart/remove` | `CartUI.handleRemove()` — `product_key` |
+| `cart/clean` | `CartUI.handleClean()` |
+| `order/submit` | `OrderUI.handleSubmit()` |
+| `order/clean` | `OrderUI.handleClean()` |
+| `customer/update-profile` | `CustomerUI.handleProfileUpdate()` |
+| `customer/address-create` | `CustomerUI.handleAddressCreate()` |
+| `customer/address-update` | `CustomerUI.handleAddressUpdate()` |
+
+Неизвестная пара ничего не ломает — в консоль уходит `Handler for … not found`.
+
+::: tip Отправить форму не кнопкой submit
+Элемент с классом `.ms3_link` внутри формы MiniShop3 отправляет её по клику: обработчик `initLinkHandler()` ловит `click` на документе, находит ближайшую форму и запускает тот же разбор `ms3_action`. Так делают «ссылочные» кнопки — удалить позицию, очистить корзину.
+
+Если `.ms3_link` оказался вне формы, в консоль уходит `ms3_link must be inside a form matching: …`, и ничего не происходит.
+:::
 
 ```html
 <!-- Добавление в корзину -->

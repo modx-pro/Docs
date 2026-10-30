@@ -550,7 +550,7 @@ ms3Hooks.addHook('hookName', async (context) => {
 | `afterCleanCart` | `{ response }` | After clearing cart |
 | `beforeChangeOptionCart` | `{ productKey, options }` | Before changing a line option |
 | `afterChangeOptionCart` | `{ productKey, options, response }` | After changing an option |
-| `beforeQuantityChange` | `{ productKey, count, form }` | Before a quantity change via the «+» and «−» buttons |
+| `beforeQuantityChange` | `{ productKey, count, form }` | Before a quantity change via the «+» and «−» buttons. The only cart hook whose context edits reach the request: `count` is read back, so a handler can both cancel the operation through `cancel` and replace the quantity |
 | `afterQuantityChange` | `{ productKey, count, response, form }` | After a quantity change |
 
 #### Order

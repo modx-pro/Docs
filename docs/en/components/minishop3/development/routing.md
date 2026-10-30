@@ -52,6 +52,16 @@ $router->get('/api/mgr/my-endpoint', function($params) use ($modx) {
     return Response::success(['data' => 'value']);
 });
 
+// Middleware can also be attached fluently, on the returned Route
+$router->get('/api/mgr/other', $handler)
+    ->middleware(new AuthMiddleware($modx, 'mgr'));
+
+// Middleware is accepted as a class name too — the router builds it with $modx
+$router->get('/api/mgr/third', $handler, [\My\Addon\Middleware\Check::class]);
+
+// The handler can be a 'Class@method' string as well
+$router->get('/api/mgr/fourth', '\My\Addon\Controller@index');
+
 // POST route
 $router->post('/api/mgr/items', function($params) use ($modx) {
     $data = json_decode(file_get_contents('php://input'), true);
@@ -159,8 +169,17 @@ use MiniShop3\Router\Response;
 Response::success($data, $message, $statusCode);
 
 // Error response
-Response::error($message, $statusCode, $errors);
+Response::error($message, $statusCode, $errors, $errorCode, $data);
+
+// The same, with a mandatory machine code — handier for the Web API
+Response::errorWithCode($errorCode, $message, $statusCode, $errors, $data);
+
+// Redirect and a response built from a MODX processor
+Response::redirect($url);
+Response::fromProcessor($processorResponse);
 ```
+
+The fourth argument of `error()` is the very `error_code` promised below in every error response; without it the router derives one from the HTTP status. The fifth, `data`, carries context that is not tied to a field: `existing_id` on a conflict, the cart state on a stock refusal. Headers are added with `->header()` on the finished response.
 
 ### Response format
 
@@ -332,6 +351,16 @@ $router->group('/api/v1/cart', function($router) use ($modx) {
 ```
 
 On a route carrying the middleware the server mints a guest token when the request has no token at all. The middleware also holds a `publicRoutes` list of fifteen prefixes and one path pattern: a path from the list passes without a guest token and without a 401. There is no separate `optional` mode in the code — membership in the list is what decides.
+
+The list is not fixed. To make a route of your own public, build your own middleware instance, extend the list and pass it to the group.
+
+```php
+$tokenMiddleware = new TokenMiddleware($modx);
+$tokenMiddleware->addPublicRoute('/api/v1/myaddon/callback');
+// or replace the whole list: setPublicRoutes([...])
+```
+
+The middleware lets an `OPTIONS` preflight straight through: no token is minted, no session is started and the handler is not called.
 
 ```text
 /api/v1/product/get          /api/v1/delivery/get
@@ -596,7 +625,7 @@ CRUD for admin grid column configuration. Read: `view_document`, write: `mssetti
 
 | Method | Route | Description |
 | --- | --- | --- |
-| GET | `/{grid_key}` | Get grid configuration |
+| GET | `/{grid_key}` | Get grid configuration. `include_hidden=1` adds the hidden columns — the editor reads the configuration in that mode |
 | PUT | `/{grid_key}` | Update grid configuration (body: `fields`) |
 | POST | `/{grid_key}/field` | Add column |
 | PUT | `/{grid_key}/field/{field_name}` | Update column |

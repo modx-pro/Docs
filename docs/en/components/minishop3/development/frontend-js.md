@@ -158,17 +158,21 @@ The `ms3` object is created when `ms3.js` loads. Selectors are built from `getSe
 
 const ms3 = {
   config: {},
-  selectors: {},
+  // selectors is a computed getter over config.selectors, not a field
+  get selectors () { return this.config?.selectors || {} },
   // Slots for the modules: tokenManager, apiClient, cartAPI, orderAPI, customerAPI,
-  // cartUI, orderUI, customerUI, authUI, quantityUI, productCardUI, hooks, message
+  // cartUI, orderUI, customerUI, authUI, quantityUI, productCardUI,
+  // hooks, message, confirm
 
   async init() {
     this.config = window.ms3Config || {}
     // Selectors from Selectors.js, overridable through ms3Config.selectors
     this.config.selectors = { ...window.Ms3DefaultSelectors, ...getSelectors() }
 
-    this.hooks = window.ms3Hooks
-    this.message = window.ms3Message
+    // When a module is missing from ms3_frontend_assets, a stub takes its place
+    this.hooks = window.ms3Hooks || this.createFallbackHooks()
+    this.message = window.ms3Message || this.createFallbackMessage()
+    this.confirm = window.ms3Confirm || (msg => Promise.resolve(window.confirm(msg)))
 
     // Tokens and API client: the client is created first, the manager gets it
     // through setApiClient(), and only then the token is requested
@@ -197,6 +201,7 @@ const ms3 = {
     document.addEventListener('ms3:cart:updated', () => this.quantityUI.reinit())
 
     this.initFormHandler()
+    this.initLinkHandler()
 
     document.dispatchEvent(new Event('ms3:ready'))
   }
@@ -241,6 +246,25 @@ document.addEventListener('ms3:ready', () => {
   console.log('ms3 ready', ms3.config)
 })
 ```
+
+### ProductCardUI — the markup contract
+
+`ProductCardUI` switches a product card between the «in cart» and «not in cart» states. For it to see a card, three things are needed:
+
+- the card container carries the selector from `ms3Config.selectors.productCard` and a `data-product-id` attribute;
+- inside it, a form with `data-cart-state="add"`;
+- and a second form with `data-cart-state="change"`.
+
+```html
+<div class="ms3-product-card" data-product-id="123">
+  <form class="ms3-add-to-cart ms3_form" data-cart-state="add">…</form>
+  <form class="ms3-cart-controls ms3_form" data-cart-state="change">…</form>
+</div>
+```
+
+With no `data-product-id`, or with either form missing, the card is **skipped silently** — nothing appears in the console. That is the first thing to check when an «Add to cart» button never turns into a counter.
+
+The state is recomputed on the `ms3:cart:updated` event and on `ms3.refresh()`. The «+» and «−» buttons inside the card are driven by `QuantityUI`, not by `ProductCardUI`. To read what the cart currently holds for a product, call the public `ms3.productCardUI.getCartInfo(productId)`.
 
 ### Public refresh API (since 1.11.0)
 
@@ -625,6 +649,12 @@ class CartUI {
 ```
 
 The `+`/`−` buttons and the quantity inputs belong to a separate class, `QuantityUI` (`initButtons()`, `initInputs()`). `CartUI.init()` does not touch them. The handlers survive a cart redraw on their own: `initOptionSelects()` listens for `change` on the document, and `QuantityUI` binds its handlers again on `ms3:cart:updated`.
+
+::: warning Two exceptions in the order form
+Autosave on `blur`/`change` walks every field of the form except `address_hash`: that one goes to a separate `initAddressInput()`, which only clears the validation classes and sends nothing. The selected address reaches the server through `CustomerAPI.changeAddress()`, called by `order-addresses.js`, not by `OrderUI`.
+
+The `delivery_id` and `payment_id` fields additionally trigger a recalculation after a successful save: `OrderUI` calls `updateOrderCosts()`, updates `#ms3_order_cost`, `#ms3_order_cart_cost` and `#ms3_order_delivery_cost`, and raises the `afterUpdateOrderCosts` hook. A direct `ms3.orderAPI.add('delivery_id', 2)` does not recalculate — only the UI layer does.
+:::
 
 When a token in `ms3Config.render.cart` has no selector, or the element is not found, only `CartUI.renderCart()` tries the fallbacks: `#ms3oc-cart-live`, `#msb-test-cart`, `#msCart`, `[data-ms-cart]`, `.msCart`. The substitution happens only when exactly one such node exists in the whole document. Otherwise one cart's markup would land inside another.
 
@@ -1144,7 +1174,28 @@ document.addEventListener('ms3:cart:updated', (e) => {
 
 ### Automatic form handling
 
-MiniShop3 automatically handles forms with class `.ms3_form` (or `[data-ms3-form]`). Routing is determined by the `ms3_action` field:
+MiniShop3 automatically handles forms with class `.ms3_form` (or `[data-ms3-form]`). What happens is decided by the hidden `ms3_action` field. It is **not** a REST path but an entity/method pair of the UI layer:
+
+| `ms3_action` | What it calls |
+| --- | --- |
+| `cart/add` | `CartUI.handleAdd()` — fields `id`, `count`, options |
+| `cart/change` | `CartUI.handleChange()` — fields `product_key`, `count` |
+| `cart/changeOption` | `CartUI.handleChangeOption()` — `product_key` and options |
+| `cart/remove` | `CartUI.handleRemove()` — `product_key` |
+| `cart/clean` | `CartUI.handleClean()` |
+| `order/submit` | `OrderUI.handleSubmit()` |
+| `order/clean` | `OrderUI.handleClean()` |
+| `customer/update-profile` | `CustomerUI.handleProfileUpdate()` |
+| `customer/address-create` | `CustomerUI.handleAddressCreate()` |
+| `customer/address-update` | `CustomerUI.handleAddressUpdate()` |
+
+An unknown pair breaks nothing — `Handler for … not found` goes to the console.
+
+::: tip Submitting a form without a submit button
+An element with the `.ms3_link` class inside a MiniShop3 form submits it on click: the `initLinkHandler()` handler catches `click` on the document, finds the nearest form and runs the same `ms3_action` dispatch. That is how link-style buttons work — remove a line, empty the cart.
+
+When a `.ms3_link` ends up outside a form, the console gets `ms3_link must be inside a form matching: …` and nothing happens.
+:::
 
 ```html
 <!-- Add to cart -->
