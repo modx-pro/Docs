@@ -224,6 +224,10 @@ switch ($modx->event->name) {
 
 ### Adding related data
 
+::: info The review model in the example is yours
+MiniShop3 has no `msProductReview` class: in the example it stands for your own review model, or any other source of related data. Substitute the real class of your extra.
+:::
+
 ```php
 <?php
 switch ($modx->event->name) {

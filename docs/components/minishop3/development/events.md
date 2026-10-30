@@ -244,7 +244,7 @@ flowchart TB
 | --- | --- | --- |
 | `product` | `msProduct` | Переименован параметр |
 | `msOnGetOrderCost` | Остался + 3 частичных | Рядом: `msOnGetCartCost`, `msOnGetDeliveryCost`, `msOnGetPaymentCost`. Итог по-прежнему правите в `msOnGetOrderCost` |
-| — | `controller` | Параметр во многих событиях контроллеров |
+| `controller` | `controller` | В miniShop2 параметр приходил в `msOnManagerCustomCssJs` и в контроллеры заказов и настроек. В MiniShop3 он есть во всех событиях корзины и в паре `msOnBeforeGetOrderCustomer` / `msOnGetOrderCustomer`; подробнее — [Параметр controller](events/plugins-guide#parametr-controller) |
 | `msOnBeforeEmptyOrder` / `msOnEmptyOrder` | Те же имена | Перенесены из miniShop2 как есть. Очистка черновика |
 | `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder` | Те же имена | Перенесены из miniShop2 как есть. Финализация из админки |
 | — | `msOnBeforeGetOrderUser` / `msOnGetOrderUser` | `modUser` при оформлении заказа |

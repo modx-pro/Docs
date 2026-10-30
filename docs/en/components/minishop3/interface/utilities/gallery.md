@@ -149,8 +149,8 @@ assets/images/products/
 
 **Check:**
 
-- Write permission on `assets/images/`
-- GD or ImageMagick on the server
+- Write permission on the base directory of the product media source. By default that is `assets/images/products/`, but the path comes from the source `basePath` property and may differ
+- A driver for Intervention Image v3 — the `gd` or `imagick` extension. Which one is used depends on the PHP environment
 - Preview settings in the system settings
 
 ### Error "No products"

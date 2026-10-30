@@ -18,7 +18,7 @@ Open **Extras → MiniShop3 → Settings → Deliveries**.
 | `distance_price` | float | Cost per unit of distance. The calculation does not use it now (reserved field) |
 | `free_delivery_amount` | float | Order total for free delivery |
 | `logo` | string | Path to the image |
-| `position` | int | Sort order |
+| `position` | tinyint unsigned | Sort order. The model map declares the column as `tinyint(1) unsigned`, so the ceiling is 255 rows. Payment methods carry the same column as `int` — a historical inconsistency |
 | `active` | bool | Active flag |
 | `class` | string | PHP handler class |
 | `validation_rules` | JSON | Field validation rules |

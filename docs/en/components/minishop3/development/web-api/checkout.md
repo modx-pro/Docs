@@ -50,7 +50,7 @@ Payment: the server reads JSON from the body, then calls `verifyWebhook`, `parse
 
 A successful delivery webhook returns `shipment_id`, `status`, `order_id`, and `tracking_number`. The delivery webhook does not filter on `active`.
 
-The classic `webhook.php` and `callback.php` entry points in payment extras keep working when the class does not implement the Web API interface.
+A payment extra may keep an entry point of its own — `webhook.php` or `callback.php` under its `assets/components/{ns}/` directory. The MiniShop3 core ships no such files and does not govern their behaviour: check the documentation of that extra.
 
 These routes do not pass `TokenMiddleware`. The public payment prefix in the middleware ends with a slash, so it does not match a path with `{id}`. Until the middleware is attached to the group, webhooks are unaffected ([bug #903](https://github.com/modx-pro/MiniShop3/issues/903)).
 

@@ -244,7 +244,7 @@ flowchart TB
 | --- | --- | --- |
 | `product` | `msProduct` | Parameter renamed |
 | `msOnGetOrderCost` | Kept + 3 partials | Also `msOnGetCartCost`, `msOnGetDeliveryCost`, `msOnGetPaymentCost`. Override the total in `msOnGetOrderCost` |
-| — | `controller` | Parameter on many controller events |
+| `controller` | `controller` | In miniShop2 the parameter arrived in `msOnManagerCustomCssJs` and in the order and settings controllers. In MiniShop3 it is present in every cart event and in the `msOnBeforeGetOrderCustomer` / `msOnGetOrderCustomer` pair; see [The controller parameter](events/plugins-guide#controller-parameter) |
 | `msOnBeforeEmptyOrder` / `msOnEmptyOrder` | Same names | Carried over from miniShop2 unchanged. Draft cleanup |
 | `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder` | Same names | Carried over from miniShop2 unchanged. Manager finalization |
 | — | `msOnBeforeGetOrderUser` / `msOnGetOrderUser` | `modUser` on submit |
