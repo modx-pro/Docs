@@ -31,7 +31,7 @@ items: [
     link: 'interface/',
     items: [
       { text: 'Наборы фильтров', link: 'interface/filter-sets' },
-      { text: 'Слаги', link: 'interface/slugs' },
+      { text: 'Алиасы', link: 'interface/slugs' },
       { text: 'Паттерны URL', link: 'interface/patterns' },
       { text: 'SEO шаблоны', link: 'interface/seo-templates' },
       { text: 'Индивидуальные SEO', link: 'interface/seo-pages' },
@@ -170,7 +170,7 @@ SEO URL включены по умолчанию. Фильтры создают 
 /catalog/brand_apple/color_black-or-white/price_1000-5000/
 ```
 
-Для кастомизации перейдите в **Наборы фильтров** и настройте слаги для значений фильтров.
+Чтобы поменять запись значения в адресе, исправьте алиас на вкладке [Алиасы](interface/slugs).
 
 ## Архитектура
 
