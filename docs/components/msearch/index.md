@@ -64,7 +64,7 @@ items: [
 ### Зависимости
 
 - **pdoTools 3.x** — для работы сниппетов и шаблонизатора Fenom
-- **[VueTools](/components/vuetools/)** — для административного интерфейса
+- **[VueTools](/components/vuetools/) 1.2.0+** — для административного интерфейса
 - **[Scheduler](/components/scheduler/)** *(опционально)* — для отложенной индексации
 
 ## Установка
@@ -185,19 +185,20 @@ mSearch — это полностью переписанный компонен�
 
 ### С пагинацией
 
-`mSearch` сам постраничную навигацию не делает — он отдаёт ID найденных ресурсов, а `pdoPage` пагинирует по ним:
+`mSearch` читает `offset` и отдаёт в `totalVar` общее число результатов, поэтому `pdoPage` листает его напрямую:
 
 ```fenom
 {'!pdoPage' | snippet : [
-    'element' => 'pdoResources',
-    'resources' => '!mSearch' | snippet : ['return' => 'ids', 'limit' => 0] | default : '0',
-    'sortby' => 'ids',
+    'element' => 'mSearch',
+    'totalVar' => 'page.total',
     'tpl' => 'mSearch.row',
     'limit' => 10
 ]}
 
 {$_modx->getPlaceholder('page.nav')}
 ```
+
+Для товаров miniShop3 (их рендерит `msProducts`, а не `mSearch`) используйте паттерн `return=ids` — см. ниже.
 
 ### Поиск товаров MiniShop3
 

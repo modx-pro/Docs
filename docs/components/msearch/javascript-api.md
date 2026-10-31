@@ -315,7 +315,7 @@ const instance = MSearchUI.create(document.querySelector('#my-form'), {
 | `inputSelector` | `.mse-input` | CSS-селектор поля ввода внутри формы |
 | `resultsSelector` | `.mse-results` | CSS-селектор контейнера результатов (зарезервировано) |
 | `autocomplete` | `true` | Включить автодополнение |
-| `minQueryLength` | `2` | Минимальная длина запроса (на стороне клиента; сервер дополнительно проверяет `mse_suggest_min_query_length`) |
+| `minQueryLength` | `2` | Минимальная длина запроса на клиенте. По умолчанию берётся из настройки `mse_suggest_min_query_length` (сниппет прокидывает её в `window.msearchConfig`); `data-min-query-length` переопределяет |
 | `debounceDelay` | `300` | Задержка debounce, мс |
 | `connectorUrl` | `''` | URL API endpoint (обычно подхватывается из `data-connector-url`) |
 | `formId` | `''` | formId сниппета (обычно подхватывается из `data-form-id`) |
