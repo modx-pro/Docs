@@ -13,6 +13,8 @@
 | `mscatalyst_index_auto_threshold` | `8000` | С этого числа товаров режим `auto` хранит индекс в файлах. |
 | `mscatalyst_seo_mode` | `off` | SEO-режим, если в вызове не задан `&seo`, см. [SEO](seo). |
 | `mscatalyst_seo_index_max` | `2` | Сколько выбранных значений может быть на ЧПУ-странице, чтобы она осталась в индексе. `0`: все страницы с фильтрами получают `noindex`. |
+| `mscatalyst_seo_empty` | `noindex` | Что отдаёт ЧПУ-адрес или посадочная без товаров. `noindex`: страница с `noindex`. `404`: страница не найдена. `show`: обычная страница. |
+| `mscatalyst_seofilter_placeholders` | `Нет` | Заполнять плейсхолдеры `sf.*` на страницах с фильтром для шаблонов, свёрстанных под SeoFilter. Перенос из SeoFilter включает её сам, см. [Переход с SeoFilter](seofilter). |
 | `mscatalyst_seo_title_filtered` | `{{pagetitle}} — {{filters}}` | Title страницы с фильтром. |
 | `mscatalyst_seo_h1_filtered` | `{{pagetitle}}: {{filters}}` | H1 страницы с фильтром. |
 | `mscatalyst_seo_description` | `{{pagetitle}}. {{filters}}. Найдено: {{total}}` | Description страницы с фильтром. |

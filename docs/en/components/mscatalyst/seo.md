@@ -2,7 +2,7 @@
 
 ## Meta tags and indexing
 
-- On pages with selected filters or a search query, the snippet adds `<meta name="robots" content="noindex, follow">`. Pagination pages without filters stay indexed. Turn this off with `` &noindexFiltered=`0` ``. With friendly URLs some of these pages stay indexable, see "Indexing landing pages" below.
+- On pages with selected filters or a search query, the snippet adds `<meta name="robots" content="noindex, follow">`. Pagination pages without filters stay indexed. Turn this off with `` &noindexFiltered=`0` ``. With friendly URLs some of these pages stay indexable, see "Indexing friendly URL pages" below.
 - AJAX responses are sent with the `X-Robots-Tag: noindex, nofollow` header.
 - Pagination links and the remove icons on selected filters are real links with `href`. A search bot can follow them without JavaScript.
 - For `<title>`, H1, description and `<link rel="canonical">`, use the placeholders `mscatalyst.title`, `mscatalyst.h1`, `mscatalyst.description` and `mscatalyst.canonical`, see [Page placeholders](frontend#page-placeholders).
@@ -56,32 +56,26 @@ A segment starts with the facet key. Values come from the labels and are transli
 - A catalog on the start page works too: `/vendor-nike/`.
 - With Localizator the language prefix stays at the start: `/en/vendor-nike/color-white/`. Each language builds segments from its own labels. A Russian segment on the English version gets a 301 to the English one.
 
-### Indexing landing pages
+### Indexing friendly URL pages
 
 A friendly URL page stays indexable when it has no more than `mscatalyst_seo_index_max` selected values (2 by default). Ranges, search, non-default sorting, a non-default page size and more values get `noindex, follow`. With `0`, every filtered page is noindex. While friendly URLs are off, the old `&noindexFiltered` rule applies.
 
-`mscatalyst.canonical` holds the path from the site root to the friendly URL without sorting and page number. The language prefix is already included. Put it into the template `<head>`:
+`mscatalyst.canonical` holds the full URL with scheme and host, without sorting and page number. The language prefix is already included. Put it into the template `<head>` as is:
 
 ```modx
-<link rel="canonical" href="[[++server_protocol]]://[[++http_host]][[!+mscatalyst.canonical]]">
+<link rel="canonical" href="[[!+mscatalyst.canonical]]">
 ```
 
-The [msCatalystSitemap](snippets/service#mscatalystsitemap) snippet outputs a sitemap of landing pages:
+The [msCatalystSitemap](snippets/service#mscatalystsitemap) snippet outputs a sitemap of filter URLs and landing pages:
 
 ```modx
-[[!msCatalystSitemap? &parents=`5` &facets=`vendor, option:color`]]
+[[!msCatalystSitemap? &catalogs=`*`]]
 ```
 
-The SeoFilter bridge is written for MODX 2. On MODX 3, use `native`.
+## Landing pages
 
-## SeoFilter (MODX 2)
+A page with its own URL, title, H1 and text for a filter combination, for example `/catalog/white-sneakers/`. Works in `native` mode on MODX 2 and MODX 3, no SeoFilter needed. See [Landing pages](landings).
 
-Set `|alias=` as in mFilter2 and `&seo=`seofilter`` or `both`. The AJAX response has a `seo` block: title, h1, description, canonical, aliases. The `mscatalyst:seo` event on `document` is there for the SeoFilter bridge or for your own meta tag replacement:
+## SeoFilter
 
-```js
-document.addEventListener('mscatalyst:seo', function (e) {
-    console.log(e.detail.seo.title, e.detail.seo.canonical);
-});
-```
-
-The [msCatalystSeoFilter](snippets/service#mscatalystseofilter) snippet sets the template placeholders.
+If SeoFilter is already set up on the site, msCatalyst imports its rules, URLs and dictionary, and templates with `[[+sf.*]]` keep working. While SeoFilter stays on a MODX 2 site, the `seofilter` and `both` modes act as a bridge to it. See [Moving from SeoFilter](seofilter).

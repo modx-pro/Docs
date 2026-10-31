@@ -33,6 +33,8 @@ items: [
   { text: 'Multilingual', link: 'multilingual' },
   { text: 'Frontend', link: 'frontend' },
   { text: 'SEO', link: 'seo' },
+  { text: 'Landing pages', link: 'landings' },
+  { text: 'Moving from SeoFilter', link: 'seofilter' },
   { text: 'System settings and cache', link: 'settings' },
   { text: 'MODX 3 and modifications', link: 'modx3' },
   { text: 'Troubleshooting', link: 'troubleshooting' },
@@ -55,11 +57,12 @@ Demo: [`chelnysite.ru`](https://chelnysite.ru/), a catalog of 100,000 products o
 - Search with word forms, transliteration, typos, field weights and synonyms. Modes: inside the catalog, a separate page, a dropdown.
 - Every filter and page change goes into the browser history. The "Back" button returns to the previous results.
 - Speed on 100,000 products: results and all counters are recalculated in 10–40 ms on the server.
-- SEO: title, H1 and description with the selected filters arrive in the HTML on first load. Friendly filter URLs, a sitemap, a bridge to SeoFilter.
+- SEO: title, H1 and description with the selected filters arrive in the HTML on first load. Friendly filter URLs, a sitemap.
+- Landing pages with own URLs, texts and Russian word forms in all six cases, singular and plural. No SeoFilter needed, MODX 3 included, and msCatalyst imports an existing SeoFilter setup.
 - Profile-based sync: source analysis, field and catalog matching, an approved schema, a change plan with safeguards, run rollback.
 - Export of products, categories, vendors and options to CSV, XLSX, JSON and XML.
 - Multilingual catalog with Localizator, localizator3 or Babel.
-- A manager page without ExtJS: search test, synonyms, settings, index, filter sets, sync, export and translations.
+- A manager page without ExtJS: search test, synonyms, settings, index, filter sets, landing pages, sync, export and translations.
 
 ## Requirements
 
@@ -77,7 +80,7 @@ Tested combinations:
 ## Installation
 
 1. Add the modstore.pro provider in "Extras → Installer" and install msCatalyst.
-2. The installer creates the msCatalyst category: the snippets `msCatalyst`, `msCatalystSearch`, `msCatalystSitemap`, `msCatalystReindex`, `msCatalystSeoFilter`, `msCatalystSync`, `msCatalystDemoAdmin`, a plugin, eight chunks, system settings and the sync tables.
+2. The installer creates the msCatalyst category: the snippets `msCatalyst`, `msCatalystSearch`, `msCatalystSitemap`, `msCatalystLandings`, `msCatalystReindex`, `msCatalystSeoFilter`, `msCatalystSync`, `msCatalystDemoAdmin`, a plugin, ten chunks, system settings, the sync and landing page tables.
 3. Call the snippet in the catalog template as described in [Quick start](quick-start).
 
 License: one purchase per site.

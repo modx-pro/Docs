@@ -8,7 +8,7 @@
 
 Отличия:
 
-- мост к SeoFilter работает только на MODX 2. На MODX 3 используйте `&seo=`native``, см. [SEO](seo);
+- SeoFilter для MODX 3 не выпущен, поэтому мост к нему (`&seo=`seofilter``) работает только на MODX 2. Посадочные страницы с текстами и склонениями msCatalyst даёт сам в режиме `native`, и на MODX 3 тоже, см. [Посадочные страницы](landings). Перенос из SeoFilter читает его таблицы напрямую и работает на MODX 3, см. [Переход с SeoFilter](seofilter);
 - Localizator на MODX 3 выходит пакетом `localizator3`, msCatalyst поддерживает его, см. [Мультиязычность](multilingual#localizator).
 
 ::: warning
