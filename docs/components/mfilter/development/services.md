@@ -35,7 +35,7 @@ $urlRouter = $mfilter->getUrlRouter();
 | FacetIndexBuilder | `Services\Facet\FacetIndexBuilder` | `getFacetIndexBuilder()` | Сборка индекса фасетов из источников (1.4.0+) |
 | FacetIndexReader | `Services\Facet\FacetIndexReader` | `getFacetIndexReader()` | Чтение индекса фасетов в FilterType (1.4.0+) |
 | ElementRunner | `Services\Element\ElementRunner` | `getElementRunner()` | Запуск element/paginator-сниппетов |
-| WarmupManager | `Services\Warmup\WarmupManager` | `getWarmupManager()` | Прогрев baseIds для AJAX *(legacy с 1.4.0)* |
+| WarmupManager | `Services\Warmup\WarmupManager` | `getWarmupManager()` | Прогрев baseIds для вызовов с `&element` *(legacy с 1.4.0)* |
 | WarmupKeyBuilder | `Services\Warmup\WarmupKeyBuilder` | — | Построение ключей кэша для прогрева |
 | SnippetCallParser | `Services\Warmup\SnippetCallParser` | — | Парсинг вызовов сниппетов из шаблонов |
 | Profiler | `Services\Profiler` | — *(статический)* | Профилирование запросов |
@@ -557,7 +557,7 @@ $html = $runner->runPaginator(string $paginator, string $element, array $pageIds
 ## WarmupManager
 
 ::: warning Legacy с 1.4.0
-Используется только для прогрева baseIds в AJAX-режиме. Основная фильтрация теперь идёт через индекс фасетов.
+Используется только для прогрева baseIds на страницах, где `mFilter` вызван с `&element`, — при первой загрузке и при AJAX. Основная фильтрация теперь идёт через индекс фасетов.
 :::
 
 ```php
