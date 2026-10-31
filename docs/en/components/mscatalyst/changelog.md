@@ -16,6 +16,7 @@ Before version 1.2.0 the component was called msFacets.
 - MODX 3: localizator3 support.
 - Babel: sync updates text fields of linked resources in other contexts.
 - The component page hides settings for packages that are not installed.
+- `&scrollOnUpdate` and `&scrollOffset`: turn off the scroll to the results after "Show results" and page links, or set the top offset for a sticky header. The default offset is 16px instead of 100px.
 
 ## 1.2.0-pl1
 
