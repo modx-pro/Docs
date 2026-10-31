@@ -12,9 +12,9 @@
 |---|---|---|
 | Товар сохранён или удалён в админке MODX или MiniShop3 | Плагин mFilter | Сразу |
 | Импорт MiniShop3 из CSV | Плагин mFilter по событию `msOnAfterImport` | После импорта, полной пересборкой |
-| Правка через API MODX — `$resource->save()`, свой импортёр | Задача Scheduler `mfl_sync_facet_index` | В течение 5 минут |
+| Правка через процессор MODX — `runProcessor()` | Задача Scheduler `mfl_sync_facet_index` | В течение 5 минут |
 | Прямой запрос к базе с `editedon` | Та же задача | В течение 5 минут |
-| Прямой запрос к базе без `editedon` | Ничем | — |
+| `$resource->save()`, `setTVValue()`, прямой запрос без `editedon` | Ничем — вызовите `buildForProducts()` | — |
 
 Задача сравнивает `editedon` товаров с временем прошлого запуска. Удалённые товары она находит по `deletedon` и убирает их из индекса. Поэтому важно не само изменение, а отметка времени: правка, которая её не обновила, для задачи не существует.
 
@@ -70,11 +70,7 @@ foreach ($categoryIds as $categoryId) {
 
 ```php
 // В фоне, задачей Scheduler
-$scheduler = $modx->services->get('scheduler');
-$task = $scheduler->getTask('mfilter', 'mfl_rebuild_facet_index');
-if ($task) {
-    $task->schedule('+0 seconds');
-}
+$mfilter->scheduleTaskOnce('mfl_rebuild_facet_index');
 
 // Сразу, в своём CLI-скрипте
 $mfilter->getFacetIndexBuilder()->buildAll();
@@ -99,7 +95,7 @@ if (!empty($stats['locked'])) {
 
 1. Обновлять `editedon` в своих запросах — тогда задача подхватит изменения за 5 минут.
 2. Вызывать `buildForProducts()` или `buildAll()` в конце своего скрипта.
-3. Поставить `mfl_rebuild_facet_index` повторяемой задачей — например, раз в неделю ночью, как страховку.
+3. Поставить `mfl_rebuild_facet_index` повторяемой задачей — например, раз в неделю ночью, как страховку. Обновление mFilter снимает повторение — после обновления включите его снова.
 
 ## Если индекс отстаёт
 

@@ -153,9 +153,9 @@ $mfilter->getFacetIndexBuilder()->buildAll();
 
 ## Scheduler (фоновые задачи)
 
-mFilter регистрирует семь задач в [Scheduler](/components/scheduler/). Связанные с кэшем:
+mFilter регистрирует восемь задач в [Scheduler](/components/scheduler/). Связанные с кэшем:
 
-- **`mfl_rebuild_cache`** — перестройка кэша роутера и фильтров (on-demand)
+- **`mfl_rebuild_cache`** — перестройка кэша роутера и фильтров; mFilter сам её не ставит, только из Scheduler или вашего кода
 - **`mfl_warmup`** — прогрев списков товаров на страницах и, по умолчанию, счётчиков значений
 - **`mfl_rebuild_facet_index`** — полная пересборка индекса фасетов
 
