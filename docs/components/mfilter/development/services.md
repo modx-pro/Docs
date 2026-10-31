@@ -333,7 +333,7 @@ $keys = $parser->extractPlaceholders('{$pagetitle} {$color.gen}');
 
 ## WordFormsManager
 
-Склонение значений в SEO-текстах. Использует таблицу `mfl_word_forms` (12 падежных форм + 3 направительные «где/куда/откуда»). Может автогенерировать формы через [Morpher API](/components/mfilter/settings#slovoformy).
+Склонение значений в SEO-текстах. Использует таблицу `mfl_word_forms`: шесть падежей единственного и шесть множественного числа. Может автогенерировать формы через [Morpher API](/components/mfilter/settings#slovoformy).
 
 ```php
 $wm = $mfilter->getWordFormsManager();
@@ -342,7 +342,8 @@ $wm = $mfilter->getWordFormsManager();
 $forms = $wm->get('телефон'): ?array;
 // ['nom' => 'телефон', 'gen' => 'телефона', 'dat' => 'телефону', ...]
 
-// Автогенерация (правила русского языка локально или Morpher API при $useApi = true)
+// Генерация через Morpher API при $useApi = true.
+// Без API или при сбое сервиса — само слово строчными во всех падежах
 $forms = $wm->generate('Apple', $useApi = false): ?array;
 
 // Сохранить вручную
@@ -354,7 +355,7 @@ $wm->save('телефон', [
 
 // Bulk-генерация для всех значений из mfl_slugs
 $stats = $wm->generateAll($useApi = false): array;
-// ['total' => 150, 'generated' => 142, 'failed' => 8]
+// ['generated' => 142, 'skipped' => 8, 'errors' => 0]
 
 // Прелоад в память (для горячих циклов)
 $wm->preload(): void;
