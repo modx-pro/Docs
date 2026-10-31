@@ -12,6 +12,7 @@ All settings are easier to edit on the "Settings" tab of the component page: it 
 | `mscatalyst_index_mode` | `memory` | `memory`: index in the MODX cache. `table`: in the `core/cache/mscatalyst_index/` files. `auto`: pick by product count. |
 | `mscatalyst_index_auto_threshold` | `8000` | From this many products, `auto` mode stores the index in files. |
 | `mscatalyst_seo_mode` | `off` | SEO mode when the call has no `&seo`, see [SEO](seo). |
+| `mscatalyst_seo_index_max` | `2` | How many selected values a friendly URL page may have and stay indexable. `0`: every filtered page gets `noindex`. |
 | `mscatalyst_seo_title_filtered` | `{{pagetitle}} — {{filters}}` | Filtered page title. |
 | `mscatalyst_seo_h1_filtered` | `{{pagetitle}}: {{filters}}` | Filtered page H1. |
 | `mscatalyst_seo_description` | `{{pagetitle}}. {{filters}}. Найдено: {{total}}` | Filtered page description. |

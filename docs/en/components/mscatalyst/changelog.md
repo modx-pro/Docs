@@ -17,6 +17,10 @@ Before version 1.2.0 the component was called msFacets.
 - Babel: sync updates text fields of linked resources in other contexts.
 - The component page hides settings for packages that are not installed.
 - `&scrollOnUpdate` and `&scrollOffset`: turn off the scroll to the results after "Show results" and page links, or set the top offset for a sticky header. The default offset is 16px instead of 100px.
+- Friendly filter URLs (`mscatalyst_seo_mode` = `native`) cover the whole visit: the address bar, pagination, remove icons, "Clear all", Back and Forward show `/catalog/vendor-nike/color-red/`. GET filters and values in another order get a 301 to the one URL. A catalog on the start page and Localizator language prefixes work too.
+- Unknown filter paths answer 404 instead of the catalog or another page under a duplicate URL.
+- Friendly pages with up to `mscatalyst_seo_index_max` selected values (2 by default) stay indexable. Ranges, search, sorting and more values get `noindex`.
+- Canonical no longer points to a friendly path when friendly URLs are off.
 
 ## 1.2.0-pl1
 
