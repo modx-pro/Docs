@@ -3,6 +3,7 @@
 Все таблицы и xPDO-модели mFilter. Для актуальности версии: 1.4.0+.
 
 ::: tip Соглашения
+
 - Префикс таблиц — `mfl_`. Полное имя зависит от `table_prefix` MODX (`{prefix}_mfl_*`).
 - Поля даты-времени называются `created_at` / `updated_at` (тип `datetime`).
 - Поля сортировки — `sort_order` или `priority` (вместо зарезервированного MySQL 8 слова `rank`).
@@ -342,6 +343,7 @@ $range = $mfilter->getFacetIndexReader()->getNumRange('price', $productIds);
 **Индексы:** PRIMARY(`run_id, product_id`), `idx_created_at`(`created_at`).
 
 **Жизненный цикл:**
+
 1. Деструктор `RequestIdsRegistry` удаляет run и его строки в конце запроса
 2. Shutdown handler — на случай fatal-error
 3. Cron-задача `mfl_cleanup_request_ids` каждые 10 минут — страховка от `kill -9`
@@ -353,7 +355,7 @@ $range = $mfilter->getFacetIndexReader()->getNumRange('price', $productIds);
 ## Прогрев (legacy)
 
 ::: warning Legacy с версии 1.4.0
-Эти таблицы используются только для прогрева baseIds в AJAX-режиме. После полной стабилизации индекса фасетов они будут удалены.
+Эти таблицы используются только для прогрева baseIds на страницах, где `mFilter` вызван с `&element`. После полной стабилизации индекса фасетов они будут удалены.
 :::
 
 ### MflWarmupConfig
