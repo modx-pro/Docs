@@ -49,6 +49,8 @@ The main snippet: filter panel, counters, sorting, search, pagination and produc
 | `tplEmpty` | `msCatalyst.empty` | "Nothing found" chunk. |
 | `rowsClass` | `msc-grid` | Class of the card container. With your own card chunk you can set the theme grid class, for example `row`. |
 | `breakpoint` | `992` | Width in pixels below which the panel becomes a slide-out. |
+| `scrollOnUpdate` | `1` | Scroll to the top of the results after "Show results" in the mobile panel and after a page link. With `0` the scroll position stays. |
+| `scrollOffset` | `16` | Top offset in pixels when scrolling to the results. With a sticky header, use its height. |
 | `toPlaceholder` | | Write the output to a placeholder. |
 | `css`, `js`, `cacheTime` | from settings | Override system settings for one call. |
 
