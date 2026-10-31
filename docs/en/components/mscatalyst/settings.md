@@ -13,6 +13,8 @@ All settings are easier to edit on the "Settings" tab of the component page: it 
 | `mscatalyst_index_auto_threshold` | `8000` | From this many products, `auto` mode stores the index in files. |
 | `mscatalyst_seo_mode` | `off` | SEO mode when the call has no `&seo`, see [SEO](seo). |
 | `mscatalyst_seo_index_max` | `2` | How many selected values a friendly URL page may have and stay indexable. `0`: every filtered page gets `noindex`. |
+| `mscatalyst_seo_empty` | `noindex` | What a friendly or landing URL answers when no products match. `noindex`: the page gets `noindex`. `404`: page not found. `show`: a normal page. |
+| `mscatalyst_seofilter_placeholders` | `No` | Fill the `sf.*` placeholders on filtered pages for templates built for SeoFilter. The import from SeoFilter turns it on, see [Moving from SeoFilter](seofilter). |
 | `mscatalyst_seo_title_filtered` | `{{pagetitle}} — {{filters}}` | Filtered page title. |
 | `mscatalyst_seo_h1_filtered` | `{{pagetitle}}: {{filters}}` | Filtered page H1. |
 | `mscatalyst_seo_description` | `{{pagetitle}}. {{filters}}. Найдено: {{total}}` | Filtered page description. |

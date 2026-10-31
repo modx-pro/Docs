@@ -30,6 +30,10 @@ Where the index is stored, how much space it takes, when it was updated. The "Bu
 
 Create and edit `mscatalyst_set_*` sets with JSON validation. Sets from `sets/*.json` files appear in the list. Saving a set with the same name overrides the file. How to call a set is described in [Filter sets](../snippets/mscatalyst#filter-sets).
 
+## Landing pages
+
+Landing pages of a catalog: facet combinations with products, a text editor with preview, templates, word forms, a check for empty pages and clashing URLs, CSV export and import. When the site has SeoFilter tables, the import block shows up here too. See [Landing pages](../landings) and [Moving from SeoFilter](../seofilter).
+
 ## Sync
 
 Exchange profiles and the setup wizard, see [Sync](sync).

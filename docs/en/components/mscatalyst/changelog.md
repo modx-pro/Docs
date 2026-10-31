@@ -21,6 +21,20 @@ Before version 1.2.0 the component was called msFacets.
 - Unknown filter paths answer 404 instead of the catalog or another page under a duplicate URL.
 - Friendly pages with up to `mscatalyst_seo_index_max` selected values (2 by default) stay indexable. Ranges, search, sorting and more values get `noindex`.
 - Canonical no longer points to a friendly path when friendly URLs are off.
+- The `mscatalyst.canonical` placeholder holds the full URL with scheme and host, ready for `<link rel="canonical">`.
+- [Landing pages](landings) without SeoFilter: own URLs (`/catalog/white-sneakers/`) for filter combinations with their title, H1, description and HTML above and below the products. Old friendly paths and GET filters get a 301 to the own URL, the sitemap lists it.
+- Text templates per facet combination for one catalog or all, per language, with priority. Placeholders `{color}`, `{color.title}`, `{total}`, case and letter case modifiers, conditions `{?size}…{/size}`.
+- All six Russian cases in both numbers (`:gen`, `:dat`, `:acc`, `:ins`, `:pre`, `:about`, `:plural_gen` and others) plus `:where`, `:to`, `:from`. A hand-written nominative form replaces the stored value.
+- Plural values are declined too: "Буровые установки" with `:gen` gives "буровых установок", `:pre` gives "буровых установках". Vendor names keep their nouns as they are.
+- Per-page index rule (auto, always indexed, always `noindex`) and the `mscatalyst_seo_empty` setting for pages without products.
+- The [msCatalystLandings](snippets/service#mscatalystlandings) snippet: a links block with refinements, popular values or saved landing pages. With `&catalog` it works on any page of the site. Placeholders `mscatalyst.intro` and `mscatalyst.text`, AJAX updates `[data-msc-intro]` and `[data-msc-text]`.
+- Landing pages tab: combinations with product counts, editor with a search result preview, templates, word forms, a check for empty pages and clashing URLs, CSV export and import.
+- [Import from SeoFilter](seofilter): rules become templates, saved URLs become landing pages, the dictionary becomes word forms, old URLs answer 301. SeoFilter tables are read directly, so the import works after SeoFilter is removed and on MODX 3.
+- A dry run report before the import, a button that turns off the SeoFilter plugin and switches to msCatalyst URLs, and a way back.
+- `sfLink`, `sfMenu` and `sfSitemap` calls in templates, chunks and resources are rewritten to msCatalyst snippets after a preview. The original text is kept and can be put back.
+- The `mscatalyst_seofilter_placeholders` setting: `sf.title`, `sf.h1`, `sf.description`, `sf.text` and other `sf.*` placeholders on filtered pages, so templates built for SeoFilter keep working. The import turns it on.
+- A landing URL typed in another letter case or without the trailing slash answers 301 to the right one.
+- `msCatalystSitemap` with `&catalogs`: one sitemap for every catalog the site has rendered, placed on any page.
 
 ## 1.2.0-pl1
 
