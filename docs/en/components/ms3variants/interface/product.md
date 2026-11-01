@@ -3,111 +3,81 @@ title: Variants tab on product
 ---
 # Variants tab on product
 
-When editing a MiniShop3 product, an extra **Variants** tab appears for managing product variants.
+## Where the tab is
 
-## Overview
+The **Variants** tab is on the product card in the manager, after the built-in MiniShop3 tabs ("Product Properties", "Gallery", "Categories", "Links", "Product Options").
 
-<!-- Screenshot: variants tab with table -->
+- When a product is being created, the tab is not there: save the product and open it again.
+- The VueTools package is required. Without it the tab is not there, and the MODX error log gets the entry `[ms3Variants] VueTools not found`.
 
-The tab includes:
-- **Statistics** — total variants, active variants, total stock
-- **Variants table** — list of all variants with main info
-- **Create button** — to add a new variant
+## Variant list
 
-## Variants table
-
-The table lists all variants of the product:
-
-| Column | Description |
-|--------|-------------|
+| Column | What it shows |
+|--------|---------------|
+| Active | Checkbox: cleared — the variant is not output on the site |
 | Image | Variant image thumbnail |
-| Options | Option combination (color, size, etc.) |
-| SKU | Variant SKU |
-| Price | Current price |
-| Stock | Quantity in stock |
-| Active | On/off |
-| Actions | Edit and delete buttons |
+| SKU | Variant SKU; empty — "-" |
+| Options | Variant option values |
+| Price | Price and old price; an empty old price is not shown |
+| Stock | Variant stock |
+| — | Edit and delete buttons |
 
-## Creating a variant
+Variants are listed in creation order; the order cannot be changed on the tab. The button with a circular arrow next to "Create Variant" reloads the list.
 
-<!-- Screenshot: create variant dialog -->
+Below the list are "Total variants", "Active variants" and "Total stock". Total stock is counted over all variants, including inactive ones.
 
-1. Click **Create variant**
-2. In the dialog, fill in the fields:
+## Variant window
 
-### Variant fields
+The **Create Variant** button opens the window for a new variant, the pencil button in a row opens an existing one.
 
-| Field | Required | Description |
-|-------|----------|-------------|
-| Options | Yes | At least one option (key + value) |
-| SKU | No | Auto-generated from pattern |
-| Price | Yes | Variant price |
-| Old price | No | For showing discount |
-| Stock | No | Quantity in stock (default 0) |
-| Weight | No | Variant weight |
-| Image | No | Pick from product gallery |
-| Active | — | On by default |
+| Field | Required | What to know |
+|-------|----------|--------------|
+| Options | on creation | At least one option. When editing, all options can be removed — the server does not forbid it, and the variant has no option label on the site |
+| SKU | no | Not created automatically and not checked for uniqueness |
+| Price | no | 0 by default |
+| Old price | no | Price before discount |
+| Stock | no | 0 by default |
+| Weight | no | In MiniShop3 weight units. If above 0, replaces the cart item weight |
+| Image | no | From the product gallery |
+| Active | — | A new variant is always created active. It can be turned off here or with the checkbox in the list — there the change is saved immediately |
 
-### Adding options
+Save errors are shown in the window below the "Options" field:
 
-1. Click **Add option**
-2. Choose option key from the list or enter a new one
-3. Enter the option value
-4. Repeat for all needed options
+| Message | When |
+|---------|------|
+| "At least one option is required" | When creating a variant without options |
+| "Variant with these options already exists" | The same option set belongs to another active variant |
+| "Variant not found" | The variant was deleted, for example in another browser tab |
+| "Error" | The variant could not be written to the database — details in the MODX error log |
 
-**Common option keys:**
-- `color` — Color
-- `size` — Size
-- `material` — Material
-- `volume` — Volume
-- `weight` — Weight (as option; distinct from weight field)
-
-::: tip Filter sync
-When a variant is saved, values for options `color`, `size`, and `tags` are added to the product's msProductData field. This lets you use standard MiniShop3 filters to find products by variant options.
+::: warning Clearing the price or stock is not saved
+If you erase the price or stock of an existing variant and save, the previous value stays, and an error is written to the MODX error log. To set zero, enter `0`.
 :::
 
-### Choosing an image
+## Variant options
 
-<!-- Screenshot: image pick from gallery -->
+1. Select an option key in the drop-down list.
+2. Enter a value — the list suggests values already set on products of the store, but any value can be entered.
+3. Press "+" or Enter.
 
-1. Click the image pick area
-2. The product gallery opens
-3. Select the image
-4. The image is assigned to the variant
+The key list contains options from the MiniShop3 option directory and keys already set on any products of the store, regardless of the category. A new key cannot be entered on the tab: create the option in MiniShop3 first.
 
-::: warning Images from gallery
-Only images already in the product gallery can be used for a variant. Add all needed images on the **Gallery** tab first.
-:::
+A variant with the same set of options as another active variant of the product is not saved: "Variant with these options already exists". The combination is not compared with inactive variants.
 
-## Editing a variant
+When a variant is saved, its option values are added to the MiniShop3 product options, and values of options with the keys `color`, `size` and `tags` also go to the product data fields of the same name. When a variant is changed or deleted, old values are not removed from the product.
 
-1. Click the variant row or the edit button
-2. Change the fields
-3. Click **Save**
+## Variant image
+
+Click "Select from gallery" and choose an image. Only images from this product's gallery are available: upload them on the **Gallery** tab first. If the gallery is empty, the selection window shows "No images in gallery".
 
 ## Deleting a variant
 
-1. Click the delete (trash) button on the variant row
-2. Confirm deletion
+Click the delete button in the row and confirm. Deletion cannot be undone.
 
-::: danger Warning
-Deleting a variant cannot be undone. If the variant was in orders, that order data is kept but the link to the variant is lost.
-:::
+Cart and order items with this variant stay. Order items keep the options and price at the time of purchase. If a customer changes the quantity of such an item in the cart, with stock control on they get "Variant is out of stock".
 
-## Bulk operations
+If deletion fails (for example, the variant was already deleted in another tab), there is no error message — reload the list with the circular arrow button and check.
 
-### Quick price change
+## Changes on the site
 
-To change price for several variants:
-1. Open each variant
-2. Change the price
-3. Save
-
-### Deactivating variants
-
-If a variant is temporarily unavailable:
-1. Open the variant
-2. Uncheck **Active**
-3. Save
-
-Inactive variants are not shown on the site and cannot be added to the cart.
+An inactive variant is not output on the site and cannot be added to the cart. Items already in carts stay. Variant changes do not clear the page cache: if the snippet on the product page is called cached, clear the site cache — see [Snippets](../snippets).
