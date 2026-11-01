@@ -167,7 +167,7 @@ items: [
 SEO URL включены по умолчанию. Фильтры создают URL вида:
 
 ```
-/catalog/brand_apple/color_black-or-white/price_1000-5000/
+/catalog/brand_apple/color_black-or-white/price_1000_5000/
 ```
 
 Чтобы поменять запись значения в адресе, исправьте алиас на вкладке [Алиасы](interface/slugs).
