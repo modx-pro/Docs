@@ -229,3 +229,14 @@ DROP TABLE IF EXISTS modx_ms3_promo_codes;
 
 Все нужные индексы перечислены в описаниях таблиц выше. При истории от миллиона строк имеет смысл добавить партиционирование по `applied_at` (по годам или месяцам) — вручную, в стандартную конфигурацию не входит.
 
+```sql
+ALTER TABLE modx_ms3_promo_code_usages
+PARTITION BY RANGE (YEAR(applied_at)) (
+    PARTITION p2026 VALUES LESS THAN (2027),
+    PARTITION p2027 VALUES LESS THAN (2028),
+    PARTITION p2028 VALUES LESS THAN (2029),
+    -- pmax принимает всё, что не попало в именованные диапазоны
+    PARTITION pmax  VALUES LESS THAN MAXVALUE
+);
+```
+
