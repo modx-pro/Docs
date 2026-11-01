@@ -218,7 +218,7 @@ $value = $slugManager->findValue('vendor_id', 'apple-inc', 'ru');
 
 ## SlugParser
 
-Распознавание SEO-сегментов URL (`vendor_id--apple`, `price_1000-5000`, `sort_price-asc`) → массив фильтров и технических параметров. Используется внутри `UrlRouter`, но публично доступен для своих целей.
+Распознавание SEO-сегментов URL (`vendor_id--apple`, `price--1000--5000`, `sort_price-asc`) → массив фильтров и технических параметров. Используется внутри `UrlRouter`, но публично доступен для своих целей.
 
 ```php
 $parser = $mfilter->getSlugParser();
@@ -659,7 +659,7 @@ echo Profiler::getSummary();
 Profiler::reset();
 ```
 
-При включённом профайлере замеры автоматически попадают в JSON-ответ AJAX (секция `profiler`). На SSR-страницах добавляются как `<script>window.__mfilterProfiler=...</script>` в конце вывода — для клиентской отладки.
+Замеры после AJAX попадают в ключ `_profiler` ответа — `total_ms` и `operations` по каждой операции. Сервер включает профайлер по параметру `debug=1` в запросе; его отправляет форма `mFilterForm`, когда включена настройка. На SSR-страницах добавляются как `<script>window.__mfilterProfiler=...</script>` в конце вывода — для клиентской отладки.
 
 ## Хелперы фасада
 
