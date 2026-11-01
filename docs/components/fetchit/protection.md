@@ -11,6 +11,47 @@ description: Токен, время заполнения, ловушка и ли
 
 ## Что проверяется всегда
 
+```mermaid
+flowchart TD
+    A["Посетитель открывает страницу"] -->|"Сниппет FetchIt добавляет
+скрытые поля:
+• fetchit_token
+• fetchit_pow (если включён)
+• honeypot (ловушка)"| B["Вывод формы с токеном"]
+
+    B --> C["Посетитель отправляет форму"]
+    C --> D{"Токен верный?"}
+    D -->|"Нет"| E1["Отказ: fetchit_err_token"]
+    D -->|"Да"| F{"Минимальное
+время прошло?"}
+    F -->|"Нет"| E2["Отказ: fetchit_err_too_fast"]
+    F -->|"Да"| G{"Ловушка
+заполнена?"}
+    G -->|"Да"| H["Ложный успех
+письмо не уходит"]
+    G -->|"Нет"| I{"Лимит
+соблюдён?"}
+    I -->|"Нет"| E3["Отказ: fetchit_err_rate"]
+    I -->|"Да"| J{"Proof-of-work
+решён?"}
+    J -->|"Нет"| E4["Отказ: fetchit_err_pow"]
+    J -->|"Да"| K{"Капча
+принята?"}
+    K -->|"Нет"| E5["Отказ: fetchit_err_captcha*"]
+    K -->|"Да"| L["Служебные поля
+удаляются из $_POST"]
+    L --> M["Вызов сниппета
+FormIt или своего"]
+
+    style E1 fill:#fde8e8,stroke:#c00
+    style E2 fill:#fde8e8,stroke:#c00
+    style E3 fill:#fde8e8,stroke:#c00
+    style E4 fill:#fde8e8,stroke:#c00
+    style E5 fill:#fde8e8,stroke:#c00
+    style H fill:#fff3cd,stroke:#856404
+    style M fill:#d4edda,stroke:#28a745
+```
+
 **Токен.** В форму добавляется скрытое поле `fetchit_token` с подписью ключа формы, времени вывода страницы и случайного числа. Токен одноразовый, сессия для него не нужна. Новый токен выдаётся только в ответ на правильно подписанный токен этой формы, так что бот, который не загружал страницу, форму не отправит. Ответ на отправку приносит следующий токен в заголовке `X-FetchIt-Token`, и форму можно отправлять повторно без перезагрузки.
 
 **Время заполнения.** Форма, отправленная быстрее `fetchit.protection.min_time` секунд после вывода страницы (по умолчанию 3), отклоняется. Повторная отправка считается от того же вывода, поэтому человек, который исправил поле после ошибки, отказ не получит.
@@ -22,6 +63,38 @@ description: Токен, время заполнения, ловушка и ли
 Служебные поля убираются из `$_POST` до FormIt, в письма они не попадают. Ключ подписи генерируется при установке пакета и лежит в `fetchit.protection.secret`.
 
 ## Proof-of-work
+
+Перед отправкой браузер ищет число `n`, для которого SHA-256 от `токен:n` начинается с нужного количества нулевых бит. Пример решения на JavaScript:
+
+```js
+async function solvePow(token, difficulty) {
+  const encoder = new TextEncoder()
+  const target = BigInt(`0x${'0'.repeat(difficulty / 4)}0000`)
+
+  let n = 0
+  while (true) {
+    const data = encoder.encode(`${token}:${n}`)
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+    const hashArray = new Uint8Array(hashBuffer)
+    const hashBigInt = BigInt(`0x${Array.from(hashArray)
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('')}`)
+
+    if (hashBigInt >> (256n - BigInt(difficulty)) === 0n) {
+      return n
+    }
+    n++
+  }
+}
+
+// Использование:
+const token = document.querySelector('[name="fetchit_token"]').value
+const difficulty = 16 // бит
+
+solvePow(token, difficulty).then(solution => {
+  document.querySelector('[name="fetchit_pow"]').value = solution
+})
+```
 
 Выключен по умолчанию, нужен, если спам проходит через основные проверки. Работает, только когда включена `fetchit.protection`.
 
@@ -36,6 +109,10 @@ description: Токен, время заполнения, ловушка и ли
 :::
 
 ## Капча
+
+Виджет капчи отображается в блоке `.fetchit-captcha` перед первой кнопкой `type="submit"` (или в конце формы, если кнопок нет). На скриншоте ниже — пример Turnstile:
+
+<!-- MEDIA: screenshot-front | placeholder | Форма с капчей Turnstile: виджет в блоке `.fetchit-captcha` перед кнопкой отправки -->
 
 В `fetchit.captcha` укажите сервис, а в `fetchit.captcha.site_key` и `fetchit.captcha.secret_key` — ключи из его кабинета:
 

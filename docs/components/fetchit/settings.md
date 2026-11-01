@@ -9,6 +9,14 @@ description: "Системные настройки FetchIt: скрипт и к�
 
 ## Фронтенд
 
+Настройки фронтенда находятся в **Система → Настройки**, область «fetchit». В списке видны:
+
+- `fetchit.frontend.js` — путь к скрипту
+- `fetchit.frontend.js.classname` — имя класса
+- `fetchit.frontend.input.invalid.class` — класс ошибки поля
+- `fetchit.frontend.custom.invalid.class` — класс для `[data-custom]`
+- `fetchit.frontend.default.notifier` — встроенные уведомления
+
 ### `fetchit.frontend.js`
 
 - По умолчанию: `[[+assetsUrl]]js/fetchit.js`
