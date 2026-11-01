@@ -14,7 +14,7 @@ The **Variants** tab is on the product card in the manager, after the built-in M
 
 | Column | What it shows |
 |--------|---------------|
-| Active | Checkbox: cleared — the variant is not output on the site |
+| Active | Variant activity checkbox — see the warning below |
 | Image | Variant image thumbnail |
 | SKU | Variant SKU; empty — "-" |
 | Options | Variant option values |
@@ -39,7 +39,7 @@ The **Create Variant** button opens the window for a new variant, the pencil but
 | Stock | no | 0 by default |
 | Weight | no | In MiniShop3 weight units. If above 0, replaces the cart item weight |
 | Image | no | From the product gallery |
-| Active | — | A new variant is always created active. It can be turned off here or with the checkbox in the list — there the change is saved immediately |
+| Active | — | A new variant is always created active |
 
 Save errors are shown in the window below the "Options" field:
 
@@ -49,6 +49,10 @@ Save errors are shown in the window below the "Options" field:
 | "Variant with these options already exists" | The same option set belongs to another active variant |
 | "Variant not found" | The variant was deleted, for example in another browser tab |
 | "Error" | The variant could not be written to the database — details in the MODX error log |
+
+::: warning A variant cannot be turned off on the tab
+The "Active" checkbox can be cleared both in the list and in the variant window, but after saving the variant stays active: the server receives the cleared checkbox as the string `false` and treats it as on. To take a variant off sale, set its stock to zero — with stock control on it cannot be bought — or delete the variant.
+:::
 
 ::: warning Clearing the price or stock is not saved
 If you erase the price or stock of an existing variant and save, the previous value stays, and an error is written to the MODX error log. To set zero, enter `0`.
