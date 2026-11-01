@@ -177,6 +177,32 @@
 ]}
 ```
 
+Ответ — массив объектов. Каждый объект несёт **полный набор полей ресурса из pdoFetch** плюс вычисленные `weight` и `intro` (подсвеченный `introtext`). Пример одного элемента (длинные текстовые поля сокращены, остальные показаны как есть):
+
+```json
+{
+    "id": 152243,
+    "type": "document",
+    "pagetitle": "Смартфон Xiaomi Mi Classic 64GB",
+    "longtitle": "",
+    "description": "…",
+    "alias": "smartfon-xiaomi-mi-classic-64gb-16",
+    "published": 1,
+    "parent": 152132,
+    "introtext": "…",
+    "template": 3,
+    "menuindex": 15,
+    "searchable": 1,
+    "class_key": "MiniShop3\\Model\\msProduct",
+    "context_key": "web",
+    "uri": "elektronika/smartfony/knopochnye-telefony/smartfon-xiaomi-mi-classic-64gb-16/",
+    "weight": 21,
+    "intro": "Манилов посмотрел на него искоса, когда проходили они столовую…"
+}
+```
+
+Полей около сорока (все колонки `modx_site_content`: `createdon`, `publishedon`, `menutitle`, `hidemenu` и т. д.) — выше показаны ключевые. Набор полей задаёт адаптер; поле `content` сниппет в выборку не включает.
+
 ### Своё имя HTTP-параметра запроса
 
 Применяется в двух случаях:
