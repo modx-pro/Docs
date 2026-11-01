@@ -117,6 +117,15 @@ live_price + (discount_amount / count) ≈ original_price   (допуск ≤ 0.
 
 Если инвариант нарушен — например, внешний плагин или менеджер переписал `price` после `apply` — снимок считается устаревшим: `apply` берёт за исходную цену текущую `price`, `remove` просто удаляет снимок без восстановления прежней. Это ожидаемое поведение, когда `price` делят с другими плагинами (например, `ms3AddOptions` при смене опции).
 
+```mermaid
+flowchart TB
+    A["apply: создан снимок<br/>original_price, discount_amount"] --> B[Сторонний код правит price позиции]
+    B --> C{"live_price + discount_amount / count<br/>≈ original_price?"}
+    C -- "да, инвариант цел" --> D["apply пересчитывает скидку от original_price<br/>remove восстанавливает original_price"]
+    C -- "нет, инвариант нарушен" --> E["apply берёт текущую price как исходную,<br/>создаёт новый снимок<br/>remove удаляет снимок без восстановления"]
+```
+
+
 ### Константы и ключи
 
 - `ApplicationService::KEY_PROMO` (`'promo_code'`) — ключ в `msOrder.properties`.
