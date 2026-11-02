@@ -8,6 +8,10 @@
 - **У диапазона нет своего значения в блоке.** Снять его можно кнопкой «Сбросить всё» или в форме. Если выбран только диапазон, в блоке одна кнопка сброса.
 - **Подписи вместо значений из адреса** — см. [Откуда подписи](#otkuda-podpisi).
 
+![Блок «Выбрано»: два цвета и производитель, кнопка «Сбросить всё»](/components/mfilter/screenshots/selected-block.png)
+
+Адрес страницы на снимке — `/bytovaya-tehnika/sinij-or-krasnyj/vendor_id--acer/price--5000--40000/?utm_source=test`: диапазон цены и метка в нём есть, а в блоке их нет.
+
 ## Где вызывать
 
 На той же странице, что и `mFilterForm`: без формы значения не снимаются, а после фильтрации блок не обновляется.
@@ -110,7 +114,7 @@
 | `{$total}` | То же число, что `{$count}` |
 | `{$empty}` | Ничего не выбрано |
 | `{$hidden}` | Ничего не выбрано и включён `hideWhenEmpty` |
-| `{$filterLabels}` | Названия фильтров в JSON |
+| `{$filterLabels}` | Названия фильтров в JSON: `{"color":"Цвет","vendor_id":"Производитель"}` |
 | `{$hash}` | Хеш вызова — выводите в `data-mfilter-selected-hash`. Он же — в плейсхолдере `mfilter.selected.hash` |
 
 ### tplGroup
@@ -244,3 +248,7 @@ flowchart TD
 ```
 
 Контурный вид значений — класс `mfilter-selected--outline` на контейнере, стили — в `mfilter.css`.
+
+![Стандартный вид значений: цветная заливка](/components/mfilter/screenshots/selected-block.png)
+
+![Контурный вид значений: класс mfilter-selected--outline](/components/mfilter/screenshots/selected-block-outline.png)

@@ -120,6 +120,8 @@ flowchart TD
 
 Полная разметка с окном страниц вокруг текущей — в стандартном чанке `core/components/mfilter/elements/chunks/mfilter.pagination.tpl`, короткий вариант — в [примере ниже](#primer-minimalnaya-paginaciya).
 
+![Стандартный чанк пагинации на шестой странице из 53: первая, многоточие, 4–8, многоточие, последняя](/components/mfilter/screenshots/pagination-window.png)
+
 ## Режимы пагинации
 
 Режим — `links`, `loadmore` или `infinite` — задаётся атрибутом `data-mfilter-pagination-mode` на форме фильтров. В своей копии чанка `mfilter.form` допишите его рядом с `{$formAttrs}`:

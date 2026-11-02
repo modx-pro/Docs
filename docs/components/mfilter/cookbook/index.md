@@ -50,6 +50,8 @@ document.addEventListener('mfilter:success', showFiltersCount);
 
 Блок ставится в любое место страницы. На время запроса скрипт добавляет ему класс `active`, и стили mFilter показывают полупрозрачный слой на весь экран с крутящимся кругом.
 
+![Слой загрузки на весь экран с крутящимся кругом](/components/mfilter/screenshots/loading-overlay.png)
+
 Чтобы вместо слоя приглушить только товары, достаточно CSS — форма на время запроса получает класс `mfilter-loading`:
 
 ```css
@@ -57,6 +59,8 @@ body:has(.mfilter-loading) .mfilter-results {
     opacity: .5;
 }
 ```
+
+![Приглушённые товары на время запроса, форма остаётся яркой](/components/mfilter/screenshots/loading-dimmed.png)
 
 ## Автоотправка
 
