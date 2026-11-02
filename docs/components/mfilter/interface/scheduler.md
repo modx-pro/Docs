@@ -41,6 +41,7 @@ mFilter регистрирует в [Scheduler](/components/scheduler/) восе
 - `$resource->save()` без процессора — он не меняет `editedon`;
 - `setTVValue()` — он сохраняет только значение TV;
 - импорт, который пишет в таблицы MiniShop3 напрямую и не обновляет `editedon` у ресурса;
+- публикацию по дате — MODX публикует такой товар прямым запросом, без `editedon`;
 - `DELETE FROM modx_site_content`.
 
 В таких случаях обновите `editedon` ресурса в своём коде или вызовите `buildForProducts()` в конце скрипта — см. [Синхронизация индекса фасетов](/components/mfilter/cookbook/facet-index-sync).
