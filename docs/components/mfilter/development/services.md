@@ -183,6 +183,18 @@ $normalizedFilters = $handler->normalizeFilters(array $filters): array;
 
 Ищет и создаёт SEO-алиасы значений фильтров. Найденное кэширует в памяти до конца запроса.
 
+```mermaid
+flowchart TD
+    V["Значения: производитель 12, цвет «чёрный»"] --> B["UrlBuilder::build()"]
+    B --> U["Алиасы в адресе: apple, chernyj"]
+    U --> R["UrlRouter::process()"]
+    R -->|"часть адреса с фильтрами"| P["SlugParser::parse()"]
+    R -->|"не адрес фильтра"| N["null: страницу или 404 отдаёт MODX"]
+    P --> RES["Результат process(): resource_id, filters, tech, base_uri, filter_uri"]
+    B -->|"getOrCreate()"| SM["SlugManager"]
+    P -->|"findValue()"| SM
+```
+
 ### Сигнатуры
 
 ```php

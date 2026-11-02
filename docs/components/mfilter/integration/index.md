@@ -25,6 +25,22 @@ mFilter получает список ресурсов от элемента —
 3. Пагинатор — сниппет из `&paginator`, например pdoPage, — выводит строки текущей страницы через элемент.
 4. Ссылки на страницы выводит mFilter чанком `tplPagination`.
 
+Элемент вызывается дважды, с разными параметрами:
+
+```mermaid
+sequenceDiagram
+    participant F as mFilter
+    participant P as Пагинатор
+    participant E as Элемент
+    F->>E: вызов 1: returnIds=1, limit=0
+    E-->>F: все ID области, в порядке элемента
+    Note over F: фильтрует ID, делит на страницы
+    F->>P: ID текущей страницы
+    P->>E: вызов 2: resources, parents=0, пустой sortby
+    E-->>P: строки текущей страницы
+    Note over F: ссылки страниц — чанк tplPagination
+```
+
 ## Требования к element
 
 Элемент должен поддерживать параметры:

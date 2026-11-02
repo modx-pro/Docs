@@ -30,6 +30,48 @@
 | `mfl_warmup_configs` | MflWarmupConfig | Конфигурации прогрева кэша *(устарела с 1.4.0)* |
 | `mfl_warmup_config_resources` | MflWarmupConfigResource | Привязки конфигураций прогрева к страницам *(устарела)* |
 
+Сплошная линия — ссылка на ID записи, пунктир — одно и то же значение в полях:
+
+```mermaid
+flowchart LR
+    subgraph cfg["Конфигурация фильтров"]
+        FS["mfl_filter_sets"]
+        FSR["mfl_filter_set_resources"]
+    end
+    subgraph wu["Прогрев (устарело)"]
+        WC["mfl_warmup_configs"]
+        WCR["mfl_warmup_config_resources"]
+    end
+    subgraph seo["SEO"]
+        SL["mfl_slugs"]
+        PT["mfl_patterns"]
+        WF["mfl_word_forms"]
+        ST["mfl_seo_templates"]
+        SP["mfl_seo_pages"]
+    end
+    subgraph idx["Индексы"]
+        TV["mfl_tv_index"]
+        FI["mfl_facet_index_text<br>mfl_facet_index_num"]
+    end
+    subgraph svc["Кэш и служебные таблицы"]
+        CA["mfl_cache"]
+        RR["mfl_request_runs"]
+        RI["mfl_request_ids"]
+    end
+    PAGE(["Страница каталога"])
+    PROD(["Товар"])
+    FS -->|filter_set_id| FSR
+    WC -->|config_id| WCR
+    RR -->|run_id| RI
+    FS -.-|filter_key| SL & PT & WF & FI
+    FSR -.-|resource_id| PAGE
+    WCR -.-|resource_id| PAGE
+    PAGE -.-|resource_id| SP
+    PAGE -.-|page_id| ST
+    FI -.-|product_id| PROD
+    RI -.-|product_id| PROD
+```
+
 ---
 
 ## Конфигурация фильтров
