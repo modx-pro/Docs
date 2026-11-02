@@ -89,6 +89,14 @@ flowchart TD
 
 **Если пересборка уже идёт**, запуск встаёт в очередь на две минуты позже, в журнале — строка `Facet index rebuild postponed`. Так повторяется до 60 раз, около двух часов. Потом запуск сдаётся, в журнале — `Facet index rebuild gave up`: проверьте, не зависла ли блокировка. Подробнее: [Обслуживание → Две пересборки одновременно не идут](maintenance#dve-peresborki-odnovremenno).
 
+Так выглядят эти строки в журнале. Последнее число строки `done` — время пересборки в миллисекундах:
+
+```
+[mFilter] Facet index rebuild done: 2 filters, 170 text rows, 100 num rows, 210ms
+[mFilter] Facet index rebuild postponed: another rebuild is running, queued again for +2 minutes (attempt 1)
+[mFilter] Facet index rebuild gave up after 60 attempts: the index has been locked by another rebuild all this time
+```
+
 ::: tip Еженедельная пересборка
 Для страховки от расхождений задачу можно сделать повторяющейся: флажок «Циклическое» и интервал в Scheduler. Обновление mFilter флажок снимает — после обновления включите его снова.
 :::

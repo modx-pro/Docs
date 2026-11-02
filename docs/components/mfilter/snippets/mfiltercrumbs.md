@@ -191,4 +191,6 @@
 | `mfilter-crumbs--chevron` | Разделитель › |
 | `mfilter-crumbs--compact` | Крошки компактнее |
 
+![Четыре обёртки крошек: стандартная, mfilter-crumbs--arrow, mfilter-crumbs--chevron, mfilter-crumbs--compact](/components/mfilter/screenshots/crumbs-styles.png)
+
 Сами правила — в `assets/components/mfilter/css/web/mfilter.css`.

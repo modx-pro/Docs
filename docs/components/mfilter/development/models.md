@@ -359,12 +359,24 @@ SEO-шаблоны title, H1, description и SEO-текста для стран�
 - `idx_product`(`product_id`) — для удаления строк при пересборке отдельных товаров.
 
 ::: warning
+Строки двух товаров — по строке на каждое значение фильтра:
+
+| filter_key | filter_value | product_id |
+|---|---|---|
+| `f_style` | `klassika` | 8 |
+| `f_style` | `modern` | 9 |
+
 Не используйте `getCollection`/`getObject` напрямую — таблица может содержать миллионы строк. Только через [`FacetIndexReader`](services#facetindexreader).
 :::
 
 ### MflFacetIndexNum
 
 Аналогично `MflFacetIndexText`, но для числовых фильтров (price, weight, height...).
+
+| filter_key | filter_value | product_id |
+|---|---|---|
+| `price` | `65217.0000` | 8 |
+| `price` | `38323.0000` | 9 |
 
 | Поле | Тип | Описание |
 |------|-----|----------|
