@@ -129,7 +129,11 @@ flowchart TD
 Срабатывает после импорта MiniShop3 из CSV. Параметр `stats` — итоги импорта: `total`, `created`, `updated`, `errors`, `skipped`. Списка изменённых товаров событие не передаёт, поэтому плагин пересобирает индекс фасетов целиком:
 
 - если установлен Scheduler, ставит задачу `mfl_rebuild_facet_index` в очередь;
-- если нет — пересобирает сразу, и ответ импорта ждёт окончания пересборки. Если в это время уже идёт другая пересборка, импорт её не ждёт и пишет в журнал, что индекс нужно пересобрать ещё раз.
+- если нет — пересобирает сразу, и ответ импорта ждёт окончания пересборки. Если в это время уже идёт другая пересборка, импорт её не ждёт и пишет в журнал, что индекс нужно пересобрать ещё раз:
+
+  ```
+  [mFilter] Facet index rebuild after MS3 import skipped: another rebuild is running. If it started before this import, the products of this import are outside it — rebuild the index once it finishes. Install Scheduler to have rebuilds queued instead of skipped.
+  ```
 
 Закончив, пересборка сбрасывает кэш значений и счётчиков и, если настроен прогрев, переносит его на ближайший запуск планировщика.
 

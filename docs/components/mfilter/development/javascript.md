@@ -49,6 +49,27 @@
 
 Не дописывайте в чанк второй такой же атрибут: из двух одинаковых браузер учитывает только первый. Это касается и служебных атрибутов из `{$formAttrs}`: `id`, `class`, `method`, `action`, адресов, разделителей, текущих фильтров и `data-mfilter-debug` при включённой настройке `mfilter.debug_profiler`. `id` и `class` формы меняют параметры `&formId` и `&formClass` — см. [mFilterForm](../snippets/mfilterform#forma).
 
+Так выглядит тег стандартного чанка формы, когда ничего не выбрано:
+
+```html
+<form id="mfilter-form"
+      class="mfilter-form"
+      method="POST"
+      action="bytovaya-tehnika/"
+      data-mfilter="true"
+      data-mfilter-mode="instant"
+      data-mfilter-auto-submit="true"
+      data-mfilter-delay="300"
+      data-mfilter-action="/assets/components/mfilter/api.php"
+      data-resource-id="152148"
+      data-base-url="/bytovaya-tehnika/"
+      data-mfilter-url-separator="--"
+      data-mfilter-values-separator="-or-"
+      data-mfilter-active-filters="{}">
+```
+
+`data-mfilter-mode`, `data-mfilter-auto-submit` и `data-mfilter-delay` задают параметры сниппета, остальное — служебные атрибуты.
+
 «По умолчанию» в таблице — значение, когда атрибута нет. «Опция» — то же название для [формы, созданной вручную](js-api#sozdat-formu-vruchnuyu). Атрибут-переключатель выключается только значением `"false"`, любое другое, даже пустое, его включает.
 
 | Атрибут | Опция | По умолчанию | Что задаёт |
@@ -88,5 +109,9 @@
 | `data-step` | Шаг подбирается сам — до ста шагов на весь диапазон | Шаг ручек |
 | `data-tooltips="false"` | Над ручками видны числа | Скрыть числа над ручками |
 | `data-pips="true"` | Шкалы нет | Шкала с делениями под слайдером |
+
+| Без атрибутов | `data-pips="true"` | `data-tooltips="false"` |
+|---|---|---|
+| ![Слайдер без атрибутов](/components/mfilter/screenshots/slider-default.png) | ![Слайдер со шкалой](/components/mfilter/screenshots/slider-pips.png) | ![Слайдер без чисел над ручками](/components/mfilter/screenshots/slider-no-tooltips.png) |
 
 Поставить диапазон из своего кода — `mfilterGet().setFilter('price', { min: 1000, max: 5000 })`, слайдер передвинется сам. Подробнее — [JS API](js-api).

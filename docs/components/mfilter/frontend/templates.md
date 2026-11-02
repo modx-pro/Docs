@@ -98,6 +98,18 @@
 Атрибут выводится в `tplOuter` сниппета `mFilter` (в чанке доступна переменная `{$hash}`). Стандартный `mfilter.outer` его содержит; в свой чанк нужно добавить вручную. Сниппет `mFilterForm` хеш в свои чанки не передаёт.
 :::
 
+Сообщения в консоли браузера без атрибута. При выборе фильтра:
+
+```
+[mFilter UI] Submit error: Error: [mFilter] data-mfilter-hash not found in the markup, the request is not sent. Add data-mfilter-hash="{$hash}" to the element carrying data-mfilter-results in your tplOuter chunk.
+```
+
+При щелчке по ссылке страницы:
+
+```
+[mFilter] data-mfilter-hash not found in the markup, the page link is followed without AJAX. Add data-mfilter-hash="{$hash}" to the element carrying data-mfilter-results in your tplOuter chunk.
+```
+
 ::: tip Ошибка 410 при атрибуте на месте
 Сервер не нашёл параметры по хешу. Так бывает, когда страница две недели и дольше отдавалась из кэша MODX без единой фильтрации, а потом кэш mFilter очистили полностью. В журнале ошибок MODX при этом есть строка `[mFilter] Snippet config … not found`. Очистите кэш сайта — страница отрисуется заново со свежим хешем.
 :::
