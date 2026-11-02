@@ -127,3 +127,5 @@ The connector returns JSON for headless storefronts:
 ```
 
 Actions: `schema` (catalog facets and values), `apply` (results for the filters), `suggest` (search suggestions).
+
+By default a request takes its facets and category from the `resource`, which must be a miniShop2 category. It may also pass `set` (a filter set) and `lang` (a language the site knows). msCatalyst ignores `parents`, `facets` and `searchFields` in the request: every new combination would build its own index, and enumerating URLs would load the server. For a private API turn on the `mscatalyst_rest_params` setting to accept them again. Search uses the first 8 words of the query, and live search also cuts the query to 100 characters.

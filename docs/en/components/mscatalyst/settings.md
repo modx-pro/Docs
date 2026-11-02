@@ -8,7 +8,7 @@ All settings are easier to edit on the "Settings" tab of the component page: it 
 |---|---|---|
 | `mscatalyst_frontend_css` | `[[+assetsUrl]]css/mscatalyst.css` | Stylesheet file. Empty: no styles are added. |
 | `mscatalyst_frontend_js` | `[[+assetsUrl]]js/mscatalyst.js` | Script file. Empty: no AJAX, the filter works as a GET form. |
-| `mscatalyst_cache_lifetime` | `21600` | Index lifetime in seconds. `0` keeps the index until the cache is cleared, `-1` disables the cache (for debugging only). |
+| `mscatalyst_cache_lifetime` | `21600` | Seconds. A `memory` index older than this is rebuilt in the background, and the sitemap is built again. `0` keeps the index until the cache is cleared, `-1` disables the cache (for debugging only). |
 | `mscatalyst_index_mode` | `memory` | `memory`: index in the MODX cache. `table`: in the `core/cache/mscatalyst_index/` files. `auto`: pick by product count. |
 | `mscatalyst_index_auto_threshold` | `8000` | From this many products, `auto` mode stores the index in files. |
 | `mscatalyst_seo_mode` | `off` | SEO mode when the call has no `&seo`, see [SEO](seo). |
@@ -20,10 +20,13 @@ All settings are easier to edit on the "Settings" tab of the component page: it 
 | `mscatalyst_seo_description` | `{{pagetitle}}. {{filters}}. Найдено: {{total}}` | Filtered page description. |
 | `mscatalyst_search_synonyms` | | JSON of search synonyms, for example `{"шланг":"рукав,hose"}`. |
 | `mscatalyst_search_log` | `Yes` | Record shoppers' search queries in the [log](snippets/mscatalystsearch#search-query-log). |
+| `mscatalyst_search_log_days` | `365` | Days without repeats after which a query leaves the log. `0`: keep everything. |
+| `mscatalyst_rest_params` | `No` | Let `connector.php` requests set `parents`, `facets` and `searchFields`, see [REST](frontend#rest). |
 | `mscatalyst_legacy_markup` | `No` | Add `msf-*` classes for styles written for msFacets. Turned on automatically on upgrade. |
 | `mscatalyst_sync_path` | | Folder for source files and 1C exchange files. Empty: `core/cache/mscatalyst_sync/`. The folder is closed to browsers. |
 | `mscatalyst_sync_chunk` | `200` | How many source rows are handled in one pass. Lower it on weak hosting. |
 | `mscatalyst_sync_step_seconds` | `20` | Sync step length in seconds. Keep it below `max_execution_time`. |
+| `mscatalyst_sync_keep_days` | `90` | Days to keep sync runs and their change journal for rollback. `0`: no age limit, up to 1000 runs per profile. |
 | `mscatalyst_sync_images_path` | | Folder for photos from the source. Empty: `assets/images/products/`. |
 | `mscatalyst_sync_images_url` | | URL of the same folder. Empty: `/assets/images/products/`. |
 | `mscatalyst_demo_admin` | `No` | Public demo admin. For a demo site only. |
@@ -46,7 +49,9 @@ When you save, publish, unpublish, delete, undelete, duplicate or move a product
 - On Apache with mod_php and other servers the site sends itself a request to the same page with the secret `mscatalyst_rebuild` parameter. That request answers at once and builds the index after the answer.
 - If the site cannot request itself, these requests pause for an hour, the reason goes to the MODX error log, and the visitor request builds the index. Other visitors still get the previous index.
 
-Clearing the site cache drops the index. The first request builds it again, and concurrent requests wait for that build instead of starting their own.
+Clearing the site cache drops the index. The first request builds it again, and concurrent requests wait for that build instead of starting their own. The wait lasts twice the last build time, 60 to 300 seconds.
+
+A `memory` index older than `mscatalyst_cache_lifetime` is rebuilt in the background, the same way as a stale one. Visitors keep the previous index meanwhile. When the MODX cache refuses the index (Memcached stores up to 1 MB per item), msCatalyst logs a warning and keeps the index in `core/cache/mscatalyst_index/` files.
 
 The plugin does not see imports through the API or direct database queries. After such an import, run `MsCatalyst::markStale($modx);` and the index is refreshed the same way as after a product save. To drop the index:
 

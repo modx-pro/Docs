@@ -33,6 +33,8 @@ Outputs an XML sitemap of filter URLs. It lists [landing pages](../landings) wit
 
 Put the call into a separate resource with the XML content type and an empty template, for example `sitemap-filters.xml`. A catalog gets into the sitemap once its page has been opened on the site.
 
+The finished XML stays in the cache, so frequent crawler visits do not recompute the filters of every catalog page. msCatalyst rebuilds the map after product or landing changes, and otherwise every `mscatalyst_cache_lifetime` seconds (at least once a day).
+
 ## msCatalystLandings
 
 A links block of selections: refinements of the current choice, popular values or landing pages from the manager, see [Landing pages](../landings).

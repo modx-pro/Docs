@@ -69,6 +69,8 @@ Images are downloaded to the folder from the `mscatalyst_sync_images_path` setti
 
 msCatalyst rejects paths with `..` and other schemes (`file:`, `php:`). The file is checked by its signature: JPEG, PNG, GIF, WebP and AVIF are saved. An HTML page instead of an image, and SVG, are rejected. Links that were already downloaded are not downloaded again on the next import. The same image under a new URL does not get into the gallery twice. If an image fails to download, the run logs an error with the reason and the URL, and the next run tries again.
 
+msCatalyst skips images larger than 20 MB. One run adds at most 20 new images per product: the next run loads the rest, and the report notes it.
+
 ## Translations
 
 Sync writes Localizator translations and linked Babel resources, see [Multilingual](../multilingual).
@@ -77,6 +79,19 @@ Sync writes Localizator translations and linked Babel resources, see [Multilingu
 
 Every run keeps the previous field values. The "Roll back" button restores prices and fields, and removes the products, categories, vendors and options the run created. The history shows which profile changed what and when.
 
+msCatalyst deletes runs older than 90 days together with their change journal. You can no longer roll such a run back, and its edits leave the product history. The three latest runs of a profile stay whatever their age. The `mscatalyst_sync_keep_days` setting sets the period. With `0` history has no age limit but keeps at most 1000 runs per profile.
+
 ## Schedule
 
 Scheduled runs and continuation of unfinished runs are handled by the [msCatalystSync](../snippets/service#mscatalystsync) snippet from cron or a scheduler.
+
+When the source file has not changed since the last successful run, a scheduled run stops right after downloading it with the note "source unchanged" and leaves products alone. Manual runs and `&profile=ID` always go through in full. API and Google Sheets sources skip this check and import every time.
+
+## Server load
+
+- A step ends on time, even in the middle of a batch, when products with images take long.
+- While a step downloads images it extends the run lock, so a second cron call does not pick up the same run in parallel.
+- When a step dies on the server three times in a row (PHP memory or time limit), the run gets the "Failed" status and an e-mail goes to the profile address. Otherwise cron would repeat the failing step forever.
+- A `Retry-After` pause from an API or Google lasts 30 seconds at most.
+- The 1C exchange accepts files up to 2 GB and unpacks up to 4 GB and 100,000 files from archives. msCatalyst counts the bytes it actually unpacks, not the size the archive header claims.
+- A manual start and cron cannot create two runs of one profile, even when they start at the same moment.
