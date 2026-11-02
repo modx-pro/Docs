@@ -51,8 +51,9 @@
 | `[[!+mscatalyst.page]]`, `[[!+mscatalyst.pages]]` | Текущая страница и число страниц. |
 | `[[!+mscatalyst.active]]` | Сколько фильтров выбрано. |
 | `[[!+mscatalyst.query]]` | Строка запроса текущего состояния. |
-| `[[!+mscatalyst.title]]`, `[[!+mscatalyst.h1]]`, `[[!+mscatalyst.description]]` | Title, H1 и description по шаблонам из настроек `mscatalyst_seo_*`. Без выбранных фильтров это заголовок страницы. |
-| `[[!+mscatalyst.canonical]]` | Адрес страницы с текущими фильтрами. |
+| `[[!+mscatalyst.title]]`, `[[!+mscatalyst.h1]]`, `[[!+mscatalyst.description]]` | Title, H1 и description из [посадочной](landings) или по шаблонам из настроек `mscatalyst_seo_*`. Без выбранных фильтров это заголовок страницы. |
+| `[[!+mscatalyst.intro]]`, `[[!+mscatalyst.text]]` | HTML над и под товарами из посадочной или шаблона текстов. |
+| `[[!+mscatalyst.canonical]]` | Полный адрес страницы с текущими фильтрами, со схемой и доменом. |
 
 Пример для шаблона:
 

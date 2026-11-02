@@ -18,6 +18,12 @@ Synonyms are stored in the `mscatalyst_search_synonyms` system setting as JSON:
 {"шланг": "рукав,hose"}
 ```
 
+## Queries
+
+The search log: what shoppers search for, how often and how many products were found. Three numbers on top: distinct queries, searches and queries with no results. A click on the "No results" card keeps only such queries in the list.
+
+Narrow the list by catalog and substring, sort it by frequency, date or name. Each row has "Check", which opens the search tester with the query, and "Add synonym". The log downloads as CSV and can be cleared as a whole or for the selected catalog. What gets logged is described in [Search query log](../snippets/mscatalystsearch#search-query-log).
+
 ## Settings
 
 All [system settings](../settings) of the component, with hints and value checks. The "Environment" block shows which packages msCatalyst found on the site. Settings that need a missing package are hidden or disabled: for example, the `seofilter` option of the SEO mode is marked "package not installed". Clear the site cache after installing a package. Changing the index storage mode clears the index cache.
@@ -29,6 +35,10 @@ Where the index is stored, how much space it takes, when it was updated. The "Bu
 ## Filter sets
 
 Create and edit `mscatalyst_set_*` sets with JSON validation. Sets from `sets/*.json` files appear in the list. Saving a set with the same name overrides the file. How to call a set is described in [Filter sets](../snippets/mscatalyst#filter-sets).
+
+## Landing pages
+
+Landing pages of a catalog: facet combinations with products, a text editor with preview, templates, word forms, a check for empty pages and clashing URLs, CSV export and import. When the site has SeoFilter tables, the import block shows up here too. See [Landing pages](../landings) and [Moving from SeoFilter](../seofilter).
 
 ## Sync
 

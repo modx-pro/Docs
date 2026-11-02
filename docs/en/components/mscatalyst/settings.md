@@ -13,10 +13,13 @@ All settings are easier to edit on the "Settings" tab of the component page: it 
 | `mscatalyst_index_auto_threshold` | `8000` | From this many products, `auto` mode stores the index in files. |
 | `mscatalyst_seo_mode` | `off` | SEO mode when the call has no `&seo`, see [SEO](seo). |
 | `mscatalyst_seo_index_max` | `2` | How many selected values a friendly URL page may have and stay indexable. `0`: every filtered page gets `noindex`. |
+| `mscatalyst_seo_empty` | `noindex` | What a friendly or landing URL answers when no products match. `noindex`: the page gets `noindex`. `404`: page not found. `show`: a normal page. |
+| `mscatalyst_seofilter_placeholders` | `No` | Fill the `sf.*` placeholders on filtered pages for templates built for SeoFilter. The import from SeoFilter turns it on, see [Moving from SeoFilter](seofilter). |
 | `mscatalyst_seo_title_filtered` | `{{pagetitle}} — {{filters}}` | Filtered page title. |
 | `mscatalyst_seo_h1_filtered` | `{{pagetitle}}: {{filters}}` | Filtered page H1. |
 | `mscatalyst_seo_description` | `{{pagetitle}}. {{filters}}. Найдено: {{total}}` | Filtered page description. |
 | `mscatalyst_search_synonyms` | | JSON of search synonyms, for example `{"шланг":"рукав,hose"}`. |
+| `mscatalyst_search_log` | `Yes` | Record shoppers' search queries in the [log](snippets/mscatalystsearch#search-query-log). |
 | `mscatalyst_legacy_markup` | `No` | Add `msf-*` classes for styles written for msFacets. Turned on automatically on upgrade. |
 | `mscatalyst_sync_path` | | Folder for source files and 1C exchange files. Empty: `core/cache/mscatalyst_sync/`. The folder is closed to browsers. |
 | `mscatalyst_sync_chunk` | `200` | How many source rows are handled in one pass. Lower it on weak hosting. |

@@ -17,23 +17,42 @@ A long exchange runs in steps. The step size is set by the `mscatalyst_sync_chun
 
 ## msCatalystSitemap
 
-Outputs an XML sitemap of filter landing pages: one URL for every facet value that has products. Works with `&seo=`native``, see [SEO](../seo).
+Outputs an XML sitemap of filter URLs. It lists [landing pages](../landings) with an own URL or the "Always indexed" rule that have products, plus friendly URLs of single values. Works with `&seo=`native``, see [SEO](../seo).
 
 ```modx
-[[!msCatalystSitemap?
-  &parents=`5`
-  &facets=`vendor, option:color`
-]]
+[[!msCatalystSitemap? &catalogs=`*`]]
 ```
 
 | Property | Default | Description |
 |---|---|---|
-| `parents` | | Catalog category ID. |
-| `facets` | `vendor` | Facets whose values need URLs. Ranges are skipped. |
+| `catalogs` | `*` | Catalog page IDs separated by commas. `*`: every catalog the site has rendered. |
 | `limit` | `5000` | Maximum number of URLs, no more than 50,000. |
-| `depth` | `10` | How deep to look for products. |
+| `parents` | | The old call on the catalog page itself: the category ID. With it `&catalogs` is not filled in. |
+| `facets` | `vendor` | For the old call: facets whose values need URLs. Ranges are skipped. |
+| `depth` | `10` | For the old call: how deep to look for products. |
 
-Put the call into a resource with the XML content type and an empty template.
+Put the call into a separate resource with the XML content type and an empty template, for example `sitemap-filters.xml`. A catalog gets into the sitemap once its page has been opened on the site.
+
+## msCatalystLandings
+
+A links block of selections: refinements of the current choice, popular values or landing pages from the manager, see [Landing pages](../landings).
+
+```modx
+[[!msCatalystLandings? &mode=`related` &facets=`vendor, color` &limit=`12` &title=`Popular`]]
+```
+
+| Property | Default | Description |
+|---|---|---|
+| `mode` | `related` | `related` refines the current choice (a Bosch page shows "Bosch, red"), `auto` shows popular values, `saved` lists the landing pages from the manager. |
+| `facets` | | Facets the links may use. Empty: every list facet. |
+| `limit` | `12` | Number of links, 1 to 200. |
+| `title` | | Block title. Empty: "Popular selections" from the lexicon. |
+| `tpl` | `msCatalyst.landing` | Link chunk. |
+| `tplOuter` | `msCatalyst.landings` | Wrapper chunk. |
+| `toPlaceholder` | | Put the block into a placeholder instead of printing it. |
+| `catalog` | `0` | Catalog page ID. With it the block works on any page of the site: `` [[!msCatalystLandings? &mode=`saved` &catalog=`5`]] ``. |
+
+Without `&catalog`, place the call after msCatalyst: the snippet reuses its index and selected filters. Links lead to the own URL of a landing page when it has one. Links without products are skipped.
 
 ## msCatalystReindex
 

@@ -51,8 +51,9 @@ After the snippet call, the page has:
 | `[[!+mscatalyst.page]]`, `[[!+mscatalyst.pages]]` | Current page and number of pages. |
 | `[[!+mscatalyst.active]]` | How many filters are selected. |
 | `[[!+mscatalyst.query]]` | Query string of the current state. |
-| `[[!+mscatalyst.title]]`, `[[!+mscatalyst.h1]]`, `[[!+mscatalyst.description]]` | Title, H1 and description from the `mscatalyst_seo_*` setting templates. With no filters selected, this is the page title. |
-| `[[!+mscatalyst.canonical]]` | Page URL with the current filters. |
+| `[[!+mscatalyst.title]]`, `[[!+mscatalyst.h1]]`, `[[!+mscatalyst.description]]` | Title, H1 and description from a [landing page](landings) or the `mscatalyst_seo_*` setting templates. With no filters selected, this is the page title. |
+| `[[!+mscatalyst.intro]]`, `[[!+mscatalyst.text]]` | HTML above and below the products from a landing page or a text template. |
+| `[[!+mscatalyst.canonical]]` | Full page URL with the current filters, scheme and host included. |
 
 A template example:
 

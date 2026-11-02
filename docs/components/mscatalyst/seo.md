@@ -2,7 +2,7 @@
 
 ## Мета-теги и индексация
 
-- На страницах с выбранными фильтрами или поиском сниппет добавляет `<meta name="robots" content="noindex, follow">`. Страницы пагинации без фильтров остаются в индексе. Отключается параметром `` &noindexFiltered=`0` ``. С ЧПУ-адресами часть таких страниц остаётся в индексе, см. «Индексация посадочных страниц» ниже.
+- На страницах с выбранными фильтрами или поиском сниппет добавляет `<meta name="robots" content="noindex, follow">`. Страницы пагинации без фильтров остаются в индексе. Отключается параметром `` &noindexFiltered=`0` ``. С ЧПУ-адресами часть таких страниц остаётся в индексе, см. «Индексация ЧПУ-страниц» ниже.
 - AJAX-ответы отдаются с заголовком `X-Robots-Tag: noindex, nofollow`.
 - Ссылки пагинации и крестики у выбранных фильтров настоящие, с `href`. Поисковый робот может пройти по ним без JavaScript.
 - Для `<title>`, H1, description и `<link rel="canonical">` используйте плейсхолдеры `mscatalyst.title`, `mscatalyst.h1`, `mscatalyst.description` и `mscatalyst.canonical`, см. [Плейсхолдеры страницы](frontend#pleysholdery-stranicy).
@@ -56,32 +56,26 @@
 - Каталог на главной странице тоже работает: `/vendor-nike/`.
 - С Localizator языковой префикс остаётся в начале адреса: `/en/vendor-nike/color-white/`. В каждом языке сегменты строятся из его подписей. Русский сегмент на английской версии получает 301 на английский.
 
-### Индексация посадочных страниц
+### Индексация ЧПУ-страниц
 
 Страница с ЧПУ-адресом остаётся в индексе, если на ней выбрано не больше `mscatalyst_seo_index_max` значений (по умолчанию 2). Диапазоны, поиск, сортировка не по умолчанию, другое число товаров на странице и больше значений получают `noindex, follow`. При `0` все страницы с фильтрами закрыты от индексации. Пока ЧПУ выключены, работает прежнее правило `&noindexFiltered`.
 
-`mscatalyst.canonical` содержит путь от корня сайта до ЧПУ-адреса без сортировки и номера страницы, языковой префикс в него уже входит. Выведите его в `<head>` шаблона:
+`mscatalyst.canonical` содержит полный адрес со схемой и доменом, без сортировки и номера страницы. Языковой префикс в него уже входит. Выведите его в `<head>` шаблона как есть:
 
 ```modx
-<link rel="canonical" href="[[++server_protocol]]://[[++http_host]][[!+mscatalyst.canonical]]">
+<link rel="canonical" href="[[!+mscatalyst.canonical]]">
 ```
 
-Карту посадочных страниц отдаёт сниппет [msCatalystSitemap](snippets/service#mscatalystsitemap):
+Карту адресов фильтров и посадочных отдаёт сниппет [msCatalystSitemap](snippets/service#mscatalystsitemap):
 
 ```modx
-[[!msCatalystSitemap? &parents=`5` &facets=`vendor, option:color`]]
+[[!msCatalystSitemap? &catalogs=`*`]]
 ```
 
-Мост к SeoFilter написан для MODX 2. На MODX 3 используйте `native`.
+## Посадочные страницы
 
-## SeoFilter (MODX 2)
+Своя страница со своим адресом, title, H1 и текстом для сочетания фильтров, например `/catalog/belye-krossovki/`. Работает в режиме `native` на MODX 2 и MODX 3, SeoFilter не нужен. См. [Посадочные страницы](landings).
 
-Задайте `|alias=` как в mFilter2 и `&seo=`seofilter`` или `both`. В AJAX-ответе есть блок `seo`: title, h1, description, canonical, aliases. Событие `mscatalyst:seo` на `document` нужно для моста с SeoFilter или своей подмены мета-тегов:
+## SeoFilter
 
-```js
-document.addEventListener('mscatalyst:seo', function (e) {
-    console.log(e.detail.seo.title, e.detail.seo.canonical);
-});
-```
-
-Плейсхолдеры для шаблона выставляет сниппет [msCatalystSeoFilter](snippets/service#mscatalystseofilter).
+Если SeoFilter на сайте уже настроен, msCatalyst переносит к себе его правила, адреса и словарь, а шаблоны с `[[+sf.*]]` продолжают работать. Пока SeoFilter остаётся на сайте с MODX 2, режимы `seofilter` и `both` работают как мост к нему. См. [Переход с SeoFilter](seofilter).

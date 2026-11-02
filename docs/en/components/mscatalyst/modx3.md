@@ -8,7 +8,7 @@ Properties, facet syntax, chunks and URLs are the same on both versions. The car
 
 Differences:
 
-- the SeoFilter bridge works only on MODX 2. On MODX 3 use `&seo=`native``, see [SEO](seo);
+- SeoFilter has no MODX 3 release, so the bridge to it (`&seo=`seofilter``) works only on MODX 2. msCatalyst gives you landing pages with texts and word forms in `native` mode on MODX 3 too, see [Landing pages](landings). The import from SeoFilter reads its tables directly and works on MODX 3, see [Moving from SeoFilter](seofilter);
 - on MODX 3, Localizator ships as the `localizator3` package, and msCatalyst supports it, see [Multilingual](multilingual#localizator).
 
 ::: warning
