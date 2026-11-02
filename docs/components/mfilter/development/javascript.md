@@ -1,12 +1,12 @@
 # JavaScript
 
-Скрипты mFilter подключаются сами и сами находят форму фильтров — для обычного каталога здесь ничего делать не нужно. Страница пригодится, чтобы подключить скрипты вручную, настроить поведение формы или слайдер диапазона.
+Скрипты mFilter подключаются сами и сами находят форму фильтров — для обычного каталога здесь ничего делать не нужно.
 
 Управлять фильтром из своего кода — [JS API](js-api). Работать с сервером без формы, из своего приложения — [Headless API](headless).
 
 ## Подключение
 
-Стили и скрипты добавляет плагин mFilter — на каждую страницу сайта, даже без формы фильтров. Список файлов берётся из системной настройки `mfilter.frontend_assets`, скрипты встают в конец страницы с атрибутом `defer`.
+Стили и скрипты добавляет плагин mFilter — на каждую страницу сайта, даже без формы фильтров. Список файлов — в системной настройке `mfilter.frontend_assets`, скрипты встают в конец страницы с атрибутом `defer`.
 
 Чтобы подключать файлы самому, выключите настройку `mfilter.register_frontend` и добавьте в шаблон ресурса те же файлы в том же порядке:
 
@@ -27,6 +27,12 @@
 
 Порядок не меняйте: `mfilter.js` запускает форму и рассчитывает, что остальные файлы уже загружены. После обновления mFilter сверьте список с настройкой `mfilter.frontend_assets` — в новых версиях в неё добавляются файлы.
 
+Скрипты шлют запросы на `/assets/components/mfilter/api.php`. С выключенной `mfilter.register_frontend` плагин не выводит адрес API, поэтому на сайте в подкаталоге или с другим `assets_url` задайте его перед скриптами сами:
+
+```fenom
+<script>var mfilterConfig = { apiUrl: '{$_modx->config.assets_url}components/mfilter/api.php' };</script>
+```
+
 ## Настройки формы {#form-options}
 
 Поведение формы задают `data`-атрибуты тега `<form>`. Сниппет `mFilterForm` выводит свои атрибуты переменной `{$formAttrs}` в чанке формы — параметр `&tplOuter`, по умолчанию `mfilter.form`. В своей копии чанка оставьте переменную и допишите нужные атрибуты рядом:
@@ -35,33 +41,41 @@
 <form{$formAttrs} data-mfilter-pagination-mode="loadmore">
 ```
 
-Три атрибута — `data-mfilter-mode`, `data-mfilter-auto-submit` и `data-mfilter-delay` — `mFilterForm` выводит сам. Их меняют параметрами сниппета `&ajaxMode`, `&autoSubmit` и `&autoSubmitDelay`. Второй такой же атрибут в чанк не дописывайте: из двух одинаковых браузер учитывает только первый. Без параметров автоотправка и её задержка берутся из настроек `mfilter.auto_submit` и `mfilter.auto_submit_delay`, а при включённой автоотправке режим всегда `instant`.
+Три атрибута `mFilterForm` выводит сам — их меняют параметрами сниппета:
 
-«По умолчанию» в таблице — значение, когда атрибута нет. В колонке «Опция» — то же название для [формы, созданной вручную](js-api#sozdat-formu-vruchnuyu).
+- `data-mfilter-mode` — параметр `&ajaxMode`. При включённой автоотправке режим всегда `instant`.
+- `data-mfilter-auto-submit` — параметр `&autoSubmit`, по умолчанию — настройка `mfilter.auto_submit`.
+- `data-mfilter-delay` — параметр `&autoSubmitDelay`, по умолчанию — настройка `mfilter.auto_submit_delay`.
+
+Не дописывайте в чанк второй такой же атрибут: из двух одинаковых браузер учитывает только первый. Это касается и служебных атрибутов из `{$formAttrs}`: `id`, `class`, `method`, `action`, адресов, разделителей, текущих фильтров и `data-mfilter-debug` при включённой настройке `mfilter.debug_profiler`. `id` и `class` формы меняют параметры `&formId` и `&formClass` — см. [mFilterForm](../snippets/mfilterform#forma).
+
+«По умолчанию» в таблице — значение, когда атрибута нет. «Опция» — то же название для [формы, созданной вручную](js-api#sozdat-formu-vruchnuyu). Атрибут-переключатель выключается только значением `"false"`, любое другое, даже пустое, его включает.
 
 | Атрибут | Опция | По умолчанию | Что задаёт |
 |---|---|---|---|
 | `data-mfilter-mode` | `ajaxMode` | `form` | `instant` — следить за полями формы. Без этого не работают автоотправка и событие `mfilter:change` |
 | `data-mfilter-auto-submit` | `autoSubmit` | `false` | Отправлять запрос при изменении поля |
 | `data-mfilter-delay` | `autoSubmitDelay` | `500` | Задержка автоотправки, мс |
-| `data-mfilter-ajax` | `ajax` | `true` | `false` — форма и ссылки пагинации перезагружают страницу |
-| `data-mfilter-seo-url` | `seoUrl` | `true` | SEO-адрес вместо параметров в адресе |
+| `data-mfilter-ajax` | `ajax` | `true` | `false` — кнопка отправки формы и ссылки пагинации перезагружают страницу. Автоотправка, сортировка, число на странице и JS API по-прежнему обновляют выдачу без перезагрузки |
+| `data-mfilter-seo-url` | `seoUrl` | `true` | `false` — при загрузке читать фильтры из параметров адреса, а не из SEO-адреса. Адрес после фильтрации всё равно SEO: его строит сервер |
 | `data-mfilter-push-state` | `pushState` | `true` | Менять адрес страницы и историю браузера |
 | `data-mfilter-reset-page` | `resetPage` | `true` | Возвращаться на первую страницу при смене фильтров |
 | `data-mfilter-scroll-to-results` | `scrollToResults` | `true` | Прокручивать к результатам после обновления |
 | `data-mfilter-scroll-offset` | `scrollOffset` | `100` | Отступ прокрутки сверху, px |
 | `data-mfilter-pagination` | `paginationSelector` | `.mfilter-pagination` | Куда вставлять пагинацию |
 | `data-mfilter-pagination-mode` | `paginationMode` | `links` | `links`, `loadmore` или `infinite` — см. [Пагинация](../frontend/pagination) |
-| `data-mfilter-loading-overlay` | `loadingOverlay` | `true` | Добавлять класс `active` элементу `.mfilter-overlay` на время запроса |
+| `data-mfilter-loading-overlay` | `loadingOverlay` | `true` | Добавлять класс `active` элементу `.mfilter-overlay` на время запроса. В стандартных чанках этого элемента нет — см. [Индикатор загрузки](../cookbook/index#indikator-zagruzki) |
 | `data-mfilter-debug` | `debug` | `false` | Предупреждения о разметке в консоли браузера и замеры запроса в блоке `.mfilter-profiler` |
 | — | `resultsSelector` | `.mfilter-results` | Куда вставлять карточки |
+| — | `totalSelector` | `.mfilter-total` | Где обновлять число найденных товаров |
+| — | `emptyResultsSelector` | `.mfilter-empty` | Блок «ничего не найдено» |
+| — | `profilerSelector` | `.mfilter-profiler` | Куда выводить замеры при `debug` |
+| — | `infiniteOffset` | `200` | За сколько пикселей до конца выдачи подгружать следующую страницу при `infinite` |
 | — | `loadingClass` | `mfilter-loading` | Класс формы на время запроса |
-
-Атрибут-переключатель выключает только значение `"false"`, любое другое, в том числе пустое, включает.
 
 ## Слайдер диапазона
 
-Слайдер у числового фильтра строит библиотека noUiSlider, она входит в mFilter. Скрипт находит элемент `data-mfilter-slider` и связывает его с полями `data-range="min"` и `data-range="max"`. Поля ищутся внутри родителя слайдера, поэтому все три элемента должны лежать в общем блоке.
+Слайдер у числового фильтра строит библиотека noUiSlider, она входит в mFilter. Скрипт находит элемент с атрибутом `data-mfilter-slider` и связывает его с полями `data-range="min"` и `data-range="max"`. Поля ищутся внутри родителя слайдера, поэтому все три элемента должны лежать в общем блоке.
 
 Разметка — стандартный чанк `mfilter.slider`, параметр `&tplSlider` сниппета `mFilterForm`. Чтобы настроить слайдер, допишите атрибуты элементу слайдера в своей копии чанка:
 
