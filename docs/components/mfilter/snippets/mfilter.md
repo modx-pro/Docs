@@ -4,7 +4,15 @@
 
 ## Параметры
 
-В режиме с `&element` mFilter передаёт элементу все параметры вызова, кроме `element`, `paginator`, `useFilters`, `ajax` и `ajaxMode`. Поэтому элементу можно передать его собственные параметры — например, `includeTVs` для msProducts. Значения `parents`, `depth`, `tpl`, `sortby`, `sortdir` и `limit` mFilter подставляет сам.
+Что mFilter делает с параметрами вызова в режиме с `&element`:
+
+| Параметры | Что происходит |
+|-----------|----------------|
+| `element`, `paginator`, `useFilters`, `ajax`, `ajaxMode` | Элементу не передаются |
+| `parents`, `depth`, `tpl`, `sortby`, `sortdir`, `limit` | Значения подставляет mFilter |
+| Все остальные | Передаются элементу как есть — например, `includeTVs` для msProducts |
+
+### Основные
 
 | Параметр | По умолчанию | Описание |
 |----------|--------------|----------|

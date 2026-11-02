@@ -14,30 +14,21 @@
 
 ## Архитектура
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                      Фронтенд                           │
-├─────────────────┬───────────────────────────────────────┤
-│   SSR режим     │           Headless режим              │
-│  (FilterUI)     │    (ApiClient + FilterAPI)            │
-├─────────────────┴───────────────────────────────────────┤
-│                    Hooks System                          │
-│            beforeApply → apply → afterApply             │
-├─────────────────────────────────────────────────────────┤
-│                    REST API Router                       │
-├─────────────────────────────────────────────────────────┤
-│                     Controllers                          │
-│              FilterController, SlugController           │
-├─────────────────────────────────────────────────────────┤
-│                       Services                           │
-│   Filter │ FilterSet │ SlugManager │ UrlRouter │ SEO   │
-├─────────────────────────────────────────────────────────┤
-│                      Handlers                            │
-│        FilterTypes │ Sources │ FilterHandler            │
-├─────────────────────────────────────────────────────────┤
-│                       Models                             │
-│   FilterSet │ Slug │ Pattern │ WordForm │ SeoTemplate   │
-└─────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    subgraph front["Фронтенд"]
+        UI["Форма фильтров<br>FilterUI"]
+        HL["Без формы (Headless API)<br>ApiClient + FilterAPI"]
+    end
+    H["Хуки<br>beforeApply → apply → afterApply"]
+    R["Маршрутизатор REST API"]
+    C["Контроллеры<br>FilterController, SlugController"]
+    S["Сервисы<br>Filter, FilterSet, SlugManager, UrlRouter, SEO"]
+    HD["Обработчики<br>FilterTypes, Sources, FilterHandler"]
+    M["Модели<br>FilterSet, Slug, Pattern, WordForm, SeoTemplate"]
+    UI --> H
+    HL --> H
+    H --> R --> C --> S --> HD --> M
 ```
 
 ## Точки расширения
