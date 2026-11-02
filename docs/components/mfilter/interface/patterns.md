@@ -129,4 +129,44 @@ parsed.filters;       // { color: ['Серый'], … }
 parsed.unrecognized;  // сегменты, которые не удалось разобрать
 ```
 
+Ответ для `seryj/`:
+
+```json
+{
+  "success": true,
+  "filters": {
+    "color": [
+      "Серый"
+    ]
+  },
+  "tech": [],
+  "page": 1,
+  "sort": null,
+  "limit": null,
+  "unrecognized": [],
+  "resource_id": 0
+}
+```
+
+Для `seryj/nesuschestvuet/` лишний сегмент попадает в `unrecognized`:
+
+```json
+{
+  "success": true,
+  "filters": {
+    "color": [
+      "Серый"
+    ]
+  },
+  "tech": [],
+  "page": 1,
+  "sort": null,
+  "limit": null,
+  "unrecognized": [
+    "nesuschestvuet"
+  ],
+  "resource_id": 0
+}
+```
+
 Подробнее — [Headless API](../development/headless#adres-po-filtram).

@@ -12,6 +12,34 @@
 
 Адрес в карте — `site_url` и путь фильтра. Протокол берётся из запроса к карте: если карту открыли по `http` или собрали из консоли (cron), адреса начнутся с `http://`.
 
+Начало карты при `maxFilters = 2`: два одиночных адреса и адрес пары фильтров.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+    <loc>https://example.com/bytovaya-tehnika/sdelano_v--vetnam/</loc>
+    <lastmod>2026-01-18T12:17:23+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+</url>
+<url>
+    <loc>https://example.com/bytovaya-tehnika/sdelano_v--germaniya/</loc>
+    <lastmod>2026-01-18T12:17:23+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+</url>
+…
+<url>
+    <loc>https://example.com/bytovaya-tehnika/sdelano_v--vetnam/bezhevyj/</loc>
+    <lastmod>2026-01-18T12:17:23+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+</url>
+…
+</urlset>
+```
+
 ::: warning `forceXML` и обычная страница
 По умолчанию сниппет отправляет XML-заголовок и завершает выполнение. Вызывайте его на отдельном ресурсе карты: в шаблоне обычной страницы вся страница станет XML.
 :::
@@ -149,6 +177,39 @@
 {if $urls is array}
     Всего URL: {$urls | count}
 {/if}
+```
+
+Запись одиночного фильтра и пары при `maxFilters = 2`, вывод `{$urls | print}`:
+
+```
+Array
+(
+    [https://example.com/bytovaya-tehnika/sdelano_v--germaniya/] => Array
+        (
+            [url] => https://example.com/bytovaya-tehnika/sdelano_v--germaniya/
+            [lastmod] => 2026-01-18T12:17:23+00:00
+            [changefreq] => weekly
+            [priority] => 0.7
+            [filterKey] => made_in
+            [value] => Германия
+            [resourceId] => 152148
+        )
+
+    …
+
+    [https://example.com/bytovaya-tehnika/sdelano_v--vetnam/bezhevyj/] => Array
+        (
+            [url] => https://example.com/bytovaya-tehnika/sdelano_v--vetnam/bezhevyj/
+            [lastmod] => 2026-01-18T12:17:23+00:00
+            [changefreq] => weekly
+            [priority] => 0.7
+            [filterKey] => made_in+color
+            [value] => Вьетнам+Бежевый
+            [resourceId] => 152148
+        )
+
+    …
+)
 ```
 
 Если на сайте нет страниц с фильтрами, сниппет вернёт строку XML, а не массив, — отсюда проверка `is array`.

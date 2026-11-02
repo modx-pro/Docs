@@ -163,6 +163,8 @@ mFilter регистрирует восемь задач в [Scheduler](/compone
 - `suggestions.cacheHit` — попадание в кэш; если операции нет, счётчики считались заново;
 - `getBaseIds.fromWarmup`, `getBaseIds.fromSession` или `getBaseIds.fromElement` — откуда взят список товаров. Эти строки появляются после фильтрации без перезагрузки на страницах, где `mFilter` вызван с `&element`.
 
+![Панель замеров после повторного выбора того же значения: есть строки suggestions.cacheHit и getBaseIds.fromWarmup](/components/mfilter/screenshots/profiler-cache-hit.png)
+
 Подробнее о панели замеров — в [Сервисах](development/services#profiler).
 
 ## Размер кэша

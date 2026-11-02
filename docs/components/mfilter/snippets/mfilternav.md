@@ -84,6 +84,25 @@
 | `{$isLast}` | `true`, если пункт последний в ключе фильтра |
 | `{$classNames}` | Собранные CSS-классы пункта |
 
+Переменные первого пункта производителя:
+
+```
+Array
+(
+    [url] => /bytovaya-tehnika/vendor_id--acer/
+    [label] => Acer
+    [value] => 16
+    [slug] => acer
+    [filterKey] => vendor_id
+    [count] => 290
+    [idx] => 1
+    [isActive] =>
+    [isFirst] => 1
+    [isLast] =>
+    [classNames] => first
+)
+```
+
 ### tplOuter
 
 | Переменная | Описание |
@@ -140,6 +159,33 @@
     </div>',
     'tplOuter' => '@INLINE <div class="filter-nav">{$output}</div>'
 ]}
+```
+
+Что выведет вызов на странице раздела с выбранным красным цветом:
+
+```html
+<div class="filter-nav">
+    <div class="filter-group">
+        <h4>vendor_id</h4>
+        <ul>
+            <li class="first"><a href="/bytovaya-tehnika/vendor_id--acer/">Acer</a></li>
+            <li class=""><a href="/bytovaya-tehnika/vendor_id--adidas/">Adidas</a></li>
+            …
+            <li class="last"><a href="/bytovaya-tehnika/vendor_id--zhiyun/">Zhiyun</a></li>
+        </ul>
+    </div>
+    <div class="filter-group">
+        <h4>color</h4>
+        <ul>
+            <li class="first"><a href="/bytovaya-tehnika/bezhevyj/">Бежевый</a></li>
+            …
+            <li class="active"><a href="/bytovaya-tehnika/krasnyj/">Красный</a></li>
+            …
+            <li class="last"><a href="/bytovaya-tehnika/chernyj/">Чёрный</a></li>
+        </ul>
+    </div>
+    …
+</div>
 ```
 
 ### Топ-10 популярных значений

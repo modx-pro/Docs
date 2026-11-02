@@ -97,8 +97,42 @@
 | `$hasFilters` | bool | Применён ли хотя бы один фильтр |
 | `$activeFiltersCount` | int | Сколько фильтров применено. Диапазон считается за один, хотя форма отправляет два поля (`price\|min`, `price\|max`) |
 | `$appliedFilters` | array | Применённые фильтры: `[ключ => [значения]]`. Диапазон — всегда один ключ со значением `[min, max]`. Если задана одна граница, вторая у числового диапазона равна нулю или `PHP_INT_MAX`, у диапазона дат — `null`. Выводить такие значения напрямую не стоит |
+
 | `$ajax`, `$ajaxMode`, `$autoSubmit` | mixed | Значения одноимённых параметров |
 | `$debugProfiler` | bool | Включена ли настройка `mfilter.debug_profiler`. Стандартный чанк выводит по ней блок профайлера `.mfilter-profiler` |
+
+`{$appliedFilters | print}` при выбранных производителе и цене от 5000 до 40000:
+
+```
+Array
+(
+    [vendor_id] => Array
+        (
+            [0] => 16
+        )
+
+    [price] => Array
+        (
+            [0] => 5000
+            [1] => 40000
+        )
+
+)
+```
+
+При одной нижней границе цены, адрес `…/price--5000--0/`:
+
+```
+Array
+(
+    [price] => Array
+        (
+            [0] => 5000
+            [1] => 0
+        )
+
+)
+```
 
 ::: tip Почему `$activeFiltersCount`, а не `$activeCount`
 Имя `$activeCount` занято в чанке **фильтра** (`tpl`): там это число выбранных значений в этом фильтре.
@@ -299,6 +333,8 @@ document.addEventListener('mfilter:success', syncResetOutside);
 ```
 
 Атрибуты формы на месте `…` сниппет собирает в `{$formAttrs}` — см. [Data-атрибуты](#data-atributy). Значение фильтра производителя — id производителя, а не название.
+
+![Форма стандартными чанками: mfilter.form — вся форма, mfilter.filter — блок фильтра, mfilter.item — значение, mfilter.slider — диапазон цены](/components/mfilter/screenshots/form-chunks.png)
 
 ### Свой чанк фильтра
 
