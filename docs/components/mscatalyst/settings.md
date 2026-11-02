@@ -19,6 +19,7 @@
 | `mscatalyst_seo_h1_filtered` | `{{pagetitle}}: {{filters}}` | H1 страницы с фильтром. |
 | `mscatalyst_seo_description` | `{{pagetitle}}. {{filters}}. Найдено: {{total}}` | Description страницы с фильтром. |
 | `mscatalyst_search_synonyms` | | JSON синонимов поиска, например `{"шланг":"рукав,hose"}`. |
+| `mscatalyst_search_log` | `Да` | Записывать поисковые запросы покупателей в [журнал](snippets/mscatalystsearch#zhurnal-zaprosov). |
 | `mscatalyst_legacy_markup` | `Нет` | Добавлять классы `msf-*` для стилей, написанных под msFacets. Включается само при обновлении. |
 | `mscatalyst_sync_path` | | Папка для файлов источников и обмена с 1С. Пусто: `core/cache/mscatalyst_sync/`. Папка закрыта от доступа из браузера. |
 | `mscatalyst_sync_chunk` | `200` | Сколько строк источника обрабатывается за один заход. На слабом хостинге уменьшите. |

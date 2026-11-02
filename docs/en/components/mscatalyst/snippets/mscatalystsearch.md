@@ -53,3 +53,16 @@ Synonyms are managed on the "Extras → msCatalyst" page, "Synonyms" tab. A rule
 ```
 
 Here "шланг" (hose) also finds products with "рукав" (another Russian word for hose) or "hose".
+
+## Search query log
+
+Every catalog search goes to the `mscatalyst_search_log` table: the query, the catalog page, the language, the number of searches, how many products the last search found and how many searches found nothing. Queries are lowercased with single spaces, so "Sneakers  Nike" and "sneakers nike" are one query. The log is easiest to read on the [Queries](../interface/#queries) tab.
+
+Not logged:
+
+- Live search suggestions while the shopper types a word. Otherwise the log fills with word fragments.
+- The second and later result pages and the "Show more" button.
+- The same query from the same visitor within 30 minutes, for example while they narrow the results with filters.
+- Search engine bots and requests without a User-Agent header.
+
+A header search with `&searchPage` is logged on the results page that runs `msCatalyst`. The `mscatalyst_search_log` setting turns the log off. The table is created on install, and on a site updated by copying files, on the first search.

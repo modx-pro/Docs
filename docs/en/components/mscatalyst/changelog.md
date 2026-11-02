@@ -2,6 +2,12 @@
 
 Before version 1.2.0 the component was called msFacets.
 
+## 1.4.0-pl1
+
+- Search query log. Every catalog search is counted per query, catalog page and language: the number of searches, how many products the last search found and how many searches found nothing. Live suggestions, later result pages, bots and a repeat of the same query by the same visitor within 30 minutes are not counted.
+- Queries tab: totals, queries with no results, filter by catalog and substring, sorting, CSV download, clearing the log. "Check" opens the search tester with the query, "Add synonym" opens the synonyms tab.
+- The `mscatalyst_search_log` setting (on by default) turns the log off.
+
 ## 1.3.0-pl1
 
 - Multilingual catalogs. The language comes from `&lang`, the Localizator URL or the context culture (Babel). It is part of the index cache key and is passed to AJAX requests.

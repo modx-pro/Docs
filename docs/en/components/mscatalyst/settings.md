@@ -19,6 +19,7 @@ All settings are easier to edit on the "Settings" tab of the component page: it 
 | `mscatalyst_seo_h1_filtered` | `{{pagetitle}}: {{filters}}` | Filtered page H1. |
 | `mscatalyst_seo_description` | `{{pagetitle}}. {{filters}}. Найдено: {{total}}` | Filtered page description. |
 | `mscatalyst_search_synonyms` | | JSON of search synonyms, for example `{"шланг":"рукав,hose"}`. |
+| `mscatalyst_search_log` | `Yes` | Record shoppers' search queries in the [log](snippets/mscatalystsearch#search-query-log). |
 | `mscatalyst_legacy_markup` | `No` | Add `msf-*` classes for styles written for msFacets. Turned on automatically on upgrade. |
 | `mscatalyst_sync_path` | | Folder for source files and 1C exchange files. Empty: `core/cache/mscatalyst_sync/`. The folder is closed to browsers. |
 | `mscatalyst_sync_chunk` | `200` | How many source rows are handled in one pass. Lower it on weak hosting. |

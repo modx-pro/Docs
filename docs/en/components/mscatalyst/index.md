@@ -55,6 +55,7 @@ Demo: [`chelnysite.ru`](https://chelnysite.ru/), a catalog of 100,000 products o
 - "From–to" ranges with a slider for price, weight and any numeric field.
 - A counter next to every value. Picking a value in a group does not zero out the other values of that group.
 - Search with word forms, transliteration, typos, field weights and synonyms. Modes: inside the catalog, a separate page, a dropdown.
+- Search query log: what shoppers look for and what they do not find. A query with no results gets a synonym in one click.
 - Every filter and page change goes into the browser history. The "Back" button returns to the previous results.
 - Speed on 100,000 products: results and all counters are recalculated in 10–40 ms on the server.
 - SEO: title, H1 and description with the selected filters arrive in the HTML on first load. Friendly filter URLs, a sitemap.
@@ -62,7 +63,7 @@ Demo: [`chelnysite.ru`](https://chelnysite.ru/), a catalog of 100,000 products o
 - Profile-based sync: source analysis, field and catalog matching, an approved schema, a change plan with safeguards, run rollback.
 - Export of products, categories, vendors and options to CSV, XLSX, JSON and XML.
 - Multilingual catalog with Localizator, localizator3 or Babel.
-- A manager page without ExtJS: search test, synonyms, settings, index, filter sets, landing pages, sync, export and translations.
+- A manager page without ExtJS: search test, synonyms, query log, settings, index, filter sets, landing pages, sync, export and translations.
 
 ## Requirements
 
