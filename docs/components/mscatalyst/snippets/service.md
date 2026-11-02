@@ -62,7 +62,7 @@
 [[!msCatalystReindex]]
 ```
 
-Из PHP то же самое делает `MsCatalyst::clearIndex($modx);`. Синхронизация msCatalyst сбрасывает индекс сама.
+Из PHP то же самое делает `MsCatalyst::clearIndex($modx);`. Если индекс нужно только обновить, без паузы для посетителей, выполните `MsCatalyst::markStale($modx);`: прежний индекс работает, пока в фоне собирается новый. Синхронизация msCatalyst обновляет индекс сама.
 
 ## msCatalystSeoFilter
 

@@ -62,7 +62,7 @@ Clears the catalog index: the msCatalyst cache partitions and the `table` mode i
 [[!msCatalystReindex]]
 ```
 
-From PHP, `MsCatalyst::clearIndex($modx);` does the same. msCatalyst sync clears the index by itself.
+From PHP, `MsCatalyst::clearIndex($modx);` does the same. To refresh the index without a pause for visitors, run `MsCatalyst::markStale($modx);`: the previous index keeps working while the new one is built in the background. msCatalyst sync refreshes the index by itself.
 
 ## msCatalystSeoFilter
 

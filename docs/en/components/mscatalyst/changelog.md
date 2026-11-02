@@ -7,6 +7,8 @@ Before version 1.2.0 the component was called msFacets.
 - Search query log. Every catalog search is counted per query, catalog page and language: the number of searches, how many products the last search found and how many searches found nothing. Live suggestions, later result pages, bots and a repeat of the same query by the same visitor within 30 minutes are not counted.
 - Queries tab: totals, queries with no results, filter by catalog and substring, sorting, CSV download, clearing the log. "Check" opens the search tester with the query, "Add synonym" opens the synonyms tab.
 - The `mscatalyst_search_log` setting (on by default) turns the log off.
+- Product edits and syncs mark the index stale instead of dropping it. The new index is built in the background: after the response under PHP-FPM, or by a request the site sends itself on Apache with mod_php. Visitors keep the previous index until the build ends and do not wait. A missing index is built by one request, concurrent ones wait for it. `MsCatalyst::markStale($modx)` for imports outside MODX.
+- `table` mode index files are written to a temporary file and renamed, so nobody reads a half written file.
 
 ## 1.3.0-pl1
 

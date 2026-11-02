@@ -40,9 +40,15 @@ msCatalyst builds a catalog index: facet values, sort values and search strings 
 | `table` | Files in `core/cache/mscatalyst_index/` | Large catalogs. On 100,000 products a filter request takes 25–40 ms. |
 | `auto` | Picked by `mscatalyst_index_auto_threshold` | When the product count is not known in advance. |
 
-The msCatalyst plugin clears the index when you save, publish, unpublish, delete, undelete, duplicate or move a product or category, and also when the cache or the trash is cleared. msCatalyst sync clears the index by itself.
+When you save, publish, unpublish, delete, undelete, duplicate or move a product or category, empty the trash or run an msCatalyst sync, the plugin marks the index stale. The index itself stays. The new index is built in the background, and visitors get the previous one until the build ends, without waiting for it.
 
-The plugin does not see imports through the API or direct database queries. After such an import:
+- Under PHP-FPM the build runs in the same request after the response is sent.
+- On Apache with mod_php and other servers the site sends itself a request to the same page with the secret `mscatalyst_rebuild` parameter. That request answers at once and builds the index after the answer.
+- If the site cannot request itself, these requests pause for an hour, the reason goes to the MODX error log, and the visitor request builds the index. Other visitors still get the previous index.
+
+Clearing the site cache drops the index. The first request builds it again, and concurrent requests wait for that build instead of starting their own.
+
+The plugin does not see imports through the API or direct database queries. After such an import, run `MsCatalyst::markStale($modx);` and the index is refreshed the same way as after a product save. To drop the index:
 
 - click "Clear index" on the "Index" tab of the component page;
 - or call the `[[!msCatalystReindex]]` snippet;
