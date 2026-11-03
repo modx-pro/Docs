@@ -9,7 +9,11 @@ description: "Настройки BannerPro: кэш, клики, показы, UT
 
 ![Системные настройки — bannerpro](/components/bannerpro/screenshots/settings-namespace.png)
 
-Часть ключей (UTM, webhook, A/B TTL) редактируется и во вкладке **Компоненты → BannerPro → Настройки** через connector actions `settings_utm_*` и `settings_integrations_*`. Остальные ключи — только здесь.
+Часть ключей (UTM, webhook, A/B TTL) редактируется и во вкладке **Компоненты → BannerPro → Настройки** через connector actions:
+- `settings_utm_get` / `settings_utm_update` — чтение и запись UTM-параметров
+- `settings_integrations_get` / `settings_integrations_update` — webhook, `ab_ttl`, аналитика
+
+Остальные ключи — только здесь.
 
 ## Кэш
 
@@ -101,7 +105,7 @@ Cookie связывает клик по баннеру с заказом MiniSho
 | `bannerpro_api_cors_origin` | textfield | пусто | CORS: `*`, origin или список через запятую |
 | `bannerpro_api_rate_limit` | numberfield | `0` | Запросов в минуту на ключ (`0` = без лимита) |
 
-**REST API ключ**: секрет для `Authorization: Bearer …` в `api.php`. Смотрите в **Система → Настройки системы** (namespace `bannerpro`, подпись «REST API ключ»). Resolver создаёт 32 hex-символа при установке или обновлении, если поле пустое.
+**REST API ключ**: секрет для `Authorization: Bearer …` в `api.php`. Смотрите в **Система → Настройки системы** (namespace `bannerpro`, подпись «REST API ключ»). Resolver установщика генерирует 32-символьный hex-ключ при первой установке, если поле пустое.
 
 Точка входа:
 
