@@ -5,12 +5,12 @@ description: Сниппет msBundles, чанки, CSS/JS и комплект в
 
 # Вывод на сайте
 
-Здесь собраны вызов сниппета, плейсхолдеры чанков, CSS/JS и разбор комплекта в корзине. Параметры сниппетов также разобраны в разделе [Сниппеты](snippets/).
+Вызов сниппета, плейсхолдеры чанков, CSS/JS и комплект в корзине. Параметры: [Сниппеты](snippets/).
 
-Перед тем как копаться в чанках, проверьте два пункта:
+Требования:
 
-1. В `<head>` есть `msBundles.initialize`. Иначе кнопки добавления и стили не заработают.
-2. У `msCart` задан `selector`. Иначе после добавления вы увидите toast, а блок корзины на странице останется старым.
+1. `msBundles.initialize` в `<head>` — без него кнопки и стили не работают.
+2. `selector` у `msCart` — иначе toast появится, а блок не обновится.
 
 ## Как выглядит карточка
 
@@ -78,21 +78,25 @@ description: Сниппет msBundles, чанки, CSS/JS и комплект в
 
 :::
 
-В `tpl.msCart` под названием позиции вызовите `tplMsBundlesCartInfo` (см. ниже).
+## Хук в tplMsCart {#хук-в-tplmscart}
 
-## Логика выбора комплектов
+В `tpl.msCart`: `tplMsBundlesCartInfo`.
 
-Сниппет, REST `/bundle/*` и добавление в корзину учитывают **текущий контекст** MODX (`web`, `en`, …). Комплект с другим `context_key` на витрине не появится.
+## Логика выбора
+
+Сниппет, REST и корзина учитывают **текущий контекст**. Комплект с другим `context_key` не появится.
 
 1. `bundle` > 0 — один комплект по ID. Неактивный при `activeOnly=1` или чужой контекст → пусто.
-2. Иначе непустой `bundles` — комплекты по списку ID (порядок как в параметре).
-3. Иначе `list=all` — все комплекты текущего контекста (как в списке менеджера).
-4. Иначе `product` > 0 — комплекты, где товар в составе.
+2. `bundles` — комплекты по списку ID (порядок как в параметре).
+3. `list=all` — все комплекты контекста.
+4. `product` > 0 — комплекты с этим товаром.
 5. Иначе — `emptyTpl`.
 
-При `msbundles_stock_behavior=hide` и недоступном остатке карточка не выводится. Режимы `block` и `message` показывают карточку с модификаторами `--blocked` / `--warning`.
+При `msbundles_stock_behavior=hide` и недоступном остатке карточка не выводится. Режимы `block` / `message` показывают карточку с `--blocked` / `--warning`.
 
-### Страница каталога комплектов
+### Страница каталога
+
+<!-- MEDIA: Страница каталога/лендинга со списком из нескольких карточек комплектов (bundles='5,8,12' или list=all) -->
 
 Несколько карточек по списку ID:
 
@@ -118,7 +122,7 @@ description: Сниппет msBundles, чанки, CSS/JS и комплект в
 
 :::
 
-Все комплекты текущего контекста:
+Все комплекты контекста:
 
 ::: code-group
 
@@ -140,9 +144,9 @@ description: Сниппет msBundles, чанки, CSS/JS и комплект в
 
 :::
 
-## Тема сайта (CSS-переменные)
+## Тема сайта (CSS)
 
-Переопределите токены на `.msbundles` (или `:root`), чтобы карточки совпали с палитрой магазина:
+Переопределите токены на `.msbundles` (или `:root`):
 
 ```css
 .msbundles {
@@ -156,17 +160,45 @@ description: Сниппет msBundles, чанки, CSS/JS и комплект в
 }
 ```
 
-| Переменная | За что отвечает |
+| Переменная | Назначение |
 | --- | --- |
-| `--msbundles-color-accent` | Акцент: ссылки на товары, кнопка «Добавить», бейджи в корзине |
-| `--msbundles-color-accent-hover` | Hover / active у акцентных кнопок и ссылок |
-| `--msbundles-color-text` | Основной текст карточки и состава |
-| `--msbundles-color-muted` | Вторичный текст: описание, артикул, подписи |
-| `--msbundles-color-border` | Рамки карточки, строк состава, полей |
-| `--msbundles-color-surface` | Фон карточки комплекта |
-| `--msbundles-radius` | Скругление карточки, полей и кнопок |
+| `--msbundles-color-accent` | Акцент: ссылки, кнопка, бейджи |
+| `--msbundles-color-accent-hover` | Hover / active |
+| `--msbundles-color-text` | Текст |
+| `--msbundles-color-muted` | Вторичный текст |
+| `--msbundles-color-border` | Рамки |
+| `--msbundles-color-surface` | Фон |
+| `--msbundles-radius` | Скругление |
 
-Другие токены в `msbundles.css`: spacing (`--msbundles-space-*`), шрифты (`--msbundles-font-*`), экономия/бесплатно (`--msbundles-color-savings`, `--msbundles-color-free*`), предупреждения и ошибки (`--msbundles-color-warning*`, `--msbundles-color-danger*`), тень и focus-ring.
+Другие токены в `msbundles.css`: `--msbundles-space-*`, `--msbundles-font-*`, `--msbundles-color-savings`, `--msbundles-color-free*`, `--msbundles-color-warning*`, `--msbundles-color-danger*`, `--msbundles-shadow-sm`, `--msbundles-focus-ring`.
+
+### Полная таблица CSS-переменных
+
+| Переменная | Назначение | По умолчанию |
+| --- | --- | --- |
+| `--msbundles-color-accent` | Акцент: ссылки, кнопка, бейджи | `#2563eb` |
+| `--msbundles-color-accent-hover` | Hover / active для акцента | `#1d4ed8` |
+| `--msbundles-color-text` | Основной текст | `#111827` |
+| `--msbundles-color-muted` | Вторичный текст | `#6b7280` |
+| `--msbundles-color-border` | Рамки и разделители | `#e5e7eb` |
+| `--msbundles-color-surface` | Фон карточки | `#fff` |
+| `--msbundles-color-savings` | Бейдж экономии (зелёный) | `#16a34a` |
+| `--msbundles-color-free` | Бейдж «бесплатно» | `#2563eb` |
+| `--msbundles-color-warning` | Предупреждения (жёлтый) | `#ca8a04` |
+| `--msbundles-color-warning-bg` | Фон предупреждений | `#fef9c3` |
+| `--msbundles-color-danger` | Ошибки, нет остатка (красный) | `#dc2626` |
+| `--msbundles-color-danger-bg` | Фон ошибок | `#fee2e2` |
+| `--msbundles-radius` | Скругление углов | `0.5rem` |
+| `--msbundles-shadow-sm` | Тень карточки | `0 1px 2px rgba(0,0,0,0.05)` |
+| `--msbundles-focus-ring` | Обводка фокуса | `0 0 0 3px rgba(37,99,235,0.2)` |
+| `--msbundles-font-family` | Шрифт | `inherit` |
+| `--msbundles-font-size` | Размер шрифта | `1rem` |
+| `--msbundles-space-1` | Отступ 0.25rem | `0.25rem` |
+| `--msbundles-space-2` | Отступ 0.5rem | `0.5rem` |
+| `--msbundles-space-3` | Отступ 0.75rem | `0.75rem` |
+| `--msbundles-space-4` | Отступ 1rem | `1rem` |
+| `--msbundles-space-5` | Отступ 1.25rem | `1.25rem` |
+| `--msbundles-space-6` | Отступ 1.5rem | `1.5rem` |
 
 ## Плейсхолдеры карточки (`tplMsBundlesItem`)
 
@@ -179,10 +211,10 @@ description: Сниппет msBundles, чанки, CSS/JS и комплект в
 | `image_html` | Блок `<div class="msbundles__media">…</div>` или пусто |
 | `has_image` | `0` / `1` — есть изображение |
 | `active` | `0` / `1` — активен |
-| `quantity` | Запрошенное число комплектов |
-| `item_count` | Сумма единиц товаров в составе |
+| `quantity` | Число комплектов |
+| `item_count` | Сумма единиц в составе |
 | `product_count` | Число позиций |
-| `products` | HTML строк состава (`productTpl`) |
+| `products` | HTML строк состава |
 | `composition_html` | Секция «Состав» или пусто |
 | `price_html` | Цена, зачёркнутая, экономия. При `0` — «Бесплатно» |
 | `total` | Итог (число) |
@@ -192,12 +224,12 @@ description: Сниппет msBundles, чанки, CSS/JS и комплект в
 | `original_total_formatted` | Оригинал с валютой |
 | `savings_formatted` | Экономия с валютой |
 | `available` | `0` / `1` — можно заказать |
-| `stock_message` | Ошибка или предупреждение по остаткам |
+| `stock_message` | Сообщение об остатках |
 | `state_modifier` | `msbundles__item--available` / `--warning` / `--blocked` |
 | `stock_behavior` | `block`, `message`, `hide` |
 | `max_bundle_quantity` | Лимит поля «Комплектов» |
 
-`tplMsBundlesList`: плейсхолдер `items` — HTML карточек. Без `image` у комплекта и при `imageFallback=1` карточка берёт thumb первого товара состава.
+`tplMsBundlesList`: `items` — HTML карточек. Без `image` и при `imageFallback=1` берётся thumb первого товара.
 
 ## Плейсхолдеры строки состава (`tplMsBundlesProduct`)
 
@@ -212,8 +244,8 @@ description: Сниппет msBundles, чанки, CSS/JS и комплект в
 | `url` | URL товара |
 | `image`, `image_url` | Thumb или картинка |
 | `image_html` | Блок `<span class="msbundles__product-media">…</span>` или пусто |
-| `quantity` | Единиц товара в составе одного комплекта |
-| `bundle_quantity` | Запрошенное число комплектов |
+| `quantity` | Единиц товара в составе |
+| `bundle_quantity` | Число комплектов |
 | `line_quantity` | `quantity × bundle_quantity` |
 | `required` | `0` / `1` — обязательная позиция |
 | `required_label` | «Обязательно» / «Необязательно» |
@@ -230,7 +262,7 @@ description: Сниппет msBundles, чанки, CSS/JS и комплект в
 
 ## Кастомный чанк карточки
 
-Классы (`msbundles__*`) — только для стилей. JS ищет узлы по **data-атрибутам**.
+Классы (`msbundles__*`) — для стилей. JS ищет узлы по **data-атрибутам**.
 
 ```fenom
 <article
@@ -255,20 +287,20 @@ description: Сниппет msBundles, чанки, CSS/JS и комплект в
 </article>
 ```
 
-Смена qty вызывает `calculate`: в `[data-msbundles="price"]` подставляется `price.price_html`, статус остатка — в `[data-msbundles="stock"]`.
+При смене qty `calculate` обновляет `[data-msbundles="price"]` и `[data-msbundles="stock"]`.
 
-### Data-атрибуты витрины (контракт JS)
+### Data-атрибуты витрины
 
 | Атрибут | Где | Назначение |
 | --- | --- | --- |
-| `data-msbundles="list"` | обёртка списка | Корень списка комплектов |
+| `data-msbundles="list"` | обёртка списка | Корень списка |
 | `data-msbundles="item"` | карточка | Корень карточки |
 | `data-ms-bundle` | карточка / контролы | ID комплекта |
 | `data-ms-bundle-available` | карточка | `1` / `0` после calculate |
 | `data-ms-bundle-stock` | карточка | `available` / `warning` / `blocked` |
 | `data-msbundles="summary"` | блок итога | Якорь для stock-сообщения |
 | `data-msbundles="price"` | строка цены | Замена HTML после calculate |
-| `data-msbundles="product-count"` | число позиций | Мета (серверный рендер) |
+| `data-msbundles="product-count"` | число позиций | Мета |
 | `data-msbundles="stock"` | сообщение остатка | Ошибки и предупреждения |
 | `data-msbundles="controls"` | qty + CTA | Группа действий |
 | `data-bundle-quantity` | input | Значение «Комплектов» |
@@ -283,13 +315,11 @@ description: Сниппет msBundles, чанки, CSS/JS и комплект в
 | `data-msbundles="name"` | название в корзине | Имя для confirm/remove |
 | `data-msbundles-action="remove-bundle"` | кнопка | Удаление комплекта |
 
-Legacy `data-action` с теми же значениями ещё принимается. В новых чанках используйте `data-msbundles-action`.
+Legacy `data-action` принимается. Классы можно менять: JS использует data-атрибуты.
 
-Классы `msbundles__*` / `msbundles-cart-*` можно менять в теме: JS на них не опирается (кроме опциональных modifiers вроде `--busy`, которые ставит сам скрипт).
+## Подключение CSS и JS {#подключение-css-и-js}
 
-## Подключение CSS и JS
-
-Через сниппет (предпочтительно):
+Через сниппет:
 
 ::: code-group
 
@@ -303,25 +333,25 @@ Legacy `data-action` с теми же значениями ещё принима
 
 :::
 
-Сниппет подключает `msbundles.css`, затем скрипты по порядку: `msbundles-helpers.js` → `msbundles-cart.js` → `msbundles.js`. Перед скриптами выводит `window.msbundlesConfig` и `window.msbundlesLexicon`.
+Сниппет подключает `msbundles.css`, `msbundles-helpers.js`, `msbundles-cart.js`, `msbundles.js`. Выводит `window.msbundlesConfig` и `window.msbundlesLexicon`.
 
-| Ключ конфига | По умолчанию | Назначение |
+| Ключ | По умолчанию | Назначение |
 | --- | --- | --- |
 | `autoBind` | `true` | Автопривязка обработчиков |
-| `apiBaseUrl` | `''` | Префикс API, если Router не на дефолтном пути |
+| `apiBaseUrl` | `''` | Префикс API, если Router не на стандартном пути |
 | `maxBundleQuantity` | из настройки | Лимит поля qty |
-| `calculateDebounceMs` | `350` | Дебаунс пересчёта цены |
-| `confirmRemoveBundle` | `false` | `confirm()` перед «Удалить комплект». По умолчанию без диалога, как у товара MS3 |
+| `calculateDebounceMs` | `350` | Дебаунс пересчёта |
+| `confirmRemoveBundle` | `false` | `confirm()` перед удалением |
 
-Свой конфиг до вызова сниппета:
+Свой конфиг до вызова:
 
 ```html
 <script>window.msbundlesConfig = { confirmRemoveBundle: true };</script>
 ```
 
-Кнопка «Удалить комплект» работает так же, как крестик у обычного товара: вызывается `ms3.cartUI.handleRemove`, показывается toast miniShop3, плагин снимает остальные позиции комплекта. Отдельный REST-запрос `/bundle/remove` нужен редко: только если у главной строки нет ключа товара для обычного удаления из корзины.
+«Удалить комплект» работает как обычный товар: `ms3.cartUI.handleRemove`, toast, плагин снимает остальные позиции. REST `/bundle/remove` — если нет ключа товара.
 
-Add и remove требуют cookie `ms3_token`.
+Add и remove требуют `ms3_token`.
 
 ## События JS
 
@@ -330,7 +360,7 @@ Add и remove требуют cookie `ms3_token`.
 | `msbundles:before` | Перед calculate / add / remove |
 | `msbundles:success` | Успешное add / remove |
 | `msbundles:error` | Ошибка API |
-| `msbundles:updated` | Пересчёт цены или успешное изменение |
+| `msbundles:updated` | Пересчёт цены или изменение |
 
 ```html
 <script>
@@ -340,32 +370,34 @@ document.addEventListener('msbundles:success', function (e) {
 </script>
 ```
 
-После add/remove: toast через `ms3.message` и перерисовка корзины через `MsBundles.refreshCart()`.
+После add/remove: `ms3.message` и `MsBundles.refreshCart()`.
 
 ### Публичный API `window.MsBundles`
 
 | Метод | Назначение |
 | --- | --- |
-| `bind` | Повесить обработчики на карточки и корзину |
-| `addBundle` | POST add комплекта |
+| `bind` | Обработчики |
+| `addBundle` | POST add |
 | `removeBundle` | Удаление по `bundle_hash`, если обычный путь корзины недоступен |
 | `calculate` | Пересчёт цены и остатков |
-| `applyCalculateToCard` | Обновить цену на карточке из ответа calculate |
-| `enhanceCartDisplay` | Lead/member UI на уже отрисованной таблице |
-| `applyCartRenderFallback` | Подставить HTML, если MS3 не отдал `render` |
+| `applyCalculateToCard` | Обновить цену на карточке |
+| `enhanceCartDisplay` | Lead/member UI |
+| `applyCartRenderFallback` | HTML, если MS3 не отдал `render` |
 | `refreshCart` | GET `/api/v1/cart/get` с `render` и обновить блоки `msCart` |
-| `request` | Низкоуровневый вызов API |
-| `events` | Имена DOM-событий |
+| `request` | Низкоуровневый API |
+| `events` | Имена событий |
 
 ## Комплект в корзине
 
-Комплект лежит в корзине несколькими строками miniShop3. Их связывает общий `bundle_hash` в `options`. Главная строка управляет количеством. Остальные позиции комплекта следуют за ней. Одна кнопка «Удалить комплект» снимает весь набор.
+<!-- MEDIA: Блок корзины miniShop3 с комплектом — главная строка с бейджем «Комплект» и кнопкой «Удалить комплект», вложенные строки с подписью «Входит в комплект…» и заблокированным количеством -->
 
-Без `selector` у `msCart` toast после добавления появится, а HTML блока на странице останется старым. `selector` регистрирует блок в `ms3Config.render.cart`. После add/remove фронт запрашивает `/api/v1/cart/get` с токенами `render` и перерисовывает корзину.
+Комплект — несколько строк miniShop3 с общим `bundle_hash`. Главная строка управляет количеством, остальные следуют. Кнопка «Удалить комплект» снимает весь набор.
+
+Без `selector` у `msCart` toast появится, а блок не обновится. `selector` регистрирует блок в `ms3Config.render.cart`. После add/remove фронт запрашивает `/api/v1/cart/get`.
 
 ### Хук в `tpl.msCart`
 
-Под названием товара вызовите `tplMsBundlesCartInfo`:
+Под названием товара:
 
 ```fenom
 {if $product.options.msbundles?}
@@ -379,55 +411,55 @@ document.addEventListener('msbundles:success', function (e) {
 {/if}
 ```
 
-На строку таблицы (`<tr>`) добавьте `data-bundle-hash` из options товара. Так JS понимает, какие строки относятся к одному комплекту.
+На `<tr>` добавьте `data-bundle-hash` из options.
 
-Если в чанке корзины показываете цену со скидкой, оберните актуальную цену в `msbundles-cart-price__now`, а старую (зачёркнутую) в `msbundles-cart-price__was`. Штатный CSS подсветит их как «сейчас» и «было».
+Цену со скидкой: актуальную в `msbundles-cart-price__now`, старую — в `msbundles-cart-price__was`.
 
 ### Плейсхолдеры `tplMsBundlesCartInfo`
 
 | Плейсхолдер | Описание |
 | --- | --- |
 | `id` | ID комплекта |
-| `name` | Название комплекта |
-| `hash` | Общий `bundle_hash` строк комплекта |
-| `is_lead` | `1` у главной строки комплекта |
-| `line_index` | Номер строки в комплекте (`1` = главная) |
-| `lines_count` | Сколько позиций в комплекте |
-| `quantity` | Сколько комплектов взял покупатель |
+| `name` | Название |
+| `hash` | `bundle_hash` |
+| `is_lead` | `1` у главной строки |
+| `line_index` | Номер строки (`1` = главная) |
+| `lines_count` | Позиций в комплекте |
+| `quantity` | Число комплектов |
 
 | Строка | Как понять | Что видит покупатель |
 | --- | --- | --- |
-| Главная | `is_lead=1` или `line_index=1` | Бейдж «Комплект», название, «Удалить комплект» |
-| Остальные | остальные строки того же `bundle_hash` | Текст «Входит в комплект…» |
+| Главная | `is_lead=1` или `line_index=1` | Бейдж «Комплект», «Удалить комплект» |
+| Остальные | тот же `bundle_hash` | «Входит в комплект…» |
 
-Если в корзине остались старые строки без блока `options.msbundles`, плагин на `msOnGetCart` сам помечает главную строку для бейджа. Ключ товара в корзине при этом не меняется.
+Старые строки без `options.msbundles`: плагин на `msOnGetCart` помечает главную для бейджа.
 
-### Что делает JS после отрисовки корзины
+### Что делает JS
 
-Скрипт `enhanceCartDisplay`:
+`enhanceCartDisplay`:
 
-- помечает строки комплекта атрибутами и классами оформления
-- прячет крестик поштучного удаления у позиций комплекта
-- блокирует поле количества у «вложенных» строк и пишет подсказку «Как в комплекте»
-- оставляет поле количества только у главной строки
+- помечает строки атрибутами и классами
+- прячет крестик у позиций комплекта
+- блокирует количество у «вложенных» строк
+- оставляет количество только у главной строки
 
-Когда покупатель меняет количество у главной строки, плагин miniShop3 (`msOnBeforeChangeInCart`) пересчитывает количество у остальных позиций того же комплекта.
+При смене количества плагин (`msOnBeforeChangeInCart`) пересчитывает остальные.
 
-Когда покупатель жмёт «Удалить комплект» или крестик у любой строки комплекта, срабатывает обычное удаление корзины miniShop3 (`ms3.cartUI.handleRemove`). Плагин (`msOnBeforeRemoveFromCart`) снимает остальные позиции набора. Отдельный REST `/bundle/remove` вызывается только если обычный путь корзины недоступен. См. [События](/components/msbundles/events).
+При удалении строки: `ms3.cartUI.handleRemove`. Плагин (`msOnBeforeRemoveFromCart`) снимает остальные. REST `/bundle/remove` — если обычный путь недоступен. См. [События](/components/msbundles/events).
 
-`msbundles.css` стилизует только блок комплекта и служебные элементы количества/удаления. Логика ищет узлы по `data-msbundles` и `data-bundle-*`, а не по именам классов темы. В строках комплекта превью товаров ограничены квадратом `4rem` (`object-fit: cover`).
+`msbundles.css` стилизует блок. Логика использует `data-msbundles` и `data-bundle-*`. Превью: `4rem` (`object-fit: cover`).
 
-Если в своём чанке корзины не вызвать `tplMsBundlesCartInfo`, покупатель не увидит бейдж «Комплект», подпись «Входит в комплект…» и кнопку «Удалить комплект».
+Без `tplMsBundlesCartInfo` бейдж и кнопка не появятся.
 
 ### Если корзина не обновляется
 
 | Симптом | Что проверить |
 | --- | --- |
 | Toast есть, блок старый | Нет `selector` у `msCart` или id контейнера не совпадает |
-| Нет бейджей | Нет `tplMsBundlesCartInfo` или у плагина нет `msOnGetCart` |
+| Нет бейджей | Нет `tplMsBundlesCartInfo` или `msOnGetCart` |
 | Qty у member кликабелен | JS не загрузился или `enhanceCartDisplay` не вызван после ручной перерисовки |
 
-## REST с витрины
+## REST
 
 База: `/api/v1/msbundles` через роутер miniShop3.
 
@@ -435,9 +467,9 @@ document.addEventListener('msbundles:success', function (e) {
 /assets/components/minishop3/api.php?route=/api/v1/msbundles/…
 ```
 
-Нужен токен miniShop3 (cookie `ms3_token` / middleware `TokenMiddleware`). Штатный `msbundles.js` ходит в эти маршруты сам. Ниже — если пишете свой фронт.
+Нужен `ms3_token`. Штатный `msbundles.js` ходит в маршруты сам.
 
-Ответ роутера:
+Ответ:
 
 ```json
 {
@@ -449,11 +481,11 @@ document.addEventListener('msbundles:success', function (e) {
 }
 ```
 
-При ошибке: HTTP 4xx, `success: false`, `data: null`.
+Ошибка: HTTP 4xx, `success: false`, `data: null`.
 
 ### GET `/bundle/calculate`
 
-Пересчёт цены и остатков (смена qty на карточке).
+Пересчёт цены и остатков.
 
 Query: `id` или `bundle_id`, `quantity`.
 
@@ -461,20 +493,18 @@ Query: `id` или `bundle_id`, `quantity`.
 
 **data:** `{ "price": {…}, "stock": {…}, "quantity": N }`
 
-У `price` кроме чисел есть строки для карточки:
-
 | Поле | Описание |
 | --- | --- |
 | `total_formatted` | Итог с валютой или «Бесплатно» |
 | `original_total_formatted` | Оригинал |
 | `savings_formatted` | Экономия |
-| `price_html` | HTML для `[data-msbundles="price"]` на карточке |
+| `price_html` | HTML для `[data-msbundles="price"]` |
 
 ### POST `/bundle/add`
 
-Добавить комплект в корзину. Лимит qty: настройка `msbundles_max_bundle_quantity`.
+Добавить комплект. Лимит: `msbundles_max_bundle_quantity`.
 
-Body (JSON):
+Body:
 
 ```json
 {
@@ -483,9 +513,9 @@ Body (JSON):
 }
 ```
 
-Алиас ID: `bundle_id`.
+Алиас: `bundle_id`.
 
-**data при успехе:**
+**data:**
 
 ```json
 {
@@ -494,13 +524,13 @@ Body (JSON):
 }
 ```
 
-Необязательные позиции с нулевым остатком могут уйти в `warnings` ответа. Остальной комплект всё равно добавится.
+Необязательные позиции с нулевым остатком могут уйти в `warnings`. Остальной комплект всё равно добавится.
 
 ### POST `/bundle/remove`
 
-Удалить все строки с данным `bundle_hash`.
+Удалить строки с `bundle_hash`.
 
-Body (JSON):
+Body:
 
 ```json
 {
@@ -510,7 +540,7 @@ Body (JSON):
 
 Алиас: `hash`.
 
-**data при успехе:**
+**data:**
 
 ```json
 {
@@ -521,8 +551,17 @@ Body (JSON):
 
 ### GET `/bundle/get`
 
-Карточка комплекта с ценой и остатками (без записи в корзину).
+Карточка с ценой и остатками.
 
-Query: `id` или `bundle_id`, опционально `quantity` (по умолчанию `1`).
+Query: `id` или `bundle_id`, `quantity` (по умолчанию `1`).
 
 **data:** `{ "bundle": {…}, "price": {…}, "stock": {…}, "quantity": N }`
+
+### Маршруты
+
+| Метод | Путь | Описание |
+| --- | --- | --- |
+| `GET` | `/bundle/calculate` | Пересчёт цены |
+| `POST` | `/bundle/add` | Добавление |
+| `POST` | `/bundle/remove` | Удаление |
+| `GET` | `/bundle/get` | Данные комплекта |

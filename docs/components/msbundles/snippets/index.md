@@ -10,8 +10,8 @@ description: Сниппеты msBundles для витрины и подключ�
 | Сниппет | Назначение |
 | --- | --- |
 | [msBundles](msBundles) | Карточки на странице товара, по ID, списку `bundles` или `list=all` |
-| [msBundles.initialize](msBundles.initialize) | CSS, JS, конфиг и лексикон витрины |
+| [msBundles.initialize](msBundles.initialize) | CSS, JS, конфиг и лексикон |
 
-Штатные чанки Fenom (pdoTools): `tplMsBundlesItem`, `tplMsBundlesList`, `tplMsBundlesEmpty`, `tplMsBundlesProduct`, `tplMsBundlesCartInfo`.
+Штатные чанки Fenom: `tplMsBundlesItem`, `tplMsBundlesList`, `tplMsBundlesEmpty`, `tplMsBundlesProduct`, `tplMsBundlesCartInfo`.
 
-Сборка страницы товара и корзины: [Вывод на сайте](/components/msbundles/frontend).
+Сборка страницы: [Вывод на сайте](/components/msbundles/frontend).

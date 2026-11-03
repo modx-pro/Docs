@@ -1070,6 +1070,7 @@
     "tplSetItem",
     "tplSetVIP",
     "tpls",
+    "tplMsCart",
     "translit",
     "transliteration",
     "treemap",
@@ -2525,7 +2526,8 @@
     "хэштегов",
     "юkassa",
     "юрлица",
-    "юрлицо"
+    "юрлицо",
+    "триггерит"
   ],
   "ignoreRegExpList": [
     "/^[ \\t]*(`{3,})[^`\\n]*\\n[\\s\\S]*?^[ \\t]*\\1`*[ \\t]*$/gm",
