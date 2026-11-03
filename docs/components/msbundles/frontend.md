@@ -82,7 +82,6 @@ description: Сниппет msBundles, чанки, CSS/JS и комплект в
 
 В `tpl.msCart`: `tplMsBundlesCartInfo`.
 
-
 ## Логика выбора
 
 Сниппет, REST и корзина учитывают **текущий контекст**. Комплект с другим `context_key` не появится.
