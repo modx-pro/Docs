@@ -36,6 +36,7 @@ items: [
     items: [
       { text: 'MiniShop3', link: 'minishop3' },
       { text: 'Analytics', link: 'analytics' },
+      { text: 'FormIt', link: 'formit' },
     ],
   },
   {

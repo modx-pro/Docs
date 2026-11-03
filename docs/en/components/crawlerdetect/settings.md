@@ -1,28 +1,32 @@
 ---
-title: System settings
+title: Системные настройки
 ---
-# System settings
+# Системные настройки
 
-Keys: `crawlerdetect_*`. Namespace **crawlerdetect**. The dot in `crawlerdetect.` is only on the `placeholderPrefix` placeholder. System setting keys have no dot.
+Ключи: `crawlerdetect_*`. Пространство имён **crawlerdetect**. Точка в `crawlerdetect.` есть только у плейсхолдера `placeholderPrefix`. У системных настроек её нет.
 
-Path: **System → System settings**, filter by namespace `crawlerdetect`.
+Путь: **Система → Системные настройки**, фильтр по пространству имён `crawlerdetect`.
 
-## Settings table
+## Таблица настроек
 
-| Setting | Description | Default |
-|---------|-------------|---------|
-| `crawlerdetect_block_message` | Message when a bot is blocked | Russian string from transport: «Не удалось отправить форму. Попробуйте позже.» |
-| `crawlerdetect_log_blocked` | Log blocked submissions to MODX system log | Yes |
+| Настройка | Описание | По умолчанию |
+|-----------|----------|--------------|
+| `crawlerdetect_block_message` | Текст при блокировке формы ботом | "Could not submit the form. Please try later." |
+| `crawlerdetect_log_blocked` | Логировать заблокированные отправки в системный журнал MODX | Да |
 
-The message goes to `[[+fi.validation_error_message]]` and the FormIt error key `crawlerdetect` (`$hook->addError`).
+Сообщение пишется в `[[+fi.validation_error_message]]` и в ошибку FormIt с ключом `crawlerdetect` (`$hook->addError`).
 
-If `crawlerdetect_log_blocked` is missing from the database, the hook logs (fallback `true`, same as transport). Log line: `HTTP_USER_AGENT` only, max 200 characters. Not a concat of detection headers.
+::: info
+Значение по умолчанию: на английском. Администраторы переопределяют его русским текстом через системную настройку.
+:::
 
-## isCrawler snippet properties
+Если ключа `crawlerdetect_log_blocked` нет в БД, хук пишет лог (запасной вариант `true`, как в transport). В журнал: только `HTTP_USER_AGENT`, не больше 200 символов. Склейки заголовков нет.
 
-| Property | Description | Default |
-|----------|-------------|---------|
-| **userAgent** | String to check. Empty: JayBizzle headers (`HTTP_USER_AGENT`, `HTTP_FROM`, `HTTP_SEC_CH_UA`, …) | — |
-| **placeholderPrefix** | Placeholder prefix for detected bot name | `crawlerdetect.` |
+## Свойства сниппета isCrawler
 
-Bot name: `crawlerdetect.matches` (or your prefix). For debugging.
+| Свойство | Описание | По умолчанию |
+|----------|----------|--------------|
+| **userAgent** | Строка для проверки. Пусто: заголовки JayBizzle (`HTTP_USER_AGENT`, `HTTP_FROM`, `HTTP_SEC_CH_UA` и др.) | нет |
+| **placeholderPrefix** | Префикс плейсхолдера для имени обнаруженного бота | `crawlerdetect.` |
+
+Имя бота: `crawlerdetect.matches` (или ваш префикс). Нужен для отладки.
