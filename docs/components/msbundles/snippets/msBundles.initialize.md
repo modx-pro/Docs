@@ -39,4 +39,4 @@ description: Подключение CSS и JS msBundles на витрине
 <script>window.msbundlesConfig = { confirmRemoveBundle: true };</script>
 ```
 
-Разбор корзины и data-атрибутов: [Вывод на сайте](/components/msbundles/frontend#подключение-css-и-js). Карточки: [msBundles](msBundles).
+Разбор корзины и data-атрибутов: [Вывод на сайте](/components/msbundles/frontend#podklyuchenie-css-i-js). Карточки: [msBundles](msBundles).

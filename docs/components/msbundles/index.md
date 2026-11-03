@@ -42,7 +42,7 @@ items:
     items:
       - text: События
         link: events
-  - text: REST API
+      - text: REST API
         link: api
   - text: FAQ
     link: faq

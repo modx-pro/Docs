@@ -78,7 +78,10 @@ description: Сниппет msBundles, чанки, CSS/JS и комплект в
 
 :::
 
+## Хук в tplMsCart {#хук-в-tplmscart}
+
 В `tpl.msCart`: `tplMsBundlesCartInfo`.
+
 
 ## Логика выбора
 
@@ -315,7 +318,7 @@ description: Сниппет msBundles, чанки, CSS/JS и комплект в
 
 Legacy `data-action` принимается. Классы можно менять: JS использует data-атрибуты.
 
-## Подключение CSS и JS
+## Подключение CSS и JS {#подключение-css-и-js}
 
 Через сниппет:
 

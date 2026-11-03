@@ -4,7 +4,6 @@ description: Маршруты и примеры запросов к API msBundle
 ---
 <!-- TODO: translate from docs/components/msbundles/api.md -->
 
-
 # REST API
 
 Компонент предоставляет четыре маршрута через роутер miniShop3. База: `/api/v1/msbundles`.
