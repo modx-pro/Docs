@@ -1,17 +1,17 @@
 ---
-title: Quick start
+title: Быстрый старт
 ---
-# Quick start
+# Быстрый старт
 
-In 2 minutes: protect a contact form from bots.
+За 2 минуты настройте защиту контактной формы от ботов.
 
-## Step 1: Open the page with the form
+## Шаг 1: Откройте страницу с формой
 
-In the MODX editor open the page that shows a FormIt form.
+В редакторе MODX откройте страницу с формой на FormIt.
 
-## Step 2: Add preHook to the FormIt call
+## Шаг 2: Добавьте preHook в вызов FormIt
 
-Add `crawlerDetectBlock` to **preHooks**.
+В параметр **preHooks** добавьте `crawlerDetectBlock`.
 
 ::: code-group
 
@@ -22,13 +22,13 @@ Add `crawlerDetectBlock` to **preHooks**.
   &validate=`name:required,email:required:email`
   &redirectTo=`[[*id]]`
   &emailTo=`[[++emailsender]]`
-  &emailSubject=`Contact form`
+  &emailSubject=`Обратная связь`
 ]]
 [[+fi.validation_error_message]]
 <form action="[[~[[*id]]]]" method="post">
   <input type="text" name="name" value="[[+fi.name]]" />
   <input type="email" name="email" value="[[+fi.email]]" />
-  <button type="submit" name="submit">Submit</button>
+  <button type="submit" name="submit">Отправить</button>
 </form>
 ```
 
@@ -39,27 +39,27 @@ Add `crawlerDetectBlock` to **preHooks**.
   'validate' => 'name:required,email:required:email',
   'redirectTo' => $modx->resource->id,
   'emailTo' => $modx->getOption('emailsender'),
-  'emailSubject' => 'Contact form'
+  'emailSubject' => 'Обратная связь'
 ])}
 {$modx->getPlaceholder('fi.validation_error_message')}
 <form action="{$modx->makeUrl($modx->resource->id)}" method="post">
   <input type="text" name="name" value="{$modx->getPlaceholder('fi.name')}" />
   <input type="email" name="email" value="{$modx->getPlaceholder('fi.email')}" />
-  <button type="submit" name="submit">Submit</button>
+  <button type="submit" name="submit">Отправить</button>
 </form>
 ```
 
 :::
 
-The block message is shown via `[[+fi.validation_error_message]]` (MODX) or `{$modx->getPlaceholder('fi.validation_error_message')}` (Fenom). Set the text in [system settings](settings).
+Сообщение при блокировке ботом выводится через `[[+fi.validation_error_message]]` (MODX) или `{$modx->getPlaceholder('fi.validation_error_message')}` (Fenom). Текст задаётся в [системных настройках](settings).
 
-## Step 3: Save the page
+## Шаг 3: Сохраните страницу
 
-The form is now protected from bots.
+Форма защищена от ботов.
 
-## What’s next
+## Что дальше
 
-- [System settings](settings): block message text, logging
-- [Snippets](snippets/): `isCrawler` and `crawlerDetectBlock`
-- [Integration](integration): forms, hiding content, scenarios
-- [Troubleshooting](troubleshooting): forms not blocked, message missing
+- [Системные настройки](settings): текст сообщения, логирование
+- [Сниппеты](snippets/): `isCrawler` и `crawlerDetectBlock`
+- [Интеграция](integration): формы, скрытие контента, сценарии
+- [Решение проблем](troubleshooting): форма не блокируется, сообщение не видно

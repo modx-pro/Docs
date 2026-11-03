@@ -13,6 +13,7 @@ compatibility:
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
   { text: 'Системные настройки', link: 'settings' },
+  { text: 'Интеграция', link: 'integration' },
   {
     text: 'Сниппеты',
     link: 'snippets',
@@ -21,7 +22,7 @@ items: [
       { text: 'crawlerDetectBlock', link: 'snippets/crawlerDetectBlock' },
     ],
   },
-  { text: 'Интеграция', link: 'integration' },
+  { text: 'FAQ', link: 'faq' },
   { text: 'Решение проблем', link: 'troubleshooting' },
 ]
 ---
@@ -31,7 +32,7 @@ items: [
 
 ## Возможности
 
-- **Защита форм:** preHook FormIt блокирует отправку ботами
+- **Защита форм:** preHook FormIt блокирует отправку, когда бот пытается отправить форму
 - **Скрытие виджетов:** не показывать чат, аналитику и тяжёлые скрипты ботам
 - **Счётчики посетителей:** не учитывать ботов в «онлайн» и «просмотрах»
 
@@ -56,7 +57,7 @@ items: [
 
 Библиотека JayBizzle уже в пакете (`vendor/autoload.php`). `composer install` на сервере не нужен.
 
-При установке и обновлении пакет шлёт анонимную телеметрию на `https://metrics.modx.pro/` (без домена сайта).
+При установке и обновлении пакет отправляет анонимную телеметрию на `https://metrics.modx.pro/` (без домена сайта).
 
 После установки в **Элементы → Сниппеты** появятся `isCrawler` и `crawlerDetectBlock`.
 
