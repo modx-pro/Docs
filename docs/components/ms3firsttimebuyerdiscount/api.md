@@ -85,7 +85,7 @@ public function getPaidOrdersCountByContact(string $email, string $phone, int $e
 | `excludeOrderId` | int | ID заказа, который нужно исключить из подсчёта (`0` — не исключать) |
 
 Сравнение:
-- `email` — в lower-case
+- `email` — в нижнем регистре
 - `phone` — по нормализованным цифрам (для телефона используется tail-10 сопоставление через `LIKE`)
 
 **Возврат:** число заказов (0 и больше).
