@@ -140,7 +140,7 @@ Authorization: Bearer YOUR_API_KEY
 
 ---
 
-## GET /ads
+## GET /ads {#get-ads}
 
 | Параметр | Описание |
 |---|---|
@@ -162,15 +162,15 @@ Authorization: Bearer YOUR_API_KEY
 
 ## Позиции
 
-### GET /positions
+### GET /positions {#get-positions}
 
 Параметры: `sort` (`id`, `name`), `dir`, пагинация, `fields`. Строка: `clicks`.
 
-### GET /positions/{id}
+### GET /positions/{id} {#get-positions-id}
 
 + `ads_total`, `clicks`.
 
-### GET /positions/{id}/ads
+### GET /positions/{id}/ads {#get-positions-id-ads}
 
 Как `/ads` с `position={id}`.
 
@@ -190,13 +190,13 @@ Authorization: Bearer YOUR_API_KEY
 
 ---
 
-## GET /audit
+## GET /audit {#get-audit}
 
 `entity`, `action`, `sort` (default `id`), `dir` (default `DESC`), пагинация. REST: `username` = `rest-api`.
 
 ---
 
-## GET /templates
+## GET /templates {#get-templates}
 
 Preset‑шаблоны + `defaults_data`.
 
