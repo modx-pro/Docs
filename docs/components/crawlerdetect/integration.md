@@ -36,6 +36,10 @@ sequenceDiagram
 
 Сервис в PHP: `$modx->services->get('CrawlerDetect\\CrawlerDetectService')`. Методы: `isCrawler($ua = null)` и `getMatches()`. Без класса в vendor метод возвращает `false` без записи в журнал.
 
+::: warning
+При ошибке загрузки сервиса CrawlerDetect preHook возвращает `true` — форма отправляется. Fail‑open поведение обеспечивает доступность форм даже при проблемах с компонентом.
+:::
+
 ### Обычная форма (FormIt)
 
 Добавьте `crawlerDetectBlock` в `&preHooks` FormIt. Другие preHooks перечислите через запятую.
