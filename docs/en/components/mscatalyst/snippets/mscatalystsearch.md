@@ -66,3 +66,5 @@ Not logged:
 - Search engine bots and requests without a User-Agent header.
 
 A header search with `&searchPage` is logged on the results page that runs `msCatalyst`. The `mscatalyst_search_log` setting turns the log off. The table is created on install, and on a site updated by copying files, on the first search.
+
+msCatalyst deletes queries nobody repeated for 365 days. The `mscatalyst_search_log_days` setting sets the period, `0` keeps everything.

@@ -7,6 +7,18 @@ Before version 1.2.0 the component was called msFacets.
 - Search query log. Every catalog search is counted per query, catalog page and language: the number of searches, how many products the last search found and how many searches found nothing. Live suggestions, later result pages, bots and a repeat of the same query by the same visitor within 30 minutes are not counted.
 - Queries tab: totals, queries with no results, filter by catalog and substring, sorting, CSV download, clearing the log. "Check" opens the search tester with the query, "Add synonym" opens the synonyms tab.
 - The `mscatalyst_search_log` setting (on by default) turns the log off.
+- Product edits and syncs mark the index stale instead of dropping it. The new index is built in the background: after the response under PHP-FPM, or by a request the site sends itself on Apache with mod_php. Visitors keep the previous index until the build ends and do not wait. A missing index is built by one request, concurrent ones wait for it. `MsCatalyst::markStale($modx)` for imports outside MODX.
+- `table` mode index files are written to a temporary file and renamed, so nobody reads a half written file.
+- A `memory` index older than `mscatalyst_cache_lifetime` is rebuilt in the background like a stale one. An index the MODX cache refuses (Memcached 1 MB limit) goes to files with a warning in the log. Waiting for another request's build lasts twice the last build time, 60 to 300 seconds.
+- `connector.php` takes `parents`, `facets` and `searchFields` only with the new `mscatalyst_rest_params` setting, and only miniShop2 categories as `resource`. `lang` must be a site language. Search uses the first 8 words, live search the first 100 characters. The public demo admin builds test indexes only with the search fields and catalogs of the site.
+- Sync: a step that dies three times in a row (PHP memory or time limit) fails the run with a notice instead of being retried by cron forever. Errors of any type in one product are recorded as row errors. Read progress is saved with every staged batch, so a restarted step does not stage rows twice.
+- Sync: the run lock is extended while images download, the apply phase stops on time in the middle of a batch, `Retry-After` pauses last 30 seconds at most, two starts of one profile at the same moment create one run, a rollback in progress blocks new runs.
+- Sync: images above 20 MB are skipped, at most 20 new images per product per run (the next run loads the rest). ZIP entries are checked by the bytes actually unpacked. 1C exchange: files up to 2 GB, archives up to 4 GB and 100,000 entries.
+- Sync: runs and their change journal older than `mscatalyst_sync_keep_days` (90) are deleted, the three latest runs of a profile stay.
+- Search query log: queries nobody repeated for `mscatalyst_search_log_days` (365) are deleted.
+- Scheduled runs stop right after the download when the source file has not changed since the last successful run. Manual runs always go through.
+- Google Sheets export reads the sheet once per step instead of once per batch.
+- msCatalystSitemap caches its XML until products or landings change, or for `mscatalyst_cache_lifetime` seconds.
 
 ## 1.3.0-pl1
 
