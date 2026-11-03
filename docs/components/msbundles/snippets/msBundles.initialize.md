@@ -5,9 +5,9 @@ description: Подключение CSS и JS msBundles на витрине
 
 # msBundles.initialize
 
-Подключает ассеты витрины по порядку: `msbundles.css`, `msbundles-helpers.js`, `msbundles-cart.js`, `msbundles.js`. Перед скриптами выводит `window.msbundlesConfig` и `window.msbundlesLexicon`.
+Подключает ассеты витрины: `msbundles.css`, `msbundles-helpers.js`, `msbundles-cart.js`, `msbundles.js`. Перед скриптами выводит `window.msbundlesConfig` и `window.msbundlesLexicon`.
 
-Параметров нет. Вызывайте в `<head>` на страницах с карточками комплектов и корзиной. Без него кнопки добавления и стили не работают.
+Параметров нет. Вызывайте в `<head>` на страницах с карточками комплектов и корзиной. Без него кнопки и стили не работают.
 
 ## Пример
 
@@ -39,4 +39,4 @@ description: Подключение CSS и JS msBundles на витрине
 <script>window.msbundlesConfig = { confirmRemoveBundle: true };</script>
 ```
 
-Разбор корзины, data-атрибутов и темы: [Вывод на сайте](/components/msbundles/frontend#подключение-css-и-js). Карточки: [msBundles](msBundles).
+Разбор корзины и data-атрибутов: [Вывод на сайте](/components/msbundles/frontend#подключение-css-и-js). Карточки: [msBundles](msBundles).
