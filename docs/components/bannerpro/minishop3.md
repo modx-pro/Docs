@@ -70,7 +70,7 @@ BannerPro работает без MiniShop3. Если магазин устан�
 ]]
 :::
 
-Пакет ставит два чанка: `byAd` и `byHtml`. Карточка товара — свой `@FILE`-чанк с плейсхолдерами `product_*`:
+Пакет ставит два чанка: `byAd` и `byHtml`. Карточка товара использует собственный `@FILE`-чанк с плейсхолдерами `product_*`:
 
 ```fenom
 <a href="{$click_url|escape:'html'}" class="bannerpro-product">

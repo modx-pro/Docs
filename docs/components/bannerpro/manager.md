@@ -139,7 +139,7 @@ SplitButton **Новый баннер** → **Создать из шаблона
 | Элемент | Поведение |
 | --- | --- |
 | Сетка карточек | Preset из таблицы `bannerpro_ad_templates`: имя, тип (image/html), чанк `tpl` |
-| Выбор | Клик по карточке. Двойной клик — выбрать и подтвердить |
+| Выбор | Клик по карточке. Двойной клик выбирает и подтверждает |
 | Кнопки | **Отмена**, **Выбрать** (активна после выбора карточки) |
 
 После подтверждения connector вызывает `ads_create_from_template`, открывает форму баннера с заполненными полями и пишет запись в журнал (`create_from_template`). REST: `POST /ads/from-template` при включённой записи API.
@@ -398,7 +398,7 @@ Connector: `settings_integrations_get` / `settings_integrations_update`.
 
 Кнопка **Сохранить** пишет оба блока одним действием.
 
-Остальные ключи (кэш, аналитика, REST API, retention, боты, lazy-load) — в **Система → Настройки системы**, namespace `bannerpro`. Полный список: [Системные настройки](settings).
+Остальные ключи (кэш, аналитика, REST API, retention, боты, lazy-load) находятся в **Система → Настройки системы**, namespace `bannerpro`. Полный список: [Системные настройки](settings).
 
 ![Системные настройки — namespace bannerpro](/components/bannerpro/screenshots/settings-namespace.png)
 

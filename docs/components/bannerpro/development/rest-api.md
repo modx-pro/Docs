@@ -4,7 +4,7 @@ HTTP API для внешних систем: баннеры, позиции, с�
 
 **Версия:** 1.1.0 (`BANNERPRO_REST_VERSION`)
 **Точка входа:** `{site_url}assets/components/bannerpro/api.php`
-**OpenAPI:** [openapi.yaml](openapi.yaml)
+**OpenAPI:** [openapi.yaml](https://github.com/modx-pro/bannerpro/blob/main/docs/openapi.yaml)
 **Исходник маршрутов:** `core/components/bannerpro/include/rest.php`
 
 Отличие от **connector** менеджера (`connector.php`): REST не использует MODX‑сессию и ACL пользователя — только Bearer‑ключ. Запись в audit идёт от username `rest-api`.
@@ -267,7 +267,7 @@ bash _build/verify-rest-curl.sh
 ## См. также
 
 + [Системные настройки](../settings)
-+ [События MODX](../events)
++ [События MODX](events)
 + [FAQ](../faq)
-+ [OpenAPI‑описание](openapi.yaml)
-+ [Roadmap](../roadmap)
+
+OpenAPI‑описание и roadmap доступны в репозитории компонента: [BannerPro на GitHub](https://github.com/modx-pro/bannerpro).
