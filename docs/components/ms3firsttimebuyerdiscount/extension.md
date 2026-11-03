@@ -98,7 +98,7 @@ $modx->log(modX::LOG_LEVEL_INFO, sprintf(
 
 ## Константы и настройки
 
-В сервисе используются внутренние константы типов скидки: `percent`, `fixed`. Ключи настроек: `ftb_enabled`, `ftb_discount_type`, `ftb_discount_value`, `ftb_allow_combination`. Полный список и типы см. в [API](api#системные-настройки).
+В сервисе используются внутренние константы типов скидки: `percent`, `fixed`. Ключи настроек: `ftb_enabled`, `ftb_discount_type`, `ftb_discount_value`, `ftb_allow_combination`. Полный список и типы см. в [API](api#system-settings).
 
 ## Логирование
 

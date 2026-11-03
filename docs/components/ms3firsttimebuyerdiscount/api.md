@@ -85,8 +85,10 @@ public function getPaidOrdersCountByContact(string $email, string $phone, int $e
 | `excludeOrderId` | int | ID заказа для исключения из подсчёта (`0` — не исключать) |
 
 Сравнение:
+
 - `email` — в нижнем регистре
 - `phone` — по нормализованным цифрам (для телефона используется tail-10 сопоставление через `LIKE`)
+
 
 **Возврат:** число заказов (0 и больше).
 
@@ -168,7 +170,7 @@ public function apply(array $scriptProperties): ?float
 
 ---
 
-## Системные настройки
+## Системные настройки {#system-settings}
 
 Префикс: `ms3firsttimebuyerdiscount_`.
 
@@ -180,5 +182,6 @@ public function apply(array $scriptProperties): ?float
 | `ftb_allow_combination` | combo-boolean | true | Разрешить совмещение с уже применёнными скидками корзины |
 
 Связанные настройки MiniShop3:
+
 - `ms3_status_for_stat` — статусы оплаченных заказов (по умолчанию `2,3`)
 - `ms3_status_new` — добавляется в список учитываемых статусов как маркер первого заказа (по умолчанию `2`)
