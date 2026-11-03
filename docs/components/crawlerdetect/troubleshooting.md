@@ -33,38 +33,3 @@ title: Решение проблем
 ## Просмотр логов
 
 **Управление** → **Системный журнал**. При включённой настройке `crawlerdetect_log_blocked` заблокированные попытки попадают в лог. Строка: `HTTP_USER_AGENT` не длиннее 200 символов. Заголовки `HTTP_FROM` и `HTTP_SEC_CH_UA` в журнал не пишутся.
-
-## Часто задаваемые вопросы
-
-### Нужно ли запускать composer install на сервере?
-
-**Нет.** Зависимости уже в пакете. Установите CrawlerDetect через Менеджер пакетов.
-
-### Как обновить библиотеку JayBizzle/Crawler-Detect?
-
-Обновляйте пакет CrawlerDetect через Менеджер пакетов. В новой версии пакета уже новая библиотека. Отдельно на сервере её не обновляйте. В lockfile этой поставки стоит **jaybizzle/crawler-detect v1.3.11**.
-
-### Совместим ли CrawlerDetect с CAPTCHA?
-
-**Да.** Добавьте оба preHook в FormIt: CrawlerDetect и reCAPTCHA или другую CAPTCHA.
-
-- **MODX:** ``&preHooks=`crawlerDetectBlock,recaptcha` ``
-- **Fenom:** `'preHooks' => 'crawlerDetectBlock,recaptcha'`
-
-CrawlerDetect стоит первым в списке и отсечёт ботов до CAPTCHA.
-
-### Работает ли с AjaxForm?
-
-AjaxForm это альтернатива FormIt. CrawlerDetect работает через FormIt. Если AjaxForm вызывает FormIt на сервере, добавьте `crawlerDetectBlock` в preHooks FormIt.
-
-### Работает ли с SendIt?
-
-**Да.** SendIt использует FormIt. Параметры задаются в пресетах. Добавьте в пресет `'preHooks' => 'crawlerDetectBlock'`. При блокировке ботом SendIt вернёт ошибку и покажет сообщение из настроек CrawlerDetect. См. [Интеграция → AJAX-форма (SendIt)](/components/crawlerdetect/integration#ajax-форма-sendit).
-
-### Поддерживается ли MODX 2.x?
-
-**Нет.** Только MODX Revolution 3.x.
-
-### Можно ли добавить свой User-Agent в чёрный список?
-
-**Нет.** Список задаёт библиотека JayBizzle/Crawler-Detect. Своего чёрного или белого списка в пакете нет.

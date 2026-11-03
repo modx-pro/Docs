@@ -13,6 +13,7 @@ compatibility:
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
   { text: 'Системные настройки', link: 'settings' },
+  { text: 'Интеграция', link: 'integration' },
   {
     text: 'Сниппеты',
     link: 'snippets',
@@ -21,7 +22,7 @@ items: [
       { text: 'crawlerDetectBlock', link: 'snippets/crawlerDetectBlock' },
     ],
   },
-  { text: 'Интеграция', link: 'integration' },
+  { text: 'FAQ', link: 'faq' },
   { text: 'Решение проблем', link: 'troubleshooting' },
 ]
 ---
