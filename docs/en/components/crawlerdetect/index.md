@@ -1,6 +1,6 @@
 ---
 title: CrawlerDetect
-description: Detect bots from request headers and protect forms from spam without CAPTCHA
+description: Определение ботов по заголовкам запроса и защита форм от спама без CAPTCHA
 categories: other
 author: Ibochkarev
 logo: https://modstore.pro/assets/extras/crawlerdetect/logo.png
@@ -11,53 +11,54 @@ compatibility:
   - modx3
   - php82
 items: [
-  { text: 'Quick start', link: 'quick-start' },
-  { text: 'System settings', link: 'settings' },
+  { text: 'Быстрый старт', link: 'quick-start' },
+  { text: 'Системные настройки', link: 'settings' },
+  { text: 'Интеграция', link: 'integration' },
   {
-    text: 'Snippets',
+    text: 'Сниппеты',
     link: 'snippets',
     items: [
       { text: 'isCrawler', link: 'snippets/isCrawler' },
       { text: 'crawlerDetectBlock', link: 'snippets/crawlerDetectBlock' },
     ],
   },
-  { text: 'Integration', link: 'integration' },
-  { text: 'Troubleshooting', link: 'troubleshooting' },
+  { text: 'FAQ', link: 'faq' },
+  { text: 'Решение проблем', link: 'troubleshooting' },
 ]
 ---
 # CrawlerDetect
 
-Detects bots from request headers (User-Agent and the rest of the JayBizzle set) and blocks FormIt submits without CAPTCHA. Library: [JayBizzle/Crawler-Detect](https://github.com/JayBizzle/Crawler-Detect).
+Определяет ботов по заголовкам запроса (User-Agent и другие из набора JayBizzle) и блокирует отправку FormIt без CAPTCHA. Библиотека: [JayBizzle/Crawler-Detect](https://github.com/JayBizzle/Crawler-Detect).
 
-## Features
+## Возможности
 
-- **Form protection:** FormIt preHook blocks bot submits
-- **Hide widgets:** do not load chat, analytics, or heavy scripts for bots
-- **Visitor counts:** exclude bots from “online” and “views” counters
+- **Защита форм:** preHook FormIt блокирует отправку, когда бот пытается отправить форму
+- **Скрытие виджетов:** не показывать чат, аналитику и тяжёлые скрипты ботам
+- **Счётчики посетителей:** не учитывать ботов в «онлайн» и «просмотрах»
 
-## Requirements
+## Системные требования
 
-| Requirement | Version |
-|-------------|---------|
+| Требование | Версия |
+|------------|--------|
 | MODX Revolution | 3.x |
 | PHP | 8.2+ |
 
-## Dependencies
+## Зависимости
 
-- **FormIt:** form protection (preHook `crawlerDetectBlock`)
-- **FetchIt:** not required, for AJAX forms
-- **SendIt:** not required, for AJAX forms
+- **FormIt:** для защиты форм (preHook `crawlerDetectBlock`)
+- **FetchIt:** не обязателен, для AJAX-форм
+- **SendIt:** не обязателен, для AJAX-форм
 
-## Installation
+## Установка
 
-1. **Manage** → **Install packages**
-2. Find **CrawlerDetect** in the repository
-3. Click **Install**
+1. **Управление пакетами** → **Установить пакеты**
+2. Найдите **CrawlerDetect** в репозитории
+3. Нажмите **Установить**
 
-JayBizzle is already in the package (`vendor/autoload.php`). You do not need `composer install` on the server.
+Библиотека JayBizzle уже в пакете (`vendor/autoload.php`). `composer install` на сервере не нужен.
 
-On install and upgrade the package sends anonymous telemetry to `https://metrics.modx.pro/` (no site domain).
+При установке и обновлении пакет отправляет анонимную телеметрию на `https://metrics.modx.pro/` (без домена сайта).
 
-After install, **Elements → Snippets** will have `isCrawler` and `crawlerDetectBlock`.
+После установки в **Элементы → Сниппеты** появятся `isCrawler` и `crawlerDetectBlock`.
 
-Next: [Quick start](quick-start), [Integration](integration).
+Дальше: [Быстрый старт](quick-start), [Интеграция](integration).
