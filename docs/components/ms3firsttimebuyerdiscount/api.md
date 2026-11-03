@@ -89,7 +89,6 @@ public function getPaidOrdersCountByContact(string $email, string $phone, int $e
 - `email` — в нижнем регистре
 - `phone` — по нормализованным цифрам (для телефона используется tail-10 сопоставление через `LIKE`)
 
-
 **Возврат:** число заказов (0 и больше).
 
 ---
