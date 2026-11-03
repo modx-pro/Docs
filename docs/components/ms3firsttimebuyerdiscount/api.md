@@ -48,7 +48,7 @@ public function getPaidOrdersCount(int $userId, int $excludeOrderId = 0): int
 | Параметр | Тип | Описание |
 |----------|-----|----------|
 | `userId` | int | ID пользователя |
-| `excludeOrderId` | int | ID заказа, который нужно исключить из подсчёта (`0` — не исключать) |
+| `excludeOrderId` | int | ID заказа для исключения из подсчёта (`0` — не исключать) |
 
 **Возврат:** число заказов (0 и больше).
 
@@ -82,10 +82,10 @@ public function getPaidOrdersCountByContact(string $email, string $phone, int $e
 |----------|-----|----------|
 | `email` | string | Email гостя |
 | `phone` | string | Телефон гостя |
-| `excludeOrderId` | int | ID заказа, который нужно исключить из подсчёта (`0` — не исключать) |
+| `excludeOrderId` | int | ID заказа для исключения из подсчёта (`0` — не исключать) |
 
 Сравнение:
-- `email` — в lower-case
+- `email` — в нижнем регистре
 - `phone` — по нормализованным цифрам (для телефона используется tail-10 сопоставление через `LIKE`)
 
 **Возврат:** число заказов (0 и больше).
@@ -180,5 +180,5 @@ public function apply(array $scriptProperties): ?float
 | `ftb_allow_combination` | combo-boolean | true | Разрешить совмещение с уже применёнными скидками корзины |
 
 Связанные настройки MiniShop3:
-- `ms3_status_for_stat` — статусы оплаченных заказов
-- `ms3_status_new` — добавляется в список учитываемых статусов как маркер первого заказа
+- `ms3_status_for_stat` — статусы оплаченных заказов (по умолчанию `2,3`)
+- `ms3_status_new` — добавляется в список учитываемых статусов как маркер первого заказа (по умолчанию `2`)
