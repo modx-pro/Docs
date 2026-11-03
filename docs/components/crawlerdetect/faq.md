@@ -13,11 +13,11 @@ title: Часто задаваемые вопросы
 
 ## Совместим ли CrawlerDetect с CAPTCHA?
 
-**Да.** Добавьте оба preHook в FormIt: CrawlerDetect и reCAPTCHA или другую CAPTCHA.
+**Да.** Добавьте два preHook'а в FormIt: CrawlerDetect и reCAPTCHA или другую CAPTCHA.
 
 ## Работает ли с AjaxForm?
 
-AjaxForm — альтернатива FormIt. CrawlerDetect работает через FormIt. Если AjaxForm вызывает FormIt на сервере, добавьте `crawlerDetectBlock` в `&preHooks` FormIt.
+AjaxForm, альтернатива FormIt, CrawlerDetect работает через FormIt. Если AjaxForm вызывает FormIt на сервере, добавьте `crawlerDetectBlock` в `&preHooks` FormIt.
 
 ## Работает ли с SendIt?
 

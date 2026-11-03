@@ -8,8 +8,8 @@ title: Интеграция
 ### Как это работает
 
 1. Пользователь отправляет форму.
-2. FormIt вызывает preHook `crawlerDetectBlock` **до** валидации и отправки.
-3. Если `isCrawler` считает запрос ботом (заголовки JayBizzle, не только User-Agent), форма не обрабатывается. Показывается сообщение из настройки.
+2. FormIt запускает preHook `crawlerDetectBlock` **до** валидации и отправки.
+3. Если `isCrawler` определяет запрос как бот (заголовки JayBizzle, не только User-Agent), форма не обрабатывается. Показывается сообщение из настройки.
 4. Если человек, форма обрабатывается как обычно.
 
 ```mermaid
@@ -37,12 +37,12 @@ sequenceDiagram
 Сервис в PHP: `$modx->services->get('CrawlerDetect\\CrawlerDetectService')`. Методы: `isCrawler($ua = null)` и `getMatches()`. Без класса в vendor метод возвращает `false` без записи в журнал.
 
 ::: warning
-При ошибке загрузки сервиса CrawlerDetect preHook возвращает `true` — форма отправляется. Fail‑open поведение обеспечивает доступность форм даже при проблемах с компонентом.
+При ошибке загрузки сервиса CrawlerDetect preHook возвращает `true`, форма отправляется. Fail‑open поведение обеспечивает доступность форм даже при проблемах с компонентом.
 :::
 
 ### Обычная форма (FormIt)
 
-Добавьте `crawlerDetectBlock` в `&preHooks` FormIt. Другие preHooks перечислите через запятую.
+Включите `crawlerDetectBlock` в параметр `&preHooks` FormIt. Другие preHooks перечислите через запятую.
 
 ::: code-group
 
@@ -131,11 +131,11 @@ return [
 
 ### Контактная форма
 
-Добавьте `crawlerDetectBlock` в preHooks FormIt. См. [Быстрый старт](quick-start).
+Включите `crawlerDetectBlock` в preHooks FormIt. См. [Быстрый старт](quick-start).
 
 ### Несколько форм на сайте
 
-В каждом вызове FormIt добавьте `crawlerDetectBlock` в `&preHooks`.
+В каждом вызове FormIt включите `crawlerDetectBlock` в `&preHooks`.
 
 ### Счётчик «N человек на сайте»
 
@@ -159,7 +159,7 @@ return [
 
 Те же шаги, что у [AJAX-формы (FetchIt)](#ajax-форма-fetchit).
 
-### E-commerce — «Смотрят этот товар»
+### E-commerce: счётчик «Смотрят этот товар»
 
 Не учитывать ботов в счётчике просмотров товара:
 

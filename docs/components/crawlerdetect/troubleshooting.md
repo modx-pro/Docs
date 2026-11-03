@@ -25,7 +25,7 @@ title: Решение проблем
 
 ## Ложные срабатывания (человека блокируют)
 
-Бывает при нестандартном User-Agent.
+Ложные срабатывания часто вызываются нестандартным User-Agent.
 
 1. Временно отключите `crawlerDetectBlock` или проверьте логи.
 2. Пришлите User-Agent в [репозиторий CrawlerDetect](https://github.com/Ibochkarev/CrawlerDetect). Библиотека [JayBizzle/Crawler-Detect](https://github.com/JayBizzle/Crawler-Detect) обновляется.
