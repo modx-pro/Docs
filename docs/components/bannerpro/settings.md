@@ -10,10 +10,11 @@ description: "Настройки BannerPro: кэш, клики, показы, UT
 ![Системные настройки — bannerpro](/components/bannerpro/screenshots/settings-namespace.png)
 
 Часть ключей (UTM, webhook, A/B TTL) редактируется и во вкладке **Компоненты → BannerPro → Настройки** через connector actions:
-- `settings_utm_get` / `settings_utm_update` — чтение и запись UTM-параметров
+
+- `settings_utm_get` / `settings_utm_update` — чтение и запись UTM‑параметров
 - `settings_integrations_get` / `settings_integrations_update` — webhook, `ab_ttl`, аналитика
 
-Остальные ключи — только здесь.
+Остальные ключи редактируются только здесь.
 
 ## Кэш
 
@@ -178,7 +179,7 @@ URL должен быть `http://` или `https://`. Запрещены `local
 | --- | --- | --- | --- |
 | `bannerpro_ab_ttl` | numberfield | `30` | Срок cookie `bannerpro_ab_{positionId}` при `&sortby=ab` (дней) |
 
-Подробнее: [Интеграция](integration#a-b-split).
+Подробнее: [Интеграция](integration#ab-delenie).
 
 ## Права доступа
 
