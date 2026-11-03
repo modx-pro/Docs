@@ -26,7 +26,7 @@ curl -s -H "Authorization: Bearer ${KEY}" "${API}?route=/stats/summary&period=to
 
 ---
 
-## Включение {#vkluchenie}
+## Включение
 
 1. **Система → Настройки системы** → namespace `bannerpro`.
 2. **`bannerpro_api_enabled`** = **Да**.
@@ -45,7 +45,7 @@ curl -s -H "Authorization: Bearer ${KEY}" "${API}?route=/stats/summary&period=to
 
 ---
 
-## Маршрутизация {#marshrutizaciya}
+## Маршрутизация
 
 ```text
 https://example.com/assets/components/bannerpro/api.php?route=/ads&limit=10
@@ -62,7 +62,7 @@ https://example.com/assets/components/bannerpro/api.php?route=/ads&limit=10
 
 ---
 
-## Сводная таблица маршрутов {#svodnaya-tablitsa}
+## Сводная таблица маршрутов
 
 | Метод | Маршрут | Write | Описание |
 |---|---|---|---|
@@ -90,7 +90,7 @@ CRUD **позиций** через REST не реализован.
 
 ---
 
-## Аутентификация {#autentifikatsiya}
+## Аутентификация
 
 ```http
 Authorization: Bearer YOUR_API_KEY
@@ -117,7 +117,7 @@ Authorization: Bearer YOUR_API_KEY
 
 ---
 
-## Формат ответа {#format-otveta}
+## Формат ответа
 
 ```json
 { "success": true, "data": {}, "total": 0 }
@@ -125,7 +125,7 @@ Authorization: Bearer YOUR_API_KEY
 
 Ошибка: `{ "success": false, "message": "..." }`.
 
-### Пагинация {#paginatsiya}
+### Пагинация
 
 | Параметр | Default | Max |
 |---|---|---|
@@ -160,7 +160,7 @@ Authorization: Bearer YOUR_API_KEY
 
 ---
 
-## Позиции {#pozitsii}
+## Позиции
 
 ### GET /positions
 
@@ -176,7 +176,7 @@ Authorization: Bearer YOUR_API_KEY
 
 ---
 
-## Статистика {#statistika}
+## Статистика
 
 Общие параметры: `period` (default `all`), `from`, `to`, `position` (0 = все).
 
