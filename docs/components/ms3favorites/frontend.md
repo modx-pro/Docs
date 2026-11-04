@@ -18,11 +18,30 @@ CSS, JS и inline `ms3fLexicon` / `ms3fConfig` по умолчанию подк�
 
 ## Коннектор (AJAX) {#connector-ajax}
 
-<!-- MEDIA: diagram | nice | Схема потока запросов: браузер → connector.php → обработчик (PHP) → ответ JSON/HTML | Показать последовательность: POST-запрос → проверка X-Requested-With → маршрутизация action → handler → JSON/HTML ответ -->
-
 **URL:** `assets/components/ms3favorites/connector.php`
 
 **Метод:** POST. Любое действие принимает `cultureKey` (язык лексикона ответа). Имя списка передаётся как `list` или `list_name`.
+
+```mermaid
+sequenceDiagram
+    participant Browser as Браузер (JS)
+    participant Connector as connector.php
+    participant Handler as Обработчик (PHP)
+    participant DB as База данных
+
+    Browser->>Connector: POST action + данные<br/>X-Requested-With: XMLHttpRequest
+    Connector->>Connector: Проверка X-Requested-With<br/>(для state-changing действий)
+    alt Заголовок отсутствует
+        Connector-->>Browser: { success: false,<br/>error: "Invalid request" }
+    else Заголовок OK
+        Connector->>Connector: Маршрутизация по action
+        Connector->>Handler: Вызов функции<br/>ms3f_handle_{action}()
+        Handler->>DB: Чтение/запись данных
+        DB-->>Handler: Результат
+        Handler-->>Connector: Массив для JSON
+        Connector-->>Browser: JSON или HTML
+    end
+```
 
 ::: warning Обязательный заголовок для изменяющих действий
 Действия `sync`, `create_share`, `copy_share`, `update_comment`, `add_to_cart`, `clear` принимаются только с заголовком `X-Requested-With: XMLHttpRequest`. Без него коннектор отвечает `{ "success": false, "error": "Invalid request" }`. Ограничение не касается `get_share`, `get_popularity` и HTML-отрисовки списка.
