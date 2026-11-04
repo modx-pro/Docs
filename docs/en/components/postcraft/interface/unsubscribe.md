@@ -4,9 +4,16 @@ The `{{ unsubscribe }}` link takes the recipient to a confirmation page. The Uns
 
 ## Site and language
 
-The top of the tab selects a site and language. Each pair has its own texts. Languages come from MODX contexts: `cultureKey` sets the language, `site_url` the address. The language whose `site_url` matches the site root opens without a prefix, the others with one: `/en/unsubscribe/{token}`.
+The top of the tab selects a site and language. Each pair has its own texts. PostCraft builds the language list this way:
 
-Ready texts exist for English, Russian, Spanish, Portuguese, French and Arabic. The Arabic page renders right to left.
+- with Localizator, from its active languages: `cultureKey` sets the language, `http_host` the address;
+- without Localizator, from MODX contexts, as in Babel: `cultureKey` sets the language, `site_url` the address.
+
+The language whose address matches the site root opens without a prefix, the others with one: `/en/unsubscribe/{token}`.
+
+PostCraft ships ready Russian and English texts. Other languages get an English draft, and a "Draft" notice sits above the fields. Translate the texts and save the page to clear the notice. Until you save, visitors see the English version. PostCraft renders the Arabic page right to left.
+
+HTML fields open in the editor from the `which_editor` setting: CKEditor or TinyMCE RTE. Without an editor you get a plain HTML field.
 
 ## Page states
 

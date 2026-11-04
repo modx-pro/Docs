@@ -29,7 +29,7 @@ items: [
 
 PostCraft sends email campaigns right from the MODX manager. You build a letter from a chunk, paste addresses or take them from FormIt submissions, and pick a day and hours. Cron spreads the letters over that window, and the stats show opens, clicks, unsubscribes and bounces.
 
-You need no external mailing service: letters go out through the server mail or your SMTP. Babel is not needed either, PostCraft takes unsubscribe page languages from MODX contexts.
+You need no external mailing service: letters go out through the server mail or your SMTP. PostCraft takes unsubscribe page languages from Localizator, or from MODX contexts as in Babel when Localizator is absent.
 
 ## Features
 

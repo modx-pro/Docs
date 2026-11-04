@@ -35,7 +35,7 @@ Sites are listed in the `postcraft_sites` system setting (JSON). On install Post
 | `label` | name in the manager lists |
 | `base` | site URL for letter links |
 | `domains` | email domains that belong to this site |
-| `langs_source` | `contexts`: languages come from the MODX contexts of this site |
+| `langs_source` | `contexts`: languages come from Localizator or the MODX contexts of this site |
 | `langs` | edge site languages by hand: key, label and the home URL if needed |
 
 Then add a mailbox with an address on that domain. Unsubscribe pages for the new site appear on the Unsubscribe page tab.
