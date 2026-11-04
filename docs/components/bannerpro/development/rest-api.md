@@ -269,5 +269,5 @@ bash _build/verify-rest-curl.sh
 + [Системные настройки](../settings)
 + [События MODX](events.md)
 + [FAQ](../faq)
-+ [OpenAPI‑описание](openapi.yaml)
++ OpenAPI‑описание — в разработке
 + Roadmap пока недоступен
