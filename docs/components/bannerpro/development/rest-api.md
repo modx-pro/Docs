@@ -271,3 +271,5 @@ bash _build/verify-rest-curl.sh
 + [FAQ](../faq)
 + OpenAPI‑описание — в разработке
 + Roadmap пока недоступен
+
+<!-- force rebuild -->
