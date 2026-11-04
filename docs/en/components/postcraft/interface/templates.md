@@ -23,7 +23,7 @@ The editor follows the `which_editor` system setting:
 | TinyMCE RTE | TinyMCE |
 | empty | HTML field |
 
-The preview shows the letter in three widths: phone, tablet, desktop. Refresh preview redraws it after edits, Save template writes the chunk.
+The preview shows the letter in two widths: Phones and Desktop. Refresh preview redraws it after edits, Save template writes the chunk.
 
 ## Placeholders
 
