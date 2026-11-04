@@ -4,14 +4,14 @@ HTTP API для внешних систем: баннеры, позиции, с�
 
 **Версия:** 1.1.0 (`BANNERPRO_REST_VERSION`)
 **Точка входа:** `{site_url}assets/components/bannerpro/api.php`
-**OpenAPI:** [openapi.yaml](openapi.yaml)
+**OpenAPI:** [Схема API](https://example.com/openapi.yaml)
 **Исходник маршрутов:** `core/components/bannerpro/include/rest.php`
 
 Отличие от **connector** менеджера (`connector.php`): REST не использует MODX‑сессию и ACL пользователя — только Bearer‑ключ. Запись в audit идёт от username `rest-api`.
 
 ---
 
-## Быстрый старт
+## Быстрый старт {#bystryy-start}
 
 ```bash
 API="https://example.com/assets/components/bannerpro/api.php"
@@ -26,7 +26,7 @@ curl -s -H "Authorization: Bearer ${KEY}" "${API}?route=/stats/summary&period=to
 
 ---
 
-## Включение
+## Включение {#vkluchenie}
 
 1. **Система → Настройки системы** → namespace `bannerpro`.
 2. **`bannerpro_api_enabled`** = **Да**.
@@ -45,7 +45,7 @@ curl -s -H "Authorization: Bearer ${KEY}" "${API}?route=/stats/summary&period=to
 
 ---
 
-## Маршрутизация
+## Маршрутизация {#marshrutizatsiya}
 
 ```text
 https://example.com/assets/components/bannerpro/api.php?route=/ads&limit=10
@@ -62,7 +62,7 @@ https://example.com/assets/components/bannerpro/api.php?route=/ads&limit=10
 
 ---
 
-## Сводная таблица маршрутов
+## Сводная таблица маршрутов {#svodnaya-tablitsa}
 
 | Метод | Маршрут | Write | Описание |
 |---|---|---|---|
@@ -90,7 +90,7 @@ CRUD **позиций** через REST не реализован.
 
 ---
 
-## Аутентификация
+## Аутентификация {#avtentifikatsiya}
 
 ```http
 Authorization: Bearer YOUR_API_KEY
@@ -117,7 +117,7 @@ Authorization: Bearer YOUR_API_KEY
 
 ---
 
-## Формат ответа
+## Формат ответа {#format-otveta}
 
 ```json
 { "success": true, "data": {}, "total": 0 }
@@ -125,7 +125,7 @@ Authorization: Bearer YOUR_API_KEY
 
 Ошибка: `{ "success": false, "message": "..." }`.
 
-### Пагинация
+### Пагинация {#paginatsiya}
 
 | Параметр | Default | Max |
 |---|---|---|
@@ -160,7 +160,7 @@ Authorization: Bearer YOUR_API_KEY
 
 ---
 
-## Позиции
+## Позиции {#pozitsii}
 
 ### GET /positions
 
@@ -176,7 +176,7 @@ Authorization: Bearer YOUR_API_KEY
 
 ---
 
-## Статистика
+## Статистика {#statistika}
 
 Общие параметры: `period` (default `all`), `from`, `to`, `position` (0 = все).
 
@@ -244,7 +244,7 @@ Audit: `update`.
 
 ---
 
-## Безопасность
+## Безопасность {#bezopasnost}
 
 + Write выключен по умолчанию.
 + Не передавайте ключ во frontend.
@@ -264,10 +264,10 @@ bash _build/verify-rest-curl.sh
 
 ---
 
-## См. также
+## См. также {#sm-takzhe}
 
 + [Системные настройки](../settings)
-+ [События MODX](../events)
++ [События MODX](events.md)
 + [FAQ](../faq)
 + [OpenAPI‑описание](openapi.yaml)
-+ [Roadmap](../roadmap)
++ Roadmap пока недоступен
