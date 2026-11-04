@@ -312,6 +312,8 @@
     "linkautocomplete",
     "listyesno",
     "liveupdate",
+    "llms",
+    "llmsforge",
     "localizator",
     "longtitle",
     "lookupId",
