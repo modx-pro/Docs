@@ -25,7 +25,7 @@ The Do not resend to addresses that already got this letter checkbox skips addre
 
 ## Time
 
-Letters go out on the chosen day between From and To in the [site time zone](../settings). Inside the window PostCraft picks the hour for each address from its opens and clicks over the last 90 days. A new address gets the hour when all recipients open letters most often, or 10:00 without any history. If that hour falls outside the window, the letter gets a random time inside it.
+Letters go out on the chosen day between From and To in the [site time zone](../settings). An address with no open history of its own is spread evenly across the window. An address with opens or clicks over the last 90 days gets its usual hour inside the range. If that hour falls outside the window, the address joins the even spread.
 
 Send to everyone now turns off the date and hours: letters go out with the next cron run.
 
