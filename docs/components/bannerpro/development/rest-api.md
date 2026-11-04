@@ -11,7 +11,7 @@ HTTP API для внешних систем: баннеры, позиции, с�
 
 ---
 
-## Быстрый старт
+## Быстрый старт {#bystryy-start}
 
 ```bash
 API="https://example.com/assets/components/bannerpro/api.php"
