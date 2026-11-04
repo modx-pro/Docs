@@ -57,6 +57,7 @@ items: [
     text: 'История версий',
     link: 'changelog/',
     items: [
+      { text: '1.1.0-beta1', link: 'changelog/1.1.0-beta1' },
       { text: '1.0.0-beta1', link: 'changelog/1.0.0-beta1' },
     ],
   },
@@ -89,18 +90,16 @@ categories: discounts
 
 ## Системные требования
 
-| Требование       | Версия      |
-|------------------|-------------|
-| MODX Revolution  | 3.0+        |
-| MiniShop3        | 1.10+       |
-| PHP              | 8.2+        |
-| MySQL / MariaDB  | 8.0+ / 10.3+|
+Зависимости декларированы в transport-пакете с 1.1.0-beta1 — Package Manager откажет на установке, если минимумы не выполнены.
 
-### Зависимости
-
-- **MiniShop3** — основа магазина: корзина и заказы.
-- **pdoTools** — отрисовка фронтенд-чанка через Fenom.
-- **[VueTools](/components/vuetools/)** — админ-панель.
+| Требование                          | Версия              | Для чего нужен                                         |
+|-------------------------------------|---------------------|--------------------------------------------------------|
+| MODX Revolution                     | 3.0+                | Ядро                                                   |
+| PHP                                 | 8.2+                | Backend компонента                                     |
+| MySQL / MariaDB                     | 8.0+ / 10.3+        | БД                                                     |
+| [MiniShop3](/components/minishop3/) | 1.13.0-beta1+       | Корзина и заказы, MS3 Router, middleware               |
+| pdoTools                            | 3.0.0+              | Fenom-рендер фронтенд-чанка                            |
+| [VueTools](/components/vuetools/)   | 1.2.0+              | Vue-админка через Import Map, тема `vuetools.theme`    |
 
 ## Установка
 
