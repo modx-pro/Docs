@@ -56,7 +56,7 @@ items: [
 
 **ms3Discounts** для [MODX Revolution 3](https://modx.com/) и [MiniShop3](/components/minishop3/): правила скидок в панели управления и пересчёт `price` / `cost` в draft-корзине.
 
-Промокоды в пакет не входят. Купоны подключает внешний модуль через сервис `ms3discounts_activator`.
+Пакет не включает встроенные промокоды: их активацию осуществляют внешние модули через сервис `ms3discounts_activator`.
 
 ## Минимальный путь
 
