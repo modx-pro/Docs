@@ -15,7 +15,7 @@ flowchart LR
 
 ## Шаг 1. Установите пакет
 
-1. Установите MiniShop3 1.13.0 и новее, VueTools 1.2.0 и новее. Для стандартных Fenom-чанков установите pdoTools 3.0.0 и новее.
+1. Установите MiniShop3 ≥1.13.0, VueTools ≥1.2.0. Для стандартных Fenom-чанков установите pdoTools ≥3.0.0.
 2. Установите ms3Discounts через менеджер пакетов. [Подключите репозиторий ModStore](https://modstore.pro/info/connection): transport зашифрован, без провайдера `modstore.pro` установка падает с `Package provider not found`.
 3. Очистите кэш MODX.
 
