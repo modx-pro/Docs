@@ -166,7 +166,7 @@ Authorization: Bearer YOUR_API_KEY
 
 Параметры: `sort` (`id`, `name`), `dir`, пагинация, `fields`. Строка: `clicks`.
 
-### GET /positions/{id}
+### GET /positions/\{id\}
 
 + `ads_total`, `clicks`.
 
@@ -216,7 +216,7 @@ Preset‑шаблоны + `defaults_data`.
 
 Параметр **`positions`** — массив ID позиций (`[1,2,3]`) или CSV (`"1,2,3"`). Пустой массив `[]` не привязывает баннер к позициям.
 
-### PATCH /ads/{id}
+### PATCH /ads/\{id\}
 
 | `positions` | Поведение |
 |---|---|
@@ -271,5 +271,3 @@ bash _build/verify-rest-curl.sh
 + [FAQ](../faq)
 + OpenAPI‑описание — в разработке
 + Roadmap пока недоступен
-
-<!-- force rebuild -->
