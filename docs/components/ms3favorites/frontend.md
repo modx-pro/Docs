@@ -18,6 +18,8 @@ CSS, JS и inline `ms3fLexicon` / `ms3fConfig` по умолчанию подк�
 
 ## Коннектор (AJAX) {#connector-ajax}
 
+<!-- MEDIA: diagram | nice | Схема потока запросов: браузер → connector.php → обработчик (PHP) → ответ JSON/HTML | Показать последовательность: POST-запрос → проверка X-Requested-With → маршрутизация action → handler → JSON/HTML ответ -->
+
 **URL:** `assets/components/ms3favorites/connector.php`
 
 **Метод:** POST. Любое действие принимает `cultureKey` (язык лексикона ответа). Имя списка передаётся как `list` или `list_name`.
