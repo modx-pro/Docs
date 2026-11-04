@@ -29,7 +29,9 @@ The Do not resend to addresses that already got this letter checkbox skips addre
 
 Letters go out on the chosen day between From and To in the [site time zone](../settings). An address with no open history of its own is spread evenly across the window. An address with opens or clicks over the last 90 days gets its usual hour inside the range. If that hour falls outside the window, the address joins the even spread.
 
-Send to everyone now turns off the date and hours: letters go out with the next cron run.
+Rate limits on the From mailbox (hour / day / batch and warm-up) always apply. When the list exceeds the daily cap, the queue continues on the following days in the same hour window. An estimate appears under the time fields. Set limits on the mailbox (gear icon) or in [system settings](../settings).
+
+“Start sending now” begins from this moment under the same caps: letters past the quota leave later, not all at once.
 
 ## Buttons
 
@@ -42,7 +44,7 @@ Send to everyone now turns off the date and hours: letters go out with the next 
 |---|---|
 | Scheduled | waits for its window |
 | Sending | cron sends letters |
-| Paused | no letters until Resume |
+| Paused | no letters until Resume. Auto-pause (SMTP limit, failure streak, bounce rate) shows the reason on the campaign card |
 | Cancelled | unsent letters will not go out |
 | Done | the queue is empty |
 
