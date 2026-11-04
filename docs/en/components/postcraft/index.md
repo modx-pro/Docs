@@ -33,7 +33,7 @@ You need no external mailing service: letters go out through the server mail or 
 
 ## Features
 
-- A letter template lives in a `PostCraft.*` chunk. HTML or visual editor (CKEditor, TinyMCE RTE), preview for phone and desktop.
+- A letter template lives in a `PostCraft.*` chunk. HTML or visual editor (CKEditor, TinyMCE RTE), phone/desktop preview on Templates, Campaign and Unsubscribe.
 - Recipients: a list of addresses, saved lists, unique emails from FormIt submissions. Duplicates are dropped, blacklisted addresses are always skipped.
 - Send window: a date and hours from/to in the site time zone. First send without stats is spread evenly across the window; later sends follow that address’s opens.
 - Pause, resume, cancel and edit a scheduled campaign: subject, preheader, window, addresses, text.

@@ -4,6 +4,8 @@ The tab builds a new campaign from three blocks: letter, recipients, time.
 
 ## Letter
 
+On the left: subject, preview text, unsubscribe language, From and Reply-To. On the right: the template picker and a phone/desktop preview of that template’s HTML, same as on Templates. Changing the template refreshes the preview at once.
+
 | Field | Meaning |
 |---|---|
 | Email template | a `PostCraft.*` chunk. Its text is copied into the campaign when it is queued |

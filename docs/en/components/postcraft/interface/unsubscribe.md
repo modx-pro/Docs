@@ -15,6 +15,8 @@ PostCraft ships ready Russian and English texts. Other languages get an English 
 
 HTML fields open in the editor from the `which_editor` setting: CKEditor or TinyMCE RTE. Without an editor you get a plain HTML field.
 
+On the right is a live preview, same idea as Templates: pick which screen to show (confirm, unsubscribed, public form, after subscribe, invalid link) and phone or desktop width. Placeholders in the preview get sample values.
+
 ## Page states
 
 | Field | Shown when |
