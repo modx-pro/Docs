@@ -2,11 +2,15 @@
 
 ## Шаг 1: Установка
 
-Установите пакет через **Extras → Installer**. Package Manager не проверит зависимости — убедитесь заранее, что они стоят ([issue #4](https://github.com/biz87/ms3PromoCode/issues/4)):
+Установите пакет через **Extras → Installer**. С 1.1.0-beta1 Package Manager сам откажет на несовместимых версиях; для уверенности обновите зависимости заранее:
 
-- MiniShop3
-- pdoTools
-- VueTools
+| Пакет     | Минимум        | Для чего нужен                                                    |
+|-----------|----------------|-------------------------------------------------------------------|
+| PHP       | 8.2            | Весь backend компонента                                           |
+| MODX      | 3.0.0          | Ядро                                                              |
+| MiniShop3 | 1.13.0-beta1   | Response envelope + `RateLimitStoreFactory` в MS3 Router          |
+| pdoTools  | 3.0.0          | FQN `ModxPro\PdoTools\Fetch` в сниппете `ms3PromoCodeForm`         |
+| VueTools  | 1.2.0          | `@vuetools/useTheme` + ключ `vuetools/theme` в Import Map         |
 
 Phinx-миграции отработают автоматически и создадут таблицы `modx_ms3_promo_codes` и `modx_ms3_promo_code_usages`.
 
