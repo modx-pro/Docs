@@ -4,7 +4,7 @@ HTTP API для внешних систем: баннеры, позиции, с�
 
 **Версия:** 1.1.0 (`BANNERPRO_REST_VERSION`)
 **Точка входа:** `{site_url}assets/components/bannerpro/api.php`
-**OpenAPI:** [Схема API](https://example.com/openapi.yaml)
+**OpenAPI:** спецификация в разработке
 **Исходник маршрутов:** `core/components/bannerpro/include/rest.php`
 
 Отличие от **connector** менеджера (`connector.php`): REST не использует MODX‑сессию и ACL пользователя — только Bearer‑ключ. Запись в audit идёт от username `rest-api`.
