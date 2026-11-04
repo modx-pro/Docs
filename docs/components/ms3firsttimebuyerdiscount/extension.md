@@ -98,7 +98,7 @@ $modx->log(modX::LOG_LEVEL_INFO, sprintf(
 
 ## Константы и настройки
 
-В сервисе используются внутренние константы типов скидки: `percent`, `fixed`. Ключи настроек: `ftb_enabled`, `ftb_discount_type`, `ftb_discount_value`, `ftb_allow_combination`. Полный список и типы см. в [API](api#системные-настройки).
+В сервисе используются внутренние константы типов скидки: `percent`, `fixed`. Ключи настроек: `ftb_enabled`, `ftb_discount_type`, `ftb_discount_value`, `ftb_allow_combination`. Полный список и типы см. в [API](api#system-settings).
 
 ## Логирование
 
@@ -109,3 +109,7 @@ $modx->log(modX::LOG_LEVEL_INFO, sprintf(
 - **Сообщение:** `[FTB] Applied: user_id=..., discount=..., cost_before=..., cost_after=...`
 
 Ошибки (например, сервис недоступен) логируются с уровнем ERROR и той же категорией `ftb`.
+
+## Сбор метрик
+
+При установке и обновлении компонент отправляет обезличенную статистику на `metrics.modx.pro` для улучшения качества дополнений. Передаются: версии PHP, MODX, MiniShop3, язык сайта (`cultureKey`), количество контекстов, версия БД, ОС, веб-сервер.
