@@ -23,12 +23,12 @@ flowchart LR
 ```
 
 1. На чекауте выбор сохраняется в `properties.msyandexdelivery`.
-2. В менеджере на вкладке заказа вы вызываете **Create** → Platform `offers/create`.
+2. В менеджере на вкладке заказа нажмите **Create** → Platform `offers/create`.
 3. **Confirm** → `offers/confirm` с `offer_id`.
 4. **Refresh status** → `request/info`.
 5. **Отменить** → `request/cancel` (пока заявка ещё не у курьера).
 
-Push-уведомлений (webhook) **нет**. Other-day API их не даёт. Статус обновляйте опросом вручную или пакетно.
+Push-уведомлений (webhook) **нет**. Other-day API не поддерживает webhook. Статус обновляйте опросом вручную или пакетно.
 
 Данные заявки хранятся в таблице **`msyandex_requests`** (модель `msydRequest`) и в properties заказа.
 
@@ -44,11 +44,13 @@ Push-уведомлений (webhook) **нет**. Other-day API их не даё
 
 ## Опрос статусов
 
-Пакетный опрос подтягивает актуальные статусы из Яндекс Доставки для активных заявок. Завершённые (доставлена, отменена, возвращена, ошибка) пропускаются. В первую очередь обновляются заявки, которые давно не синхронизировались.
+Компонент получает актуальные статусы из Яндекс Доставки для активных заявок. Завершённые (доставлена, отменена, возвращена, ошибка) пропускаются. В первую очередь обновляются заявки с наименьшим временем последней синхронизации.
 
-После каждого изменения статус сохраняется в карточке заказа MiniShop3. Чтобы автоматически менять статус заказа или слать уведомления, подключите плагин на событие смены статуса (см. ниже).
+После каждого изменения статус сохраняется в карточке заказа MiniShop3. Для автоматической смены статуса заказа или отправки уведомлений подключите плагин на событие смены статуса (см. ниже).
 
 ### Scheduler
+
+<!-- MEDIA: скриншот scheduler задачи sync_statuses | админка MODX, Scheduler → Файл задачи → путь core/components/msyandexdelivery/elements/tasks/sync_statuses.php -->
 
 Файл задачи: `core/components/msyandexdelivery/elements/tasks/sync_statuses.php`
 
@@ -59,7 +61,9 @@ Push-уведомлений (webhook) **нет**. Other-day API их не даё
 
 ### Cron без Scheduler
 
-Задайте длинный `msyandexdelivery_sync_secret` и вызовите коннектор:
+<!-- MEDIA: пример лога запросов msyandexdelivery | файл core/cache/msyandexdelivery_requests.log (ping, create_request, confirm, refresh) -->
+
+Задайте длинный `msyandexdelivery_sync_secret` и вызовите connector:
 
 ```bash
 curl -sS 'https://example.com/assets/components/msyandexdelivery/connector.php?action=sync_statuses&secret=YOUR_SECRET'
@@ -85,6 +89,9 @@ switch ($modx->event->name) {
 
 ## Connector
 
+<!-- MEDIA: пример ответа connector ping | assets/components/msyandexdelivery/connector.php?action=ping → {"success": true, "message": "pong"} -->
+<!-- MEDIA: пример ответа connector create_request | assets/components/msyandexdelivery/connector.php?action=create_request → offer_id, request_id, price -->
+
 Единая точка: `assets/components/msyandexdelivery/connector.php`.
 
 | action | Контекст | Назначение |
@@ -99,6 +106,8 @@ switch ($modx->event->name) {
 | `cancel_request` | mgr | Отменить заявку |
 | `sync_statuses` | mgr или secret | Пакетный опрос активных заявок |
 | `ping` | mgr | Проверка соединения с API |
+| `actual_info` | mgr | Получить актуальные данные заявки (доступно только в прод) |
+| `history` | mgr | История изменений заявки |
 
 ### Идемпотентность создания заявки {#идемпотентность}
 
@@ -116,13 +125,13 @@ if ($existing && !$force) {
 
 ### Retry при задержке статуса {#retry-логика}
 
-При опросе статуса (`request/info`) API может вернуть временный статус `missing_status`. В этом случае компонент автоматически повторяет запрос через **800 мс** (не более 3 попыток).
+При опросе статуса (`request/info`) API может вернуть временный статус `missing_status`. В этом случае компонент автоматически повторяет запрос через **800 мс** (всего 2 попытки: основная + 1 повтор).
 
 Логика реализована в `YandexDeliveryService::getRequestStatus()`:
 
 ```php
-// Повтор при missing_status с задержкой 800 мс
-if ($status === 'missing_status' && $retryCount < 3) {
+// Повтор при missing_status (1 retry)
+if ($status === 'missing_status' && $retryCount < 1) {
     usleep(800000); // 800 мс
     return $this->getRequestStatus($requestId, $retryCount + 1);
 }
@@ -132,8 +141,8 @@ if ($status === 'missing_status' && $retryCount < 3) {
 
 Если при опросе статуса цена не вернулась из API, компонент пытается восстановить её из:
 
-1. `create_response.price` — цена из ответа на создание заявки
-2. `msOrder.properties.msyandexdelivery.price` — сохранённая цена при выборе на чекауте
+1. `create_response.price` — цена из ответа при создании заявки
+2. `msOrder.properties.msyandexdelivery.price` — сохранённая цена на чекауте
 
 Это защищает от потери данных при временных сбоях API. Логика в `YandexDeliveryService::updateRequestFromApi()`.
 
@@ -165,7 +174,7 @@ if ($status === 'missing_status' && $retryCount < 3) {
 
 `MsYandexDelivery\Support\StationId::normalize(string $id): string`
 
-Нормализует ID ПВЗ: удаляет дефисы и преобразует к формату, ожидаемому Platform API.
+Нормализует ID ПВЗ: удаляет дефисы и преобразует к формату Platform API.
 
 ```php
 // Пример: виджет вернул "MSK-01-01", API ждёт "MSK0101"
@@ -187,6 +196,16 @@ if (!$apiKnowsStation) {
 }
 ```
 
+### Класс `CartCargoBuilder`
+
+`MsYandexDelivery\Support\CartCargoBuilder` — формирует структуру `cargo` для запроса `offers/create`. Применяется в `YandexDeliveryService::buildCreatePayload()`.
+
+```php
+$builder = new CartCargoBuilder();
+$cargo = $builder->fromOrder($order);
+// Возвращает массив с полями weight, dimensions, value и optional services
+```
+
 ### Хелперы {#helper-functions}
 
 Файл: `core/components/msyandexdelivery/include/helpers.php`
@@ -195,7 +214,10 @@ if (!$apiKnowsStation) {
 | --- | --- |
 | `msyd_get_draft_order()` | Получить черновик заказа из сессии или БД |
 | `msyd_build_cargo(array $products): array` | Сформировать массив грузов из товаров заказа (вес, габариты, стоимость) |
-| `msyd_resolve_widget_city(): string` | Определить город для виджета по цепочке: `$city` параметр → `geo_id` → адрес заказа → `widget_city` → Москва |
+| `msyd_resolve_widget_city(): array{city:string,geo_id:int}` | Определить город для виджета: возвращает `['city' => 'Москва', 'geo_id' => 213]` |
+| `msyd_build_offers_create_payload(array $order): array` | Собрать payload для `offers/create` (sender, recipient, cargo, station_id) |
+| `msyd_build_offer_items(array $products): array` | Сформировать массив позиций товара (количество, цена, описание) |
+| `msyd_assessed_kopecks_from_order(array $order): int` | Получить оценочную стоимость в копейках из `msOrder.total` |
 
 Пример использования `msyd_build_cargo()`:
 
