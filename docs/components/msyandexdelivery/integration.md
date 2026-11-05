@@ -98,6 +98,44 @@ switch ($modx->event->name) {
 | `refresh_status` | mgr | Обновить статус |
 | `cancel_request` | mgr | Отменить заявку |
 | `sync_statuses` | mgr или secret | Пакетный опрос активных заявок |
+| `ping` | mgr | Проверка соединения с API |
+
+### Идемпотентность создания заявки {#идемпотентность}
+
+`create_request` проверяет существующие заявки по `order_id` и `operator_request_id`. Повторный вызов для того же заказа вернет существующую заявку, а не создаст дубликат.
+
+Параметр `force=true` позволяет принудительно создать новую заявку даже при наличии существующей (например, если предыдущая была отменена).
+
+```php
+// В MsYandexDelivery\Service\YandexDeliveryService::createRequest()
+$existing = $repository->findByOrderId($orderId);
+if ($existing && !$force) {
+    return $existing; // идемпотентный ответ
+}
+```
+
+### Retry при задержке статуса {#retry-логика}
+
+При опросе статуса (`request/info`) API может вернуть временный статус `missing_status`. В этом случае компонент автоматически повторяет запрос через **800 мс** (не более 3 попыток).
+
+Логика реализована в `YandexDeliveryService::getRequestStatus()`:
+
+```php
+// Повтор при missing_status с задержкой 800 мс
+if ($status === 'missing_status' && $retryCount < 3) {
+    usleep(800000); // 800 мс
+    return $this->getRequestStatus($requestId, $retryCount + 1);
+}
+```
+
+### Восстановление цены {#восстановление-цены}
+
+Если при опросе статуса цена не вернулась из API, компонент пытается восстановить её из:
+
+1. `create_response.price` — цена из ответа на создание заявки
+2. `msOrder.properties.msyandexdelivery.price` — сохранённая цена при выборе на чекауте
+
+Это защищает от потери данных при временных сбоях API. Логика в `YandexDeliveryService::updateRequestFromApi()`.
 
 ## Platform API (клиент)
 
@@ -117,6 +155,58 @@ switch ($modx->event->name) {
 
 Сервис: `MsYandexDelivery\Service\YandexDeliveryService`. HTTP: `MsYandexDelivery\Api\YandexPlatformClient`.
 
+::: warning Недокументированные параметры API
+В коде встречаются query-параметры `?is_oversized` и `?send_unix`, которые не описаны в официальной документации Yandex Delivery API. Они могут измениться или быть удалены без предупреждения.
+:::
+
+## Вспомогательные классы и хелперы {#helpers}
+
+### StationId
+
+`MsYandexDelivery\Support\StationId::normalize(string $id): string`
+
+Нормализует ID ПВЗ: удаляет дефисы и преобразует к формату, ожидаемому Platform API.
+
+```php
+// Пример: виджет вернул "MSK-01-01", API ждёт "MSK0101"
+$normalized = StationId::normalize('MSK-01-01'); // "MSK0101"
+```
+
+Используется в `YandexDeliveryService::selectOption()` после выбора точки на чекауте.
+
+### PickupStationMatcher
+
+`MsYandexDelivery\Support\PickupStationMatcher`
+
+Сопоставляет точку из CDN‑виджета (prod‑каталог) с точкой в тестовом API. Если API не знает точку, сервис ищет ближайшую по адресу через `pickup-points/list`.
+
+```php
+if (!$apiKnowsStation) {
+    $matched = $matcher->findBestMatch($widgetPoint, $apiPoints);
+    // возвращает ближайшую точку из API или null
+}
+```
+
+### Хелперы {#helper-functions}
+
+Файл: `core/components/msyandexdelivery/include/helpers.php`
+
+| Функция | Описание |
+| --- | --- |
+| `msyd_get_draft_order()` | Получить черновик заказа из сессии или БД |
+| `msyd_build_cargo(array $products): array` | Сформировать массив грузов из товаров заказа (вес, габариты, стоимость) |
+| `msyd_resolve_widget_city(): string` | Определить город для виджета по цепочке: `$city` параметр → `geo_id` → адрес заказа → `widget_city` → Москва |
+
+Пример использования `msyd_build_cargo()`:
+
+```php
+$products = $order->getMany('Product'); // msOrderProduct
+$cargo = msyd_build_cargo($products);
+// ['weight' => 2.5, 'dimensions' => [30, 20, 10], 'value' => 5000]
+```
+
+Эти хелперы подключаются через `require_once` в сниппетах и процессорах.
+
 ## Плагины
 
 | Плагин | События |
@@ -125,3 +215,5 @@ switch ($modx->event->name) {
 | msYandexDelivery Delivery | `msOnGetDeliveryCost` |
 | msYandexDelivery Order persist | `msOnSubmitOrder`, `msOnBeforeCreateOrder`, `msOnCreateOrder` |
 | msYandexDelivery Manager order tab | `msOnManagerCustomCssJs` |
+
+

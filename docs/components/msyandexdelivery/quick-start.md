@@ -68,4 +68,14 @@ Resolver создаст таблицу `msyandex_requests`, настройки n
 
 При `msyandexdelivery_log_enabled` журнал пишется в `core/cache/msyandexdelivery_requests.log` без секретов.
 
+### Проверка соединения (ping)
+
+Перед запуском проверьте соединение с API:
+
+```bash
+curl -sS 'https://example.com/assets/components/msyandexdelivery/connector.php?action=ping&ctx=mgr'
+```
+
+Ответ при успехе: `{"success": true, "message": "pong"}`. Ошибка авторизации — проверьте `oauth_token` и `base_url`.
+
 Подробности UI: [Чекаут](checkout). Жизненный цикл заявки: [Заявки и менеджер](integration).

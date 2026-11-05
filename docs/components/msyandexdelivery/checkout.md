@@ -109,3 +109,53 @@ ID ПВЗ с виджета часто приходит с дефисами. Pla
 Это `geo_id` региона/города из [location/detect](https://yandex.ru/support/delivery-profile/ru/api/other-day/ref/2.-Tochki-samoprivoza-i-PVZ/apib2bplatformlocationdetect-post), не id ПВЗ и не id склада.
 
 Частые значения: Москва `213`, Санкт-Петербург `2`, Казань `43`, Екатеринбург `54`, Новосибирск `65`.
+
+## Вспомогательные классы и хелперы {#helpers}
+
+### StationId
+
+`MsYandexDelivery\Support\StationId::normalize(string $id): string`
+
+Нормализует ID ПВЗ: удаляет дефисы и приводит к формату, который ожидает Platform API.
+
+```php
+// Пример: виджет вернул "MSK-01-01", API ждёт "MSK0101"
+$normalized = StationId::normalize('MSK-01-01'); // "MSK0101"
+```
+
+Используется в `YandexDeliveryService::selectOption()` после выбора точки на чекауте.
+
+### PickupStationMatcher
+
+`MsYandexDelivery\Support\PickupStationMatcher`
+
+Сопоставляет точку из CDN-виджета (prod-каталог) с точкой в test API. Если API не знает точку, сервис ищет ближайшую по адресу через `pickup-points/list`.
+
+Логика в `YandexDeliveryService::matchStation()`:
+
+```php
+if (!$apiKnowsStation) {
+    $matched = $matcher->findBestMatch($widgetPoint, $apiPoints);
+    // возвращает ближайшую точку из API или null
+}
+```
+
+### Хелперы {#helper-functions}
+
+Файл: `core/components/msyandexdelivery/include/helpers.php`
+
+| Функция | Назначение |
+| --- | --- |
+| `msyd_get_draft_order()` | Получить черновик заказа из сессии или БД |
+| `msyd_build_cargo(array $products): array` | Сформировать массив грузов из товаров заказа (вес, габариты, стоимость) |
+| `msyd_resolve_widget_city(): string` | Определить город для виджета по цепочке: `$city` параметр → `geo_id` → адрес заказа → `widget_city` → Москва |
+
+Пример использования `msyd_build_cargo()`:
+
+```php
+$products = $order->getMany('Product'); // msOrderProduct
+$cargo = msyd_build_cargo($products);
+// ['weight' => 2.5, 'dimensions' => [30, 20, 10], 'value' => 5000]
+```
+
+Хелперы подключаются через `require_once` в сниппетах и процессорах.
