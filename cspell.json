@@ -152,6 +152,8 @@
     "dbtype",
     "debugparser",
     "dedupe",
+    "denius",
+    "denius-dev",
     "default_set",
     "deletable",
     "digitalsignage",

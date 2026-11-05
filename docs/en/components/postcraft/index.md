@@ -34,15 +34,16 @@ You need no external mailing service: letters go out through the server mail or 
 ## Features
 
 - A letter template lives in a `PostCraft.*` chunk. HTML or visual editor (CKEditor, TinyMCE RTE), phone/desktop preview on Templates, Campaign and Unsubscribe.
-- Recipients: a list of addresses, saved lists, unique emails from FormIt submissions. Duplicates are dropped, blacklisted addresses are always skipped.
+- Recipients: a list of addresses, saved lists, unique emails from FormIt submissions. Picking a saved list fills Addresses at once. Duplicates are dropped, blacklisted addresses are always skipped.
 - Send window: a date and hours from/to in the site time zone. First send without stats is spread evenly across the window; later sends follow that address’s opens.
 - Per-mailbox rate limits (hour / day / batch), warm-up, multi-day spread for long lists, and auto-pause when the IP is at risk.
 - Pause, resume, cancel and edit a scheduled campaign: subject, preheader, window, addresses, text.
 - Preheader, Reply-To and sender mailbox per campaign. A mailbox works through PHP mail or SMTP.
-- Option to skip addresses that already got this template.
+- Do not resend within a day window (default 30): skipped emails are listed, the rest are queued.
+- Fixed mailing: after a successful send, addresses stay on a temporary blacklist for N days (default 7) — any template is blocked until expiry, then the row drops off.
 - Open and click tracking. Bots, mail provider proxies and instant prefetch stay out of the stats.
 - Unsubscribe page per site and language, your own form with an unsubscribe reason. `List-Unsubscribe` header for the Unsubscribe button in Gmail and other mail apps.
-- Stats export to Excel without third-party libraries.
+- Stats per campaign and per address (lookup and click on email). Export to Excel without third-party libraries.
 - Bounce processing over IMAP: a hard bounce goes to the blacklist.
 - Several domains from one manager: letter links lead to the site whose domain the letter was sent from.
 

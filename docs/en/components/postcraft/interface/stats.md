@@ -2,6 +2,10 @@
 
 The table lists all campaigns: subject, status, send plan, how many letters went out and wait in the queue, how many people opened and clicked, unsubscribes and blacklist.
 
+## Address stats
+
+Above the table is the Find address field. Enter an email and open a modal with a summary: campaigns, sends, opens and clicks, the mailing list and events for that address. A click on an email in campaign details opens the same modal.
+
 ## Campaign control
 
 The row menu:
