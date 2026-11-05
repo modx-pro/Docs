@@ -5,6 +5,8 @@ description: Ключи msp3PayKeeper, URL сервера, Basic Auth, секр�
 
 # Системные настройки msp3PayKeeper
 
+<!-- MEDIA: скриншот панели системных настроек с группой msp3paykeeper -->
+
 Установка и ключи: [Быстрый старт](quick-start).
 
 Ключ в MODX: `msp3paykeeper_<имя>`. В properties способа те же имена без префикса. Непустое значение в properties перекрывает системную настройку для API, вкладки и `webhook.php`.
@@ -25,9 +27,9 @@ description: Ключи msp3PayKeeper, URL сервера, Basic Auth, секр�
 | `msp3paykeeper_secret_word` | password | пусто | Секрет POST-оповещений на `webhook.php`. Обязателен для кабинетного URL. Это не пароль API |
 | `msp3paykeeper_payment_receipt` | bool | нет | Корзина 54-ФЗ в `service_name` |
 | `msp3paykeeper_vat_code` | list | `1` | 1-10: none / vat0 / vat10 / vat20 и остальные из списка |
-| `msp3paykeeper_success_url` | text | пусто | Возврат с оплаты. Пусто: страница благодарности MS3 |
-| `msp3paykeeper_fail_url` | text | пусто | Ключ в MODX. `send()` сейчас всегда подставляет success URL в `service_name` и не вызывает ветку fail |
-| `msp3paykeeper_debug` | bool | нет | Подробный лог MODX. На бою выключите |
+| `msp3paykeeper_success_url` | text | пусто | URL возврата после успешной оплаты. Если пусто — используется страница благодарности MS3 |
+| `msp3paykeeper_fail_url` | text | пусто | URL возврата после ошибки. `getReturnUrl()` использует `fail_url` при ошибке оплаты, `success_url` — при успехе |
+| `msp3paykeeper_debug` | bool | нет | Подробное логирование в MODX. Отключите на боевом сайте |
 
 `Settings::isConfigured()` (вкладка, sync): true, если заполнены `server_url`, `api_login` и `api_password`. `secret_word` в проверку не входит.
 

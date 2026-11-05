@@ -19,11 +19,11 @@ items: [
 
 # msp3PayKeeper
 
-**msp3PayKeeper** подключает [PayKeeper](https://docs.paykeeper.ru/) к [MiniShop3](/components/minishop3/) в MODX Revolution 3. Статус «оплачен» выставляет MiniShop3. Пакет сам статус заказа не меняет.
+**msp3PayKeeper** подключает [PayKeeper](https://docs.paykeeper.ru/) к [MiniShop3](/components/minishop3/) в MODX Revolution 3. MiniShop3 выставляет статус «оплачен». Пакет не меняет статус заказа.
 
 Сумма уходит в рублях, с двумя знаками после запятой. В запросах к PayKeeper логин и пароль те же, что для входа в кабинет.
 
-Пространство имён настроек: **`msp3paykeeper`**. Точка входа уведомлений: `assets/components/msp3paykeeper/webhook.php`.
+Пространство имён настроек: **`msp3paykeeper`**. Точка входа для уведомлений — `assets/components/msp3paykeeper/webhook.php`.
 
 ## Возможности
 
@@ -43,7 +43,7 @@ items: [
 | pdoTools (установщик пакета) | 3.0.0 и новее |
 | Сайт | HTTPS на webhook без 301 |
 
-Сниппетов нет. pdoTools есть в зависимостях транспорта, в коде не вызывается.
+Сниппетов в пакете нет. pdoTools есть в зависимостях транспорта, в коде не вызывается.
 
 Для чека 54-ФЗ с корзиной в счёте нужен email в заказе, если включён `msp3paykeeper_payment_receipt`. Без email счёт создаётся, блок `cart` в `service_name` не уходит. Подробнее: [Интеграция](integration#чеки-54-фз).
 
@@ -53,10 +53,14 @@ items: [
 
 ## Установка
 
+<!-- MEDIA: скриншот окна «Управление пакетами → Провайдеры» с добавленным modstore.pro -->
+
 1. Установите **MiniShop3**.
 2. Добавьте провайдер **modstore.pro** (**Система → Управление пакетами → Провайдеры**): URL `https://modstore.pro/extras/`, email и API-ключ из личного кабинета modstore.
 3. Установите пакет **msp3PayKeeper** через **Управление пакетами** (в **Show Details** выберите провайдер **modstore.pro**).
 4. **Очистите кэш** MODX.
+
+<!-- MEDIA: скриншот списка установленных пакетов с msp3PayKeeper -->
 
 При установке пакет создаёт два способа оплаты. `server_url`, логин, пароль API и секретное слово сначала из `msPayment.properties`, иначе из системных настроек. Та же цепочка у `send()`, вкладки заказа и подписи на `webhook.php`.
 
@@ -71,13 +75,15 @@ items: [
 
 ## Быстрая настройка webhook
 
+<!-- MEDIA: скриншот раздела «Настройки → Получение информации о платежах» в кабинете PayKeeper с полем URL POST-оповещений -->
+
 В кабинете PayKeeper один URL уведомлений. Ядро MiniShop3 на `/api/v1/payment/webhook/{id}` ждёт JSON. В кабинете укажите пакетный обработчик: PayKeeper шлёт form POST.
 
 ```text
 https://ваш-домен.ru/assets/components/msp3paykeeper/webhook.php
 ```
 
-HTTPS без Basic Auth и без 301.
+Требования к URL: HTTPS, без Basic Auth и редиректов.
 
 ## Архитектура
 
