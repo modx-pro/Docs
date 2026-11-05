@@ -29,10 +29,6 @@ description: Webhook PayKeeper, поток оплаты, вкладка зака
 * **`msp3PayKeeperOnPrepareReceiptItem`** – позволяет изменить объект счета (`$params['item']`) перед отправкой в PayKeeper.
 * **`msp3PayKeeperOnProviderEvent`** – вызывается, когда получен webhook‑событие неизвестного типа (после успешной проверки подписи). В `payload` передаётся массив данных события, что даёт возможность разработчику обработать кастомные события PayKeeper.
 
----
-
-## Webhook
-
 <!-- MEDIA: скриншот поля URL POST-оповещений в кабинете PayKeeper -->
 
 В кабинете PayKeeper один URL уведомлений:
