@@ -15,6 +15,8 @@ description: "Ограничения msp3WebPay: нет запроса стат�
 
 Нужны логин и пароль кабинета в **`msp3webpay_api_username`** и **`msp3webpay_api_password`**.
 
+Возврат возможен только из статусов **`paid`** или **`partially_refunded`**. Пока попытка в `authorized`, возврат не уйдёт.
+
 ## Покупатель вернулся на сайт, а заказ не оплачен
 
 `return.php` только перенаправляет браузер. Статус ставит webhook. Если **`msp3webpay_success_url`** или **`msp3webpay_fail_url`** пусты или с чужого хоста, покупатель попадёт на ресурс **`ms3_order_redirect_thanks_id`** MiniShop3.
