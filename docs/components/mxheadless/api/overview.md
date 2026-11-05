@@ -7,7 +7,7 @@ description: Envelope, полный список эндпоинтов, discovery
 
 Базовый URL: `{prefix}/v1`, по умолчанию `/api/v1`.
 
-Живой каталог на установленном сайте: `GET /meta/endpoints` и Swagger UI `/docs`. Ниже маршруты **core** из `RoutesRegistrar` и `CoreEndpointBootstrap` (версия пакета 1.0.43). Extras добавляют свои через `registerEndpoint`.
+Живой каталог на установленном сайте: `GET /meta/endpoints` и Swagger UI `/docs`. Ниже маршруты **core** из `RoutesRegistrar` и `CoreEndpointBootstrap` (версия пакета 1.0.44). Extras добавляют свои через `registerEndpoint`.
 
 Запрос проходит стек middleware до обработчика:
 

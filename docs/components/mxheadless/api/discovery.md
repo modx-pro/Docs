@@ -21,7 +21,7 @@ curl -s https://your-site.example/api/v1 | jq
 {
   "data": {
     "name": "mxHeadless",
-    "version": "1.0.43",
+    "version": "1.0.44",
     "api": "/api/v1",
     "cors": {
       "enabled": false,
