@@ -52,6 +52,8 @@ items: [
 
 ## Способы доставки при установке
 
+<!-- MEDIA: список способов доставки MiniShop3 | админка MODX, MiniShop3 → Настройки → Способы доставки (Яндекс Доставка — до двери / ПВЗ) -->
+
 Resolver создаёт два способа с классом `msyandexdelivery\Delivery\YandexDelivery`:
 
 | Тариф | Название в MS3 |
@@ -67,6 +69,8 @@ ID записываются в `msyandexdelivery_delivery_id` (через зап
 2. Установите пакет **msYandexDelivery**.
 3. Очистите кэш MODX.
 4. В **Системные настройки → `msyandexdelivery`** задайте обязательный [`base_url`](settings), токен и склад отправителя.
+
+<!-- MEDIA: скриншот настроек msYandexDelivery | админка MODX, Системные настройки → msyandexdelivery (base_url, oauth_token, platform_station_id) -->
 5. Включите `msyandexdelivery_enabled` и способы доставки в MiniShop3.
 6. На странице чекаута вызовите сниппеты и контейнер виджета — см. [Чекаут](checkout).
 

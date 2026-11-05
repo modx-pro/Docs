@@ -237,5 +237,3 @@ $cargo = msyd_build_cargo($products);
 | msYandexDelivery Delivery | `msOnGetDeliveryCost` |
 | msYandexDelivery Order persist | `msOnSubmitOrder`, `msOnBeforeCreateOrder`, `msOnCreateOrder` |
 | msYandexDelivery Manager order tab | `msOnManagerCustomCssJs` |
-
-

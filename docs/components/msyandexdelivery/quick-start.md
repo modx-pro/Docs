@@ -15,6 +15,8 @@ Resolver создаст таблицу `msyandex_requests`, настройки n
 
 ## Шаг 2. Base URL и доступ к API
 
+<!-- MEDIA: скриншот настроек msYandexDelivery | админка MODX, Системные настройки → msyandexdelivery (base_url, oauth_token, platform_station_id, enabled) -->
+
 Ориентиры:
 
 | Окружение | Пример `msyandexdelivery_base_url` |
@@ -76,6 +78,6 @@ Resolver создаст таблицу `msyandex_requests`, настройки n
 curl -sS 'https://example.com/assets/components/msyandexdelivery/connector.php?action=ping&ctx=mgr'
 ```
 
-Ответ при успехе: `{"success": true, "message": "pong"}`. Ошибка авторизации — проверьте `oauth_token` и `base_url`.
+Ответ при успехе: `{"success": true, "message": "pong"}`. При ошибке авторизации проверьте `oauth_token` и `base_url`.
 
 Подробности UI: [Чекаут](checkout). Жизненный цикл заявки: [Заявки и менеджер](integration).
