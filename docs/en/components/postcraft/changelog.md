@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.0-pl2
+
+Features ported from tcMailing.
+
+- Fixed mailing (`fixed` + `fixed_days`, default 7): after a successful send, addresses go on a temporary blacklist; any template is blocked until expiry; expired rows are purged automatically. Blacklist column Until (`expires_on`).
+- Do not resend now has a day window (`skip_dupes_days`, default 30). Partial skip: skipped emails are listed, the rest are queued; fails only if everyone already got the template.
+- Address stats: lookup field and clickable emails open a modal with summary, mailing history and events.
+- Selecting a saved list fills Addresses; the server accepts `list_id` when the textarea is empty.
+
 ## 1.0.0-pl1
 
 First release.

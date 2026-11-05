@@ -18,12 +18,14 @@ On the left: subject, preview text, unsubscribe language, From and Reply-To. On 
 ## Recipients
 
 - Addresses: one per line or comma separated.
-- Saved list and Insert: addresses from the Lists tab.
+- Saved list: picking a list fills Addresses at once. There is no separate Insert button. If the field is empty, the server still accepts the selected `list_id`.
 - Add unique emails from saved forms (FormIt): addresses from FormIt submissions. Refresh FormIt count shows how many there are.
 
 PostCraft removes duplicates and skips blacklisted addresses. One run queues up to 10,000 addresses.
 
-The Do not resend to addresses that already got this letter checkbox skips addresses that got this template in another campaign or wait for it in the queue. PostCraft checks this when queueing and again before each letter goes out. Test letters do not count.
+The Do not resend to addresses that already got this letter checkbox looks at the same template within the chosen number of days (How many days, default 30) or if the address is still queued for it. Skipped emails are listed in the response; the rest are queued. It fails only if everyone already got the template. Another template is not blocked by this checkbox. PostCraft checks this when queueing and again before each letter goes out. Test letters do not count.
+
+The Fixed mailing checkbox puts addresses on a temporary blacklist for the chosen number of days after a successful send (default 7). During that window no mailing with any template goes to them. The Until column on the Blacklist tab shows the end date; expired rows drop off automatically. Unsubscribes and manual blacklist rows stay permanent.
 
 ## Time
 
