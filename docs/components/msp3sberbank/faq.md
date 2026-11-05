@@ -93,7 +93,7 @@ Deposit, Reverse и Refund (списание, отмена холда, возв�
 
 ### Callback **404**
 
-После `register` в `payment_data` должен быть `sber_order_id` = `mdOrder`. Поле `orderNumber` = id заказа MS3.
+После `register` компонент заполняет `payment_data`: `sber_order_id` = `mdOrder`, `orderNumber` = ID заказа MS3.
 
 ### Сумма не совпадает
 
@@ -130,7 +130,7 @@ Deposit, Reverse и Refund (списание, отмена холда, возв�
 
 ### После установки нет способов оплаты
 
-Проверьте плагин `msp3sberbank_bootstrap`, namespace `msp3sberbank`, каталог `core/components/msp3sberbank/`. В **MiniShop3 → Оплаты** должны быть «Оплата через Сбербанк» и «Оплата через Сбербанк (двухстадийная)». Переустановите пакет, очистите кэш.
+Проверьте плагин `msp3sberbank_bootstrap`, namespace `msp3sberbank`, каталог `core/components/msp3sberbank/`. Убедитесь, что в **MiniShop3 → Оплаты** есть «Оплата через Сбербанк» и «Оплата через Сбербанк (двухстадийная)». Переустановите пакет, очистите кэш.
 
 ## Хостинг и сеть
 

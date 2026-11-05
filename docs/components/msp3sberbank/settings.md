@@ -42,7 +42,7 @@ description: Ключи API Сбербанка, callback, чеки 54-ФЗ, URL 
 
 | Ключ | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
-| `msp3sberbank_paid_status_id` | число | `2` | ID статуса «Оплачен». При `0` используется `ms3_status_paid`. |
+| `msp3sberbank_paid_status_id` | число | `2` | ID статуса «Оплачен». При `0` пакет берёт `ms3_status_paid`. |
 | `msp3sberbank_authorized_status_id` | число | `0` | ID статуса после холда (pre-auth). `0`: не менять. |
 | `msp3sberbank_reverse_status_id` | число | `0` | ID статуса после отмены холда (`reverse`). `0`: не менять. |
 | `msp3sberbank_refund_status_id` | число | `0` | ID статуса после возврата. `0`: `ms3_status_refunded` или не менять. |

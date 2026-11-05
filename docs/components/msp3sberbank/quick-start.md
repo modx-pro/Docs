@@ -32,7 +32,7 @@ description: Установка msp3Sberbank, ключи API, callback и тес
 <!-- MEDIA: MODX: Управление пакетами → Show Details → выбор провайдера modstore.pro, кнопка Install -->
 
 4. **Управление → Очистить кэш**.
-5. Проверьте плагин **`msp3sberbank_bootstrap`** на событии **`OnMODXInit`**. Он должен быть **включён**.
+5. Проверьте плагин **`msp3sberbank_bootstrap`** на событии **`OnMODXInit`**. Убедитесь, что он **включён**.
 
 <!-- MEDIA: MODX → Плагин `msp3sberbank_bootstrap` в списке плагинов, включённый переключатель -->
 
@@ -60,7 +60,7 @@ description: Установка msp3Sberbank, ключи API, callback и тес
 2. Включите callback-уведомления.
 3. Укажите URL (HTTPS, ваш домен): `https://ваш-домен.ru/assets/components/msp3sberbank/callback.php`
 4. Отметьте операции: для одностадийной минимум `deposited`; для двухстадийной также `approved`, `reversed`, `refunded`.
-5. Рекомендуется тип подписи **симметричный** или **асимметричный**:
+Тип подписи **симметричный** или **асимметричный** рекомендуется:
    - симметричный токен → **`msp3sberbank_callback_secret`**
    - публичный ключ PEM → **`msp3sberbank_callback_public_key`**
 
