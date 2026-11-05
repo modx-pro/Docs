@@ -25,7 +25,7 @@ items: [
 
 Пространство имён настроек: **`msp3sberbank`**. Точка входа уведомлений: `assets/components/msp3sberbank/callback.php`.
 
-Пакет распространяется через [modstore.pro](https://modstore.pro). Перед установкой добавьте провайдер **modstore.pro** в менеджере пакетов MODX.
+Пакет доступен на [modstore.pro](https://modstore.pro). Перед установкой добавьте провайдер **modstore.pro** в менеджере пакетов MODX.
 
 С чего начать: [Быстрый старт](quick-start).
 
@@ -41,7 +41,7 @@ items: [
 - **TLS НУЦ**: в пакете `certs/russian-trusted-chain.pem` для обхода curl error 60.
 - **Отладка**: `msp3sberbank_debug` пишет запросы и ответы API в лог MODX без полного пароля.
 
-Для чеков включите `msp3sberbank_send_order_bundle`. Нужна онлайн-касса на стороне банка и email или телефон покупателя в заказе. Без контакта при включённом bundle `send()` вернёт `msp3sberbank.error_fiscal_contact`.
+Для чеков включите `msp3sberbank_send_order_bundle`. Понадобится онлайн-касса на стороне банка и email или телефон покупателя в заказе. Без контакта при включённом bundle `send()` вернёт `msp3sberbank.error_fiscal_contact`.
 
 ## Системные требования
 
@@ -50,7 +50,7 @@ items: [
 | MODX Revolution | 3.0+ |
 | PHP | 8.2+ (расширения `json`, `curl`, для RSA-checksum: `openssl`) |
 | MiniShop3 | 1.0+ |
-| pdoTools | 3.0+ (рекомендуется для Fenom) |
+| pdoTools | 3.0+ (оптимально для Fenom) |
 
 ### Зависимости
 
@@ -58,7 +58,7 @@ items: [
 
 ## Регистрация в Сбербанке
 
-Подключите интернет-эквайринг в [СберБизнес](https://www.sberbank.ru/) или через менеджера банка. После выдачи учёток скопируйте:
+Подключите интернет-эквайринг в [СберБизнес](https://www.sberbank.ru/) или через менеджера банка. После выдачи учётных данных скопируйте:
 
 - **Логин `-api`** → [`msp3sberbank_api_login`](settings)
 - **Пароль API** → [`msp3sberbank_api_password`](settings)
@@ -74,6 +74,9 @@ items: [
 1. Установите **MiniShop3** и **pdoTools**.
 2. Добавьте провайдер **modstore.pro** (**Система → Управление пакетами → Провайдеры**): URL `https://modstore.pro/extras/`, email и API-ключ из личного кабинета modstore.
 3. Установите пакет **msp3Sberbank** через **Управление пакетами** (в **Show Details** выберите провайдер **modstore.pro**).
+
+<!-- MEDIA: MODX: Управление пакетами → Show Details → выбор провайдера modstore.pro, кнопка Install -->
+
 4. **Очистите кэш** MODX.
 5. В **Системные настройки → `msp3sberbank`** задайте [ключи API](settings).
 6. Включите способ **Оплата через Сбербанк** (или двухстадийный) в MiniShop3.
@@ -85,7 +88,9 @@ items: [
 | Оплата через Сбербанк | `Msp3Sberbank\Payment\SberbankPayment` |
 | Оплата через Сбербанк (двухстадийная) | `Msp3Sberbank\Payment\SberbankPreAuthPayment` |
 
-Плагин **`msp3sberbank_bootstrap`** на **`OnMODXInit`** подключает автозагрузку `Msp3Sberbank\`. Плагин должен быть включён.
+Плагин **`msp3sberbank_bootstrap`** на **`OnMODXInit`** подключает автозагрузку `Msp3Sberbank\`. Убедитесь, что он включён.
+
+<!-- MEDIA: MiniShop3 → Оплаты: список способов «Оплата через Сбербанк» и «Оплата через Сбербанк (двухстадийная)» после установки -->
 
 ## Быстрая настройка callback
 
@@ -95,9 +100,11 @@ items: [
 https://ваш-домен.ru/assets/components/msp3sberbank/callback.php
 ```
 
-Только HTTPS. Рекомендуется включить уведомления **с контрольной суммой** и задать `msp3sberbank_callback_secret` или `msp3sberbank_callback_public_key` в MODX.
+Только HTTPS. Включите уведомления **с контрольной суммой** и задайте `msp3sberbank_callback_secret` или `msp3sberbank_callback_public_key` в MODX.
 
 Без callback заказ может остаться неоплаченным, если покупатель не вернётся на `returnUrl`.
+
+<!-- MEDIA: ЛК Сбербанка: Настройки → Callback-уведомления, поле URL callback.php, выбор типа подписи (симметричный / асимметричный) -->
 
 ## Архитектура
 

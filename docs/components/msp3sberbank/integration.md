@@ -20,9 +20,9 @@ description: API Сбербанка и код, callback, одно- и двухс
 | Callback (POST/GET) | `callback.php`, `CallbackHandler::handle()` | Уведомления банка, checksum, смена статуса |
 | orderBundle | `OrderBundleBuilder` | Чеки 54-ФЗ в register и deposit |
 
-## Когда создаётся платёж {#когда-создаётся-платёж}
+## Создание платежа {#когда-создаётся-платёж}
 
-Отдельной настройки «сначала проверка менеджером, потом оплата» в компоненте **нет**. Платёж в Сбербанке регистрирует метод:
+Отдельной настройки «сначала проверка менеджером, потом оплата» в компоненте **нет**. Компонент регистрирует платёж в Сбербанке через метод:
 
 ```php
 Msp3Sberbank\Payment\SberbankPayment::send(msOrder $order)
@@ -42,7 +42,7 @@ MiniShop3 вызывает `send()` после оформления заказа
 https://ваш-домен.ru/assets/components/msp3sberbank/callback.php
 ```
 
-Указывается в ЛК Сбербанка, не в системных настройках MODX.
+Задаётся в ЛК Сбербанка, не в системных настройках MODX.
 
 **Обработка:**
 
@@ -56,6 +56,8 @@ https://ваш-домен.ru/assets/components/msp3sberbank/callback.php
 3. Заказ ищется по `payment_data.sber_order_id`, затем по `orderNumber` (ID MiniShop3).
 4. Статус перепроверяется через **getOrderStatusExtended.do**.
 5. Сумма из шлюза сравнивается с `order.cost` (±1 коп.).
+
+<!-- MEDIA: callback.php: пример тела POST от Сбербанка с полями mdOrder, orderNumber, operation, status, checksum в отладочном логе MODX -->
 
 | Ситуация | HTTP | errorCode |
 | --- | --- | --- |
@@ -113,7 +115,7 @@ sequenceDiagram
 
 Двухстадийность **не откладывает** показ платёжной формы. Покупатель уходит в Сбербанк сразу после `send()`. Сценарий «сначала проверка менеджером» собирается отдельно (см. [ниже](#оплата-после-проверки-менеджером)).
 
-При **`msp3sberbank_send_order_bundle`** = «Да» в **deposit.do** передаётся orderBundle.
+При **`msp3sberbank_send_order_bundle`** = «Да» компонент передаёт orderBundle в **deposit.do**.
 
 ```mermaid
 flowchart LR
@@ -157,7 +159,7 @@ flowchart LR
 
 ## `receive()` {#receive}
 
-MiniShop3 вызывает `receive()` когда покупатель возвращается на сайт (`returnUrl`).
+Компонент вызывает `receive()` когда покупатель возвращается на сайт (`returnUrl`).
 
 Компонент вызывает **getOrderStatusExtended.do**, сверяет сумму с заказом и при успехе обновляет статус. Callback остаётся основным источником истины.
 
@@ -180,6 +182,8 @@ MiniShop3 вызывает `receive()` когда покупатель возв�
 | `order_id` | ID заказа MiniShop3: колонка в **MiniShop3 → Заказы**, `$order->get('id')`, или query `?order_id=42` / поле формы. Для Refund можно вместо числа передать UUID Сбербанка из `payment_data.sber_order_id`. |
 | `amount` (Refund / частичный Reverse) | Рубли. Полный возврат: `(float) $order->get('cost')`. Частичный: сумма из формы менеджера. Либо `amount_kopecks` (целое). |
 | Deposit | Сумму **не** передаёте: процессор списывает `order.cost` целиком. |
+
+<!-- MEDIA: MODX: карточка заказа MiniShop3, вкладка оплаты — поля payment_data с sber_order_id, form_url, registered_at, attempt -->
 
 Нужно право `save`. Пример сниппета менеджера `msp3SberbankOrderAction`. Вызов из чанка заказа или по URL:
 
@@ -310,7 +314,7 @@ $modx->runProcessor('refund', [
 
 Целевой сценарий:
 
-1. Заказ создаётся **без** немедленного redirect в Сбербанк.
+1. Заказ создаётся без немедленного redirect в Сбербанк.
 2. Менеджер проверяет заказ и переводит в статус «к оплате».
 3. В личном кабинете покупатель нажимает «Оплатить».
 4. Отдельная страница один раз вызывает `send()` и делает redirect.
@@ -326,6 +330,8 @@ $modx->runProcessor('refund', [
 [[!msp3SberbankPayOrder]]
 ```
 
+<!-- MEDIA: MODX: ресурс «Оплата Сбербанк» с шаблоном витрины, содержимое [[!msp3SberbankPayOrder]] -->
+
 Запомните ID ресурса (ниже обозначен как `25`).
 
 ### 2. Ссылка в личном кабинете
@@ -337,6 +343,8 @@ $modx->runProcessor('refund', [
   <a class="btn btn-pay" href="[[~25]]?order_id={$id}">Оплатить</a>
 {/if}
 ```
+
+<!-- MEDIA: Личный кабинет покупателя: список заказов с кнопкой «Оплатить» для заказов со статусом «к оплате» -->
 
 `[3, 4]` — ваши статусы «готов к оплате». Подставьте свои ID.
 
