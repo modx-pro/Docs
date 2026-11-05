@@ -31,6 +31,8 @@ Deposit, Reverse и Refund (списание, отмена холда, возв�
 
 Пакет зашифрован. Добавьте провайдер **modstore.pro** (URL `https://modstore.pro/extras/`, email и API-ключ из ЛК modstore) и укажите его в **Show Details** при Install. Подробно: [Быстрый старт](quick-start#шаг-1-провайдер-modstore-и-установка-пакета).
 
+<!-- MEDIA: MODX: ошибка установки «Package provider not found» без провайдера modstore.pro -->
+
 ## Оплата и статус заказа
 
 ### Заказ не переходит в «оплачен»

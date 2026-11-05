@@ -57,6 +57,8 @@ https://ваш-домен.ru/assets/components/msp3sberbank/callback.php
 4. Статус перепроверяется через **getOrderStatusExtended.do**.
 5. Сумма из шлюза сравнивается с `order.cost` (±1 коп.).
 
+<!-- MEDIA: callback.php: пример тела POST от Сбербанка с полями mdOrder, orderNumber, operation, status, checksum в отладочном логе MODX -->
+
 | Ситуация | HTTP | errorCode |
 | --- | --- | --- |
 | Успех | 200 | 0 |
@@ -180,6 +182,8 @@ MiniShop3 вызывает `receive()` когда покупатель возв�
 | `order_id` | ID заказа MiniShop3: колонка в **MiniShop3 → Заказы**, `$order->get('id')`, или query `?order_id=42` / поле формы. Для Refund можно вместо числа передать UUID Сбербанка из `payment_data.sber_order_id`. |
 | `amount` (Refund / частичный Reverse) | Рубли. Полный возврат: `(float) $order->get('cost')`. Частичный: сумма из формы менеджера. Либо `amount_kopecks` (целое). |
 | Deposit | Сумму **не** передаёте: процессор списывает `order.cost` целиком. |
+
+<!-- MEDIA: MODX: карточка заказа MiniShop3, вкладка оплаты — поля payment_data с sber_order_id, form_url, registered_at, attempt -->
 
 Нужно право `save`. Пример сниппета менеджера `msp3SberbankOrderAction`. Вызов из чанка заказа или по URL:
 
@@ -326,6 +330,8 @@ $modx->runProcessor('refund', [
 [[!msp3SberbankPayOrder]]
 ```
 
+<!-- MEDIA: MODX: ресурс «Оплата Сбербанк» с шаблоном витрины, содержимое [[!msp3SberbankPayOrder]] -->
+
 Запомните ID ресурса (ниже обозначен как `25`).
 
 ### 2. Ссылка в личном кабинете
@@ -337,6 +343,8 @@ $modx->runProcessor('refund', [
   <a class="btn btn-pay" href="[[~25]]?order_id={$id}">Оплатить</a>
 {/if}
 ```
+
+<!-- MEDIA: Личный кабинет покупателя: список заказов с кнопкой «Оплатить» для заказов со статусом «к оплате» -->
 
 `[3, 4]` — ваши статусы «готов к оплате». Подставьте свои ID.
 

@@ -28,8 +28,13 @@ description: Установка msp3Sberbank, ключи API, callback и тес
    - Email и API-ключ из личного кабинета modstore.pro
 2. Убедитесь, что установлен **MiniShop3**.
 3. **Управление пакетами** → установите **msp3Sberbank** (в **Show Details** укажите провайдер **modstore.pro**).
+
+<!-- MEDIA: MODX: Управление пакетами → Show Details → выбор провайдера modstore.pro, кнопка Install -->
+
 4. **Управление → Очистить кэш**.
 5. Проверьте плагин **`msp3sberbank_bootstrap`** на событии **`OnMODXInit`**. Он должен быть **включён**.
+
+<!-- MEDIA: MODX → Плагин `msp3sberbank_bootstrap` в списке плагинов, включённый переключатель -->
 
 ## Шаг 2: Ключи API в MODX
 
@@ -40,6 +45,8 @@ description: Установка msp3Sberbank, ключи API, callback и тес
    - **`msp3sberbank_api_url`**: `https://ecomtest.sberbank.ru/ecomm/gw/partner/api/v1/` (со слэшем в конце).
    - **`msp3sberbank_api_login`**: логин **`-api`**, не `-operator`.
    - **`msp3sberbank_api_password`**: пароль API.
+
+<!-- MEDIA: MODX: Системные настройки с фильтром msp3sberbank, заполненные поля api_url, api_login, api_password -->
 
 Не используйте старые URL `3dsec.sberbank.ru` / `securepayments.sberbank.ru`. Нужен целевой шлюз ecom.
 
@@ -57,6 +64,8 @@ description: Установка msp3Sberbank, ключи API, callback и тес
    - симметричный токен → **`msp3sberbank_callback_secret`**
    - публичный ключ PEM → **`msp3sberbank_callback_public_key`**
 
+<!-- MEDIA: ЛК Сбербанка: Настройки → Callback-уведомления, включённый toggle, поле URL, отмеченные операции deposited/approved/reversed/refunded, выбранный тип подписи -->
+
 Детали обработки: [Интеграция, callback](integration#callback).
 
 ## Шаг 4: Способ оплаты в MiniShop3
@@ -72,6 +81,8 @@ description: Установка msp3Sberbank, ключи API, callback и тес
 2. Включите (**Активен**) нужный способ.
 3. Привяжите способ к доставкам.
 4. Проверьте, что способ доступен на странице оформления заказа.
+
+<!-- MEDIA: MiniShop3 → Настройки → Оплаты: карточка способа «Оплата через Сбербанк» с включённым toggle, привязка к доставкам -->
 
 ## Шаг 5: Чеки 54-ФЗ
 
@@ -107,6 +118,9 @@ description: Установка msp3Sberbank, ключи API, callback и тес
 2. Выберите **Оплата через Сбербанк** и перейдите к оплате. Откроется форма банка.
 3. После успеха callback выставит заказу статус **`msp3sberbank_paid_status_id`** (по умолчанию `2`) или **`ms3_status_paid`** при `paid_status_id = 0`.
 4. Проверьте строки `[msp3Sberbank]` в `core/cache/logs/error.log` при включённом debug.
+
+<!-- MEDIA: Платёжная форма Сбербанка (тестовая): ввод карты МИР 2202 2050 0001 2424, срок 05/35, CVC 669 -->
+<!-- MEDIA: MiniShop3 → Заказы: карточка заказа после успешной оплаты, статус «Оплачен», вкладка оплаты с sber_order_id и form_url -->
 
 Статус не сменился? Проверьте callback URL, HTTPS, ключи `-api` и [FAQ](faq).
 
