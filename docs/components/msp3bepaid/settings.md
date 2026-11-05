@@ -7,18 +7,18 @@ description: Shop ID, секрет и публичный ключ bePaid, вал
 
 Ключ в MODX: `msp3bepaid_<имя>`. Те же значения можно положить в `msPayment.properties`. Непустые properties перекрывают системные настройки.
 
-Установка и ключи: [Быстрый старт](quick-start).
+Установка и получение ключей: [Быстрый старт](quick-start).
 
 | Ключ property | Системная настройка | Примечание |
 | --- | --- | --- |
 | `store_id` | `msp3bepaid_store_id` | Shop ID |
-| `secret_key`, `secret`, `webhook_secret` | `msp3bepaid_secret_key` | Секрет. Читается по порядку: `secret_key` → `secret` → `webhook_secret` (не отдельные настройки) |
+| `secret_key`, `secret`, `webhook_secret` | `msp3bepaid_secret_key` | Секретный ключ. Читается по порядку: `secret_key` → `secret` → `webhook_secret` (не отдельные настройки) |
 | `public_key` | `msp3bepaid_public_key` | Подпись `Content-Signature`. Пустой ключ пропускает проверку |
 | `checkout_url` | `msp3bepaid_checkout_url` | URL создания checkout. Разрешены только `checkout.bepaid.by` и `checkout.begateway.com` |
 | `currency` | `msp3bepaid_currency` | Валюта запроса |
 | `test` | `msp3bepaid_test` | `"test": true` в checkout |
 
-Пакет считает способ **настроенным**, когда непустые Shop ID и секрет (`Settings::isConfigured()`). Публичный ключ для этого не нужен.
+Пакет считает способ **настроенным**, когда заполнены Shop ID и секрет (`Settings::isConfigured()`). Публичный ключ не требуется.
 
 После смены настроек очистите кэш MODX.
 
@@ -34,7 +34,7 @@ description: Shop ID, секрет и публичный ключ bePaid, вал
 | `msp3bepaid_secret_key` | text-password | пусто | Секретный ключ магазина |
 | `msp3bepaid_public_key` | textarea | пусто | Публичный ключ для `Content-Signature` |
 | `msp3bepaid_checkout_url` | textfield | `https://checkout.bepaid.by/ctp/api/checkouts` | API checkout. Разрешены только `checkout.bepaid.by` и `checkout.begateway.com` |
-| `msp3bepaid_currency` | textfield | `BYN` | Валюта в запросе ссылки |
+| `msp3bepaid_currency` | textfield | `BYN` | Валюта в запросе |
 | `msp3bepaid_test` | combo-boolean | `true` | Тестовый checkout. Для боевых платежей выключите |
 | `msp3bepaid_language` | textfield | `ru` | Язык страницы оплаты (`settings.language`) |
 | `msp3bepaid_country` | textfield | `BY` | Страна покупателя, если в заказе не указана |
@@ -51,7 +51,7 @@ description: Shop ID, секрет и публичный ключ bePaid, вал
 
 ## Какие ключи пакет не читает
 
-При установке `resolver_01_settings.php` может создать системные настройки, которые **`Settings` не читает**. На checkout и webhook они не влияют. Shop ID по-прежнему только `msp3bepaid_store_id` или `store_id` в properties. Ключ `msp3bepaid_login` секрет не заменяет.
+При установке `resolver_01_settings.php` может создать системные настройки, которые **`Settings` не читает**. На checkout и webhook они не влияют. Shop ID — только `msp3bepaid_store_id` или `store_id` в properties. Ключ `msp3bepaid_login` секрет не заменяет.
 
 | Ключ | Назначение в админке |
 | --- | --- |
