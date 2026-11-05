@@ -86,7 +86,7 @@ IP whitelist не заменяет проверку JWT.
    - `exp` (expiration) не истёк (leeway 60 секунд)
 4. Возвращает декодированный payload или бросает `YandexPayAuthenticationException`.
 
-<!-- MEDIA: Настройка ms pyandexpay_debug и лог верификации JWT | админка MODX, Системные настройки → ms pyandexpay_debug = Да; error log MODX → [mspYandexPay] JWT verification passed -->
+<!-- MEDIA: Настройка mspyandexpay_debug и лог верификации JWT | админка MODX, Системные настройки → mspyandexpay_debug = Да; error log MODX → [mspYandexPay] JWT verification passed -->
 
 **Ошибки верификации:**
 
