@@ -263,13 +263,14 @@ sequenceDiagram
   participant Pay as Страница оплаты
   participant T as T-Bank
   participant H as webhook.php
+  participant MS3 as MiniShop3
   P->>LK: «Оплатить»
   LK->>Pay: order_id
   Pay->>T: Init
   T-->>P: PaymentURL
   P->>T: оплата
   T->>H: webhook
-  H->>Pay: ms3_status_paid
+  H->>MS3: ms3_status_paid
 ```
 
 ## Возврат через processor {#возврат}
