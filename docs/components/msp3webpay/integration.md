@@ -85,7 +85,6 @@ https://ваш-домен.ru/assets/components/msp3webpay/webhook.php
 
 > **Важно:** Если вы не используете фискализацию, этот сервис можно игнорировать.
 
-
 Пакет входит в кабинет: `POST /api/login`, в ответе токен. Тестовый хост `https://sandbox.webpay.by`. Боевой `https://billing.webpay.by`. Нужны **`msp3webpay_api_username`** и **`msp3webpay_api_password`**.
 
 | Действие | Запрос | Что дальше |
