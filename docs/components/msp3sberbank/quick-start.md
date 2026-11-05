@@ -28,12 +28,10 @@ description: Установка msp3Sberbank, ключи API, callback и тес
    - Email и API-ключ из личного кабинета modstore.pro
 2. Убедитесь, что установлен **MiniShop3**.
 3. **Управление пакетами** → установите **msp3Sberbank** (в **Show Details** укажите провайдер **modstore.pro**).
-
-<!-- MEDIA: MODX: Управление пакетами → Show Details → выбор провайдера modstore.pro, кнопка Install -->
-
 4. **Управление → Очистить кэш**.
 5. Проверьте плагин **`msp3sberbank_bootstrap`** на событии **`OnMODXInit`**. Убедитесь, что он **включён**.
 
+<!-- MEDIA: MODX: Управление пакетами → Show Details → выбор провайдера modstore.pro, кнопка Install -->
 <!-- MEDIA: MODX → Плагин `msp3sberbank_bootstrap` в списке плагинов, включённый переключатель -->
 
 ## Шаг 2: Ключи API в MODX
