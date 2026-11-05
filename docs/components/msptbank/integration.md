@@ -94,6 +94,10 @@ flowchart LR
 
 ## Чеки 54-ФЗ {#чеки-54-фз}
 
+> **Примечание:** Внутренние классы `ReceiptBuildResult` и `PhoneNormalizer` реализуют логику формирования чека и нормализации телефона. Они не задокументированы в пользовательском руководстве, но влияют на процесс построения чека.
+
+> **Примечание:** Класс `EncryptedVehicle` отвечает за шифрование transport‑файлов при публикации пакета на modstore.pro. Он используется только в процессе сборки пакета и не участвует в работе компонента в MODX.
+
 Если **`msptbank_send_receipt`** включён, компонент добавляет объект **Receipt** в запросы **Init**, **Confirm** и **Refund**. За сборку отвечает `FiscalReceiptService`: он получает параметры будущего API-запроса, заказ MiniShop3 и сценарий `ReceiptScenario`, затем добавляет `Receipt`.
 
 Состав чека:
@@ -259,13 +263,14 @@ sequenceDiagram
   participant Pay as Страница оплаты
   participant T as T-Bank
   participant H as webhook.php
+  participant MS3 as MiniShop3
   P->>LK: «Оплатить»
   LK->>Pay: order_id
   Pay->>T: Init
   T-->>P: PaymentURL
   P->>T: оплата
   T->>H: webhook
-  H->>Pay: ms3_status_paid
+  H->>MS3: ms3_status_paid
 ```
 
 ## Возврат через processor {#возврат}
