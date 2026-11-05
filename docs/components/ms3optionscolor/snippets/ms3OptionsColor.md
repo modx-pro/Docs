@@ -385,6 +385,22 @@ Select с подписью:
 
 ## Частые ошибки
 
+---
+
+## Внутренние вспомогательные функции
+
+В коде пакета определены несколько вспомогательных функций, которые используют сниппет и плагины. Ниже их краткое описание и назначение:
+
+| Функция | Описание |
+| --- | --- |
+| `ms3oc_resolve_snippet_option_keys(string $optionsProp, array $defaultKeys): array` | Возвращает массив ключей опций, полученных из параметра `options` или из дефолтных ключей, если параметр пустой. |
+| `ms3oc_prop_bool_auto(array $scriptProperties, string $key, bool $autoDefault): bool` | Возвращает булево значение свойства сниппета, учитывая автоматическое значение по умолчанию, если свойство не задано. |
+| `ms3oc_sanitize_chunk_name(string $name, string $default): string` | Очищает имя чанка, поддерживая путь `@FILE …`, и возвращает безопасное имя или значение по умолчанию. |
+| `ms3oc_get_chunk(modX $modx, string $name, array $properties = []): string` | Получает содержимое чанка через pdoTools (Fenom/@FILE) с fallback на `modX::getChunk`. |
+| `ms3oc_register_frontend_css(modX $modx): void` | Подключает CSS‑файл свотчей на фронтенде, если включена настройка `ms3optionscolor_frontend_css`. |
+
+Эти функции находятся в файле `core/components/ms3optionscolor/include/helpers.php` и используются в плагине и сниппете. При необходимости их можно расширять или использовать в собственных плагинах.
+
 | Симптом | Что проверить |
 | --- | --- |
 | Пустой вывод | У товара есть значения опции, ключ совпадает с `options` / настройкой |

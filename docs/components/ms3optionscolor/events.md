@@ -106,10 +106,4 @@ switch ($modx->event->name) {
 
 ## Хуки менеджера
 
-Не для витрины. После своей правки опций в карточке товара:
-
-| Функция | Когда |
-| --- | --- |
-| `ms3ocInvalidateSwatchMap` | Сбросить кеш карты `/map` |
-| `ms3ocReloadProductSwatches` | Перечитать свотчи вкладки |
-| `ms3ocEnhanceProductOptionSwatches` | Перерисовать квадраты в чипах опции |
+В текущей версии пакета не реализованы менеджер‑хуки. При необходимости создайте свои плагины, слушающие события `OnLoadWebDocument`, `msOnManagerCustomCssJs`, `OnMFilterInit` и `msOnProductPrepare`.
