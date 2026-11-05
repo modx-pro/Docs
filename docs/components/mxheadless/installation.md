@@ -103,6 +103,7 @@ flowchart LR
 | Таблицы | `mxheadless_api_keys`, `mxheadless_oauth_clients`, `mxheadless_oauth_tokens`, `mxheadless_webhook_subscriptions`, `mxheadless_webhook_deliveries`, `mxheadless_api_log` |
 | Право | `mxheadless_apikeys` (по умолчанию у Administrator) |
 | Меню | **Компоненты → mxHeadless** |
+| Плагин | `OnHandleRequest` (priority -100) |
 | События | `OnMxHeadlessRegister`, `OnMxHeadlessRegisterMiddleware`, `OnMxHeadlessBeforeRequest`, `OnMxHeadlessAfterRequest` |
 
 ## ЧПУ
