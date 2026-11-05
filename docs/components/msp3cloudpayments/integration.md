@@ -15,7 +15,7 @@ description: Уведомления CloudPayments, холд, чек 54-ФЗ и �
 | Узнать статус | `v2/payments/find` | Кнопка синхронизации во вкладке. Без Public ID и API Secret запрос в API не уходит: ответ `success` со списком попыток и полем `note` |
 | Списать холд | `payments/confirm` | После блокировки. Затем заказ отмечается оплаченным |
 | Отменить холд | `payments/void` | До списания |
-| Вернуть деньги | `payments/refund` | Нужен `TransactionId` из уведомления Pay. Поддерживается частичный возврат (статус `PARTIALLY_REFUNDED`).
+| Вернуть деньги | `payments/refund` | Нужен `TransactionId` из уведомления Pay. Поддерживается частичный возврат (статус `PARTIALLY_REFUNDED`). |
 | Отменить неоплаченный счёт | `orders/cancel` | По номеру счёта. Webhook не ждёт |
 
 В запросах логин это Public ID, пароль это API Secret.
