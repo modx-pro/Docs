@@ -25,7 +25,7 @@ description: Merchant ID, API Key, среда, Split, URL возврата, QR �
 | Ключ | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
 | `mspyandexpay_environment` | список | `sandbox` | `sandbox` или `production`. Любое значение, кроме `production`, остаётся sandbox. |
-| `mspyandexpay_debug` | да/нет | Нет | Подробные логи с префиксом `[mspYandexPay]`. API key в лог не попадает. |
+| `mspyandexpay_debug` | да/нет | Нет | Подробные логи с префиксом `[mspYandexPay]`. API key в лог не попадает. <!-- MEDIA: скриншот системных настроек с включённым debug --> |
 
 | Среда | Base URL API | JWKS |
 | --- | --- | --- |
@@ -63,7 +63,7 @@ description: Merchant ID, API Key, среда, Split, URL возврата, QR �
 
 | Ключ | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
-| `mspyandexpay_qr_enabled` | да/нет | Нет | Разрешить способ **«Яндекс Пэй QR»**. Без флага класс QR отклонит оплату. |
+| `mspyandexpay_qr_enabled` | да/нет | Нет | Разрешить способ **«Яндекс Пэй QR»**. Без флага класс QR отклонит оплату. <!-- MEDIA: скриншот настройки QR в системных настройках MODX -->
 
 После включения активируйте `msPayment` «Яндекс Пэй QR» в MiniShop3 и привяжите к доставкам.
 
