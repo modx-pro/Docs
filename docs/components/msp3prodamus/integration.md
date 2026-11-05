@@ -7,6 +7,13 @@ description: Webhook Prodamus, поток оплаты, чеки 54-ФЗ и вк
 
 Шаги установки: [Быстрый старт](quick-start). Двухстадийной оплаты у Prodamus нет.
 
+## События пакета
+
+* **`msp3ProdamusOnPrepareReceiptItem`** – позволяет изменить позицию чека (`$params['item']`) перед отправкой в Prodamus.
+* **`msp3ProdamusOnProviderEvent`** – вызывается, когда webhook получает событие неизвестного типа (после успешной проверки подписи). В `payload` передаётся массив данных события. Используется для обработки кастомных событий Prodamus.
+
+---
+
 ## Webhook
 
 В кабинете один URL на страницу:
@@ -17,7 +24,9 @@ https://ваш-домен.ru/assets/components/msp3prodamus/webhook.php
 
 HTTPS без Basic Auth и без 301. HTTP на `*.test` часто отвечает 301.
 
-Webhook читает тело из `$_POST`, иначе из JSON или query-строки в теле. Обычно Prodamus шлёт `multipart/form-data`. Подпись: заголовок `Sign` или поле `sign` в теле. HMAC-SHA256 по полям уведомления и секрету из **`msp3prodamus_secret_key`** (не из properties способа).
+<!-- MEDIA: webhook — кабинет Prodamus, поле «Настройка уведомлений» с URL `assets/components/msp3prodamus/webhook.php` -->
+
+Webhook читает тело из `$_POST`, иначе из JSON или query-строки в теле. Обычно Prodamus шлёт `multipart/form-data`. Подпись: заголовок `Sign` или поле `sign` в теле. HMAC-SHA256 по полям уведомления и секрету. Секрет пакет ищет по цепочке: properties всех активных способов оплаты с классом Prodamus (`secret`, `secret_key`, `webhook_secret`), затем `msp3prodamus_secret_key`.
 
 | Ответ | Когда |
 | --- | --- |
@@ -79,12 +88,18 @@ flowchart LR
 
 ## Чеки 54-ФЗ
 
+<!-- MEDIA: чек — настройка `msp3prodamus_payment_receipt` = Да, `msp3prodamus_vat_type`, `msp3prodamus_payment_method` -->
+
 При включённом `msp3prodamus_payment_receipt` в каждую позицию `products` уходят `tax`, `paymentMethod`, `paymentObject`. Товары заказа и доставка, если `delivery_cost > 0`. Без флага чека в ссылку всё равно уходит список товаров с именем, ценой и количеством.
 
 ## Вкладка заказа
+
+<!-- MEDIA: вкладка — заказ в менеджере MODX, вкладка msp3Prodamus, список попыток -->
 
 | Действие | Что происходит |
 | --- | --- |
 | Синхронизировать | Ответ `success: true` с текстом «нет API статуса». Во вкладке сообщение не показывают, список попыток обновляют. Статус по-прежнему приходит webhook |
 | Возврат | `success: false`, текст про заявку в кабинете. Сообщение видно во вкладке |
 | Отменить | `success: false`, текст про закрытие страницы или отказ. Сообщение видно во вкладке |
+
+<!-- MEDIA: возврат — вкладка заказа, кнопка «Возврат», сообщение о том, что возврат не поддерживается Prodamus -->
