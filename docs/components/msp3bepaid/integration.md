@@ -75,7 +75,7 @@ https://ваш-домен.ru/assets/components/msp3bepaid/return.php?msorder={uu
 | Действие | Куда ходит пакет | Когда |
 | --- | --- | --- |
 | Синхронизация | статус checkout по токену | Есть сохранённый токен. Без Shop ID и секрета запрос в bePaid не уходит, вкладка возвращает список попыток и текст `msp3bepaid.err_not_configured` |
-| Возврат | `POST https://gateway.bepaid.by/transactions/refunds` | После webhook оплаты. Нужен UID транзакции |
+| Возврат | `POST https://gateway.bepaid.by/transactions/refunds` | После webhook оплаты. Нужен UID транзакции. URL берётся из `GATEWAY_URL` (`https://gateway.bepaid.by`) |
 | Отмена ссылки | без вызова API bePaid | Кнопка есть. Ответ всегда ошибка: API bePaid токен checkout не отменяет |
 
 Пока попытка в `pending`, возврат денег не уходит. Сначала нужно уведомление об оплате.

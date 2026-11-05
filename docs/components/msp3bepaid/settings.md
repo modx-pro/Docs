@@ -12,9 +12,9 @@ description: Shop ID, секрет и публичный ключ bePaid, вал
 | Ключ property | Системная настройка | Примечание |
 | --- | --- | --- |
 | `store_id` | `msp3bepaid_store_id` | Shop ID |
-| `secret_key`, `secret`, `webhook_secret` | `msp3bepaid_secret_key` | Секрет. Алиасы читаются по порядку |
+| `secret_key`, `secret`, `webhook_secret` | `msp3bepaid_secret_key` | Секрет. Читается по порядку: `secret_key` → `secret` → `webhook_secret` (не отдельные настройки) |
 | `public_key` | `msp3bepaid_public_key` | Подпись `Content-Signature`. Пустой ключ пропускает проверку |
-| `checkout_url` | `msp3bepaid_checkout_url` | URL создания checkout |
+| `checkout_url` | `msp3bepaid_checkout_url` | URL создания checkout. Разрешены только `checkout.bepaid.by` и `checkout.begateway.com` |
 | `currency` | `msp3bepaid_currency` | Валюта запроса |
 | `test` | `msp3bepaid_test` | `"test": true` в checkout |
 

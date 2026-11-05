@@ -19,6 +19,10 @@ items: [
 
 # msp3BePaid
 
+Версия пакета: **2.0.0**.
+
+Поддерживаемые настройки: `msp3bepaid_language`, `msp3bepaid_country`, `msp3bepaid_readonly_fields`, `msp3bepaid_visible_fields`.
+
 **msp3BePaid** подключает [bePaid](https://bepaid.by/) к [MiniShop3](/components/minishop3/) в MODX Revolution 3. Покупатель уходит на страницу оплаты bePaid. Статус «оплачен» выставляет MiniShop3 по webhook. Пакет сам статус заказа не меняет.
 
 В заказе сумма в валюте магазина. В bePaid пакет отправляет её в мелких единицах. Для белорусского рубля это копейки. Нужен PHP-модуль `bcmath`.
@@ -50,7 +54,6 @@ items: [
 | --- | --- |
 | MODX Revolution | 3.0+ |
 | MiniShop3 | 1.14.0-beta1 и новее |
-| pdoTools | 3.0.0 и новее |
 | PHP | 8.2+ |
 | PHP-модуль | `bcmath` |
 | Доступ | Shop ID и секретный ключ магазина |
