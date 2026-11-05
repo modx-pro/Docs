@@ -7,6 +7,8 @@ title: Системные настройки
 
 ## Список настроек
 
+<!-- MEDIA: Список системных настроек mxQuickView в админке MODX | админка MODX → Система → Настройки → mxquickview_ → таблица -->
+
 | Настройка | Тип | По умолчанию | Где используется |
 | --- | --- | --- | --- |
 | `mxquickview_allowed_chunk` | `textfield` | `mxqv_product,mxqv_resource,ms3_product_content,ms3_products_row` | `data-mxqv-action="chunk"` в `Render` |
@@ -22,9 +24,9 @@ title: Системные настройки
 
 Ключи живут в области `mxquickview_main`, названия и описания берутся из лексикона пакета: `setting_mxquickview_<ключ>` и `setting_mxquickview_<ключ>_desc`, где `<ключ>` — часть после `mxquickview_` без префикса. Например, для `mxquickview_allowed_chunk` это `setting_mxquickview_allowed_chunk` («Разрешённые чанки») и `setting_mxquickview_allowed_chunk_desc`. Файлы лексикона: `core/components/mxquickview/lexicon/ru/setting.inc.php` и `.../en/setting.inc.php`, набор ключей ru и en совпадает.
 
-## Переопределение URL ресурсов
+## Виртуальная опция `mxquickview.assets_url`
 
-`mxquickview.assets_url` читается через `getOption`. В transport ключа нет: после установки в namespace он не появляется. Создайте вручную или оставьте значение по умолчанию `[[++assets_url]]components/mxquickview/`.
+Опция `mxquickview.assets_url` читается через `getOption`, но **не создаётся в БД** при установке. Это виртуальная опция: если вы не добавите её вручную, компонент будет использовать значение по умолчанию `[[++assets_url]]components/mxquickview/`.
 
 Ключ задаёт базовый URL CSS, JS и `connector.php`.
 
