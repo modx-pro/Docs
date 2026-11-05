@@ -7,8 +7,6 @@ description: Webhook Prodamus, поток оплаты, чеки 54-ФЗ и вк
 
 Шаги установки: [Быстрый старт](quick-start). Двухстадийной оплаты у Prodamus нет.
 
-## Webhook
-
 ### События пакета
 
 * **`msp3ProdamusOnPrepareReceiptItem`** – позволяет изменить позицию чека (`$params['item']`) перед отправкой в Prodamus.
