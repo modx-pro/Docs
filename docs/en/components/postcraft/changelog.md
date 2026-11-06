@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.0-pl3
+
+- Recipient sources: active MODX users and miniShop2 / MiniShop3 customers (order address email and linked user profile), alongside lists and FormIt
+- Campaign UI: checkboxes with counts/previews and a Refresh source counts button
+
 ## 1.0.0-pl2
 
 Features ported from tcMailing.

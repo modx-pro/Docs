@@ -19,9 +19,12 @@ On the left: subject, preview text, unsubscribe language, From and Reply-To. On 
 
 - Addresses: one per line or comma separated.
 - Saved list: picking a list fills Addresses at once. There is no separate Insert button. If the field is empty, the server still accepts the selected `list_id`.
-- Add unique emails from saved forms (FormIt): addresses from FormIt submissions. Refresh FormIt count shows how many there are.
+- Add unique emails from saved forms (FormIt): addresses from FormIt submissions.
+- Add emails of active MODX users: active (and not blocked) users with a profile email.
+- Add emails of miniShop2 / MiniShop3 customers: unique emails from orders (address email and the linked user profile email). If the shop is not installed, the count is 0.
+- Refresh source counts recalculates the selected sources and shows a preview.
 
-PostCraft removes duplicates and skips blacklisted addresses. One run queues up to 10,000 addresses.
+PostCraft removes duplicates across all sources and skips blacklisted addresses. One run queues up to 10,000 addresses.
 
 The Do not resend to addresses that already got this letter checkbox looks at the same template within the chosen number of days (How many days, default 30) or if the address is still queued for it. Skipped emails are listed in the response; the rest are queued. It fails only if everyone already got the template. Another template is not blocked by this checkbox. PostCraft checks this when queueing and again before each letter goes out. Test letters do not count.
 
