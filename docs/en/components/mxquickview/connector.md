@@ -7,8 +7,26 @@ description: 'Точка входа mxQuickView — AJAX-коннектор дл
 
 # Connector API
 
-![Ответ connector render (JSON)](screenshots/connector_response.png)
+Single entry point: `assets/components/mxquickview/connector.php`. Connector accepts only `POST` with `action=render`. Response is JSON `{ success, html?, message? }`.
 
-Единая точка входа: `assets/components/mxquickview/connector.php`. Коннектор принимает только `POST` и только `action=render`. Ответ — JSON `{ success, html?, message? }`.
+**Success response example:**
+
+```json
+{
+  "success": true,
+  "html": "<div class=\"qv-product\">...</div>",
+  "message": null
+}
+```
+
+**Error response example:**
+
+```json
+{
+  "success": false,
+  "html": null,
+  "message": "Chunk 'mxqv_product' not found in whitelist"
+}
+```
 
 См. подробное описание полей запроса, ответов и ошибок: [API и интерфейсы](/components/mxquickview/api) → раздел «Коннектор».

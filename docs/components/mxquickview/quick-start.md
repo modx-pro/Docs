@@ -56,8 +56,6 @@ title: Быстрый старт
 
 :::
 
-![Открытое модальное окно с продуктом mxqv_product](screenshots/quick-start_modal.png)
-
 ## 4. Проверьте белый список
 
 - В `mxquickview_allowed_chunk` должен быть `mxqv_product` (или ваш чанк).

@@ -42,8 +42,22 @@ if (!defined('MXQUICKVIEW_PATH')) {
 ## Связанные элементы
 
 - **Connector API** – использует `MXQUICKVIEW_PATH` для построения пути к `assets/components/mxquickview/connector.php`.
-- **Processors** — в пакете нет MODX-процессоров, класс `Render.php` вызывается напрямую из коннектора.
+- **Processors** — package has no MODX processors, `Render.php` class is called directly from connector.
 
-![Bootstrap файл схема](screenshots/bootstrap_diagram.png)
+## Initialization flow
+
+```mermaid
+flowchart TD
+    A[MODX bootstrap] --> B{bootstrap.php}
+    B --> C[Define MXQUICKVIEW_PATH]
+    C --> D[connector.php]
+    D --> E[Render.php]
+    E --> F[Render chunk/snippet/template]
+    
+    style B fill:#e1f5fe
+    style C fill:#fff3e0
+    style D fill:#f3e5f5
+    style E fill:#e8f5e9
+```
 
 ---
