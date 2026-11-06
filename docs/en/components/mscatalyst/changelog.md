@@ -1,4 +1,13 @@
-# Changelog
+﻿# Changelog
+
+## 1.5.0-pl1
+
+- Migrate tab: finds SeoFilter, mFilter2, mSearch2, mSync, msImportExport and Impex.
+- Four steps per package: import settings and data, rewrite snippet calls with backups, deactivate old plugins (packages stay installed).
+- Migrate all runs mFilter2 → mSearch2 → SeoFilter → sync/import-export.
+- mFilter2: `&filters` become `&facets`, `mFilter2` calls become `msCatalyst`.
+- mSearch2: synonyms and index fields, `mse2Form` / `mSearch2` become `msCatalystSearch` / `msCatalyst`.
+- mSync and import/export: draft sync profiles, cron becomes `msCatalystSync`.
 
 Before version 1.2.0 the component was called msFacets.
 

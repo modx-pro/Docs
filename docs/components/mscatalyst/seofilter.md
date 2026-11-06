@@ -1,4 +1,6 @@
-# Переход с SeoFilter
+﻿# Переход с SeoFilter
+
+> С версии 1.5.0 общий перенос SeoFilter, mFilter2, mSearch2 и mSync живёт на вкладке «Перенос» в админке.
 
 msCatalyst не нуждается в SeoFilter. На сайте без SeoFilter ставить его не нужно: посадочные, тексты, склонения, ЧПУ и карту сайта даёт сам msCatalyst, см. [Посадочные страницы](landings). SeoFilter для MODX 3 не выпущен (на modstore.pro он помечен как несовместимый с MODX 3), так что на MODX 3 посадочные с текстами есть только у msCatalyst.
 
