@@ -26,6 +26,8 @@ items: [
     items: [
       { text: 'Интеграция', link: 'integration' },
       { text: 'Подключение на сайте', link: 'frontend' },
+      { text: 'Чанки', link: 'chunks' },
+      { text: 'Connector API', link: 'connector' },
       { text: 'Сниппеты (обзор)', link: 'snippets/' },
       { text: 'Сниппет mxQuickView.initialize', link: 'snippets/mxquickview-initialize' },
     ],
@@ -45,6 +47,7 @@ items: [
       { text: 'Контракты и параметры (API)', link: 'api' },
       { text: 'Потоки и сценарии работы', link: 'flows' },
       { text: 'Архитектура', link: 'architecture' },
+      { text: 'Bootstrap файл', link: 'bootstrap' },
     ],
   },
 ]
@@ -68,14 +71,14 @@ items: [
 - **Менеджеру**: [Админка](/components/mxquickview/admin) → [Интеграция](/components/mxquickview/integration).
 - **Разработчику**: [Архитектура](/components/mxquickview/architecture) → [API](/components/mxquickview/api) → [Типы рендера](/components/mxquickview/types) → [Потоки](/components/mxquickview/flows).
 
-## Что умеет дополнение
+## Возможности
 
 - Отрисовывает три типа: `chunk`, `snippet`, `template`.
 - Режимы `modal` и `selector`.
 - Три библиотеки модалки: `native`, `bootstrap`, `fancybox`.
 - Навигация prev/next в списке при `data-mxqv-loop="true"`: кнопки есть только в режимах `native` и `bootstrap`, в Fancybox остаются клавиши ← / →, которые работают во всех режимах.
 - После подгрузки вызывает `ms3.cartUI`, `ms3.quantityUI`, `ms3.productCardUI.reinit()` и событие `ms3:cart:updated` (если MiniShop3 на странице).
-- ms3Variants в quick view (`variants_html`, `variants_json`, `has_variants`).
+- Поддержка ms3Variants в quick view (`variants_html`, `variants_json`, `has_variants`).
 
 ## Требования
 
@@ -88,7 +91,7 @@ items: [
 | ms3Variants | опционально, для выбора вариантов в модалке |
 | pdoTools | 3.x с Fenom, рекомендуется |
 
-pdoTools нужен потому, что чанки поставки `mxqv_product` и `mxqv_resource` написаны на Fenom. Без pdoTools в HTML останутся сырые `{$…}`.
+pdoTools требуется: чанки поставки `mxqv_product` и `mxqv_resource` написаны на Fenom. Без pdoTools в HTML останутся сырые `{$…}`.
 
 ## Быстрый старт
 
