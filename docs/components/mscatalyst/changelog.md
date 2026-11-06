@@ -1,4 +1,13 @@
-# История версий
+﻿# История версий
+
+## 1.5.0-pl1
+
+- Вкладка «Перенос»: находит SeoFilter, mFilter2, mSearch2, mSync, msImportExport и Impex.
+- Четыре шага для каждого пакета: перенос настроек и данных, перепись вызовов сниппетов с бэкапом, деактивация старых плагинов (пакеты не удаляются).
+- «Перенести всё» идёт по порядку mFilter2 → mSearch2 → SeoFilter → синхронизация/импорт-экспорт.
+- mFilter2: `&filters` становятся `&facets`, вызов `mFilter2` — `msCatalyst`.
+- mSearch2: синонимы и поля индекса, `mse2Form` / `mSearch2` — `msCatalystSearch` / `msCatalyst`.
+- mSync и import/export: черновики профилей синхронизации, cron — `msCatalystSync`.
 
 До версии 1.2.0 компонент назывался msFacets.
 

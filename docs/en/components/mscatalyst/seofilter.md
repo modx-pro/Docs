@@ -1,4 +1,6 @@
-# Moving from SeoFilter
+﻿# Moving from SeoFilter
+
+> From 1.5.0 the shared migrate for SeoFilter, mFilter2, mSearch2 and mSync is on the Migrate tab in the manager.
 
 msCatalyst doesn't need SeoFilter. On a site without SeoFilter you don't have to install it: msCatalyst gives you landing pages, texts, word forms, friendly URLs and the sitemap, see [Landing pages](landings). SeoFilter has no MODX 3 release (modstore.pro marks it as incompatible with MODX 3), so on MODX 3 msCatalyst is the way to get landing pages with texts.
 

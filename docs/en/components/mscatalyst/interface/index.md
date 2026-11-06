@@ -38,7 +38,11 @@ Create and edit `mscatalyst_set_*` sets with JSON validation. Sets from `sets/*.
 
 ## Landing pages
 
-Landing pages of a catalog: facet combinations with products, a text editor with preview, templates, word forms, a check for empty pages and clashing URLs, CSV export and import. When the site has SeoFilter tables, the import block shows up here too. See [Landing pages](../landings) and [Moving from SeoFilter](../seofilter).
+Landing pages of a catalog: facet combinations with products, a text editor with preview, templates, word forms, a check for empty pages and clashing URLs, CSV export and import. See [Landing pages](../landings).
+
+## Migrate
+
+The tab finds SeoFilter, mFilter2, mSearch2, mSync, msImportExport and Impex. msCatalyst imports their settings, rewrites site calls and deactivates old plugins. Packages are not uninstalled. "Migrate all" runs them in order. Details: [Moving from SeoFilter](../seofilter).
 
 ## Sync
 
