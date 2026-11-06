@@ -27,14 +27,14 @@ items: [
 ---
 # PostCraft
 
-PostCraft sends email campaigns right from the MODX manager. You build a letter from a chunk, paste addresses or take them from FormIt submissions, and pick a day and hours. Cron spreads the letters over that window, and the stats show opens, clicks, unsubscribes and bounces.
+PostCraft sends email campaigns right from the MODX manager. You build a letter from a chunk, take recipients from a list, FormIt, MODX users or miniShop customers, and pick a day and hours. Cron spreads the letters over that window, and the stats show opens, clicks, unsubscribes and bounces.
 
 You need no external mailing service: letters go out through the server mail or your SMTP. PostCraft takes unsubscribe page languages from Localizator, or from MODX contexts as in Babel when Localizator is absent.
 
 ## Features
 
 - A letter template lives in a `PostCraft.*` chunk. HTML or visual editor (CKEditor, TinyMCE RTE), phone/desktop preview on Templates, Campaign and Unsubscribe.
-- Recipients: a list of addresses, saved lists, unique emails from FormIt submissions. Picking a saved list fills Addresses at once. Duplicates are dropped, blacklisted addresses are always skipped.
+- Recipients: a list of addresses, saved lists, FormIt, active MODX users and miniShop2 / MiniShop3 customers. Picking a saved list fills Addresses at once. Duplicates across sources are dropped, blacklisted addresses are always skipped.
 - Send window: a date and hours from/to in the site time zone. First send without stats is spread evenly across the window; later sends follow that address’s opens.
 - Per-mailbox rate limits (hour / day / batch), warm-up, multi-day spread for long lists, and auto-pause when the IP is at risk.
 - Pause, resume, cancel and edit a scheduled campaign: subject, preheader, window, addresses, text.
