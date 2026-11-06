@@ -3,7 +3,6 @@ title: Bootstrap файл
 description: Инициализация констант и путей компонента mxQuickView
 ---
 <!-- TODO: translate from docs/components/mxquickview/bootstrap.md -->
-
 # Bootstrap файл
 
 Файл `core/components/mxquickview/bootstrap.php` подключается при загрузке компонента (через `MODX\Revolution\modX::loadExtension` или `modX::boot`). Он задаёт базовый путь к компоненту и определяет константу `MXQUICKVIEW_PATH`.
