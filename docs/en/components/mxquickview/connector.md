@@ -4,7 +4,6 @@ description: 'Точка входа mxQuickView — AJAX-коннектор дл
 ---
 <!-- TODO: translate from docs/components/mxquickview/connector.md -->
 
-
 # Connector API
 
 Single entry point: `assets/components/mxquickview/connector.php`. Connector accepts only `POST` with `action=render`. Response is JSON `{ success, html?, message? }`.

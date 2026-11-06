@@ -4,7 +4,6 @@ description: Чанки mxqv_product и mxqv_resource для отрисовки 
 ---
 <!-- TODO: translate from docs/components/mxquickview/chunks.md -->
 
-
 # Чанки
 
 Компонент включает два готовых чанка для быстрой отрисовки контента в модальном окне.
