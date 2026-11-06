@@ -25,7 +25,7 @@ title: Подключение на сайте
 
 Сниппет проверяет существование файла по пути из настроек. Если файл не найден, компонент пробует загрузить из `vendor/`, затем переходит на CDN. CDN используется только как fallback.
 
-В CDN-версии Bootstrap 5.x подключается `bootstrap.min.js` **без Popper**. Локальный файл `vendor/bootstrap/bootstrap.min.js` включает Popper. Выпадающие списки, тултипы и popover требуют отдельного подключения `@popperjs/core`.
+В CDN-версии Bootstrap 5.x подключается `bootstrap.min.js` **без Popper**. Локальный файл `vendor/bootstrap/bootstrap.min.js` включает Popper. Выпадающие списки, всплывающие подсказки и popover требуют отдельного подключения `@popperjs/core`.
 
 ::: warning
 Fancybox с CDN загружается без закреплённой версии: пакет подставляет адрес `@fancyapps/ui` целиком. Зафиксируйте версию в настройке `mxquickview_fancybox_js`, если важна стабильность.

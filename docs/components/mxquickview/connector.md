@@ -5,7 +5,7 @@ description: Точка входа mxQuickView — AJAX-коннектор дл�
 
 # Connector API
 
-<!-- MEDIA: Ответ connector render (JSON) | DevTools → Network → assets/components/mxquickview/connector.php, POST → `{ success: true, html: "..." }` -->
+![Ответ connector render (JSON)](screenshots/connector_response.png)
 
 Единая точка входа: `assets/components/mxquickview/connector.php`. Коннектор принимает только `POST` и только `action=render`. Ответ — JSON `{ success, html?, message? }`.
 

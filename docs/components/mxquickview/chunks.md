@@ -9,7 +9,7 @@ description: Чанки mxqv_product и mxqv_resource для отрисовки 
 
 ## mxqv_product
 
-<!-- MEDIA: Чанк mxqv_product в админке MODX | админка MODX → Элементы → Чанки → mxqv_product.tpl -->
+![Чанк mxqv_product в админке MODX](screenshots/mxqv_product_admin.png)
 
 **Путь:** `core/components/mxquickview/elements/chunks/mxqv_product.tpl`
 
@@ -58,7 +58,7 @@ description: Чанки mxqv_product и mxqv_resource для отрисовки 
 
 ## mxqv_resource
 
-<!-- MEDIA: Чанк mxqv_resource в админке MODX | админка MODX → Элементы → Чанки → mxqv_resource.tpl -->
+![Чанк mxqv_resource в админке MODX](screenshots/mxqv_resource_admin.png)
 
 **Путь:** `core/components/mxquickview/elements/chunks/mxqv_resource.tpl`
 

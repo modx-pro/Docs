@@ -35,13 +35,13 @@ if (!defined('MXQUICKVIEW_PATH')) {
 
 ## Как использовать
 
-Если вы пишете собственные кастомные процессоры или расширения, убедитесь, что загрузили `bootstrap.php` до обращения к файлам компонента, иначе `MXQUICKVIEW_PATH` будет неопределена.
+Если вы пишете собственные кастомные процессоры или расширения, убедитесь, что загрузили `bootstrap.php` до обращения к файлам компонента, иначе `MXQUICKVIEW_PATH` будет не определена.
 
 ## Связанные элементы
 
 - **Connector API** – использует `MXQUICKVIEW_PATH` для построения пути к `assets/components/mxquickview/connector.php`.
 - **Processors** — в пакете нет MODX-процессоров, класс `Render.php` вызывается напрямую из коннектора.
 
----
+![Bootstrap файл схема](screenshots/bootstrap_diagram.png)
 
-<!-- MEDIA: bootstrap.php diagram | визуальная схема инициализации компонента -->
+---
