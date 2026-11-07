@@ -16,7 +16,9 @@
  * Exit 0 if OK, 1 if broken, on unknown options or on a path that matches no Markdown.
  */
 import { execFileSync } from 'child_process'
+import { lookup } from 'dns/promises'
 import { existsSync, readFileSync } from 'fs'
+import { isIP } from 'net'
 import { dirname, extname, join, normalize, relative, resolve } from 'path'
 import { fileURLToPath } from 'url'
 import fg from 'fast-glob'
@@ -182,27 +184,67 @@ function extractMarkdownLinks(content) {
   return links
 }
 
+const MAX_REDIRECTS = 5
+
+/** True for loopback, link-local, private and other non-routable ranges (CWE-918 guard). */
+function isPrivateAddress(ip) {
+  const version = isIP(ip)
+  if (version === 4) {
+    const [a, b] = ip.split('.').map(Number)
+    return a === 0 || a === 10 || a === 127 || (a === 169 && b === 254) || (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168)
+  }
+  if (version === 6) {
+    const lower = ip.toLowerCase()
+    return lower === '::1' || lower === '::' || lower.startsWith('fe80:') || lower.startsWith('fc') || lower.startsWith('fd') || lower.startsWith('::ffff:127.')
+  }
+  return true
+}
+
+/** Rejects loopback/private/link-local destinations, including ones reached via DNS or a redirect. */
+async function assertPublicUrl(url) {
+  const { hostname, protocol } = new URL(url)
+  if (protocol !== 'http:' && protocol !== 'https:') {
+    throw new Error(`unsupported protocol: ${protocol}`)
+  }
+  if (hostname === 'localhost') {
+    throw new Error('blocked internal host')
+  }
+  const addresses = isIP(hostname) ? [hostname] : (await lookup(hostname, { all: true })).map((a) => a.address)
+  if (addresses.length === 0 || addresses.some(isPrivateAddress)) {
+    throw new Error('blocked internal address')
+  }
+}
+
+async function fetchSafe(url, method) {
+  let current = url
+  for (let redirects = 0; redirects <= MAX_REDIRECTS; redirects += 1) {
+    await assertPublicUrl(current)
+    const res = await fetch(current, {
+      method,
+      redirect: 'manual',
+      signal: AbortSignal.timeout(15000),
+      headers: { 'user-agent': 'modx-pro-docs-link-check/1.0' },
+    })
+    const location = res.status >= 300 && res.status < 400 ? res.headers.get('location') : null
+    if (!location) {
+      return res
+    }
+    current = new URL(location, current).toString()
+  }
+  throw new Error('too many redirects')
+}
+
 async function checkHttp(url) {
   if (EXTERNAL_SKIP.some((re) => re.test(url))) {
     return { ok: true, skipped: true, status: 0 }
   }
   try {
-    const head = await fetch(url, {
-      method: 'HEAD',
-      redirect: 'follow',
-      signal: AbortSignal.timeout(15000),
-      headers: { 'user-agent': 'modx-pro-docs-link-check/1.0' },
-    })
+    const head = await fetchSafe(url, 'HEAD')
     if (EXTERNAL_OK.has(head.status)) {
       return { ok: true, status: head.status }
     }
     if (head.status === 405 || head.status === 501) {
-      const get = await fetch(url, {
-        method: 'GET',
-        redirect: 'follow',
-        signal: AbortSignal.timeout(15000),
-        headers: { 'user-agent': 'modx-pro-docs-link-check/1.0' },
-      })
+      const get = await fetchSafe(url, 'GET')
       return { ok: EXTERNAL_OK.has(get.status), status: get.status }
     }
     return { ok: false, status: head.status }
