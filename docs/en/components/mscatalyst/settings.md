@@ -29,7 +29,6 @@ All settings are easier to edit on the "Settings" tab of the component page: it 
 | `mscatalyst_sync_keep_days` | `90` | Days to keep sync runs and their change journal for rollback. `0`: no age limit, up to 1000 runs per profile. |
 | `mscatalyst_sync_images_path` | | Folder for photos from the source. Empty: `assets/images/products/`. |
 | `mscatalyst_sync_images_url` | | URL of the same folder. Empty: `/assets/images/products/`. |
-| `mscatalyst_demo_admin` | `No` | Public demo admin. For a demo site only. |
 
 Filter sets are stored in `mscatalyst_set_<name>` settings, see [Filter sets](snippets/mscatalyst#filter-sets).
 

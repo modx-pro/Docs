@@ -47,7 +47,7 @@ msCatalyst renders a miniShop2 or MiniShop3 catalog as a faceted filter with sea
 
 Without JavaScript the filter works as a plain GET form. With JavaScript the page updates over AJAX, and the browser URL changes along with the filters.
 
-Demo: [`chelnysite.ru`](https://chelnysite.ru/), a catalog of 100,000 products on shared hosting. The English version of the same catalog runs on Localizator: [`chelnysite.ru/en/`](https://chelnysite.ru/en/). The component manager page is open without a manager login: [`chelnysite.ru/admin-demo`](https://chelnysite.ru/admin-demo).
+Demo: [`chelnysite.ru`](https://chelnysite.ru/), a catalog of 100,000 products on shared hosting. The English version of the same catalog runs on Localizator: [`chelnysite.ru/en/`](https://chelnysite.ru/en/). Component UI without installing: [`chelnysite.ru/admin-demo`](https://chelnysite.ru/admin-demo).
 
 ## Features
 
@@ -82,7 +82,7 @@ Tested combinations:
 ## Installation
 
 1. Add the modstore.pro provider in "Extras → Installer" and install msCatalyst.
-2. The installer creates the msCatalyst category: the snippets `msCatalyst`, `msCatalystSearch`, `msCatalystSitemap`, `msCatalystLandings`, `msCatalystReindex`, `msCatalystSeoFilter`, `msCatalystSync`, `msCatalystDemoAdmin`, a plugin, ten chunks, system settings, the sync and landing page tables.
+2. The installer creates the msCatalyst category: the snippets `msCatalyst`, `msCatalystSearch`, `msCatalystSitemap`, `msCatalystLandings`, `msCatalystReindex`, `msCatalystSeoFilter`, `msCatalystSync`, a plugin, ten chunks, system settings, the sync and landing page tables.
 3. Call the snippet in the catalog template as described in [Quick start](quick-start).
 
 License: one purchase per site.

@@ -91,17 +91,3 @@ A bridge to SeoFilter on MODX 2. Call it after `msCatalyst` in the catalog templ
 ```
 
 For AJAX updates the `mscatalyst:seo` event is more convenient, see [SEO](../seo).
-
-## msCatalystDemoAdmin
-
-A public component page without a manager login, for a demo site. Turn on the `mscatalyst_demo_admin` setting and call the snippet on a separate resource:
-
-```modx
-[[!msCatalystDemoAdmin? &docsUrl=`https://docs.modx.pro/components/mscatalyst/`]]
-```
-
-The visitor sees every tab. Edits to settings, synonyms and filter sets stay in the visitor's session and do not change the site. Sync is limited to dry runs. Writing and rollback are disabled. Export returns at most 200 rows. The demo connector answers only allowlisted actions, rate-limits requests per IP and sends `noindex`.
-
-::: danger
-While the setting is off, the snippet outputs nothing and the connector returns 404. Turn it on only on a demo site.
-:::

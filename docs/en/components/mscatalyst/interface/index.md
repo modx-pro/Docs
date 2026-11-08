@@ -2,7 +2,7 @@
 
 "Extras → msCatalyst" opens the component management page. It requires the `settings` permission, as system settings do. The page is built without ExtJS and works the same on MODX 2.8 and MODX 3.
 
-You can try it without installing in the [public demo admin](https://chelnysite.ru/admin-demo).
+You can try it without installing on the [demo site](https://chelnysite.ru/admin-demo).
 
 ## Search test
 
