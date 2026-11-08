@@ -83,7 +83,19 @@ https://site.ru/assets/components/mscatalyst/feed.php?profile=ID&token=...&forma
 
 ## Расписание
 
-Запуски по расписанию и продолжение незаконченных запусков удобнее всего вызывать файлом `assets/components/mscatalyst/cron.php` из системного cron. Альтернатива — сниппет [msCatalystSync](../snippets/service#mscatalystsync) в Scheduler. Подробности и параметры — в [служебных сниппетах](../snippets/service#mscatalystsync).
+Запуски по расписанию и продолжение незаконченных запусков удобнее всего вызывать файлом из системного cron (без отдельного ресурса MODX):
+
+```bash
+*/5 * * * * /usr/bin/php /var/www/site/assets/components/mscatalyst/cron.php
+```
+
+```bash
+php /var/www/site/assets/components/mscatalyst/cron.php
+php /var/www/site/assets/components/mscatalyst/cron.php --seconds=50
+php /var/www/site/assets/components/mscatalyst/cron.php --profile=3
+```
+
+Файл работает только из CLI. `--seconds` ограничивает время одного вызова (по умолчанию 50). `--profile=ID` запускает профиль сразу, без учёта расписания. Альтернатива — сниппет [msCatalystSync](../snippets/service#mscatalystsync) в Scheduler.
 
 Если файл источника не изменился с последнего успешного запуска, запуск по расписанию останавливается сразу после загрузки файла с пометкой «источник не изменился». Товары он не трогает. Ручной запуск и `&profile=ID` всегда проходят полностью. Источники API и Google Таблицы проверку не проходят и импортируются каждый раз.
 

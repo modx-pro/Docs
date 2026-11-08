@@ -54,3 +54,23 @@ Heading templates and indexing rules are described in [SEO](seo).
 ## Loading the catalog
 
 Open "Extras → msCatalyst", the "Sync" tab, and create a profile: a CSV or XLSX file, an API, a Google Sheet or 1C. The wizard walks you through source analysis, field matching and a dry run. More: [Sync](interface/sync).
+
+## Cron for sync
+
+After you approve the schema, put `cron.php` into the system crontab. No separate MODX resource is needed:
+
+```bash
+*/5 * * * * /usr/bin/php /var/www/site/assets/components/mscatalyst/cron.php
+```
+
+Replace the PHP binary and the site path with yours. Every five minutes the script continues unfinished runs and starts profiles whose schedule is due. The file refuses HTTP — CLI only.
+
+Common variants:
+
+```bash
+php /var/www/site/assets/components/mscatalyst/cron.php
+php /var/www/site/assets/components/mscatalyst/cron.php --seconds=50
+php /var/www/site/assets/components/mscatalyst/cron.php --profile=3
+```
+
+`--seconds` limits one call (default 50). `--profile=ID` starts that profile now, ignoring its schedule. If the site already uses Scheduler, call `[[!msCatalystSync? &seconds=`50`]]` instead of the file. More: [service snippets](snippets/service#mscatalystsync).

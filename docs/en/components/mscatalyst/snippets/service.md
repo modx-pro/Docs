@@ -4,15 +4,19 @@
 
 Runs sync profiles on schedule and continues unfinished runs.
 
-The simplest way is the CLI file from the system crontab (no MODX resource needed):
+The simplest way is to put the CLI file into the system crontab (no MODX resource needed):
 
 ```bash
-php /path/to/assets/components/mscatalyst/cron.php
-php /path/to/assets/components/mscatalyst/cron.php --seconds=50
-php /path/to/assets/components/mscatalyst/cron.php --profile=3
+*/5 * * * * /usr/bin/php /var/www/site/assets/components/mscatalyst/cron.php
 ```
 
-The file is CLI-only: it refuses HTTP requests. `--seconds` limits one call (default 50). `--profile=ID` starts that profile now, ignoring its schedule.
+```bash
+php /var/www/site/assets/components/mscatalyst/cron.php
+php /var/www/site/assets/components/mscatalyst/cron.php --seconds=50
+php /var/www/site/assets/components/mscatalyst/cron.php --profile=3
+```
+
+The file is CLI-only: it refuses HTTP requests. Replace the PHP binary and the site path with yours. `--seconds` limits one call (default 50). `--profile=ID` starts that profile now, ignoring its schedule.
 
 If the site already uses Scheduler or another MODX planner, keep calling the snippet:
 
