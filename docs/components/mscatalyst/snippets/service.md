@@ -4,15 +4,19 @@
 
 Запускает профили синхронизации по расписанию и продолжает незаконченные запуски.
 
-Удобнее всего вызывать файл из системного cron (без отдельного ресурса MODX):
+Удобнее всего повесить файл на системный crontab (без отдельного ресурса MODX):
 
 ```bash
-php /path/to/assets/components/mscatalyst/cron.php
-php /path/to/assets/components/mscatalyst/cron.php --seconds=50
-php /path/to/assets/components/mscatalyst/cron.php --profile=3
+*/5 * * * * /usr/bin/php /var/www/site/assets/components/mscatalyst/cron.php
 ```
 
-Файл работает только из CLI: через браузер недоступен. `--seconds` ограничивает время одного вызова (по умолчанию 50). `--profile=ID` запускает профиль сразу, без учёта расписания.
+```bash
+php /var/www/site/assets/components/mscatalyst/cron.php
+php /var/www/site/assets/components/mscatalyst/cron.php --seconds=50
+php /var/www/site/assets/components/mscatalyst/cron.php --profile=3
+```
+
+Файл работает только из CLI: через браузер недоступен. Подставьте свой путь к PHP и к сайту. `--seconds` ограничивает время одного вызова (по умолчанию 50). `--profile=ID` запускает профиль сразу, без учёта расписания.
 
 Если на сайте уже стоит Scheduler или другой планировщик, можно вызвать сниппет:
 

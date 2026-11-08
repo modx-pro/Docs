@@ -54,3 +54,23 @@
 ## Загрузка каталога
 
 Откройте «Пакеты → msCatalyst», вкладку «Синхронизация», и создайте профиль: файл CSV или XLSX, API, Google Таблица или 1С. Мастер проведёт через анализ источника, сопоставление полей и пробный прогон. Подробнее: [Синхронизация](interface/sync).
+
+## Cron для синхронизации
+
+После утверждения схемы повесьте на системный crontab вызов `cron.php`. Отдельный ресурс MODX не нужен:
+
+```bash
+*/5 * * * * /usr/bin/php /var/www/site/assets/components/mscatalyst/cron.php
+```
+
+Подставьте свой путь к PHP и к сайту. Раз в пять минут скрипт продолжает незаконченные запуски и стартует профили, у которых подошло расписание. Через браузер файл недоступен — только CLI.
+
+Частые варианты:
+
+```bash
+php /var/www/site/assets/components/mscatalyst/cron.php
+php /var/www/site/assets/components/mscatalyst/cron.php --seconds=50
+php /var/www/site/assets/components/mscatalyst/cron.php --profile=3
+```
+
+`--seconds` ограничивает время одного вызова (по умолчанию 50). `--profile=ID` запускает профиль сразу, без учёта расписания. Если на сайте уже есть Scheduler, можно вместо файла вызывать `[[!msCatalystSync? &seconds=`50`]]`. Подробнее: [служебные сниппеты](snippets/service#mscatalystsync).

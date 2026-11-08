@@ -83,7 +83,19 @@ msCatalyst deletes runs older than 90 days together with their change journal. Y
 
 ## Schedule
 
-The simplest way to run due profiles and continue unfinished runs is `assets/components/mscatalyst/cron.php` from the system crontab. Alternatively call the [msCatalystSync](../snippets/service#mscatalystsync) snippet from Scheduler. Details and options: [service snippets](../snippets/service#mscatalystsync).
+The simplest way to run due profiles and continue unfinished runs is the CLI file from the system crontab (no MODX resource needed):
+
+```bash
+*/5 * * * * /usr/bin/php /var/www/site/assets/components/mscatalyst/cron.php
+```
+
+```bash
+php /var/www/site/assets/components/mscatalyst/cron.php
+php /var/www/site/assets/components/mscatalyst/cron.php --seconds=50
+php /var/www/site/assets/components/mscatalyst/cron.php --profile=3
+```
+
+The file is CLI-only. `--seconds` limits one call (default 50). `--profile=ID` starts that profile now, ignoring its schedule. Alternatively call the [msCatalystSync](../snippets/service#mscatalystsync) snippet from Scheduler.
 
 When the source file has not changed since the last successful run, a scheduled run stops right after downloading it with the note "source unchanged" and leaves products alone. Manual runs and `&profile=ID` always go through in full. API and Google Sheets sources skip this check and import every time.
 
