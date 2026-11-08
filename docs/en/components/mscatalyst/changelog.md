@@ -1,5 +1,21 @@
 ﻿# Changelog
 
+## 1.5.3-pl1
+
+- Sync: `assets/components/mscatalyst/cron.php` runs due profiles from the system crontab (CLI only). No MODX resource needed; `--seconds` and `--profile` match the `msCatalystSync` snippet.
+- Sync: MiniShop3 product field "Stock" (`stock`) is available in mapping and is written to `ms3_products.stock`. Missing-product "zero stock" clears that column.
+
+## 1.5.2-pl1
+
+- Sync: Apply plan works after the schema was approved again under a new version with the same mapping. The plan used to keep the old schema id and fail with "schema not approved".
+- Sync: if the approved mapping really changed after the dry run, the error now asks to run the dry run again instead of the misleading "schema not approved".
+
+## 1.5.1-pl1
+
+- Sync: the Fields step shows the mapping table again after analysis.
+- Sync: a parent column with the same value in every row is no longer suggested as a variants column.
+- Google Sheets: rows no longer carry a service `_row` column.
+
 ## 1.5.0-pl1
 
 - Migrate tab: finds SeoFilter, mFilter2, mSearch2, mSync, msImportExport and Impex.

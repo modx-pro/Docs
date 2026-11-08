@@ -56,7 +56,7 @@ A profile has three thresholds. A run stops and waits for confirmation if:
 - a price changes by more than the set percentage;
 - the source returned far fewer rows than last time.
 
-For products gone from the source, pick an action: do nothing, unpublish, set stock to zero or mark deleted. The rule applies only to products this profile created or linked. If a product comes back to the source, it reappears on the site.
+For products gone from the source, pick an action: do nothing, unpublish, set stock to zero or mark deleted. The rule applies only to products this profile created or linked. If a product comes back to the source, it reappears on the site. On MiniShop3 "set stock to zero" writes `0` to the product `stock` field; variants get `count` cleared. The Fields mapping offers MiniShop3 target "Stock" (`stock`).
 
 ## Modifications, categories and images
 
@@ -83,7 +83,7 @@ msCatalyst deletes runs older than 90 days together with their change journal. Y
 
 ## Schedule
 
-Scheduled runs and continuation of unfinished runs are handled by the [msCatalystSync](../snippets/service#mscatalystsync) snippet from cron or a scheduler.
+The simplest way to run due profiles and continue unfinished runs is `assets/components/mscatalyst/cron.php` from the system crontab. Alternatively call the [msCatalystSync](../snippets/service#mscatalystsync) snippet from Scheduler. Details and options: [service snippets](../snippets/service#mscatalystsync).
 
 When the source file has not changed since the last successful run, a scheduled run stops right after downloading it with the note "source unchanged" and leaves products alone. Manual runs and `&profile=ID` always go through in full. API and Google Sheets sources skip this check and import every time.
 

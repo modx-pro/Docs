@@ -2,7 +2,19 @@
 
 ## msCatalystSync
 
-Runs sync profiles on schedule and continues unfinished runs. Call it from cron or a scheduler, for example through a resource with an empty template or Scheduler.
+Runs sync profiles on schedule and continues unfinished runs.
+
+The simplest way is the CLI file from the system crontab (no MODX resource needed):
+
+```bash
+php /path/to/assets/components/mscatalyst/cron.php
+php /path/to/assets/components/mscatalyst/cron.php --seconds=50
+php /path/to/assets/components/mscatalyst/cron.php --profile=3
+```
+
+The file is CLI-only: it refuses HTTP requests. `--seconds` limits one call (default 50). `--profile=ID` starts that profile now, ignoring its schedule.
+
+If the site already uses Scheduler or another MODX planner, keep calling the snippet:
 
 ```modx
 [[!msCatalystSync? &seconds=`50`]]
