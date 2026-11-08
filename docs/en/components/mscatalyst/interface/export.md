@@ -56,5 +56,5 @@ If the file has category paths from the catalog root, set the same root catalog 
 A large catalog is exported in parts of 500 rows, and the page shows the progress. Each part is a separate request, so the export does not hit `max_execution_time`. The finished file is downloaded by a link. Temporary job files are deleted after a day.
 
 ::: tip Demo
-The [public demo admin](https://chelnysite.ru/admin-demo) exports at most 200 rows, and the tab warns about it before and after the export. The purchased msCatalyst has no limits: the whole selected catalog goes into the file.
+On the [demo site](https://chelnysite.ru/admin-demo) export is capped at 200 rows. Installed msCatalyst has no limits: the whole selected catalog goes into the file.
 :::

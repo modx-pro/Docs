@@ -47,7 +47,7 @@ msCatalyst выводит каталог miniShop2 и MiniShop3 фасетным
 
 Без JavaScript фильтр работает как обычная GET-форма. С JavaScript страница обновляется через AJAX, а адрес в браузере меняется вместе с фильтрами.
 
-Демо: [`chelnysite.ru`](https://chelnysite.ru/), каталог на 100 000 товаров на виртуальном хостинге. Английская версия того же каталога на Localizator: [`chelnysite.ru/en/`](https://chelnysite.ru/en/). Страница компонента в админке открыта без входа в менеджер: [`chelnysite.ru/admin-demo`](https://chelnysite.ru/admin-demo).
+Демо: [`chelnysite.ru`](https://chelnysite.ru/), каталог на 100 000 товаров на виртуальном хостинге. Английская версия того же каталога на Localizator: [`chelnysite.ru/en/`](https://chelnysite.ru/en/). Интерфейс компонента без установки: [`chelnysite.ru/admin-demo`](https://chelnysite.ru/admin-demo).
 
 ## Возможности
 
@@ -82,7 +82,7 @@ msCatalyst выводит каталог miniShop2 и MiniShop3 фасетным
 ## Установка
 
 1. Подключите провайдер modstore.pro в «Пакеты → Установщик» и установите msCatalyst.
-2. Установщик создаст категорию msCatalyst: сниппеты `msCatalyst`, `msCatalystSearch`, `msCatalystSitemap`, `msCatalystLandings`, `msCatalystReindex`, `msCatalystSeoFilter`, `msCatalystSync`, `msCatalystDemoAdmin`, плагин, десять чанков, системные настройки, таблицы синхронизации и посадочных страниц.
+2. Установщик создаст категорию msCatalyst: сниппеты `msCatalyst`, `msCatalystSearch`, `msCatalystSitemap`, `msCatalystLandings`, `msCatalystReindex`, `msCatalystSeoFilter`, `msCatalystSync`, плагин, десять чанков, системные настройки, таблицы синхронизации и посадочных страниц.
 3. Вызовите сниппет в шаблоне каталога, как описано в разделе [Быстрый старт](quick-start).
 
 Лицензия: одна покупка на один сайт.

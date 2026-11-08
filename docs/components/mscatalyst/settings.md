@@ -29,7 +29,6 @@
 | `mscatalyst_sync_keep_days` | `90` | Сколько дней хранить запуски синхронизации и журнал изменений для отката. `0`: без срока, до 1000 запусков на профиль. |
 | `mscatalyst_sync_images_path` | | Папка для фото из источника. Пусто: `assets/images/products/`. |
 | `mscatalyst_sync_images_url` | | URL той же папки. Пусто: `/assets/images/products/`. |
-| `mscatalyst_demo_admin` | `Нет` | Публичная демо-админка. Только для демо-сайта. |
 
 Наборы фильтров хранятся в настройках `mscatalyst_set_<имя>`, см. [Наборы фильтров](snippets/mscatalyst#nabory-filtrov).
 
