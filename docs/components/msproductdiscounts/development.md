@@ -79,7 +79,8 @@ document.addEventListener('mscdek:status:get', e => {
 ## Показывать карту в модальном окне
 
 :::warning
-В примере используется библиотека [Fancybox](https://fancyapps.com/fancybox/getting-started/)
+В примере используется библиотека [Fancybox](https://fancyapps.com/fancybox/getting-started/).
+Начиная с `2.10.1-rc` пакет сам её не подключает — подключите Fancybox на сайте самостоятельно.
 :::
 
 #### Добавим кнопку открытия модального окна, которая изначально скрыта с помощью класса `.hide`
