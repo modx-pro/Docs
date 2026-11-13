@@ -3,7 +3,7 @@ title: TVGroup
 description: Multiple fields in a single TV value (JSON) with conditional display logic
 categories: utilities
 author: consoleloh
-repository: https://github.com/consoleloh/tvgroup
+modstore: https://modstore.pro/packages/utilities/tvgroup
 ---
 
 # TVGroup

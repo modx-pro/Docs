@@ -73,6 +73,13 @@
     "modstore": "https://modstore.pro/authors/boshnik",
     "name": "Aleksandr Huz"
   },
+  "consoleloh": {
+    "modstore": "https://modstore.pro/authors/26661",
+    "name": {
+      "en": "Kirill Kuznetsov",
+      "ru": "Кирилл Кузнецов"
+    }
+  },
   "core01": {
     "modstore": "https://modstore.pro/authors/4689",
     "name": "Roman Sadoyan"
