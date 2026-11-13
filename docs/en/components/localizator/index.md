@@ -27,6 +27,8 @@ items: [
 
 Component for creating language versions and satellites without contexts: automatic translation of resource fields (including TVs and SEO), auto-translation of lexicons. Works via “localization” pseudo-contexts (e.g. site.com/ and site.com/en/).
 
+For MODX Revolution 3 use [Localizator3](/components/localizator3/).
+
 ## Features
 
 - **Language versions without contexts** — localization pseudo-contexts, one site with multiple languages
