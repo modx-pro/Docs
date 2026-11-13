@@ -1,6 +1,6 @@
 ---
 title: Атрибут hreflang
-description: Сниппет getLocalizedCanonical: canonical, alternate и x-default
+description: 'Сниппет getLocalizedCanonical: canonical, alternate и x-default'
 ---
 
 # Атрибут hreflang

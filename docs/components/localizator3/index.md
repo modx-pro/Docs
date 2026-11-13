@@ -1,6 +1,6 @@
 ---
 title: Localizator3
-description: Языковые версии без контекстов для MODX 3: поля ресурса, TV, SEO, товары MiniShop3
+description: 'Языковые версии без контекстов для MODX 3: поля ресурса, TV, SEO, товары MiniShop3'
 categories: utilities
 logo: https://modstore.pro/assets/extras/localizator3/logo.png
 author: modx-pro
