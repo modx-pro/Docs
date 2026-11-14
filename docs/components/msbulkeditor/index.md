@@ -123,7 +123,7 @@ flowchart LR
 | MODX Revolution | 3.0+ |
 | PHP | 8.2+ |
 | MiniShop3 | установлен |
-| VueTools (`modxpro-vue-core`) | установлен |
+| VueTools (`modxpro-vue-core`) | установлен — интерфейс работает через VueTools Import Map и тему MODX |
 
 ### Обязательные зависимости
 
