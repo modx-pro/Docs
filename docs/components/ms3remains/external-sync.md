@@ -82,6 +82,7 @@ $ms3remains->remains()->setQuantity($identity, 15.0, 'import 1c', $modx->user->g
 Кроме `remains()`:
 
 - `projection()`: кроме `rebuildBatch` ещё `projectProduct` (один товар) и `projectVariant` (один вариант)
+- `remains()->batch(callable $callback)`: с версии 1.1.0 запись остатков выполняется в одной транзакции с отложенной проекцией; каждый товар и вариант пересчитываются один раз при закрытии области. **Breaking для интеграторов**: реализация `RemainServiceInterface` должна дополнить интерфейс методом `batch()`
 - `csv()`: `export`, `preview`, `commit`
 - `isEnabled()`: читает `ms3remains_enabled`
 
