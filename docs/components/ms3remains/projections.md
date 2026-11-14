@@ -39,7 +39,9 @@ flowchart LR
 - массового импорта вне компонента
 - смены состава отслеживаемых опций
 
-Тот же пересчёт делает маршрут `POST /api/mgr/ms3remains/sync/rebuild` и сервисный метод `rebuildBatch(array $productIds)`.
+Тот же пересчёт делает маршрут `POST /api/mgr/ms3remains/sync/rebuild` и сервисный метод `rebuildBatch(array $productIds)`. С версии 1.1.0 метод `rebuildBatch()` сбрасывает кэш один раз за вызов, а не на каждый товар.
+
+С версии 1.1.0 пакетный пересчёт доступен напрямую: сервисный метод `StockProjectionService::projectMany(array $productIds, array $variantIds = []): void` — пересчёт переданных товаров и вариантов одним проходом с одним сбросом кэша на контекст.
 
 ## Зачем это витрине
 

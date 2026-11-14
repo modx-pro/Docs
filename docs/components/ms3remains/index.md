@@ -61,7 +61,7 @@ items: [
 
 1. Установить **MiniShop3**, **VueTools**, **pdoTools** и **ms3Remains**.
 2. Выключить встроенный inventory: `ms3_inventory_enabled = 0`.
-3. Включить `ms3remains_enabled`, задать `ms3remains_option_keys` и статусы списания/возврата.
+3. Включить `ms3remains_enabled`, задать `ms3remains_option_keys` и статусы списания/возврата. Проверки корзины и заказа (флаги `ms3remains_check_before_cart`, `ms3remains_check_before_order`, `ms3remains_check_options`) можно выключить отдельно, если проверка не нужна.
 4. Заполнить остатки на вкладке товара или через CSV.
 5. На витрине вывести сниппет `ms3Remains` (некэшируемый) или проекцию `[[+stock]]`.
 
