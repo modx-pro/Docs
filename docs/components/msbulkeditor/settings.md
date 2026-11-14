@@ -28,7 +28,7 @@ Namespace **`msbulkeditor`**, ключи в БД: `msbulkeditor_*`.
 
 Задача **`msbulkeditor / operation_cleanup`** удаляет операции старше `history_retention_days`.
 
-При установке или обновлении msBulkEditor со Scheduler пакет ставит `msbulkeditor_scheduler_enabled = Да` и отключает заглушку. Обновление пакета **не** включает настройку `msbulkeditor_scheduler_enabled` автоматически, даже если она была включена ранее. При необходимости настроьте cron‑задачу `php /path/to/assets/components/scheduler/run.php` (обычно раз в сутки).
+При установке или обновлении msBulkEditor вместе со Scheduler настройка `msbulkeditor_scheduler_enabled` автоматически включается, а заглушка отключается. Обновление пакета больше не активирует эту настройку, если вы её ранее отключили. Чтобы Scheduler продолжал работать, добавьте в cron задачу `php /path/to/assets/components/scheduler/run.php` (обычно раз в сутки).
 
 Без Scheduler в transport остаётся `Нет`. Плагин `msbulkeditor_bootstrap` на `OnManagerPageInit` чистит историю не чаще раза в сутки, пока в `msbulkeditor_cleanup_task_stub` значение `enabled: true`.
 
