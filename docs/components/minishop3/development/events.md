@@ -22,7 +22,8 @@ MiniShop3 работает на системе событий MODX. Плагин
 | [msOnBeforeChangeInCart](events/cart#msonbeforechangeincart) | Перед изменением количества |
 | [msOnChangeInCart](events/cart#msonchangeincart) | После изменения количества |
 | [msOnBeforeChangeOptionsInCart](events/cart#msonbeforechangeoptionsincart) | Перед изменением опций |
-| [msOnChangeOptionInCart](events/cart#msonchangeoptionincart) | После изменения опций |
+| [msOnChangeOptionsInCart](events/cart#msonchangeoptionsincart) | После изменения опций |
+| [msOnChangeOptionInCart](events/cart#msonchangeoptionincart) | Устаревшее написание `msOnChangeOptionsInCart`, вызывается следом за ним |
 | [msOnBeforeRemoveFromCart](events/cart#msonbeforeremovefromcart) | Перед удалением товара |
 | [msOnRemoveFromCart](events/cart#msonremovefromcart) | После удаления товара |
 | [msOnBeforeEmptyCart](events/cart#msonbeforeemptycart) | Перед очисткой корзины |

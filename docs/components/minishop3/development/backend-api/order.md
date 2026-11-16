@@ -832,12 +832,18 @@ $origin = $params['origin'] ?? 'storefront'; // ключа нет — значи
 | `GET` | `/api/mgr/orders/{id}/logs` | Журнал заказа |
 | `GET` | `/api/mgr/orders/{id}/products` | Позиции заказа |
 | `POST` | `/api/mgr/orders/{id}/products` | Добавить позицию |
-| `PUT` | `/api/mgr/orders/{id}/products/{product_id}` | Изменить позицию |
-| `DELETE` | `/api/mgr/orders/{id}/products/{product_id}` | Удалить позицию |
+| `PUT` | `/api/mgr/orders/{id}/products/{order_product_id}` | Изменить позицию |
+| `DELETE` | `/api/mgr/orders/{id}/products/{order_product_id}` | Удалить позицию |
 | `GET` | `/api/mgr/orders/{id}/shipment` | Отгрузка заказа |
 | `PUT` | `/api/mgr/orders/{id}/shipment` | Обновить отгрузку |
 
 Чтение списка, карточки, фильтров, статистики, позиций, журнала и отгрузки требует `msorder_list`. Запись, включая оба `DELETE`, требует `msorder_save`. Отдельного `msorder_remove` на этих маршрутах нет.
+
+::: tip Последний сегмент — ID строки заказа
+В `PUT` и `DELETE` подставляется `msOrderProduct.id` (ID позиции заказа), а не ID товара. До 1.15.0-beta1 плейсхолдер назывался `{product_id}`, что вводило в заблуждение, и был переименован в `{order_product_id}`.
+
+Для HTTP-клиентов это ничего не меняет: сегмент позиционный, URL прежний. Там, где параметр приходит ключом, сервис принимает оба имени — `order_product_id` и устаревшее `product_id`.
+:::
 
 ::: warning Правка позиций сверяется с остатком {#inventory-reconcile}
 При включённом учёте остатков (`ms3_inventory_enabled`) добавление, изменение количества и удаление позиции приводят резерв склада к итоговому количеству по каждому товару, а остаток двигают на разницу. С 1.14.3-beta1 это делается до сохранения строки: если остатка не хватает, строка не сохраняется, резерв и остаток остаются прежними.

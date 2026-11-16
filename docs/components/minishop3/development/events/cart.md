@@ -28,7 +28,7 @@ flowchart TD
 | --- | --- |
 | Все `msOnBefore*` | Операция прерывается, покупатель получает ошибку |
 | `msOnAddToCart` | Товар уже сохранён, но запрос всё равно вернёт ошибку |
-| `msOnChangeInCart`, `msOnChangeOptionInCart`, `msOnRemoveFromCart`, `msOnEmptyCart` | Игнорируется: операция уже завершена успешно |
+| `msOnChangeInCart`, `msOnChangeOptionsInCart`, `msOnChangeOptionInCart`, `msOnRemoveFromCart`, `msOnEmptyCart` | Игнорируется: операция уже завершена успешно |
 | `msOnGetCart`, `msOnGetStatusCart` | Только подмена данных, не прерывание. Но при непустом `output()` теряется и сама подмена: ядро возьмёт исходное значение |
 
 Проверки размещайте в парных `msOnBefore*`: там, где ответ игнорируется, ошибка плагина пропадёт незаметно для покупателя.
@@ -355,7 +355,49 @@ switch ($modx->event->name) {
 
 ---
 
+## msOnChangeOptionsInCart
+
+Вызывается **после** изменения опций товара в корзине. Парное к `msOnBeforeChangeOptionsInCart` по общему для корзины правилу: имя «после» — это имя «до» без `Before`.
+
+::: tip Не срабатывает при совпадении ключей
+Если новая комбинация опций совпадает с уже существующей строкой корзины, ядро удаляет текущую строку и передаёт работу `change()`. Сработают `msOnBeforeChangeInCart`/`msOnChangeInCart`, а не это событие. Количества двух строк складываются.
+:::
+
+### Параметры
+
+| Параметр | Тип | Описание |
+| --- | --- | --- |
+| `controller` | `\MiniShop3\Controllers\Cart\Cart` | Контроллер корзины |
+| `old_product_key` | `string` | Старый ключ товара |
+| `product_key` | `string` | Новый ключ товара (может измениться) |
+| `options` | `array` | Новые опции |
+
+### Пример использования
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnChangeOptionsInCart':
+        $oldKey = $scriptProperties['old_product_key'];
+        $newKey = $scriptProperties['product_key'];
+        $options = $scriptProperties['options'];
+
+        if ($oldKey !== $newKey) {
+            $modx->log(modX::LOG_LEVEL_INFO,
+                "Ключ товара изменён: {$oldKey} => {$newKey}"
+            );
+        }
+        break;
+}
+```
+
+---
+
 ## msOnChangeOptionInCart
+
+::: warning Устаревшее имя
+Написание из miniShop2. Вызывается сразу после `msOnChangeOptionsInCart` с теми же параметрами — только ради совместимости со старыми плагинами, и будет убрано в следующем мажорном релизе. В новом коде подписывайтесь на `msOnChangeOptionsInCart`.
+:::
 
 Вызывается **после** изменения опций товара в корзине.
 
