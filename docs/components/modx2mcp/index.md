@@ -20,13 +20,15 @@ PHP-компонент предоставляет HTTP API сайта, а отд
 Пользователь → ИИ-агент / MCP-клиент → MODX2MCP → MODX
 ```
 
-## Возможности версии 1.2.4
+## Возможности версии 1.2.7
 
-Доступны **192 публичных MCP-инструмента**: 81 операция чтения и 111 изменяющих операций. Серверный контракт включает **193 действия** с учётом внутреннего `get_capabilities`.
+Доступны **198 публичных MCP-инструментов** и **199 серверных действий** (включая внутреннее действие `get_capabilities`).
 
 Среди возможностей:
 
 - управление ресурсами, шаблонами, чанками, сниппетами, плагинами, TV-полями и категориями;
+- шесть инструментов управления категориями элементов (`modCategory`): список и просмотр, создание, переименование, перемещение и сортировка, безопасное удаление с проверкой зависимостей, назначение категорий элементам;
+- согласованная информация о CAS: `get_capabilities` и `get_site_state` сообщают CAS v2 при доступном модульном механизме, иначе сохраняют версию v1;
 - системные настройки, источники файлов, пакеты и пространства имён;
 - пользователи, группы, роли, политики доступа и контексты;
 - интеграции с ClientConfig, MIGX, miniShop2, VersionX и VirtualPage, если они установлены;
@@ -38,10 +40,10 @@ PHP-компонент предоставляет HTTP API сайта, а отд
 
 ## Установка
 
-Установите пакет **modx2mcp-1.2.4-pl.transport.zip**, соответствующий вашей версии MODX:
+Установите пакет **modx2mcp-1.2.7-pl.transport.zip**, соответствующий вашей версии MODX:
 
-- [modstore.pro — MODX2MCP](https://modstore.pro/packages/ai/modx2mcp) — установка через менеджер пакетов MODX;
-- [релиз 1.2.4 на GitHub](https://github.com/rumata-estor/modx3-mcp/releases/tag/v1.2.4) — транспортный архив для ручной установки.
+- [modstore.pro — MODX2MCP](https://modstore.pro/packages/ai/modx2mcp) — установка через менеджер пакетов MODX после появления версии 1.2.7 в репозитории;
+- [релиз 1.2.7 на GitHub](https://github.com/rumata-estor/modx3-mcp/releases/tag/v1.2.7) — [**modx2mcp-1.2.7-pl.transport.zip**](https://github.com/rumata-estor/modx3-mcp/releases/download/v1.2.7/modx2mcp-1.2.7-pl.transport.zip) для ручной установки.
 
 После **новой установки** компонент выключен по умолчанию. Откройте **Компоненты → MODX MCP**, проверьте настройки безопасности и включите `modxmcp.enabled`. API-токен (`modxmcp.api_token`) генерируется при установке; его просмотр доступен только авторизованному администратору с необходимыми правами.
 
@@ -54,7 +56,7 @@ PHP-компонент предоставляет HTTP API сайта, а отд
   "mcpServers": {
     "modx": {
       "command": "npx",
-      "args": ["-y", "github:rumata-estor/modx3-mcp#v1.2.4"],
+      "args": ["-y", "github:rumata-estor/modx3-mcp#v1.2.7"],
       "env": {
         "MODX_MCP_SITE_URL": "https://example.com/assets/components/modxmcp/api.php",
         "MODX_MCP_TOKEN": "СЕКРЕТНЫЙ_ТОКЕН_САЙТА"
@@ -65,6 +67,8 @@ PHP-компонент предоставляет HTTP API сайта, а отд
 ```
 
 Используйте HTTPS. Токен не следует публиковать или сохранять в репозитории. После подключения начните с операций чтения.
+
+Версия 1.2.7 следует за стабильной 1.2.4. Версия 1.2.5 осталась черновиком, а 1.2.6-test — тестовым выпуском; стабильными они не стали. Изменения из PR #40 и чернового PR #46 в 1.2.7 не включены.
 
 ## Обновление
 
@@ -82,4 +86,4 @@ PHP-компонент предоставляет HTTP API сайта, а отд
 
 Проект бесплатный, лицензия **MIT**. Автор — Александр Палочкин.
 
-[GitHub: rumata-estor/modx3-mcp](https://github.com/rumata-estor/modx3-mcp) · [Релизы](https://github.com/rumata-estor/modx3-mcp/releases/tag/v1.2.4) · [Документация](https://github.com/rumata-estor/modx3-mcp/blob/main/docs/LANGUAGES.md)
+[GitHub: rumata-estor/modx3-mcp](https://github.com/rumata-estor/modx3-mcp) · [Релизы](https://github.com/rumata-estor/modx3-mcp/releases/tag/v1.2.7) · [Документация](https://github.com/rumata-estor/modx3-mcp/blob/main/docs/LANGUAGES.md)
