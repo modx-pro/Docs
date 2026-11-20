@@ -21,13 +21,15 @@ The PHP component provides the site's HTTP API, while a separate local Node.js c
 User → AI agent / MCP client → MODX3MCP → MODX
 ```
 
-## Features in version 1.2.4
+## Features in version 1.2.7
 
-The component offers **192 public MCP tools**: 81 read-only operations and 111 mutations. The server contract includes **193 actions** when the internal `get_capabilities` action is counted.
+The component offers **198 public MCP tools** and **199 server actions** (including the internal `get_capabilities` action).
 
 Supported areas include:
 
 - resources, templates, chunks, snippets, plugins, TVs and categories;
+- six tools for element category (`modCategory`) management: list, inspect, create, rename/move/reorder, safe delete with dependency checks, and assign categories to site elements;
+- consistent CAS capability reporting: `get_capabilities` and `get_site_state` agree on CAS v2 when the modular runtime is available (legacy fallback remains v1);
 - system settings, media sources, packages and namespaces;
 - users, groups, roles, access policies and contexts;
 - integration with ClientConfig, MIGX, miniShop2, VersionX and VirtualPage when installed;
@@ -39,10 +41,10 @@ Supported areas include:
 
 ## Installation
 
-Install **modx3mcp-1.2.4-pl.transport.zip**, matching your MODX version:
+Install **modx3mcp-1.2.7-pl.transport.zip**, matching your MODX version:
 
-- [modstore.pro — MODX3MCP](https://modstore.pro/packages/ai/modx3mcp) — install using the MODX package manager;
-- [GitHub release 1.2.4](https://github.com/rumata-estor/modx3-mcp/releases/tag/v1.2.4) — download the transport archive for manual installation.
+- [modstore.pro — MODX3MCP](https://modstore.pro/packages/ai/modx3mcp) — install via Package Manager when version 1.2.7 becomes available in the repository;
+- [GitHub release 1.2.7](https://github.com/rumata-estor/modx3-mcp/releases/tag/v1.2.7) — download the [**modx3mcp-1.2.7-pl.transport.zip**](https://github.com/rumata-estor/modx3-mcp/releases/download/v1.2.7/modx3mcp-1.2.7-pl.transport.zip) archive for manual installation.
 
 On a **fresh installation**, the component is disabled by default. Open **Extras / Components → MODX MCP**, review its security settings and enable `modxmcp.enabled`. The API token (`modxmcp.api_token`) is generated during installation; only appropriately authorized administrators can reveal it.
 
@@ -55,7 +57,7 @@ The machine running the AI application needs **Node.js 18+**. Example stdio MCP 
   "mcpServers": {
     "modx": {
       "command": "npx",
-      "args": ["-y", "github:rumata-estor/modx3-mcp#v1.2.4"],
+      "args": ["-y", "github:rumata-estor/modx3-mcp#v1.2.7"],
       "env": {
         "MODX_MCP_SITE_URL": "https://example.com/assets/components/modxmcp/api.php",
         "MODX_MCP_TOKEN": "YOUR_SITE_PRIVATE_TOKEN"
@@ -66,6 +68,8 @@ The machine running the AI application needs **Node.js 18+**. Example stdio MCP 
 ```
 
 Use HTTPS and keep the token secret. Start with authenticated read-only operations after connecting.
+
+Version 1.2.7 supersedes the published stable version 1.2.4. Version 1.2.5 was a draft and 1.2.6-test a pre-release; neither became a stable release. Changes proposed in PR #40 and draft PR #46 are not included.
 
 ## Upgrading
 
@@ -83,4 +87,4 @@ A regular upgrade of an existing `modx3mcp` package preserves configuration and 
 
 Free and open source under the **MIT License**. Author: Alexander Palochkin.
 
-[GitHub: rumata-estor/modx3-mcp](https://github.com/rumata-estor/modx3-mcp) · [Releases](https://github.com/rumata-estor/modx3-mcp/releases/tag/v1.2.4) · [Documentation](https://github.com/rumata-estor/modx3-mcp/blob/main/docs/LANGUAGES.md)
+[GitHub: rumata-estor/modx3-mcp](https://github.com/rumata-estor/modx3-mcp) · [Releases](https://github.com/rumata-estor/modx3-mcp/releases/tag/v1.2.7) · [Documentation](https://github.com/rumata-estor/modx3-mcp/blob/main/docs/LANGUAGES.md)
