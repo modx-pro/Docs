@@ -5,13 +5,13 @@ description: Виджет последних отзывов для главно�
 
 # Сниппет msReviewsLatest
 
-Выводит ленту последних опубликованных отзывов: карточки с рейтингом, текстом, ссылкой на ресурс.
+Лента последних опубликованных отзывов: рейтинг, текст, ссылка на ресурс.
 
 ## Назначение
 
-Лента последних отзывов на главной, категории, лендинге. Область задают `parents` или `productIds`. Параметра `product_id` нет: для списка **одного** товара берите [msReviews](msReviews). JSON-LD не выводится.
+Главная, категория, лендинг. Область: `parents` или `productIds`. Одного товара — [msReviews](msReviews). JSON-LD не выводится.
 
-С **1.2.1** при `showProduct=1` заголовок и URL берутся из любого опубликованного `site_content`, не только из `msProduct`. Отзыв, привязанный в CMP к обычной странице, больше не даёт пустую ссылку «Товар».
+С **1.2.1** при `showProduct=1` заголовок и URL — из любого опубликованного `site_content`, не только `msProduct`. Привязка к обычной странице в CMP не даёт пустую ссылку «Товар».
 
 ## Где вызывать
 
@@ -22,7 +22,7 @@ description: Виджет последних отзывов для главно�
 
 - **MiniShop3**, **msReviews**
 - **pdoTools 3.0+** — чанки на Fenom. Для пагинации нужна обёртка `pdoPage`
-- При `engagement=1` — [msReviewsLexiconScript](msReviewsLexiconScript) для кнопок «полезно»
+- Голоса «полезно» на ленте — [msReviews](msReviews) (`engagement` здесь не используется).
 
 ## Параметры
 
@@ -33,8 +33,8 @@ description: Виджет последних отзывов для главно�
 | `totalVar` | `page.total` | Плейсхолдер total для `pdoPage` |
 | `tpl` | `tplReviewLatestItem` | Чанк карточки |
 | `wrapper` | `tplReviewsLatestList` | Чанк-обёртка |
-| `parents` | *(пусто)* | CSV id категорий. Пусто — весь магазин |
-| `productIds` | *(пусто)* | CSV id товаров (приоритет над `parents`) |
+| `parents` | *(пусто)* | CSV id категорий, не больше 50. Под ними до 2000 документов. Пусто — весь магазин |
+| `productIds` | *(пусто)* | CSV id товаров, не больше 2000. Приоритет над `parents` |
 | `verifiedOnly` | `0` | Только подтверждённые покупки |
 | `minRating` | `0` | Минимальная оценка 1–5. `0` — без фильтра |
 | `showProduct` | `1` | Ссылка на ресурс (`product_title` / `product_url`) |
@@ -42,10 +42,10 @@ description: Виджет последних отзывов для главно�
 | `showMedia` | `0` | Одно превью фото |
 | `dateFormat` | *(настройка)* | Формат даты |
 | `hideEmpty` | `0` | Пустой вывод без отзывов |
-| `engagement` | `0` | Подключить `reviews.js` для «полезно» |
+| `engagement` | `0` | В схеме есть. Не читается. `reviews.js` не подключает |
 | `viewAllUrl` | *(пусто)* | URL ссылки «Смотреть все» в футере блока |
 | `registerCss` | `1` | Подключать `reviews.css` этим вызовом |
-| `registerJs` | `1` | Подключать JS витрины этим вызовом |
+| `registerJs` | `1` | Не влияет на JS: регистрируется только CSS |
 
 ## Блок на главной
 
@@ -94,25 +94,9 @@ description: Виджет последних отзывов для главно�
 
 :::
 
-## Engagement на лендинге
+## Голоса на ленте
 
-::: code-group
-
-```fenom
-{'!msReviewsLexiconScript' | snippet}
-{'!msReviewsLatest' | snippet : [
-  'limit' => 5,
-  'engagement' => 1,
-  'showProduct' => 1
-]}
-```
-
-```modx
-[[!msReviewsLexiconScript]]
-[[!msReviewsLatest? &limit=`5` &engagement=`1` &showProduct=`1`]]
-```
-
-:::
+Кнопки «полезно» — [msReviews](msReviews) и `reviews.js`, не этот сниппет.
 
 ## Пагинация
 

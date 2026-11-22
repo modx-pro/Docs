@@ -26,22 +26,22 @@ UI zones and template types: [Product sets (interface)](interface/templates).
 
 ## Creating a template
 
-A template is a **preset**: a fixed **type** and **product list**. **Apply** copies it into `ms3_product_sets` for each product in the chosen category.
+**Apply** copies the template into `ms3_product_sets` for each product in the chosen category.
 
 1. Open **Components → Product sets**.
 2. Create a new template.
 3. Fill in the form:
 
-| Field | What to enter |
-|-------|----------------|
-| **`name`** | Clear name for managers. Stored as `template_name` on generated links. |
-| **`type`** | Admin types: `buy_together`, `similar`, `popcorn`, `cart_suggestion`, `vip`. Frontend logic for `ms3ProductSets` depends on matching **`type`**. `auto` and `auto_sales` are snippet-only, not template types. |
-| **`related_product_ids`** | Comma-separated product IDs (e.g. `12,34,56`) or picker selection if available. Order matters for output unless the snippet uses different sorting. |
-| **`description`** | Internal note for the team. Not shown on the site. |
-| **`sortorder`** | Number for ordering templates in the admin list (lower first). Exact sort depends on the UI. |
+   | Field | What to enter |
+   | --- | --- |
+   | **`name`** | Clear name for managers. Stored as `template_name` on generated links. |
+   | **`type`** | Admin types: `buy_together`, `similar`, `popcorn`, `cart_suggestion`, `vip`. Frontend logic for `ms3ProductSets` depends on matching **`type`**. `auto` and `auto_sales` are snippet-only, not template types. |
+   | **`related_product_ids`** | Comma-separated product IDs (e.g. `12,34,56`) or picker selection if available. Order matters for output unless the snippet uses different sorting. |
+   | **`description`** | Internal note for the team. Not shown on the site. |
+   | **`sortorder`** | Number for ordering templates in the admin list (lower first). Exact sort depends on the UI. |
 
-1. Save. The connector calls `save_template`. Empty **`name`** or invalid **`related_product_ids`** returns an error.
-2. Confirm the new row appears in the list.
+4. Save. The connector calls `save_template`. Empty **`name`** or invalid **`related_product_ids`** returns an error.
+5. Confirm the new row appears in the list.
 
 ![New template form](/components/ms3productsets/screenshots/template-dialog-new.png)
 
@@ -55,7 +55,7 @@ A template is a **preset**: a fixed **type** and **product list**. **Apply** cop
 
 ![Edit template](/components/ms3productsets/screenshots/template-dialog-edit.png)
 
-This updates the row in `ms3_product_set_templates`. A change of `name` or `type` is copied into already applied rows (`template_name`, `type`). The `related_product_id` list on those rows is not rewritten. To refresh IDs, run **Apply** again. Use **Replace** if you need to overwrite this template’s links.
+This updates the row in `ms3_product_set_templates`. A change of `name` or `type` is copied into already applied rows (`template_name`, `type`). The `related_product_id` list on those rows is not rewritten. To refresh IDs, run **Apply** again. Use **Replace** if you need to overwrite this template's links.
 
 ## Deleting a template
 
@@ -66,7 +66,7 @@ Deleting a template also deletes its rows in `ms3_product_sets` (`template_name`
 ## Apply template to a category
 
 1. Select the **template** in the apply panel.
-2. Pick **category** (or several) in the resource tree. Child categories with `msProduct` resources are included.
+2. Pick **category** (or several) in the resource tree. Child categories are walked up to 10 levels. Only published, not deleted `msProduct` resources are included. An unpublished folder is not walked.
 3. Optionally enable **“Replace existing sets of this template”** (`replace=true`). For products in that branch, only links of this **`type` + `template_name`** are removed, then new ones are inserted. Other templates and TV rows stay. Without replace, new links are added alongside existing ones.
 4. Click **Apply**.
 

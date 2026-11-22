@@ -1,6 +1,6 @@
 ---
 title: ms3Favorites
-description: Списки избранного для MiniShop3 и других ресурсов — хранение в браузере, синхронизация в БД
+description: Списки избранного для MiniShop3 и других ресурсов. Хранение в браузере, синхронизация в БД
 categories: catalog
 author: Ibochkarev
 logo: https://modstore.pro/assets/extras/ms3favorites/logo.png
@@ -21,6 +21,7 @@ items: [
       { text: 'ms3FavoritesBtn', link: 'snippets/ms3FavoritesBtn' },
       { text: 'ms3FavoritesCounter', link: 'snippets/ms3FavoritesCounter' },
       { text: 'ms3FavoritesIds', link: 'snippets/ms3FavoritesIds' },
+      { text: 'ms3fMergeIds', link: 'snippets/ms3fMergeIds' },
       { text: 'ms3FavoritesPage', link: 'snippets/ms3FavoritesPage' },
       { text: 'ms3FavoritesLists', link: 'snippets/ms3FavoritesLists' },
       { text: 'ms3FavoritesPopularity', link: 'snippets/ms3FavoritesPopularity' },
@@ -34,26 +35,25 @@ items: [
 ---
 # ms3Favorites
 
-ms3Favorites — списки избранного для товаров [MiniShop3](/components/minishop3/) и других ресурсов (`resources`, `articles`, `pages`, `custom`). Пользователь сохраняет товары для следующих покупок. Список лежит в браузере (`localStorage` или `cookie`) и синхронизируется в БД для авторизованных и гостей (при `guest_db_enabled`).
+ms3Favorites хранит списки избранного для товаров [MiniShop3](/components/minishop3/) и других ресурсов (`resources`, `articles`, `pages`, `custom`). Список лежит в браузере (`localStorage` или `cookie`) и синхронизируется в БД для авторизованных и гостей (при `guest_db_enabled`).
 
 ## Возможности
 
-- **Блок «Избранное»** — вывод по списку ID (AJAX через коннектор или серверный вызов сниппета)
-- **Хранение в браузере** — `localStorage` (по умолчанию) или `cookie`, без регистрации
-- **Синхронизация в БД** — для авторизованных: при входе данные из localStorage переносятся в БД
-- **Гости в БД** — при `guest_db_enabled` список гостя сохраняется по session_id
-- **Несколько списков** — `default`, `gifts`, `plans` и др. (до `max_lists`)
-- **Шаринг списка** — публичная ссылка `/wishlist/share?token=xxx`, копирование чужого списка
-- **Страница /wishlist/** — сниппет `ms3FavoritesPage`: табы и оболочка. Для товаров (`resource_type=products`) при `serverList=1` (по умолчанию) список выводится на сервере через **pdoPage** + **msProducts**. При `serverList=0` карточки дорисовывает **favorites.js** (до 100 позиций на вкладку). Для других типов ресурсов список подгружается через JS после sync. Отдельная пагинация: **ms3FavoritesIds** → **pdoPage** → **ms3Favorites** (или **msProducts**)
-- **Интеграция с корзиной** — «Добавить все в корзину», «Добавить выбранные»
-- **Популярность** — «У N пользователей в избранном»
-- **Типы ресурсов** — `products`, `resources`, `articles`, `pages`, `custom`
-- **Локализация** — MODX Lexicon (ru, en). На фронте — inline через плагин **ms3fFrontend** или сниппет `ms3fLexiconScript`
-- **Свой вид** — Fenom-чанки, BEM-классы (префикс `ms3f`), CSS-переменные
-- **Каталог** — чанк `tplCatalogRowMs3f` для строки с кнопкой избранного при **pdoPage** + **msProducts** ([интеграция](integration#catalog-pdopage-row))
-- **Автоподключение CSS/JS** — плагин `ms3fFrontend` (OnLoadWebDocument). Список файлов — в `ms3favorites.frontend_assets`. Inline `ms3fLexicon` / `ms3fConfig` — через `register_global_config` (как `ms3_frontend_assets` в MiniShop3)
-- **AJAX-каталог** — публичный API `window.ms3Favorites.refresh()` после подмены HTML. Есть автоподписка на `mfilter:contentLoaded`, опция `ms3fConfig.refreshEvents` и запасной MutationObserver
-- **Уведомления** — цепочка: опционально `ms3fConfig.notify` → `window.ms3Message.show` (MiniShop3) → [iziToast](https://marcelodolza.github.io/iziToast/). Ленивая загрузка из `assets/components/ms3favorites/vendor/izitoast/`. Базовый URL — в `ms3fConfig.iziToastBaseUrl` из `ms3fLexiconScript`
+- Блок «Избранное» по списку ID: AJAX-коннектор или серверный сниппет
+- Хранение: `localStorage` (по умолчанию) или `cookie`
+- Синхронизация в БД при входе. Гости: при `guest_db_enabled` по `session_id`
+- Несколько списков: `default`, `gifts`, `plans` и др. (до `max_lists`)
+- Шаринг: `/wishlist/share?token=xxx`, копирование чужого списка
+- Страница `/wishlist/`: `ms3FavoritesPage`. Товары при `serverList=1`: **pdoPage** + **msProducts**. При `serverList=0` и других типах: JS
+- Корзина: «Добавить все в корзину», «Добавить выбранные»
+- Популярность: «У N пользователей в избранном»
+- Типы: `products`, `resources`, `articles`, `pages`, `custom`
+- Лексикон ru, en. Фронт: плагин **ms3fFrontend** или `ms3fLexiconScript`
+- Вид: Fenom-чанки, BEM (`ms3f`), CSS-переменные
+- Каталог: чанк `tplCatalogRowMs3f` ([интеграция](integration#catalog-pdopage-row))
+- CSS/JS: плагин `ms3fFrontend`, файлы в `ms3favorites.frontend_assets`, конфиг через `register_global_config` (как `ms3_frontend_assets` в MiniShop3)
+- AJAX-каталог: `window.ms3Favorites.refresh()`, `mfilter:contentLoaded`, `ms3fConfig.refreshEvents`, MutationObserver
+- Уведомления: `ms3fConfig.notify` → `window.ms3Message.show` → [iziToast](https://marcelodolza.github.io/iziToast/). Файлы: `assets/components/ms3favorites/vendor/izitoast/`. URL: `ms3fConfig.iziToastBaseUrl` из `ms3fLexiconScript`
 
 ## Системные требования
 
@@ -61,11 +61,10 @@ ms3Favorites — списки избранного для товаров [MiniSh
 |------------|--------|
 | MODX Revolution | 3.0.3+ |
 | PHP | 8.1+ |
-| MySQL | 5.7+ / MariaDB 10.3+ |
 
 ### Зависимости
 
-- **[MiniShop3](/components/minishop3/)** — товары и категории
+- **[MiniShop3](/components/minishop3/):** товары и категории
 - **[pdoTools](/components/pdotools/) 3.0.0+**
 
 ## Установка
@@ -78,11 +77,9 @@ ms3Favorites — списки избранного для товаров [MiniSh
 4. Найдите **ms3Favorites** в списке и нажмите **Download**, затем **Install**
 5. **Настройки → Очистить кэш**
 
-Пакет доступен в каталоге [modstore.pro](https://modstore.pro/).
-
 ### После установки
 
-По умолчанию CSS/JS и inline-конфиг подключает плагин **ms3fFrontend**. Достаточно кнопки в карточке товара и блока избранного. Ручное подключение в шаблоне нужно только при отключённом плагине или `register_global_config = Нет`.
+Плагин **ms3fFrontend** подключает CSS/JS и inline-конфиг. На сайте нужны кнопка в карточке и блок избранного. Ручное подключение в шаблоне: если плагин выключен или `register_global_config = Нет`.
 
 Подробнее: [Быстрый старт](quick-start) и [Подключение на сайте](frontend).
 
@@ -90,7 +87,7 @@ ms3Favorites — списки избранного для товаров [MiniSh
 
 | Термин | Описание |
 |--------|----------|
-| **Wishlist** | Список избранных товаров (по умолчанию — `default`) |
+| **Wishlist** | Список избранных товаров (по умолчанию `default`) |
 | **Синхронизация** | Перенос списка из `localStorage` в БД при входе пользователя |
 | **Шаринг** | Публичная ссылка на список по токену |
 | **Популярность** | Количество пользователей, добавивших ресурс в избранное |

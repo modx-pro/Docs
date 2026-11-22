@@ -1,6 +1,6 @@
 ---
 title: Modx3ProfilerToolbar
-description: Тулбар производительности для MODX 3 — метрики запроса, медленные компоненты, таймлайн и SQL без админки
+description: Панель метрик текущего запроса для MODX 3. Без админки и без хранения трейсов
 categories: other
 author: Ibochkarev
 logo: https://modstore.pro/assets/extras/modx3profilertoolbar/logo.png
@@ -11,43 +11,44 @@ compatibility:
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
   { text: 'Системные настройки', link: 'settings' },
-  { text: 'Frontend Dev Toolbar', link: 'toolbar' },
-  { text: 'Ограничения pdoTools', link: 'limitations' },
+  { text: 'Панель на странице', link: 'toolbar' },
+  { text: 'Ограничения', link: 'limitations' },
   { text: 'Решение проблем', link: 'troubleshooting' },
 ]
 ---
 # Modx3ProfilerToolbar
 
-Дополнение для MODX 3: лёгкий профайлер с **Frontend Dev Toolbar** — метрики запроса, медленные компоненты, таймлайн и SQL. Без админки, без хранения трейсов, без debug-отчёта.
+Пакет показывает метрики текущего запроса в панели на странице сайта. Админки нет. Трейс в базу и в файл не пишется.
 
-## Возможности
+## Что видно на странице
 
-- **Frontend Dev Toolbar** — панель в правом нижнем углу страницы: время, память, сниппеты, SQL. По клику — вкладки Overview, Slow Components, Timeline, SQL. Локализация (ru/en/uk).
-- **MODX Pipeline** — учёт событий MODX (OnHandleRequest, OnLoadWebDocument, OnWebPagePrerender), сниппеты, чанки, плагины, SQL.
-- **Advisor** — подсказки по оптимизации: некэшированные сниппеты, N+1, медленные запросы, перегруз чанков.
-- **Production-safe** — sampling (1–100%), тулбар только при входе в Manager; накладные расходы < 5%.
+Свёрнутая панель в правом нижнем углу показывает полное время, пик памяти, число собранных сниппетов и число строк SQL. По клику четыре вкладки: «Обзор», «Медленные компоненты», «Таймлайн», «SQL». Подписи задаёт лексикон `modx3profilertoolbar` (ru, en, uk).
 
-## Ограничения
+Пакет строит панель при включённых `enabled` и `frontend_toolbar`. Запрос должен попасть в `sampling_rate`. Нужны контекст `web`, сессия контекста `mgr` и строка `</body>` в HTML.
 
-**pdoTools 3.x:** Fenom-сниппеты и pdoTools-сниппеты (msProducts, pdoResources и т.д.) в MODX 3 **не профилируются** детально. См. [Ограничения pdoTools](limitations).
+## Что собирается
 
-**Что работает:** события MODX, SQL, память, общее время, стандартные теги `[[!Snippet]]` (частично).
+На вкладке «Таймлайн» ненулевая длительность есть у `OnHandleRequest` и `OnLoadWebDocument`. `OnMODXInit` и `OnWebPagePrerender` попадают в список с 0 мс. Плагины отдельными строками не собираются.
 
-## Системные требования
+Плагин `Modx3ProfilerToolbar` подписан на `OnMODXInit` (приоритет −100), `OnHandleRequest`, `OnLoadWebDocument` и `OnWebPagePrerender`.
+
+Во вкладке SQL одна строка с числом запросов xPDO и суммой их времени. Текстов SQL нет. Подробности в [ограничениях](limitations).
+
+## Требования
 
 | Требование | Версия |
 |------------|--------|
-| MODX Revolution | 3.x |
-| PHP | 8.1+ |
+| MODX Revolution | 3.0.0 и новее |
+| PHP | 8.1.0 и новее |
 
-Админка и VueTools не требуются.
+Пакет не требует VueTools и не создаёт пункт меню.
 
 ## Установка
 
-1. Перейдите в **Пакеты → Установщик** (Extras → Installer).
-2. Найдите **Modx3ProfilerToolbar** (Performance Toolbar).
+1. Откройте установщик пакетов.
+2. Найдите **Modx3ProfilerToolbar**.
 3. Нажмите **Установить**.
 
-## После установки
+При установке и обновлении пакет отправляет POST на `https://metrics.modx.pro/` с таймаутом 2 секунды. В теле версии PHP, MODX, СУБД, pdoTools, тип ОС, веб-сервер и число контекстов. Домен и IP в этот набор не входят. Ошибка отправки установку не останавливает.
 
-Подробнее: [Быстрый старт](quick-start) и [Frontend Dev Toolbar](toolbar).
+Дальше: [быстрый старт](quick-start).

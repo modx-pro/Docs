@@ -3,8 +3,6 @@ title: Integration
 ---
 # Integration
 
-Where Ace attaches, how it coexists with RTEs, MIME types, and Tab snippets.
-
 Plugin **Ace** listens to manager events: element forms, files, resource, resource overview cache tab, RTE registration, and TV input list.
 
 ## Where the editor runs
@@ -14,48 +12,47 @@ Plugin **Ace** listens to manager events: element forms, files, resource, resour
 | Snippet | `OnSnipFormPrerender` → `modx-snippet-snippet` | PHP |
 | Plugin | `OnPluginFormPrerender` | PHP |
 | Template | `OnTempFormPrerender` | `ace.html_elements_mime` or auto |
-| Chunk | `OnChunkFormPrerender` | HTML/Fenom/Twig; static: by file extension |
-| File | `OnFileCreateFormPrerender` / `OnFileEditFormPrerender` | by extension |
-| Resource (content) | `OnDocFormPrerender` → `#ta` | content type / html mime |
+| Chunk | `OnChunkFormPrerender` | HTML/Fenom/Twig. Static chunks use the chunk name extension first, then the source file extension, otherwise `text/plain` |
+| New file | `OnFileCreateFormPrerender` | `text/plain`, MODX tags off |
+| Existing file | `OnFileEditFormPrerender` | by extension. An unknown extension uses the Ace mode for the file name, and MODX tags stay off |
+| Resource (content) | `OnDocFormPrerender` → `#ta` | content type. `text/html` is replaced with `ace.html_elements_mime` |
 | Resource overview → cache | `OnManagerPageBeforeRender` → `modx-rdata-buffer` | html mime |
-| TV | input type **Ace** | from TV properties |
+| TV | input type **Ace** | always `text/html`, MODX tags on |
 
-If `which_element_editor` ≠ `Ace`, the plugin does **not** initialize the editor on element forms (aside from registering the RTE name).
+If `which_element_editor` is not `Ace`, the plugin returns immediately. The plugin does not initialize elements, files, the resource, the `resource/data` cache tab, or the TV list. `OnRichTextEditorRegister` runs earlier and still outputs the name `Ace`. An empty or missing setting counts as `Ace`.
 
 ## Resources and RTE
 
 ```mermaid
 flowchart TD
     start[OnDocFormPrerender]
-    useEd{use_editor?}
-    rich{richtext or special class_key?}
-    which{which_editor = Ace?}
-    ace[Ace on #ta]
-    rte[MODX.loadRTE / other editor]
-    plain[Textarea without Ace]
+    useEd{use_editor}
+    rich{richtext or class_key Static SymLink WebLink XMLRPC}
+    which{which_editor empty or Ace}
+    ace[Ace on ta]
+    skip[Ace does not mount an editor on ta]
+    plain[Plain textarea]
 
     start --> useEd
     useEd -->|No| ace
     useEd -->|Yes| rich
-    rich -->|Yes| rte
+    rich -->|Yes| skip
     rich -->|No| which
     which -->|Yes| ace
     which -->|No| plain
 ```
 
-Rules (1.9.10+):
-
-1. `use_editor` and `which_editor` respect the resource **context**.
-2. With `use_editor = Yes` and richtext (or Static/SymLink/WebLink/XMLRPC), Ace does **not** touch `#ta`.
-3. With `use_editor = Yes` and `which_editor` ≠ Ace, Ace does **not** replace `#ta` on non-richtext resources: a plain textarea remains (Ace used to take over the field).
-
-Typical setups:
+1. `use_editor` and `which_editor` respect the resource context.
+2. `use_editor = No`: Ace replaces `#ta` and every textarea with class `modx-richtext` (`text/html`, MODX tags on).
+3. `use_editor = Yes` and richtext, or class_key `modStaticResource`, `modSymLink`, `modWebLink`, `modXMLRPCResource`. Ace does not touch `#ta`. The plugin has no `OnRichTextEditorInit` handler.
+4. `use_editor = Yes`, richtext off, `which_editor` empty or `Ace` (case-insensitive): Ace on `#ta`.
+5. `use_editor = Yes` and `which_editor` is not `Ace`: `#ta` stays a plain textarea.
 
 | Setup | Settings |
 | --- | --- |
-| Code in resources via Ace | `use_editor = No` or `which_editor = Ace` |
-| TinyMCE for articles, textarea for “code” pages | `use_editor = Yes`, `which_editor = TinyMCE` (or other RTE), richtext only where needed |
-| Ace as the only content editor | `which_editor = Ace`, `use_editor = Yes` |
+| Ace in content on every resource | `use_editor = No` |
+| Ace only on resources without richtext | `use_editor = Yes`, `which_editor` empty or `Ace`, richtext off |
+| RTE for articles, textarea for code pages | `use_editor = Yes`, another `which_editor`, richtext only where needed |
 
 ## Mime and MODX / Fenom highlighting
 
@@ -77,6 +74,31 @@ Auto `ace.html_elements_mime` when empty:
 
 Set `ace.html_elements_mime = text/x-smarty` explicitly if Fenom in chunks is always required.
 
+Extension of an existing file:
+
+| Extension | Mime |
+| --- | --- |
+| `tpl` | `text/x-smarty` |
+| `htm`, `html` | `text/html` |
+| `css` | `text/css` |
+| `scss` | `text/x-scss` |
+| `less` | `text/x-less` |
+| `svg` | `image/svg+xml` |
+| `xml`, `xsl` | `application/xml` |
+| `js` | `application/javascript` |
+| `json` | `application/json` |
+| `php` | `application/x-php` |
+| `sql` | `text/x-sql` |
+| `md` | `text/x-markdown` |
+| `txt` | `text/plain` |
+| `twig` | `text/x-twig` |
+
+A new file is always `text/plain`. A static chunk checks the name extension first (`header.css` stays CSS even when the source file differs).
+
+## Saving PHP
+
+For mime `application/x-php` and `text/x-php`, the editor does not replace the buffer after a snippet or plugin save. Condition: the only difference is the `<?php` / `?>` wrapper. The undo history stays. MODX stores the code without that wrapper. After a reload the editor shows the database text, already without the wrapper. HTML chunks are not affected.
+
 ## Tab snippets
 
 `ace.snippets` format (Ace snippets):
@@ -90,21 +112,22 @@ Ace definitions need a real Tab after the snippet name (**Alt+09** in the settin
 
 Default set (when `ace.snippets` is empty on install/upgrade): `getr`, `getResources`, `pdoResources`, `pdoMenu`, `chunk`, `snippet`, `tv`, `formit`, and more. Reference file: `assets/components/ace/snippets/modx.default.snippets`.
 
-Add your own abbreviations in the system setting; do not edit the assets file (package upgrades may overwrite it).
+Add your own abbreviations in the system setting. Do not edit the assets file: package upgrades may overwrite it.
 
 ## Completions
 
-**Ctrl+Space** (or Cmd+Space): snippets, properties, resource fields, PHP functions, etc. via `completions/*` processors.
+**Ctrl+Space**, **Ctrl+Shift+Space**, or **Alt+Space**. Request: `assets/components/ace/completions.php`. Actions: `getFunctions`, `getProperties`, `getFilters`, `getObjects`, `getResourceFields`. `getFilters` also offers snippets. `getObjects` returns chunks, snippets, TVs, and system settings. Resource fields are requested next to a TV.
 
 ## Ace TV type
 
-1. Create a TV → input type **Ace**
-2. Set mime/mode in TV properties if needed
-3. Assign the TV to a resource template
+1. Create a TV and choose input type **Ace**
+2. Assign the TV to a resource template
+
+This type has no mime property. The field is always `text/html` with MODX tag highlighting. Height comes from the textarea style or is 200. `ace.height` does not apply to TVs.
 
 ## Drafts
 
-With `ace.draft_restore = Yes`, field text is written to localStorage. After an accidental reload Ace offers restore or discard. Drafts clear after a successful form save / `MODx.onSaveEditor`. TTL: 7 days.
+With `ace.draft_restore = Yes`, Ace writes field text to localStorage. After a reload Ace offers restore or discard. The banner stays hidden when the draft is empty or matches the text already open. Ace clears the draft in `MODx.onSaveEditor` when the field is already replaced by Ace. TTL: 7 days.
 
 ## Related
 

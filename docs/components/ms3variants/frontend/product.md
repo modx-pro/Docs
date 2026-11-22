@@ -3,245 +3,180 @@ title: Страница товара
 ---
 # Страница товара
 
-Вывод и выбор вариантов на странице товара.
+Как вывести варианты на странице товара и связать их с ценой, формой корзины и галереей.
 
-## Базовый вывод
+## Вывод вариантов
 
 ```fenom
-{'msProductVariants' | snippet}
+{'!msProductVariants' | snippet}
 ```
 
-Сниппет выводит:
-- Список вариантов
-- Скрытое поле для выбранного варианта
-- Подключает JS и CSS
+Сниппет выводит список вариантов по стандартным чанкам `ms3_variants` и `ms3_variants_row` и подключает `ms3variants.js` и `ms3variants.css` (параметры `includeJs`, `includeCss`). Вызов должен быть некэшируемым — почему, см. [Сниппеты](../snippets).
 
-## Чанки по умолчанию
+При загрузке страницы выбирается вариант, который покупатель выбирал раньше (хранится в `localStorage` под ключом `ms3v_selected_{ID товара}`), иначе первый в списке. Первым может оказаться и закончившийся вариант. Цена, артикул и другие данные на странице сразу заменяются данными выбранного варианта.
 
-### ms3_variants (обёртка)
+Готовый шаблон страницы товара с расставленными атрибутами лежит в файле `core/components/ms3variants/elements/templates/product_variants.tpl`. При установке он не создаётся как шаблон MODX — скопируйте его содержимое в свой шаблон.
 
-```fenom
-{if $variants?}
-    <div class="ms3-variants"
-         id="ms3variants-{$product_id}"
-         data-ms3v-init
-         data-ms3v-product-id="{$product_id}">
+## Своя разметка вариантов {#markup}
 
-        {* Скрытое поле для ID варианта *}
-        <input type="hidden" name="_variant_id" data-ms3v-variant-id value="">
+Свои чанки в параметрах `tpl` и `tplRow` работают, если в них есть атрибуты, которые читает JavaScript:
 
-        {* Список вариантов *}
-        <div class="ms3-variants-list">
-            {$rows}
-        </div>
-    </div>
-{/if}
-```
+| Где | Атрибут | Обязателен | Что делает |
+|-----|---------|------------|------------|
+| Обёртка | `data-ms3v-init` | да | Запускает выбор вариантов |
+| Обёртка | `id` | да | Любой уникальный. Без него запуск молча не происходит |
+| Обёртка | `data-ms3v-product-id` | да | ID товара |
+| Строка | `data-ms3v-variant` | да | ID варианта; клик по строке выбирает вариант |
+| Строка | `data-variant-price`, `data-variant-old-price`, `data-variant-count`, `data-variant-sku`, `data-variant-weight` | нет | Данные, которые подставляются на страницу и в событие |
+| Строка | `data-variant-file-id` | нет | ID изображения для переключения галереи. Стандартный чанк его не выводит |
+| Строка | `<img>` внутри `.ms3-variant-image` | нет | URL изображения варианта |
 
-### ms3_variants_row (строка варианта)
+Плейсхолдеры чанков перечислены на странице [Сниппеты](../snippets).
 
 ```fenom
-<div class="ms3-variant-row {if !$in_stock}ms3-variant-out-of-stock{/if}"
-     data-ms3v-variant="{$id}"
-     data-variant-price="{$price}"
-     data-variant-old-price="{$old_price}"
-     data-variant-count="{$count}"
-     data-variant-sku="{$sku}"
-     data-variant-weight="{$weight}">
+{* tpl *}
+<div id="ms3variants-{$product_id}" data-ms3v-init data-ms3v-product-id="{$product_id}">
+    {$rows}
+</div>
 
-    {* Изображение *}
-    {if $image_url?}
-        <div class="ms3-variant-image">
-            <img src="{$image_url}" alt="{$sku}" loading="lazy">
-        </div>
-    {/if}
-
-    {* Опции *}
-    <div class="ms3-variant-options">
-        {foreach $options as $opt}
-            <span class="ms3-variant-option">{$opt.value}</span>
-        {/foreach}
-    </div>
-
-    {* Цена *}
-    <div class="ms3-variant-price">
-        {if $old_price > 0}
-            <span class="ms3-variant-old-price">{$old_price}</span>
-        {/if}
-        <span class="ms3-variant-current-price">{$price}</span>
-    </div>
-
-    {* Наличие *}
-    <div class="ms3-variant-stock">
-        {if $in_stock}
-            <span class="ms3-variant-in-stock">В наличии: {$count}</span>
-        {else}
-            <span class="ms3-variant-out">Нет в наличии</span>
-        {/if}
-    </div>
+{* tplRow *}
+<div data-ms3v-variant="{$id}" data-variant-price="{$price}" data-variant-file-id="{$file_id}">
+    {$options_string} — {$price}
 </div>
 ```
 
-## Обновление данных на странице
+## Цена и артикул на странице {#page-fields}
 
-При выборе варианта JavaScript автоматически обновляет элементы с `data-ms3v-*` атрибутами на странице:
+При выборе варианта JavaScript обновляет на странице элементы с атрибутами `data-ms3v-*`:
 
-| Атрибут | Описание | Обновляемое значение |
-|---------|----------|---------------------|
-| `data-ms3v-price` | Текущая цена | Форматированная цена варианта |
-| `data-ms3v-old-price` | Старая цена | Показывается/скрывается автоматически |
-| `data-ms3v-sku` | Артикул | SKU варианта |
-| `data-ms3v-weight` | Вес | Показывается/скрывается автоматически |
-| `data-ms3v-stock` | Остаток | Количество на складе |
-| `data-ms3v-image` | Изображение | URL изображения варианта |
-| `data-ms3v-field="{поле}"` | Произвольное поле | Значение из данных варианта |
+| Атрибут | Что подставляется |
+|---------|-------------------|
+| `data-ms3v-price` | Цена варианта в формате из раздела [Формат цены](#price-format) |
+| `data-ms3v-old-price` | Старая цена; если её нет — элемент скрывается |
+| `data-ms3v-sku` | Артикул |
+| `data-ms3v-weight` | Вес числом; при весе 0 элемент скрывается |
+| `data-ms3v-stock` | Остаток; при нуле — пусто |
+| `data-ms3v-image` | URL изображения: в `src` самого `<img>` или вложенного |
+| `data-ms3v-field="ключ"` | Значение ключа без форматирования: `id`, `price`, `old_price`, `count`, `sku`, `weight`, `image`, `file_id` |
 
-### Пример разметки
-
-Добавьте эти атрибуты к элементам в шаблоне страницы товара:
+Каждый атрибут, кроме `data-ms3v-field`, обновляется только у первого такого элемента на странице. Содержимое элемента заменяется целиком, поэтому единицы измерения ставьте снаружи:
 
 ```fenom
-{* Артикул — всегда в DOM, обновляется при выборе варианта *}
-<span class="text-muted">Артикул: <strong data-ms3v-sku>{$article}</strong></span>
-
-{* Цена *}
-<div class="product-price">
-    <div data-ms3v-old-price
-         {if !$old_price || $old_price <= 0}style="display:none"{/if}>
-        {if $old_price? && $old_price > 0}{$old_price} ₽{/if}
-    </div>
-    <div data-ms3v-price>
-        {$price ?: 0} ₽
-    </div>
-</div>
-
-{* Вес *}
-<strong data-ms3v-weight>{$weight} кг</strong>
+<span data-ms3v-sku>{$article}</span>
+<span data-ms3v-old-price {if !($old_price > 0)}style="display:none"{/if}>{$old_price}</span>
+<span data-ms3v-price>{$price}</span>
+<span data-ms3v-weight>{$weight}</span> кг
 ```
 
-::: warning Элементы должны быть в DOM
-Элемент с `data-ms3v-old-price` должен всегда присутствовать в HTML (не внутри `{if}`). JS сам управляет его видимостью через `style.display`. Если элемент обёрнут в Fenom-условие и не отрендерен — JS не сможет его обновить.
+::: warning Элемент старой цены должен быть в разметке всегда
+Не оборачивайте элемент с `data-ms3v-old-price` в условие `{if}`. Если его нет в HTML, JavaScript не покажет старую цену у варианта, где она есть. Видимостью элемента JavaScript управляет сам.
 :::
 
-В комплекте идёт пример шаблона страницы товара с уже расставленными атрибутами:
-`core/components/ms3variants/elements/templates/product_variants.tpl`
+## Форма корзины {#cart-form}
 
-## Интеграция с формой корзины
-
-Сниппет вызывается рядом с формой корзины. При выборе варианта JS автоматически находит форму `.ms3_form` на странице и обновляет поле `options`:
+При выборе варианта JavaScript записывает `{"_variant_id": ID}` в поле `options` формы добавления в корзину:
 
 ```fenom
-{* Варианты *}
-{'msProductVariants' | snippet}
+{'!msProductVariants' | snippet}
 
-{* Форма добавления в корзину *}
 <form method="post" class="ms3_form" data-cart-state="add">
     <input type="hidden" name="id" value="{$_modx->resource.id}">
-    <input type="hidden" name="count" value="1">
     <input type="hidden" name="options" value="[]">
     <input type="hidden" name="ms3_action" value="cart/add">
-
     <button type="submit">В корзину</button>
 </form>
 ```
 
-При выборе варианта JavaScript автоматически:
-1. Заполняет скрытое поле `_variant_id`
-2. Обновляет поле `options` с `_variant_id` выбранного варианта
-3. Обновляет элементы с `data-ms3v-*` атрибутами
+Вариант записывается в первую форму `.ms3_form[data-cart-state="add"]` на странице, а если такой нет — в первую любую `.ms3_form`. Если выше на странице есть другие формы корзины, например в блоке похожих товаров, вариант запишется не туда.
 
-## JavaScript API
+Если на странице есть форма `data-cart-state="change"` и выбранный вариант уже в корзине, форма добавления скрывается, а форма изменения показывается: в её поля `product_key` и `count` записываются данные этой позиции корзины. При выборе варианта, которого в корзине нет, снова показывается форма добавления с количеством 1. Состояние обновляется без перезагрузки — по событию корзины MiniShop3 `ms3:cart:updated`.
 
-### Инициализация
+::: warning Стандартные опции MiniShop3 в той же форме не передаются
+Если в форме кроме варианта есть поля стандартных опций MiniShop3 (`options[color]`), они в корзину не попадут: MiniShop3 берёт непустое поле `options` и игнорирует поля `options[...]`. В корзине будет вариант без выбранного цвета.
+:::
 
-JavaScript инициализируется автоматически для элементов с `data-ms3v-init`.
+## Состояния строк {#states}
 
-Для ручной инициализации:
+| Класс | Когда |
+|-------|-------|
+| `active` | Строка выбранного варианта |
+| `in-cart` | Вариант в корзине; в строку добавляется `.ms3-variant-cart-badge` с текстом «В корзине: N шт.». Текст прописан в скрипте и не переводится |
+| `ms3-variant-out-of-stock` | Вариант закончился. Ставит чанк, в своём `tplRow` — `{if !$in_stock}ms3-variant-out-of-stock{/if}` |
+
+Закончившийся вариант можно выбрать, и кнопка добавления остаётся доступной. Если включён контроль остатков ([`ms3variants_check_stock`](../settings#ms3variants_check_stock), по умолчанию Да), сервер откажет при добавлении в корзину с сообщением «Варианта нет в наличии».
+
+## Запуск JavaScript {#init}
+
+Автоматический запуск — по `data-ms3v-init` на событии `DOMContentLoaded`. Сниппет подключает скрипт сам. Если подключаете `ms3variants.js` сами (при `returnData` или `includeJs` = 0), используйте обычный `<script>` без `async`: скрипт, загруженный после этого события, не запустится.
+
+Экземпляр автоматического запуска снаружи недоступен. Чтобы вызывать методы, запустите вручную, когда обёртка уже есть на странице. Стандартный чанк `ms3_variants` выводит `data-ms3v-init`, поэтому нужен свой `tpl` без этого атрибута, иначе на обёртке будет два экземпляра:
 
 ```javascript
 const variants = new ms3Variants({
     productId: 42,
     containerId: 'ms3variants-42',
-    priceFormat: {
-        decimals: 0,
-        decPoint: ',',
-        thousandsSep: ' ',
-        currency: '₽',
-        currencyPosition: 'after'
-    },
-    onSelect: function(variantData) {
-        console.log('Выбран вариант:', variantData);
-    }
+    onSelect: function (data) { /* data — как в событии selected */ }
 });
 ```
 
-### Настройка формата цены
+Параметры: `productId`, `containerId` (`id` обёртки), `priceFormat` (см. [Формат цены](#price-format)), `onSelect`.
 
-Формат цены можно задать через data-атрибуты контейнера:
+| Метод | Что делает |
+|-------|------------|
+| `getSelectedVariant()` | ID выбранного варианта |
+| `setVariant(id)` | Выбирает вариант и запоминает выбор |
+| `reset()` | Снимает выделение и забывает выбор. Поле `options` формы не очищает: прежний вариант всё равно добавится в корзину |
 
-```fenom
-<div data-ms3v-init
-     data-ms3v-product-id="{$product_id}"
-     data-ms3v-price-decimals="0"
-     data-ms3v-price-currency="₽"
-     data-ms3v-price-currency-position="after"
-     data-ms3v-price-thousands-sep=" "
-     data-ms3v-price-dec-point=",">
-```
+## Формат цены {#price-format}
 
-### Методы
+Формат задаётся атрибутами обёртки или параметром `priceFormat` при [ручном запуске](#init). Стандартный чанк `ms3_variants` этих атрибутов не выводит, и параметров сниппета для формата нет: для своего формата нужен свой `tpl`.
+
+| Атрибут | Ключ `priceFormat` | По умолчанию |
+|---------|--------------------|--------------|
+| `data-ms3v-price-decimals` | `decimals` | `0` |
+| `data-ms3v-price-dec-point` | `decPoint` | `,` |
+| `data-ms3v-price-thousands-sep` | `thousandsSep` | пробел |
+| `data-ms3v-price-currency` | `currency` | `₽` |
+| `data-ms3v-price-currency-position` | `currencyPosition` | `after` (или `before`) |
+
+::: warning Задавайте все пять значений сразу
+Если задана только часть, остальные не берутся из значений по умолчанию, а пропадают: в цене появится текст `undefined`.
+:::
+
+## События {#events}
+
+`ms3variants:selected` — выбран вариант, в том числе автоматически при загрузке страницы. Поля `e.detail`: `productId`, `id`, `price`, `old_price`, `count`, `sku`, `weight`, `image`, `file_id`.
+
+Подписывайтесь на обёртку вариантов: обработчик на `document` срабатывает на один выбор дважды.
 
 ```javascript
-// Получить ID текущего выбранного варианта
-const currentId = variants.getSelectedVariant();
-
-// Выбрать вариант программно
-variants.setVariant(variantId);
-
-// Сбросить выбор
-variants.reset();
-```
-
-### События
-
-При выборе варианта генерируется событие `ms3variants:selected`:
-
-```javascript
-document.addEventListener('ms3variants:selected', function(e) {
-    console.log('Product ID:', e.detail.productId);
-    console.log('Variant ID:', e.detail.id);
-    console.log('Price:', e.detail.price);
-    console.log('Old price:', e.detail.old_price);
-    console.log('SKU:', e.detail.sku);
-    console.log('Count:', e.detail.count);
-    console.log('Weight:', e.detail.weight);
+document.getElementById('ms3variants-42').addEventListener('ms3variants:selected', function (e) {
+    console.log(e.detail.id, e.detail.price);
 });
 ```
 
-## Интеграция с галереей
+## Галерея {#gallery}
 
-При выборе варианта с изображением генерируется событие `ms3variants:image-change`:
+`ms3variants:image-change` отправляется на `document`, если у выбранного варианта есть изображение, в том числе при загрузке страницы. Поля `e.detail`: `productId`, `variantId`, `fileId`, `imageUrl`. Со стандартным чанком `fileId` всегда `0` — ищите слайд галереи по имени файла из `imageUrl`.
 
 ```javascript
-document.addEventListener('ms3variants:image-change', function(e) {
-    console.log('Image URL:', e.detail.imageUrl);
-    console.log('File ID:', e.detail.fileId);
+document.addEventListener('ms3variants:image-change', function (e) {
+    myGallery.goToImage(e.detail.fileId || e.detail.imageUrl);
 });
 ```
 
 ### Адаптер для Splide
 
-В комплекте есть адаптер для галереи Splide:
-
 ```fenom
-{* Подключение адаптера *}
 <script src="{'assets_url' | option}components/ms3variants/js/web/adapters/splide-adapter.js"></script>
 ```
 
-Адаптер автоматически:
-- Слушает событие `ms3variants:image-change`
-- Находит слайд с нужным изображением
-- Переключает галерею на этот слайд
+Адаптер работает, если:
+
+- слайды — элементы `#ms3-gallery-main .splide__slide`; нужный ищется по `data-file-id`, затем по имени файла;
+- экземпляр Splide лежит в `element.splide` элемента `#ms3-gallery-main` или передан через `window.ms3VariantsSetSplide(splide)`.
+
+Выбор варианта при загрузке страницы происходит сразу, поэтому вызывайте `ms3VariantsSetSplide()` сразу после создания Splide: события до вызова адаптер пропускает. Если галерея устроена иначе, адаптер молча ничего не делает. Готовая разметка — в файле `core/components/ms3variants/elements/chunks/ms3_gallery_splide.tpl`; при установке он не создаётся как чанк.
 
 ### Адаптер для GLightbox
 
@@ -249,61 +184,8 @@ document.addEventListener('ms3variants:image-change', function(e) {
 <script src="{'assets_url' | option}components/ms3variants/js/web/adapters/glightbox-adapter.js"></script>
 ```
 
-### Кастомная интеграция
+Подключайте адаптер после библиотеки GLightbox: без неё адаптер падает с ошибкой в консоли, как только находит элемент галереи.
 
-Для других галерей подпишитесь на событие:
+Адаптер ищет элемент по всей странице: по `data-file-id`, затем `a.glightbox` по адресу или имени файла. Найденному элементу он ставит класс `active` и прокручивает к нему страницу, в том числе при загрузке.
 
-```javascript
-document.addEventListener('ms3variants:image-change', function(e) {
-    const imageUrl = e.detail.imageUrl;
-
-    // Ваш код переключения галереи
-    myGallery.goToSlide(imageUrl);
-});
-```
-
-## Селекторы опций
-
-Для создания интерфейса с отдельными селекторами опций (вместо списка вариантов):
-
-```fenom
-{set $data = 'msProductVariants' | snippet : ['returnData' => 1]}
-
-{if $data.total > 0}
-    <div class="variant-selectors" data-ms3v-selectors>
-        {foreach $data.available_options as $key => $values}
-            <div class="variant-option-group">
-                <label>{$key}</label>
-                <select data-option-key="{$key}">
-                    <option value="">Выберите {$key}</option>
-                    {foreach $values as $value}
-                        <option value="{$value}">{$value}</option>
-                    {/foreach}
-                </select>
-            </div>
-        {/foreach}
-    </div>
-
-    <input type="hidden" name="_variant_id" data-ms3v-variant-id>
-{/if}
-```
-
-JavaScript для обработки селекторов:
-
-```javascript
-document.querySelectorAll('[data-option-key]').forEach(select => {
-    select.addEventListener('change', findMatchingVariant);
-});
-
-function findMatchingVariant() {
-    const selected = {};
-    document.querySelectorAll('[data-option-key]').forEach(select => {
-        if (select.value) {
-            selected[select.dataset.optionKey] = select.value;
-        }
-    });
-
-    // Найти вариант с такими опциями
-    // и установить его ID в скрытое поле
-}
-```
+Класс `active` при этом снимается со всех `.glightbox` и `[data-file-id]` на странице. Если ваша галерея показывает слайды по классу `active`, адаптер с ней конфликтует.

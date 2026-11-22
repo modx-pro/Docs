@@ -3,7 +3,35 @@ title: Cart events
 ---
 # Cart events
 
-Events for managing the shopping cart: adding, changing, removing products.
+Adding, changing and removing products in the cart.
+
+Besides the parameters listed below, every event on this page also receives `controller` — the call wrapper adds it.
+
+## Which events can abort the operation
+
+```mermaid
+flowchart TD
+  output["output() is not empty"] --> before["msOnBefore*"]
+  before --> stop["The request is aborted, the customer sees an error"]
+  output --> added["msOnAddToCart"]
+  added --> saved["The product is already saved"]
+  saved --> err["The request still returns an error"]
+  output --> done["change, remove, empty"]
+  done --> ignore["The response is not read"]
+  output --> getCart["msOnGetCart and msOnGetStatusCart"]
+  getCart --> patch["Data substitution only"]
+```
+
+`$modx->event->output(...)` does not stop the work everywhere: the core reads the plugin response only for some of the events.
+
+| Event | Reaction to `output()` |
+| --- | --- |
+| Every `msOnBefore*` | The operation is aborted, the client gets an error |
+| `msOnAddToCart` | The product is already saved, but the request still returns an error |
+| `msOnChangeInCart`, `msOnChangeOptionInCart`, `msOnRemoveFromCart`, `msOnEmptyCart` | Ignored — the operation has already completed |
+| `msOnGetCart`, `msOnGetStatusCart` | Used only to substitute data, not to abort. But a non-empty `output()` loses the substitution as well: the core keeps the original value |
+
+Put checks in the paired `msOnBefore*` events. Where the response is ignored, a plugin error disappears and the customer never sees it.
 
 ## msOnBeforeGetCart
 
@@ -17,8 +45,6 @@ Fired **before** getting cart contents.
 | `draft` | `msOrder` | Order draft (cart) |
 
 ### Aborting the operation
-
-You can cancel getting the cart:
 
 ```php
 <?php
@@ -144,7 +170,25 @@ switch ($modx->event->name) {
 
 ## msOnAddToCart
 
-Fired **after** successfully adding a product to the cart.
+```mermaid
+flowchart TD
+  add["add()"] --> before["msOnBeforeAddToCart"]
+  before --> exists{"Key already in the cart?"}
+  exists -->|no| onAdd["msOnAddToCart"]
+  exists -->|yes| change["change()"]
+  change --> beforeChange["msOnBeforeChangeInCart"]
+  beforeChange --> onChange["msOnChangeInCart"]
+```
+
+Fired **after** a product has been successfully added. The product is already saved and the draft is recalculated.
+
+::: warning Can fail an already completed request
+The product is saved by this point, yet the plugin can still call `$modx->event->output(...)` — `add()` then returns an error to the client although the cart has already changed.
+:::
+
+::: tip Not fired when the same product is added again
+If the product+options key is already in the cart, `msOnBeforeAddToCart` still fires. `output()` on it also blocks the quantity increase. Then `add()` hands the work to `change()`, `msOnBeforeChangeInCart` and `msOnChangeInCart` fire, and `msOnAddToCart` does not. Quantities are summed: 2 units added to the existing 3 give `count = 5`.
+:::
 
 ### Parameters
 
@@ -291,11 +335,36 @@ switch ($modx->event->name) {
 }
 ```
 
+### Modifying data
+
+The options can be substituted — the core reads them back from the response if the value is an array:
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnBeforeChangeOptionsInCart':
+        $options = $scriptProperties['options'];
+
+        // Normalise the case of the values
+        $options = array_map('mb_strtolower', $options);
+
+        $values = &$modx->event->returnedValues;
+        $values['options'] = $options;
+        break;
+}
+```
+
+The substituted options take part in computing `product_key`, so the cart row key changes along with them.
+
 ---
 
 ## msOnChangeOptionInCart
 
 Fired **after** changing product options in the cart.
+
+::: tip Not fired when keys collide
+If the new combination of options matches an existing cart row, the core removes the current row and hands the work over to `change()` — `msOnBeforeChangeInCart`/`msOnChangeInCart` fire instead of this event. The quantities of the two rows are added together.
+:::
 
 ### Parameters
 
@@ -435,8 +504,10 @@ switch ($modx->event->name) {
     case 'msOnEmptyCart':
         $modx->log(modX::LOG_LEVEL_INFO, 'Cart cleared');
 
-        // Clear promo code in session
-        unset($_SESSION['ms3']['promocode']);
+        // A good place to drop your own cart-bound state. MiniShop3 core keeps
+        // no such keys of its own — things like a promo code come from add-ons,
+        // for example ms3PromoCode.
+        unset($_SESSION['myshop']['promo']);
         break;
 }
 ```
@@ -445,7 +516,11 @@ switch ($modx->event->name) {
 
 ## msOnGetStatusCart
 
-Fired when calculating cart status (totals). Lets you modify the totals.
+Fired when calculating cart status (totals) — both on cart mutations and on every `Cart::getStatus()`, that is on `cart/get`, on `cart/status` and when the `msCart` snippet renders. Lets you modify the totals.
+
+::: warning `output()` discards the status patch too
+Both call sites read `returnedValues['status']` only on a successful response. If a plugin writes its own status and calls `output()` at the same time, the patch is not applied: the original `calculateStatus()` result comes back and the message lands in the response as an error.
+:::
 
 ### Parameters
 
@@ -458,13 +533,15 @@ Fired when calculating cart status (totals). Lets you modify the totals.
 
 ```php
 $status = [
-    'total_count' => 5,        // Total product count
+    'total_count' => 5,        // Total units across all rows
     'total_cost' => 15000,     // Total cost
-    'total_weight' => 2500,    // Total weight (grams)
+    'total_weight' => 12.5,    // Total weight in ms3_weight_unit (kg by default)
     'total_discount' => 1500,  // Total discount
-    'total_positions' => 3,    // Number of positions
+    'total_positions' => 3,    // Number of positions (cart rows)
 ];
 ```
+
+There are no other keys in `status`. `CartItemManager::calculateStatus()` builds the whole array.
 
 ### Modifying data
 
@@ -489,7 +566,7 @@ switch ($modx->event->name) {
 
 ### Outputting extra info
 
-After modifying status the data is available on the frontend:
+Once the status is modified, the data is available on the frontend:
 
 ```fenom
 {* In cart chunk *}

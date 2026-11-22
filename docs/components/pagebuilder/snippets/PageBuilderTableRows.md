@@ -5,30 +5,32 @@ description: Вывод строк табличных данных ресурс�
 
 # Сниппет PageBuilderTableRows
 
-Возвращает строки **табличных данных** ресурса (вкладка **Таблицы** в менеджере). Формат: JSON или Fenom-chunk.
+Возвращает строки **табличных данных** ресурса (вкладка **Таблицы**). Формат: JSON или Fenom-чанк.
 
-## Назначение
-
-Свой вывод таблицы в шаблоне, виджете или отдельном chunk. Секция Pro [data_table](../sections/data_table) использует встроенный chunk `pagebuilder_data_table`. Этот сниппет нужен, когда разметку пишете сами.
+Разметку пишите в шаблоне, виджете или чанке. Секция Pro [data_table](../sections/data_table) использует чанк `pagebuilder_data_table` из пакета.
 
 ## Где вызывать
 
-Шаблон, chunk, другая секция через snippet-поле. Таблица должна быть создана на том же или указанном `resource_id`.
+Шаблон, чанк или поле сниппета в другой секции. Таблица на текущем ресурсе или на `resource_id`.
 
 ## Параметры
 
 | Параметр | По умолчанию | Описание |
 | --- | --- | --- |
-| `resource_id` | `0` | ID ресурса. `0` = текущий |
+| `resource_id` | `0` | ID ресурса. `0` = текущий ресурс |
 | `table_key` | пусто | Ключ таблицы на ресурсе |
-| `table_id` | `0` | ID таблицы в БД вместо `table_key` |
+| `table_id` | `0` | ID таблицы в БД. Если больше нуля, имеет приоритет над `table_key` |
 | `limit` | `20` | Максимум строк (1–100) |
 | `return` | `json` | `json` или `chunk` |
-| `tpl` | `pagebuilder_table_rows` | Chunk при `return=chunk` |
+| `tpl` | `pagebuilder_table_rows` | Чанк при `return=chunk` |
+
+Пустой ответ (`[]` или пустая строка) остаётся, только если ресурс не определился.
+
+Если `table_id` больше нуля, сниппет не проверяет, что таблица принадлежит `resource_id`. Ресурс всё равно должен определиться.
 
 ### Фильтрация и пагинация
 
-Те же ключи, что у embed-таблиц и `mgr/datatable/rows/list`:
+Все ключи работают в сниппете. Процессор менеджера `mgr/datatable/rows/list` принимает только `page`, `limit`, `search` и `filters`. Контекстные и UTM-фильтры в него не передаются.
 
 | Параметр | По умолчанию | Описание |
 | --- | --- | --- |
@@ -49,16 +51,26 @@ description: Вывод строк табличных данных ресурс�
 
 Операторы: `eq`, `contains`, `in`, `gt`, `lt`, `gte`, `lte`, `between`, `empty`, `not_empty`. Подробнее: [Системные настройки → Табличные данные](../settings#табличные-данные-ресурса).
 
+Событие `pbOnBeforeTableGetList` получает `table`, `query` и `criteria` по ссылке:
+
+- Выборка читает из `query` ключи `search`, `filters`, `page` и `limit`
+- Пары из `criteria`, кроме `table_id`, попадают в условие выборки
+- После плагина `table_id` записывается заново: сменить таблицу из плагина нельзя
+- Событие списка вызывается из сниппета и из `mgr/datatable/rows/list`
+
+`pbOnTableRowSave` передаёт `data` по ссылке. Это значение записывается в строку.
+
 ## JSON
 
-<!-- MEDIA: output | must | пример JSON-массива строк таблицы (поле data у каждой записи) | [[!PageBuilderTableRows? &table_key=`…` &limit=`5`]] на ресурсе с синтетической таблицей на стенде -->
+Таблица не найдена → `[]`. Иначе массив записей: `id`, `table_id`, `position`, `data`, `editedon`, `editedby`. Ячейки лежат в `data`.
 
-Ответ: JSON-массив объектов строк (поле `data` каждой записи). Таблица не найдена → `[]`.
+При `return=chunk` в чанк попадает только `data`. Любое значение `return`, кроме `json`, отрисовывает чанк.
 
 ::: code-group
 
 ```modx
 [[!PageBuilderTableRows?
+  &resource_id=`[[*id]]`
   &table_key=`offices`
   &limit=`50`
 ]]
@@ -66,6 +78,7 @@ description: Вывод строк табличных данных ресурс�
 
 ```fenom
 {'!PageBuilderTableRows' | snippet : [
+  'resource_id' => $_modx->resource.id,
   'table_key' => 'offices',
   'limit' => 50
 ]}
@@ -73,14 +86,15 @@ description: Вывод строк табличных данных ресурс�
 
 :::
 
-## Chunk
+## Чанк
 
-В chunk доступны Fenom-переменные `rows` (массив `data` строк) и `table` (метаданные таблицы). В пакете есть chunk `pagebuilder_table_rows`.
+В чанке Fenom-переменные `rows` (массив `data` строк) и `table` (метаданные таблицы).
 
 ::: code-group
 
 ```modx
 [[!PageBuilderTableRows?
+  &resource_id=`[[*id]]`
   &table_key=`offices`
   &return=`chunk`
   &tpl=`my_table_rows`
@@ -89,6 +103,7 @@ description: Вывод строк табличных данных ресурс�
 
 ```fenom
 {'!PageBuilderTableRows' | snippet : [
+  'resource_id' => $_modx->resource.id,
   'table_key' => 'offices',
   'return' => 'chunk',
   'tpl' => 'my_table_rows'

@@ -36,7 +36,7 @@ A manager enters an internal order comment. The value is stored in the `ms3_orde
 
 Save the form. The package runs a migration and adds a column to the orders table.
 
-<!-- ![Extra fields utility](/components/minishop3/screenshots/mgr-extra-fields.png) -->
+![Extra fields utility](/components/minishop3/screenshots/mgr-extra-fields.png)
 
 ::: tip Class in the database
 The UI stores class as `MiniShop3\Model\msOrder`. Use the same value in the `class` field when creating via API.
@@ -57,7 +57,7 @@ The list should include `manager_comment` with `"active": true` and `"column_exi
 3. Enter text in **Manager comment**.
 4. Save the card.
 
-<!-- ![Additional order fields section on the order card](/components/minishop3/screenshots/mgr-order-extra-field.png) -->
+![Additional order fields section on the order card](/components/minishop3/screenshots/mgr-order-extra-field.png)
 
 The Vue form sends the value at the top level of the request body:
 

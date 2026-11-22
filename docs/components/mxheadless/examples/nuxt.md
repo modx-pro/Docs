@@ -39,6 +39,7 @@ API key только на сервере (SSR, `server/`). Публичное ч
 type ModxRestEnvelope<T> = {
   data: T
   meta?: Record<string, unknown>
+  // links приходит только в ответах списков
   links?: Record<string, string>
 }
 

@@ -3,7 +3,7 @@ title: Customer events
 ---
 # Customer events
 
-Events for managing customer data: adding fields, validation, creating customer, managing addresses.
+Adding and validating customer fields, creating a customer, managing addresses.
 
 ## msOnBeforeGetOrderCustomer
 
@@ -16,16 +16,27 @@ Fired **before** getting the customer for the order.
 | `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
 | `msCustomer` | `msCustomer \| null` | Customer object (may be null) |
 
-### Aborting the operation
+::: warning Aborting does not block checkout
+Linking an `msCustomer` to the order is optional. `OrderSubmitHandler` continues checkout even when the customer was not created or found. The data stays in `msOrderAddress`. Aborting this event with `output()` does not forbid checkout for guests. It only leaves the order without a linked `msCustomer`.
+:::
+
+### Substituting the customer
+
+A plugin can return a ready `msCustomer` through `returnedValues['msCustomer']` — for example, to resolve it by an external ID:
 
 ```php
 <?php
 switch ($modx->event->name) {
     case 'msOnBeforeGetOrderCustomer':
-        // Require login for checkout
-        if (!$modx->user->isAuthenticated()) {
-            $modx->event->output('You must be logged in to place an order');
-            return;
+        // On input msCustomer is usually null — resolve it yourself by an external key
+        $externalId = $_SESSION['crm_customer_id'] ?? null;
+        if ($externalId) {
+            $found = $modx->getObject(\MiniShop3\Model\msCustomer::class, [
+                'external_id' => $externalId,
+            ]);
+            if ($found) {
+                $modx->event->returnedValues = ['msCustomer' => $found];
+            }
         }
         break;
 }
@@ -36,6 +47,10 @@ switch ($modx->event->name) {
 ## msOnGetOrderCustomer
 
 Fired **after** getting the customer for the order.
+
+::: warning A plugin error discards a link that was already resolved
+Despite the "after" in the name, `output()` still has an effect here: the order gets no `customer_id`, even if the `msCustomer` has already been created or found — and possibly signed in through the session.
+:::
 
 ### Parameters
 
@@ -131,6 +146,10 @@ switch ($modx->event->name) {
 
 Fired **after** adding a field to the customer.
 
+::: warning The client gets an error although the field is saved
+`msCustomer->save()` runs **before** this event. If a plugin aborts it with `output()`, `add()` returns an error to the caller while the field is already stored in the database — the API response and the database disagree.
+:::
+
 ### Parameters
 
 | Parameter | Type | Description |
@@ -179,6 +198,26 @@ Fired **before** validating a customer field value.
 | `key` | `string` | Field key |
 | `value` | `mixed` | Value to validate |
 
+### Aborting the operation
+
+A plugin error here turns into a validation error on the field itself:
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnBeforeValidateCustomerValue':
+        $key = $scriptProperties['key'];
+        $value = $scriptProperties['value'];
+
+        // A custom rule applied before the built-in validation
+        if ($key === 'inn' && !empty($value) && !preg_match('/^\d{10,12}$/', $value)) {
+            $modx->event->output('The tax number must contain 10 or 12 digits');
+            return;
+        }
+        break;
+}
+```
+
 ### Modifying data
 
 ```php
@@ -203,6 +242,10 @@ switch ($modx->event->name) {
 ## msOnValidateCustomerValue
 
 Fired **after** successful validation of a field value.
+
+::: warning Can reject a value that already passed validation
+Despite the "after successful validation", an error raised here with `output()` still becomes a validation error of the field, exactly as in `msOnBeforeValidateCustomerValue`.
+:::
 
 ### Parameters
 
@@ -251,7 +294,9 @@ Fired on validation **error** for a customer field.
 | `value` | `mixed` | Invalid value |
 | `errors` | `array` | Errors array |
 
-### Example
+### Replacing the error set
+
+A plugin can replace the error array through `returnedValues['errors']`, or collapse it into one message by aborting the event with `output()`:
 
 ```php
 <?php
@@ -260,12 +305,19 @@ switch ($modx->event->name) {
         $key = $scriptProperties['key'];
         $errors = $scriptProperties['errors'];
 
-        // Customize error messages
+        // Customising the error messages
         $modx->log(modX::LOG_LEVEL_WARN, sprintf(
             '[Customer] Validation error %s: %s',
             $key,
             json_encode($errors)
         ));
+
+        // Replace the error set (otherwise the original $errors is used)
+        if ($key === 'phone') {
+            $modx->event->returnedValues = [
+                'errors' => [$key => 'Enter a phone number as +7XXXXXXXXXX'],
+            ];
+        }
         break;
 }
 ```
@@ -330,6 +382,10 @@ switch ($modx->event->name) {
 
 Fired **after** creating a new customer.
 
+::: warning The plugin response only goes to the log
+On `success=false` the core writes a `WARN` and still returns the created customer. Creation can be aborted only in the paired `msOnBeforeCreateCustomer`, where `output()` makes the call return `null` instead of the object.
+:::
+
 ### Parameters
 
 | Parameter | Type | Description |
@@ -375,7 +431,6 @@ Fired **before** adding an address to the customer.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `customer` | `\MiniShop3\Controllers\Customer\Customer` | Customer controller |
 | `addressData` | `array` | Address data |
 
 ### Aborting the operation
@@ -431,11 +486,14 @@ switch ($modx->event->name) {
 
 Fired **after** adding an address to the customer.
 
+::: warning The plugin response only goes to the log
+On `success=false` the core writes a `WARN` and `add()` still returns `true`. Only the paired `msOnBeforeAddCustomerAddress` aborts the addition.
+:::
+
 ### Parameters
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `customer` | `\MiniShop3\Controllers\Customer\Customer` | Customer controller |
 | `addressData` | `array` | Address data |
 | `msCustomerAddress` | `msCustomerAddress` | Created address object |
 
@@ -452,6 +510,94 @@ switch ($modx->event->name) {
             $address->get('id'),
             $address->get('customer_id'),
             $address->get('name')
+        ));
+        break;
+}
+```
+
+---
+
+## msOnBeforeUpdateCustomer
+
+Fired **before** an existing customer is saved — the standard `fireBeforeSaveEvent()` of the MODX `UpdateProcessor`.
+
+::: warning Nothing in MiniShop3 calls the processor
+The event is registered (`_build/elements/events.php`) and the `MiniShop3\Processors\Customer\Update` processor fires it correctly — that processor extends the MODX `UpdateProcessor`. But **no built-in manager page and no Web API method calls `Customer/Update`**: neither a grid nor a controller runs `$modx->runProcessor('Customer/Update', [...])`. The event remains an extension point — your own integration can call the processor directly, and the event fires as expected.
+:::
+
+### Parameters
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `mode` | `string` | Always `modSystemEvent::MODE_UPD` (`'upd'`) |
+| `data` | `array` | `msCustomer` fields — already the NEW values (`$object->toArray()`) |
+| `id` | `int` | ID of the customer being saved |
+| `msCustomer` | `msCustomer` | Reference to the customer object |
+| `object` | `msCustomer` | The same reference as `msCustomer` (MS2-style alias) |
+
+::: tip Aborting goes through `$modx->event->output()`
+The event belongs to the standard MODX `UpdateProcessor`, but the abort channel is the same as for the `Customer/*` events above: `fireBeforeSaveEvent()` collects `$modx->event->_output` from every plugin. A value simply returned by the handler only goes to the event error log — `return 'string'` does not abort the save.
+:::
+
+### Aborting the operation
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnBeforeUpdateCustomer':
+        $data = $scriptProperties['data'];
+        $id = $scriptProperties['id'];
+
+        // Disallow switching the email to one already taken by another customer
+        if (!empty($data['email'])) {
+            $existing = $modx->getObject(\MiniShop3\Model\msCustomer::class, [
+                'email' => $data['email'],
+                'id:!=' => $id,
+            ]);
+
+            if ($existing) {
+                $modx->event->output('This email is already used by another customer');
+                return;
+            }
+        }
+        break;
+}
+```
+
+---
+
+## msOnUpdateCustomer
+
+Fired **after** a customer has been saved successfully (`fireAfterSaveEvent()`). Notification only — the return value is ignored, the save has already happened.
+
+::: warning Nothing in MiniShop3 calls the processor
+Same as `msOnBeforeUpdateCustomer`: the `MiniShop3\Processors\Customer\Update` processor fires the event correctly, but no built-in manager page or Web API method calls that processor. Details in the warning above.
+:::
+
+### Parameters
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `mode` | `string` | Always `modSystemEvent::MODE_UPD` (`'upd'`) |
+| `id` | `int` | ID of the saved customer |
+| `msCustomer` | `msCustomer` | Reference to the saved customer object |
+| `object` | `msCustomer` | The same reference as `msCustomer` (MS2-style alias) |
+
+Unlike `msOnBeforeUpdateCustomer`, there is **no** `data` key here — the field snapshot is passed only in the before-event.
+
+### Example
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnUpdateCustomer':
+        /** @var \MiniShop3\Model\msCustomer $customer */
+        $customer = $scriptProperties['msCustomer'];
+
+        $modx->log(modX::LOG_LEVEL_INFO, sprintf(
+            '[Customer] Customer #%d updated: %s',
+            $customer->get('id'),
+            $customer->get('email')
         ));
         break;
 }
@@ -531,10 +677,10 @@ switch ($modx->event->name) {
 
 ## msOnBeforeGetOrderUser
 
-Fired **before** resolving the MODX system user (`modUser`) for the order. Runs in `OrderUserResolver` on order submit when system setting `ms3_order_register_user_on_submit` is enabled.
+Fired **before** resolving the MODX system user (`modUser`) for the order. Runs in `OrderUserResolver` on order submit when the `ms3_order_register_user_on_submit` system setting is enabled.
 
 ::: tip How `modUser` differs from `msCustomer`
-`modUser` is the MODX system user (login, password, profile). `msCustomer` is a separate store customer entity (name, phone, session token). The `modUser` resolver registers the customer in MODX auth, not in the store customer profile.
+`modUser` is the MODX system user (login, password, profile). `msCustomer` is a separate store customer entity (name, phone, session token). Resolving `modUser` registers the buyer in MODX authentication; it does not manage the store customer profile.
 :::
 
 ### Parameters
@@ -547,7 +693,25 @@ Fired **before** resolving the MODX system user (`modUser`) for the order. Runs 
 
 ### Substituting the user
 
-A plugin can return a ready `modUser` via `returnedValues['user']` to bypass default lookup/creation:
+The event has two channels. The first is a ready `modUser` in `returnedValues['user']`, which bypasses the default lookup and creation. The second is `returnedValues['orderData']`: a replaced array of order fields from which the core itself takes `address_email`, `address_first_name`, `address_last_name` and `address_phone`, and finds or creates the user by them.
+
+The second channel is usually more convenient: you only fix the contacts instead of assembling a `modUser` by hand.
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnBeforeGetOrderUser':
+        $orderData = $scriptProperties['orderData'];
+
+        // Normalise the phone before the core starts looking for a user
+        $orderData['address_phone'] = preg_replace('/\D+/', '', $orderData['address_phone'] ?? '');
+
+        $modx->event->returnedValues = ['orderData' => $orderData];
+        break;
+}
+```
+
+A ready `modUser` is returned like this:
 
 ```php
 <?php

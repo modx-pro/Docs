@@ -5,7 +5,7 @@ description: "Шаги с заголовком, текстом и иконкой
 
 # Как это работает
 
-Секция `how_it_works` выводит шаги из repeater. Chunk: `pagebuilderpro_how_it_works`. Требуется PageBuilder Pro.
+Секция `how_it_works` выводит шаги из repeater.
 
 ![Как это работает](/components/pagebuilder/screenshots/sections/how_it_works.jpg)
 
@@ -14,6 +14,16 @@ description: "Шаги с заголовком, текстом и иконкой
 - Процесс заказа или подключения
 - Три-четыре шага под hero
 - Объяснение услуги без дат
+
+## Параметры блока
+
+| Параметр | Значение |
+| --- | --- |
+| key | `how_it_works` |
+| Слой | Pro |
+| Категория | контент (`content`) |
+| Chunk | `pagebuilderpro_how_it_works` |
+| Требования | pro |
 
 ## Поля
 

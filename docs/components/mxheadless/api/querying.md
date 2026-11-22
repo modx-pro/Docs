@@ -35,6 +35,8 @@ filter[alias][like]=%news%
 
 `filter[field]=value` равен `filter[field][eq]=value`. Синоним параметра: `filters`. Неизвестное поле или оператор даёт `422`.
 
+Для boolean-полей (`published`, `deleted`, `hidemenu`, `isfolder`, `richtext`, `searchable`, `cacheable`, `uri_override`, `hide_children_in_tree`, `show_in_tree`) значение нормализуется: принимаются `1`, `0`, `true`, `false`, `yes`, `no`, `on`, `off` и пустая строка. Остальное даёт `422`.
+
 | Оператор | Синоним |
 | --- | --- |
 | `eq` | |
@@ -57,6 +59,8 @@ sort=publishedon:desc
 
 Префикс `-` или суффикс `:desc` задаёт DESC. `:asc` и `+` задают ASC. У `resources` нельзя `sort=parent`.
 
+Без `sort` выборка сортируется по primary key объекта по возрастанию. Для `resources` это `id`, для `contexts` — `key`. Это гарантирует стабильный порядок при пагинации с `offset`: строки не «прыгают» между страницами. Поле, которое нужно сортировать по порядку дерева, обязано попадать в `sortable`.
+
 ## Поиск
 
 ```text
@@ -67,6 +71,14 @@ sort=publishedon:desc
 
 Короткий термин может вернуть много строк. Сужайте выборку через `filter`. Если `searchable` пуст, ответ `422 Search not supported`. Список полей: [Schema](schema).
 
+::: warning `q` конфликтует с friendly URL
+
+Значение `q`, совпадающее с путём запроса, вырезается из query до разбора (`Psr7RequestFactory::stripRoutingQueryParams`). Например, `GET /api/v1/resources?q=resources` обработает `q` как путь и поиск не выполнит. Это сделано, чтобы friendly URL MODX вида `/?q=installation` не конфликтовал с поиском.
+
+Подставляйте термин так, чтобы он не был равен пути: используйте URL-кодирование, другой регистр не поможет. На части хостингов параметр может быть съеден и до входа в PHP, тогда поиск не отработает без ошибки. Проверяйте выдачу.
+
+:::
+
 ## Includes
 
 ```text
@@ -74,7 +86,7 @@ include=parent,children
 include=tvs
 ```
 
-У `resources` связи: `parent`, `children`. Поле `template` — id шаблона, не include. TV: `include=tvs` / `include=tv` или `?tv_fields=name1,name2`. Чанки, шаблоны, сниппеты, TV: `include=category`. Категории: `include=parent`.
+У `resources` связи: `parent`, `children`. Поле `template` — id шаблона, не include. TV: `include=tvs` / `include=tv`, `?tv_fields=name1,name2` или `?include_tv=1`. Чанки, шаблоны, сниппеты, TV: `include=category`. Категории: `include=parent`.
 
 Лимиты: `mxheadless_max_include_relations` (10), `mxheadless_max_include_depth` (2). Имена связей берутся из schema.
 

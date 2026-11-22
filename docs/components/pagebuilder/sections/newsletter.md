@@ -5,7 +5,7 @@ description: "HTML-форма подписки на внешний action_url. �
 
 # Рассылка
 
-Секция `newsletter` рисует HTML-форму. Отправка идёт на внешний `action_url`, не через FetchIt. Chunk: `pagebuilderpro_newsletter`. Требуется PageBuilder Pro.
+Секция `newsletter` рисует HTML-форму. Отправка идёт на внешний `action_url`, не через FetchIt.
 
 `action_url` обязателен. `email_name` задаёт имя поля email в POST. `note` это текст про персональные данные.
 
@@ -16,6 +16,16 @@ description: "HTML-форма подписки на внешний action_url. �
 - Подписка на Mailchimp, Unisender или свой endpoint
 - Блок в подвале лендинга
 - Сбор email без письма из MODX
+
+## Параметры блока
+
+| Параметр | Значение |
+| --- | --- |
+| key | `newsletter` |
+| Слой | Pro |
+| Категория | конверсия (`conversion`) |
+| Chunk | `pagebuilderpro_newsletter` |
+| Требования | pro |
 
 ## Поля
 

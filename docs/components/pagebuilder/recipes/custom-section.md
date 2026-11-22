@@ -38,7 +38,7 @@ switch ($modx->event->name) {
 }
 ```
 
-Ключ с `_` или `category: dev` в production-каталог не попадает. `requires` проверяет `SectionRequirementChecker`.
+Ключ с префиксом `_` (как `_qa_field_matrix`) и `category: dev` в каталог не попадают. Подчёркивание внутри ключа (`contact_form`, `data_table`) каталог не прячет. `requires` проверяет `SectionRequirementChecker`.
 
 ## Что проверить
 

@@ -15,8 +15,7 @@ Requires PageBuilder Pro.
 
 ## Standalone map
 
-- Coordinates in map field, resolver builds iframe
-- Yandex Maps by default, provider swappable in package code
+- Map field provider: `yandex` by default, or `osm` (OpenStreetMap)
 - Separate from contact copy
 
 ## Scenarios
@@ -51,7 +50,7 @@ Requires PageBuilder Pro.
 
 ## Inspector fields
 
-Fill these fields in the section inspector. Field types are documented in the [field types reference](../fields/types).
+Field types: [field types reference](../fields/types).
 
 ### Title (`title`)
 

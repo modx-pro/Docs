@@ -11,6 +11,8 @@ description: Ключи msp3Prodamus, URL payform, секрет, sys, валют
 
 Способ считается настроенным, когда непусты URL payform и секрет.
 
+<!-- MEDIA: настройки — MODX «Системные настройки», пространство `msp3prodamus`, видимы все ключи таблицы -->
+
 **Webhook** сверяет подпись с секретом из properties, иначе с **`msp3prodamus_secret_key`**.
 
 Где взять URL, секрет и `sys`: [Быстрый старт](quick-start#откуда-брать-ключи).

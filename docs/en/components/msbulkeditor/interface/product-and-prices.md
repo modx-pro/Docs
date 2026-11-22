@@ -5,7 +5,7 @@ description: Price, stock, categories, vendor, template, variants
 
 # Product & prices
 
-Bulk operations on MiniShop3 product fields: **price**, **stock**, **categories**, **vendor**, **variants**.
+Bulk edits of MiniShop3 **price**, **stock**, **categories**, **vendor**, and **variants**.
 
 ![Price operation dialog](/components/msbulkeditor/screenshots/operation-price.png)
 
@@ -46,11 +46,11 @@ Mode **“Transfer between fields”** (`mode: transfer`):
 | `targetField` | Write value to |
 | `clearSource` | Zero source after transfer (default `false`) |
 
-Preview shows only the target field change; source stays unchanged until `clearSource` is enabled. Supports `variantScope`.
+Preview shows only the target field change. The source stays unchanged until `clearSource` is enabled. Supports `variantScope`.
 
 ### Copy current price to old_price on change
 
-Flag **“Copy current price to old_price”** (`transferToOldPrice`) before changing `price` — discount scenario: old price on storefront, new in `price`. Works in set / relative / percent modes.
+Flag **“Copy current price to old_price”** (`transferToOldPrice`) before changing `price`. Typical discount: old price on the storefront, new value in `price`. Works in set / relative / percent modes.
 
 ### Variant scope (ms3Variants)
 
@@ -68,9 +68,9 @@ Flag **“Copy current price to old_price”** (`transferToOldPrice`) before cha
 
 Type **Stock** (`fieldType: stock`, DB field `count`):
 
-- same set / relative / percent modes;
-- default rounding `integer`;
-- supports `variantScope`.
+- same set / relative / percent modes
+- default rounding `integer`
+- supports `variantScope`
 
 ---
 
@@ -80,9 +80,9 @@ Type **Categories**:
 
 | Mode | Action |
 | --- | --- |
-| **Add categories** | `assign_additional` — comma-separated IDs in `categoryIds` |
+| **Add categories** | `assign_additional`: comma-separated IDs in `categoryIds` |
 | **Remove all additional categories** | `remove_all` |
-| **Change parent** | `change_parent` — new `parentId` |
+| **Change parent** | `change_parent`: new `parentId` |
 
 Additional categories are stored in `ms3_product_categories`.
 
@@ -98,8 +98,8 @@ Additional categories are stored in `ms3_product_categories`.
 
 ![Template operation](/components/msbulkeditor/screenshots/operation-template.png)
 
-- **Vendor** — `vendor`, parameter `vendorId`.
-- **Template** — `template`, parameter `templateId` (also [Quick actions](quick-actions) → “Change template”).
+- **Vendor:** `vendor`, parameter `vendorId`.
+- **Template:** `template`, parameter `templateId` (also [Quick actions](quick-actions) → “Change template”).
 
 Also available via [Quick actions](quick-actions).
 
@@ -119,8 +119,9 @@ Also via **Run operation** / **Quick actions**: `source`, `content_type`, `user`
 
 With **ms3Variants** installed, type **Variant**:
 
-- fields: `price`, `count`, `sku`, `weight`;
-- bulk change variant values for selected products.
+- fields in the dialog: `price`, `count`, `sku`, `weight`
+- a JSON preset also accepts `old_price`
+- bulk change variant values for selected products
 
 ---
 
@@ -133,7 +134,7 @@ Operation **Text field** (`text_set`):
 | Field | Behavior |
 | --- | --- |
 | **article** | String SKU value |
-| **weight** | Number ≥ 0 (kg); numeric input in form |
+| **weight** | Number ≥ 0 (kg). Numeric input in the form |
 
 “Leave field empty” clears article or sets weight to 0.
 
@@ -159,11 +160,11 @@ In MiniShop3, flags **new**, **popular**, **favorite** live in `ms3_products` (`
 
 Operation **Regenerate gallery thumbnails** (`fieldType: gallery_regenerate`):
 
-- for each product calls MS3 processor `Gallery\GenerateAll`;
-- products without rows in `ms3_product_files` are skipped;
-- rollback via history does not restore files on disk (side-effect operation);
-- apply runs in chunks via `BatchOperationRunner`; progress in `products/progress`;
-- for large selections, lower system setting `msbulkeditor_chunk_size`.
+- for each product calls MS3 processor `Gallery\GenerateAll`
+- products without rows in `ms3_product_files` are skipped
+- rollback via history does not restore files on disk (side-effect operation)
+- apply runs in chunks, progress in `products/progress`
+- for large selections, lower system setting `msbulkeditor_chunk_size`
 
 Available in **Quick actions** → “Regenerate gallery thumbnails”.
 
@@ -178,11 +179,11 @@ Type **Resource utility operations** (`fieldType: resource_utility`, parameter `
 | `clear_cache` | `cacheManager.refreshResource` for each product |
 | `regenerate_uri` | rebuild alias and URI via `modResource` |
 
-- requires `msbulkeditor_edit` and confirm dialog before apply;
-- products with `uri_override` are skipped for `regenerate_uri`;
-- rollback of `regenerate_uri` restores alias and URI from history;
-- rollback of `clear_cache` does not restore cache files (side-effect);
-- apply runs in chunks via `BatchOperationRunner`.
+- requires `msbulkeditor_edit` and a confirm dialog before apply
+- products with `uri_override` are skipped for `regenerate_uri`
+- rollback of `regenerate_uri` restores alias and URI from history
+- rollback of `clear_cache` does not restore cache files (side-effect)
+- apply runs in chunks
 
 **Quick actions:** “Clear resource cache”, “Regenerate URI”.
 
@@ -196,23 +197,15 @@ Type **Resource utility operations** (`fieldType: resource_utility`, parameter `
 
 Operation **Soft delete** (`fieldType: soft_delete`):
 
-- sets `deleted=1` for each selected product;
-- already deleted resources are skipped;
-- confirm dialog before apply;
-- rollback from history sets `deleted=0`;
-- permanent purge in MODX is not available here (separate human gate).
+- sets `deleted=1` for each selected product
+- already deleted resources are skipped
+- confirm dialog before apply
+- rollback from history sets `deleted=0`
+- permanent purge in MODX is not available here
 
 ![Confirm: soft delete](/components/msbulkeditor/screenshots/confirm-soft-delete.png)
 
 **Quick actions:** “Soft delete”.
-
----
-
-## Not in scope
-
-- Bulk `country` (if the field appears in MS3).
-
-→ [FAQ](../faq)
 
 ---
 

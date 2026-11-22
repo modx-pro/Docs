@@ -7,22 +7,26 @@ title: Системные настройки
 
 ## Список настроек
 
-| Ключ | По умолчанию | Где используется |
-| --- | --- | --- |
-| `mxquickview_allowed_chunk` | `mxqv_product,mxqv_resource,ms3_product_content,ms3_products_row` | `data_action=chunk` в `Render` |
-| `mxquickview_allowed_snippet` | `msCart,msMiniCart` | `data_action=snippet` в `Render` |
-| `mxquickview_allowed_template` | '' | `data_action=template` в `Render` |
-| `mxquickview_mouseover_delay` | `300` | `window.mxqvConfig.mouseoverDelay` |
-| `mxquickview_modal_size` | `modal-lg` | классы `modal-sm` / `modal-lg` / `modal-xl` только для `modalLibrary` `native` и `bootstrap` |
-| `mxquickview_debug` | `0` | `window.mxqvConfig.debug`, если параметр `debug` у сниппета не задан или пустой |
-| `mxquickview_fancybox_css` | `[[++assets_url]]components/mxquickview/vendor/fancybox/fancybox.css` | переопределение CSS для `modalLibrary=fancybox` |
-| `mxquickview_fancybox_js` | `[[++assets_url]]components/mxquickview/vendor/fancybox/fancybox.umd.js` | переопределение JS для `modalLibrary=fancybox` |
-| `mxquickview_bootstrap_css` | `[[++assets_url]]components/mxquickview/vendor/bootstrap/bootstrap.min.css` | переопределение CSS для `modalLibrary=bootstrap` |
-| `mxquickview_bootstrap_js` | `[[++assets_url]]components/mxquickview/vendor/bootstrap/bootstrap.min.js` | переопределение JS для `modalLibrary=bootstrap` |
+<!-- MEDIA: Список системных настроек mxQuickView в админке MODX | админка MODX → Система → Настройки → mxquickview_ → таблица -->
 
-## Переопределение URL ресурсов
+| Настройка | Тип | По умолчанию | Где используется |
+| --- | --- | --- | --- |
+| `mxquickview_allowed_chunk` | `textfield` | `mxqv_product,mxqv_resource,ms3_product_content,ms3_products_row` | `data-mxqv-action="chunk"` в `Render` |
+| `mxquickview_allowed_snippet` | `textfield` | `msCart,msMiniCart` | `data-mxqv-action="snippet"` в `Render` |
+| `mxquickview_allowed_template` | `textfield` | '' | `data-mxqv-action="template"` в `Render` |
+| `mxquickview_mouseover_delay` | `numberfield` | `300` | `window.mxqvConfig.mouseoverDelay` |
+| `mxquickview_modal_size` | `textfield` | `modal-lg` | классы `modal-sm` / `modal-lg` / `modal-xl` только для `modalLibrary` `native` и `bootstrap` |
+| `mxquickview_debug` | `combo-boolean` | `0` | `window.mxqvConfig.debug`, если параметр `debug` у сниппета не задан или пустой |
+| `mxquickview_fancybox_css` | `textfield` | `[[++assets_url]]components/mxquickview/vendor/fancybox/fancybox.css` | переопределение CSS для `modalLibrary=fancybox` |
+| `mxquickview_fancybox_js` | `textfield` | `[[++assets_url]]components/mxquickview/vendor/fancybox/fancybox.umd.js` | переопределение JS для `modalLibrary=fancybox` |
+| `mxquickview_bootstrap_css` | `textfield` | `[[++assets_url]]components/mxquickview/vendor/bootstrap/bootstrap.min.css` | переопределение CSS для `modalLibrary=bootstrap` |
+| `mxquickview_bootstrap_js` | `textfield` | `[[++assets_url]]components/mxquickview/vendor/bootstrap/bootstrap.min.js` | переопределение JS для `modalLibrary=bootstrap` |
 
-`mxquickview.assets_url` читается через `getOption`. В transport ключа нет: после установки в namespace он не появляется. Создайте вручную или оставьте значение по умолчанию `[[++assets_url]]components/mxquickview/`.
+Ключи живут в области `mxquickview_main`, названия и описания берутся из лексикона пакета: `setting_mxquickview_<ключ>` и `setting_mxquickview_<ключ>_desc`, где `<ключ>` — часть после `mxquickview_` без префикса. Например, для `mxquickview_allowed_chunk` это `setting_mxquickview_allowed_chunk` («Разрешённые чанки») и `setting_mxquickview_allowed_chunk_desc`. Файлы лексикона: `core/components/mxquickview/lexicon/ru/setting.inc.php` и `.../en/setting.inc.php`, набор ключей ru и en совпадает.
+
+## Виртуальная опция `mxquickview.assets_url`
+
+Опция `mxquickview.assets_url` читается через `getOption`, но **не создаётся в БД** при установке. Это виртуальная опция: если вы не добавите её вручную, компонент будет использовать значение по умолчанию `[[++assets_url]]components/mxquickview/`.
 
 Ключ задаёт базовый URL CSS, JS и `connector.php`.
 

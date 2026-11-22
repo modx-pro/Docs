@@ -60,6 +60,8 @@ items: [
 3. Установите пакет **msp3WebPay** через **Управление пакетами** (в **Show Details** выберите провайдер **modstore.pro**).
 4. **Очистите кэш** MODX.
 
+<!-- MEDIA: Установка пакета **msp3WebPay** через Управление пакетами (диалог «Show Details», выбор провайдера) | MODX admin UI -->
+
 Резолвер создаёт три активных способа:
 
 | Название | Класс |
@@ -67,6 +69,8 @@ items: [
 | Оплата через WebPay (карта) | `Msp3WebPay\Payment\WebPayPayment` |
 | Оплата через WebPay (ERIP) | `Msp3WebPay\Payment\WebPayEripPayment` |
 | Оплата через WebPay (двухстадийная) | `Msp3WebPay\Payment\WebPayTwoStagePayment` |
+
+<!-- MEDIA: Список активных способов оплаты в MiniShop3 → Настройки → Оплаты (карта, ERIP, двухстадийная) | MiniShop3 admin UI -->
 
 В `msPayment.properties` можно хранить `store_id`, `secret_key`, `secret`, `api_username`, `api_password`, `currency`, `test`. Непустые properties перекрывают системные настройки в **`send()`**, списании, отмене и возврате.
 

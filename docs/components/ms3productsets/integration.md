@@ -3,8 +3,6 @@ title: Интеграция на сайт
 ---
 # Интеграция на сайт
 
-Как подключить сниппеты в Fenom и стандартном MODX и где проверить результат.
-
 ## 1. Подключение ресурсов (обязательно)
 
 Уведомления корзины используют **[iziToast](https://github.com/marcosmoura/iziToast)**. Пути к локальным CSS и JS задаются системными настройками `ms3productsets` (относительно `[[++assets_url]]` или полный URL):
@@ -37,13 +35,13 @@ title: Интеграция на сайт
 
 :::
 
-Порядок: **mspsLexiconScript** (при включённой настройке сначала iziToast, затем `window.mspsLexicon` / `window.mspsConfig`) **→ productsets.css → productsets.js**. Если на странице нет `iziToast`, в консоли будет предупреждение, уведомления не покажутся.
+При включённой настройке `mspsLexiconScript` сначала выводит iziToast, затем `window.mspsLexicon` и `window.mspsConfig`. Если на странице нет `iziToast`, в консоли будет предупреждение, уведомления не покажутся.
 
-Переопределение через `window.mspsConfig` (до вызова `mspsLexiconScript` или в объекте, который мержится со сниппетом): `toastTimeout` (мс), `toastPosition` (например `topRight`, `bottomCenter`. См. документацию iziToast).
+Переопределение через `window.mspsConfig` до вызова `mspsLexiconScript` или в объекте, который объединяется со сниппетом. Поля: `toastTimeout` (мс), `toastPosition` (например `topRight`, `bottomCenter`). См. документацию iziToast.
 
 ## 2. Блок в карточке товара: «С этим товаром покупают»
 
-После вызова на карточке товара появляется блок рекомендаций. Если товаров нет, блок не выводится.
+Если товаров нет, блок не выводится.
 
 ::: code-group
 
@@ -221,11 +219,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
 :::
 
-Штатный `tplSetItem` это форма MiniShop3 (`ms3_form`), не `data-add-to-cart`. Пример ниже свой. `productsets.js` сначала отправляет запрос в MiniShop3 Web API (`ms3Config.actionUrl`). Коннектор `add_to_cart` это запасной путь.
+Штатный `tplSetItem` это форма MiniShop3 (`ms3_form`), не `data-add-to-cart`. Пример свой. `productsets.js` сначала отправляет запрос в MiniShop3 Web API (`ms3Config.actionUrl`). Коннектор `add_to_cart` это запасной путь.
 
 ## 8. Кнопка «Добавить весь набор»
 
-Кнопка с атрибутом `data-add-set` добавляет все товары подборки в корзину. Входит в чанки **tplSetVIP** и **tplSetWrapper** (при `count > 0`).
+Кнопка с атрибутом `data-add-set` добавляет все товары подборки в корзину. В **tplSetWrapper** она есть при `count > 0`. В **tplSetVIP** кнопка выводится всегда: чанк не получает `count`.
 
 Чанки **tplSetVIP** / **tplSetWrapper** / **tplPopcorn** пишут `data-msps-product-ids`. JS берёт этот атрибут первым, затем карточки `[data-product-id]` / `[data-add-to-cart]`, затем `input[name="id"]`.
 
@@ -245,7 +243,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 :::
 
-Текст кнопки берите из лексикона компонента (`ms3productsets`, топик `default`), не храните в шаблоне явно.
+Текст кнопки берите из лексикона компонента (`ms3productsets`, топик `default`).
 
 ## Чек-лист после внедрения
 

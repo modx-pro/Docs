@@ -3,7 +3,17 @@ title: События стоимости
 ---
 # События стоимости
 
-События для расчёта и модификации стоимости: корзины, доставки, оплаты.
+Расчёт и изменение стоимости корзины, доставки и оплаты.
+
+::: danger Все восемь событий — только витрина и Web API
+События стоимости поднимает `OrderCostCalculator`, и он обслуживает только оформление заказа покупателем. Пересчёт суммы в карточке заказа в админке — правка состава, смена доставки или оплаты, финализация — идёт через `ManagerOrderCostRecalculator`, где нет ни одного вызова события.
+
+Следствие: скидка, навешенная плагином на `msOnGetCartCost` или `msOnGetOrderCost`, в заказе, который менеджер собрал руками, не применится. Если скидка должна действовать на обоих путях, её логику выносят в сервис и зовут из плагина событий **и** из своего кода админки.
+:::
+
+::: warning Контроллер корзины приходит под двумя разными именами
+В событиях корзины и итога заказа параметр называется `cart`, а в событиях доставки и оплаты — `cartController`. Это историческая непоследовательность ядра: плагин, скопированный от `msOnGetCartCost` к `msOnGetDeliveryCost`, получит `null` вместо контроллера. Сверяйтесь с таблицей параметров нужного события.
+:::
 
 ## msOnBeforeGetCartCost
 
@@ -69,49 +79,46 @@ switch ($modx->event->name) {
 
 ```php
 <?php
+// Код скидки лежит в properties черновика — положите его туда своим
+// обработчиком, когда покупатель вводит код в форме оформления.
+$codes = [
+    'SALE10'   => ['type' => 'percent', 'value' => 10],
+    'MINUS500' => ['type' => 'fixed', 'value' => 500],
+];
+
 switch ($modx->event->name) {
     case 'msOnGetCartCost':
         $cost = $scriptProperties['cost'];
+        /** @var \MiniShop3\Model\msOrder|null $draft */
+        $draft = $scriptProperties['draft'] ?? null;
 
-        // Проверка промокода в сессии
-        if (empty($_SESSION['ms3']['promocode'])) {
+        $properties = $draft ? ($draft->get('properties') ?: []) : [];
+        $code = (string)($properties['promocode'] ?? '');
+
+        if ($code === '' || !isset($codes[$code])) {
             return;
         }
 
-        $promocode = $modx->getObject('msPromocode', [
-            'code' => $_SESSION['ms3']['promocode'],
-            'active' => 1,
-        ]);
-
-        if (!$promocode) {
-            unset($_SESSION['ms3']['promocode']);
-            return;
-        }
-
-        $discount = 0;
-        $type = $promocode->get('type');
-        $value = $promocode->get('value');
-
-        switch ($type) {
-            case 'percent':
-                $discount = $cost * ($value / 100);
-                break;
-            case 'fixed':
-                $discount = $value;
-                break;
-        }
+        $promo = $codes[$code];
+        $discount = $promo['type'] === 'percent'
+            ? $cost * ($promo['value'] / 100)
+            : $promo['value'];
 
         $values = &$modx->event->returnedValues;
         $values['cost'] = max(0, $cost - $discount);
 
-        // Сохраняем информацию о скидке
+        // Информация о скидке — для следующих событий расчёта
         $modx->eventData['promocode'] = [
-            'code' => $promocode->get('code'),
+            'code' => $code,
             'discount' => $discount,
         ];
         break;
 }
 ```
+
+::: tip Для настоящих промокодов есть готовый компонент
+Пример выше намеренно держит коды в самом плагине. Полноценные промокоды с правилами, лимитами и учётом применений даёт [ms3PromoCode](https://modstore.pro/packages/ecommerce/ms3promocode): у него своя модель `ms3PromoCode\Model\msPromoCode` с полями `discount_type` и `discount_value` и свои сервисы расчёта. Повторять его логику в плагине не нужно.
+:::
 
 ---
 
@@ -318,7 +325,7 @@ switch ($modx->event->name) {
 
 ## msOnBeforeGetOrderCost
 
-Вызывается **перед** сборкой итога заказа в `OrderCostCalculator`: после этого ядро считает cart / delivery / payment cost и склеивает breakdown.
+Вызывается **перед** сборкой итога заказа в `OrderCostCalculator`: после события ядро считает стоимость корзины, доставки и оплаты и собирает из них разбивку.
 
 ### Параметры
 
@@ -330,13 +337,13 @@ switch ($modx->event->name) {
 | `with_cart` | `bool` | Всегда `true` в текущем вызове |
 | `only_cost` | `bool` | Режим «только сумма» (без побочных эффектов UI) |
 
-Прерывание: `$modx->event->output('...')` — калькулятор вернёт ошибку.
+Прерывание операции: `$modx->event->output('...')` — калькулятор вернёт ошибку.
 
 ---
 
 ## msOnGetOrderCost
 
-Вызывается **после** compose breakdown. Через `returnedValues` можно подменить любую из четырёх сумм; ядро заново соберёт итоговый `cost`.
+Вызывается **после** сборки разбивки итога. Через `returnedValues` можно подменить любую из четырёх сумм — ядро заново соберёт итоговый `cost`.
 
 ### Параметры
 
@@ -378,10 +385,10 @@ switch ($modx->event->name) {
 ```
 
 ::: warning `cost` в returnedValues не действует
-Ядро **всегда** пересобирает итоговый `cost` из `cart_cost`/`delivery_cost`/`payment_cost` после события — любое `$values['cost'] = ...`, выставленное обработчиком, молча отбрасывается. Чтобы повлиять на итог, меняйте `cart_cost`/`delivery_cost`/`payment_cost` — как показано выше.
+Ядро **всегда** пересобирает итоговый `cost` из `cart_cost`/`delivery_cost`/`payment_cost` после события — любое `$values['cost'] = ...`, выставленное плагином, молча отбрасывается. Чтобы повлиять на итог, меняйте `cart_cost`/`delivery_cost`/`payment_cost`, как показано выше.
 :::
 
-::: tip Частичные vs итоговые события
+::: tip Частичное событие или итоговое
 Для скидки только на товары удобнее `msOnGetCartCost`. Для правила «пересчитать всё сразу» (корзина + доставка + оплата) используйте `msOnGetOrderCost`.
 :::
 
@@ -389,14 +396,16 @@ switch ($modx->event->name) {
 
 ## Полный пример: система скидок
 
-Комплексный пример системы скидок с использованием нескольких событий:
-
 ```php
 <?php
 /**
  * Плагин: Система скидок
  * События: msOnGetCartCost, msOnGetDeliveryCost
  */
+
+$codes = [
+    'SALE10' => ['type' => 'percent', 'value' => 10],
+];
 
 switch ($modx->event->name) {
 
@@ -407,17 +416,15 @@ switch ($modx->event->name) {
         $discount = 0;
         $discountInfo = [];
 
-        // 1. Скидка по промокоду
-        if (!empty($_SESSION['ms3']['promocode'])) {
-            $promocode = $modx->getObject('msPromocode', [
-                'code' => $_SESSION['ms3']['promocode'],
-                'active' => 1,
-            ]);
-            if ($promocode && $promocode->get('type') === 'percent') {
-                $promoDiscount = $cost * ($promocode->get('value') / 100);
-                $discount += $promoDiscount;
-                $discountInfo['promocode'] = $promoDiscount;
-            }
+        // 1. Скидка по коду из properties черновика
+        $draft = $scriptProperties['draft'] ?? null;
+        $properties = $draft ? ($draft->get('properties') ?: []) : [];
+        $code = (string)($properties['promocode'] ?? '');
+
+        if ($code !== '' && isset($codes[$code]) && $codes[$code]['type'] === 'percent') {
+            $promoDiscount = $cost * ($codes[$code]['value'] / 100);
+            $discount += $promoDiscount;
+            $discountInfo['promocode'] = $promoDiscount;
         }
 
         // 2. Скидка для VIP-клиентов

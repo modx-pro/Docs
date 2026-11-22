@@ -16,7 +16,7 @@ MiniShop3 uses [FastRoute](https://github.com/nikic/FastRoute) for API request r
 | **Purpose** | MODX manager | Store frontend |
 | **Entry point** | `connector.php` | `assets/.../api.php` |
 | **Authorization** | MODX session + HTTP_MODAUTH | MS3TOKEN tokens |
-| **Middleware** | AuthMiddleware, PermissionMiddleware | TokenMiddleware, CorsMiddleware, RateLimitMiddleware |
+| **Middleware** | AuthMiddleware, PermissionMiddleware, AnyPermissionMiddleware | ServiceCheckMiddleware, TokenMiddleware, CorsMiddleware, RateLimitMiddleware |
 | **Routes file** | `config/routes/manager.php` | `config/routes/web.php` |
 
 ### File structure
@@ -51,6 +51,16 @@ use MiniShop3\Router\Response;
 $router->get('/api/mgr/my-endpoint', function($params) use ($modx) {
     return Response::success(['data' => 'value']);
 });
+
+// Middleware can also be attached fluently, on the returned Route
+$router->get('/api/mgr/other', $handler)
+    ->middleware(new AuthMiddleware($modx, 'mgr'));
+
+// Middleware is accepted as a class name too — the router builds it with $modx
+$router->get('/api/mgr/third', $handler, [\My\Addon\Middleware\Check::class]);
+
+// The handler can be a 'Class@method' string as well
+$router->get('/api/mgr/fourth', '\My\Addon\Controller@index');
 
 // POST route
 $router->post('/api/mgr/items', function($params) use ($modx) {
@@ -159,8 +169,17 @@ use MiniShop3\Router\Response;
 Response::success($data, $message, $statusCode);
 
 // Error response
-Response::error($message, $statusCode, $errors);
+Response::error($message, $statusCode, $errors, $errorCode, $data);
+
+// The same, with a mandatory machine code — handier for the Web API
+Response::errorWithCode($errorCode, $message, $statusCode, $errors, $data);
+
+// Redirect and a response built from a MODX processor
+Response::redirect($url);
+Response::fromProcessor($processorResponse);
 ```
+
+The fourth argument of `error()` is the very `error_code` promised below in every error response; without it the router derives one from the HTTP status. The fifth, `data`, carries context that is not tied to a field: `existing_id` on a conflict, the cart state on a stock refusal. Headers are added with `->header()` on the finished response.
 
 ### Response format
 
@@ -183,24 +202,32 @@ Response::error($message, $statusCode, $errors);
 {
   "success": false,
   "message": "Validation failed",
+  "code": 422,
   "errors": {
     "name": "Field is required"
-  }
+  },
+  "error_code": "validation_failed"
 }
 ```
+
+The keys `code` and `error_code` are present in every error response, even when `errors` is empty. `data` is added only where it was passed.
 
 ### HTTP status codes
 
 | Code | Description | Usage |
 | --- | --- | --- |
 | 200 | OK | Successful request |
-| 400 | Bad Request | Validation error |
+| 201 | Created | An object was created: customer addresses |
+| 400 | Bad Request | A broken request with no field map |
 | 401 | Unauthorized | Not authenticated |
 | 403 | Forbidden | No permission |
 | 404 | Not Found | Route or resource not found |
-| 405 | Method Not Allowed | Method not allowed |
+| 405 | Method Not Allowed | Method not allowed. An `OPTIONS` preflight lands here too when the route stack has no `CorsMiddleware` |
+| 409 | Conflict | A state conflict: not enough stock while editing the order lines |
+| 422 | Unprocessable Entity | Validation error with a field map in `errors` |
 | 429 | Too Many Requests | Rate limit exceeded |
 | 500 | Internal Server Error | Server error |
+| 503 | Service Unavailable | The `ms3` service did not start |
 
 ## Middleware
 
@@ -257,21 +284,61 @@ $router->post('/api/mgr/products', function($params) use ($modx) {
 ]);
 ```
 
-**Main MiniShop3 permissions:**
+**MiniShop3 permissions.** The `miniShopManagerPolicy` template declares fifteen permissions of its own; `view_document` from the MODX core joins them.
 
-- `msproduct_save` — create/edit products
-- `mssetting_save` — manage settings (deliveries, payments, vendors, notifications)
-- `view_document` — read categories and category product grids
-- `msorder_list` — order and customer lists, customer addresses (GET)
-- `msorder_view` — view customer card
-- `msorder_save` — edit orders and customers, order line mutations
-- `msorder_remove` — delete orders, customers, bulk delete
+| Permission | What it opens | Enforced in |
+| --- | --- | --- |
+| `msproduct_save` | creating and editing products, sorting, editing product data in the grid | routes |
+| `msproduct_publish` | publishing a product from the category grid | routes |
+| `msproduct_delete` | bulk deletion of category products | routes |
+| `mscategory_save` | the whole category options group | routes |
+| `msorder_list` | order and customer lists, customer addresses, customer groups | routes |
+| `msorder_view` | the customer card, a customer group by ID | routes |
+| `msorder_save` | editing orders and customers, order line mutations, shipment | routes |
+| `msorder_remove` | deleting orders, customers, groups, bulk deletion | routes |
+| `msorder_inventory_override` | editing order contents past a stock shortage (since 1.14.3-beta1) | service |
+| `mssetting_list` | reading the reference data of the forms | routes, `AnyPermissionMiddleware` |
+| `mssetting_view` | the same, viewing | routes, `AnyPermissionMiddleware` |
+| `mssetting_save` | deliveries, payments, vendors, statuses, link types, options, extra fields, grid config | routes |
+| `msproductfile_generate` | bulk gallery operations | routes |
+| `msproductfile_list` | reading the product gallery | processors |
+| `msproductfile_save` | uploading, editing and deleting gallery files | processors |
+| `view_document` | reference lists, the category product grid, grid config for reading | routes |
+
+::: warning The permission to go negative is granted separately
+With inventory tracking on (`ms3_inventory_enabled`), an edit of the order lines compares the reserve with the resulting quantity and refuses when there is not enough stock: a `409` with the key `ms3_err_inventory_short`. If the request sends `force` and the user has no permission for it, the answer is `403`. In both cases `data` contains `product_id`, `available`, `required` and `can_override`. The last one shows whether a repeat with `force` would help.
+
+`msorder_inventory_override` lets that edit through anyway, and the stock goes negative. The permission is in the policy template, but **it is not granted in the policy itself**, so after an update you assign it explicitly. A user with `sudo` receives it automatically, like any other MODX permission.
+:::
+
+The two gallery permissions are not part of the route map: they are checked by the `Processors\Gallery\*` processors that `UtilitiesGalleryController` calls.
+::: tip Where a user gets these permissions
+They all live in the `miniShopManagerPolicy` access policy created by the install. The policy grants nothing until it is assigned to a user group: since 1.14.2-beta1 install and upgrade assign it to every group that already has access to the `mgr` context, as an additional record with `authority 9999` — the group's own permissions still win.
+
+A group created after the install does not get the policy: the resolver only runs while the package is being installed or upgraded. Details in the [quick start](/en/components/minishop3/quick-start#install-creates).
+:::
+
+#### AnyPermissionMiddleware
+
+Lets the request through when the user holds **at least one** permission from the list. Needed where the controller does the exact check itself: bulk actions on category products check a permission per action.
+
+```php
+use MiniShop3\Router\Middleware\AnyPermissionMiddleware;
+
+$router->post('/multiple', $handler, [
+    new AnyPermissionMiddleware($modx, ['msproduct_save', 'msproduct_publish', 'msproduct_delete'])
+]);
+```
+
+#### ServiceCheckMiddleware
+
+Checks that the `ms3` service started. If it did not, the answer is `503` with `error_code: internal_error` and the handler never runs. In the Web API stack it is the third of the three group layers — after `CorsMiddleware` and `RateLimitMiddleware`, but before the route-level `TokenMiddleware`. One consequence: when `ms3` fails to start, the request still consumes a rate-limit slot.
 
 #### TokenMiddleware
 
 Validates and auto-mints the customer token for Web API when needed.
 
-Resolve order: `Authorization: Bearer` → legacy `MS3TOKEN` header → httpOnly cookie `ms3_token` → `$_REQUEST` → session. Query `token` / `ms3_token` is stripped and not accepted.
+Resolve order: `Authorization: Bearer` → legacy `MS3TOKEN` header → httpOnly cookie `ms3_token` → `$_REQUEST` → session. The middleware removes the `ms3_token` query parameter from the request; `token` in the query stays but does not authorize either — e-mail confirmation uses it.
 
 ```php
 use MiniShop3\Middleware\TokenMiddleware;
@@ -283,7 +350,34 @@ $router->group('/api/v1/cart', function($router) use ($modx) {
 }, [$tokenMiddleware]);
 ```
 
-On routes with middleware, without a valid token the server auto-mints a guest token (except paths in middleware `publicRoutes`, e.g. logout). Catalog, health, and `token/get` in `web.php` do not use the middleware.
+On a route carrying the middleware the server mints a guest token when the request has no token at all. The middleware also holds a `publicRoutes` list of fifteen prefixes and one path pattern: a path from the list passes without a guest token and without a 401. There is no separate `optional` mode in the code — membership in the list is what decides.
+
+The list is not fixed. To make a route of your own public, build your own middleware instance, extend the list and pass it to the group.
+
+```php
+$tokenMiddleware = new TokenMiddleware($modx);
+$tokenMiddleware->addPublicRoute('/api/v1/myaddon/callback');
+// or replace the whole list: setPublicRoutes([...])
+```
+
+The middleware lets an `OPTIONS` preflight straight through: no token is minted, no session is started and the handler is not called.
+
+```text
+/api/v1/product/get          /api/v1/delivery/get
+/api/v1/product/list         /api/v1/delivery/list
+/api/v1/product/filters      /api/v1/delivery/webhook
+/api/v1/category/get         /api/v1/payment/get
+/api/v1/category/list        /api/v1/payment/list
+/api/v1/category/tree        /api/v1/payment/webhook/
+/api/v1/health               /api/v1/customer/token/get
+                             /api/v1/customer/logout
+```
+
+The pattern is `/api/v1/product/*/images`, where `*` covers exactly one segment: the product gallery stays public without opening the whole `/api/v1/product/*` branch.
+
+A match is tested as `path === prefix` or `path starts with prefix and a slash`. The payment entry already ends with a slash, so the code compares it with two slashes in a row and `/api/v1/payment/webhook/{id}` never matches it ([details](https://github.com/modx-pro/MiniShop3/issues/903)).
+
+In practice the list works on two paths — `GET /customer/token/get` and `POST /customer/logout` — because those are the only public paths the middleware is attached to. Catalog, health and the webhooks in `web.php` do not use it at all.
 
 Details: [Web API authorization](/en/components/minishop3/development/web-api/auth).
 
@@ -311,10 +405,12 @@ Limits request rate to prevent abuse.
 
 ```php
 use MiniShop3\Middleware\RateLimitMiddleware;
+use MiniShop3\Services\RateLimit\RateLimitStoreFactory;
 
 $rateLimitMiddleware = new RateLimitMiddleware(
-    60,   // Max 60 requests
-    60    // Per 60 seconds
+    60,                                      // Max 60 requests
+    60,                                      // Per 60 seconds
+    RateLimitStoreFactory::fromModx($modx)   // Limit store (optional)
 );
 ```
 
@@ -390,8 +486,8 @@ Middleware runs in the order they are listed:
 $router->get('/api/mgr/endpoint', $handler, [
     new CorsMiddleware(),        // 1. CORS first
     new RateLimitMiddleware(),   // 2. Rate limit
-    new AuthMiddleware($modx),   // 3. Auth
-    new PermissionMiddleware(),  // 4. Permissions
+    new AuthMiddleware($modx),                          // 3. Auth
+    new PermissionMiddleware($modx, 'msproduct_save'),  // 4. Permission
 ]);
 ```
 
@@ -407,6 +503,110 @@ If middleware returns a `Response`, the rest of the middleware and the handler a
 | --- | --- | --- |
 | GET | `/health` | API health check |
 | GET | `/user/info` | Current user info |
+
+#### References (`/references`) {#references}
+
+Reading the reference lists (permission `view_document`): all eight routes of the group are `GET`. They back the autocomplete and value pickers in the manager forms.
+
+| Method | Route | Description |
+| --- | --- | --- |
+| GET | `/vendors` | Vendor list |
+| GET | `/autocomplete` | Product autocomplete |
+| GET | `/options` | Option list |
+| GET | `/product-option-fields` | Product option fields |
+| GET | `/product-field-values` | Product field values |
+| GET | `/products` | Product search / autocomplete |
+| GET | `/link-types` | Link types (`msLink`) |
+| GET | `/customers` | Customer search / autocomplete |
+
+#### Model fields by alias (`/models/{alias}/fields`)
+
+Model fields by `alias`. The product and order forms take their field configuration from here.
+
+| Method | Route | Description |
+| --- | --- | --- |
+| GET | `/{alias}/fields` | Model fields by `alias`. No permission of its own: an mgr session is enough |
+
+#### Extra fields (`/extra-fields`)
+
+CRUD for the extra fields of orders and products. Reading needs no `mssetting_save`, writing does.
+
+| Method | Route | Description |
+| --- | --- | --- |
+| GET | `/` | List the extra fields |
+| GET | `/{id}` | Get an extra field by ID |
+| POST | `/` | Create an extra field |
+| PUT | `/{id}` | Update an extra field |
+| DELETE | `/{id}` | Delete an extra field |
+
+#### Options (`/options`)
+
+CRUD for the shop option settings. Permission `mssetting_save`.
+
+| Method | Route | Description |
+| --- | --- | --- |
+| GET | `/types` | Option types |
+| GET | `/tree` | Option tree |
+| GET | `/suggestions` | Option suggestions |
+| POST | `/bulk/assign` | Bulk assignment of options |
+| DELETE | `/bulk` | Bulk deletion of options |
+| POST | `/` | Create an option |
+| GET | `/` | List the options |
+| GET | `/{id}` | Get an option by ID |
+| PUT | `/{id}` | Update an option |
+| DELETE | `/{id}` | Delete an option |
+
+#### Option groups (`/option-groups`)
+
+Grouping of options, replacing the former approach built on `modCategory`. Permission `mssetting_save`.
+
+| Method | Route | Description |
+| --- | --- | --- |
+| GET | `/` | List the option groups |
+| POST | `/` | Create an option group |
+| GET | `/{id}` | Get an option group by ID |
+| PUT | `/{id}` | Update an option group |
+| DELETE | `/{id}` | Delete an option group |
+| DELETE | `/bulk` | Bulk deletion |
+| PUT | `/positions` | Update positions (sorting) |
+
+#### Customer groups (`/customer-groups`)
+
+The link to MODX user groups for catalog ACL. Reading: `msorder_list`. Writing: `msorder_save`.
+
+| Method | Route | Description | Permission |
+| --- | --- | --- | --- |
+| GET | `/` | List the customer groups | `msorder_list` |
+| POST | `/` | Create a customer group | `msorder_save` |
+| GET | `/{id}` | Get a customer group | `msorder_view` |
+| PUT | `/{id}` | Update a customer group | `msorder_save` |
+| DELETE | `/{id}` | Delete a customer group | `msorder_remove` |
+
+#### Category options (`/categories/{category_id}/options`)
+
+Options of one category. The permission for the whole group is `mscategory_save`.
+
+| Method | Route | Description |
+| --- | --- | --- |
+| GET | `/` | List the category options |
+| POST | `/` | Create a category option |
+| POST | `/sort` | Sort the category options |
+| POST | `/bulk` | Bulk operations on category options |
+| POST | `/duplicate` | Duplicate an option |
+| PUT | `/{option_id}` | Update a category option |
+| DELETE | `/{option_id}` | Delete a category option |
+
+#### Category products (`/categories/{id}/products`)
+
+| Method | Route | Description | Permission |
+| --- | --- | --- | --- |
+| GET | `/{id}/products` | Products of the category | `view_document` |
+| GET | `/{id}/products/filters` | Filter configuration | `view_document` |
+| POST | `/{id}/products/sort` | Sorting | `msproduct_save` |
+| DELETE | `/{id}/products/bulk` | Bulk deletion | `msproduct_delete` |
+| POST | `/{id}/products/multiple` | Batch actions. The route admits any product mutation permission; the controller makes the exact check | see `CategoryProductActionPermissions` |
+| PUT | `/{id}/products/{productId}/data` | Edit product data | `msproduct_save` |
+| POST | `/{id}/products/{productId}/publish` | Publication | `msproduct_publish` |
 
 #### Config (`/config`)
 
@@ -425,13 +625,13 @@ CRUD for admin grid column configuration. Read: `view_document`, write: `mssetti
 
 | Method | Route | Description |
 | --- | --- | --- |
-| GET | `/{grid_key}` | Get grid configuration |
+| GET | `/{grid_key}` | Get grid configuration. `include_hidden=1` adds the hidden columns — the editor reads the configuration in that mode |
 | PUT | `/{grid_key}` | Update grid configuration (body: `fields`) |
 | POST | `/{grid_key}/field` | Add column |
 | PUT | `/{grid_key}/field/{field_name}` | Update column |
 | DELETE | `/{grid_key}/{field_name}` | Delete column |
 
-**Known `grid_key` values in MS3 1.13:** `orders`, `order_products`, `customers`, `vendors`, `category-products`.
+**Six grids have a configuration in the database:** `orders`, `order_products`, `customers`, `vendors`, `category-products`, `deliveries` — their columns come from seed migrations. The payments grid asks for the `payments` key, but no seed exists for it: the answer comes back empty and the grid draws its built-in columns. The grid picker in the settings offers five keys, without `deliveries` and `payments`.
 
 ##### `GET /grid-config/{grid_key}` response
 
@@ -470,6 +670,8 @@ function addFilterParam(params, key, value) {
 
 When adding a new direct filter on the backend, **always** add its key to the `DIRECT_FILTER_KEYS` constant in the corresponding controller. Otherwise the frontend sends it with a prefix and filtering will not work.
 
+For a new grid the constant alone is not enough: `GridConfigController` serves `direct_filter_keys` only for the grids listed in its provider map, which today holds orders and customers. For orders the constant itself lives in `ManagerOrderListService`, and the controller points at it.
+
 #### Orders (`/orders`)
 
 Read and write are split into two middleware groups.
@@ -499,12 +701,56 @@ Read and write are split into two middleware groups.
 | PUT | `/{id}/products/{product_id}` | Update line |
 | DELETE | `/{id}/products/{product_id}` | Remove line |
 
-**Form references** (no separate PermissionMiddleware, mgr session):
+**Order shipment:**
+
+| Method | Route | Description | Permission |
+| --- | --- | --- | --- |
+| GET | `/{id}/shipment` | Get the shipment data of an order | `msorder_list` |
+| PUT | `/{id}/shipment` | Save or update the shipment of an order | `msorder_save` |
+
+**Form references** (no separate PermissionMiddleware, mgr session). These routes are declared on the `/api/mgr` group, not inside `/orders`, so the full path is given:
 
 | Method | Route | Description |
 | --- | --- | --- |
-| GET | `/statuses-dropdown` | Statuses with translations |
-| GET | `/deliveries-active` | Active deliveries for select |
+| GET | `/api/mgr/statuses-dropdown` | Statuses with translations |
+| GET | `/api/mgr/deliveries-active` | Active deliveries for select |
+| GET | `/api/mgr/payments-active` | Active payment methods for select |
+
+#### Model field metadata (`/model-fields`)
+
+Field metadata of the models, used by the dynamic forms. Reading needs no special permission, writing needs `mssetting_save`.
+
+**Reading (metadata):**
+
+| Method | Route | Description |
+| --- | --- | --- |
+| GET | `/models` | List of available models |
+| GET | `/sections/{model}` | Sections of a model |
+| GET | `/` | Field list (parameters: `model`, `section`) |
+| GET | `/{id}` | Get a field by ID |
+
+**Reading (data with combo options):**
+
+| Method | Route | Description | Permission |
+| --- | --- | --- | --- |
+| GET | `/visible/{model}` | Visible fields of a model | any one from the list below |
+| GET | `/combo-options/{model}` | Combo options of a model | any one from the list below |
+| GET | `/combo-options/{model}/{field_name}` | Combo options of one field | any one from the list below |
+
+`AnyPermissionMiddleware` on those three GETs: `msorder_list`, `msorder_view`, `msorder_save`, `msproduct_save`, `mscategory_save`, `mssetting_list`, `mssetting_view`, `mssetting_save`, `view_document`.
+
+**Writing**, permission `mssetting_save`:
+
+| Method | Route | Description |
+| --- | --- | --- |
+| POST | `/sections` | Create a section |
+| PUT | `/sections/ranks` | Section order |
+| PUT | `/sections/{id}` | Update a section |
+| DELETE | `/sections/{id}` | Delete a section |
+| POST | (root) | Create a field |
+| PUT | `/ranks` | Field order |
+| PUT | `/{id}` | Update a field |
+| DELETE | `/{id}` | Delete a field |
 
 #### Customers (`/customers`)
 
@@ -522,7 +768,83 @@ Read and write are split into two middleware groups.
 
 #### Store settings
 
-**Deliveries (`/deliveries`)**, **Payments (`/payments`)**, **Vendors (`/vendors`)**, **Statuses (`/statuses`)**, **Links (`/links`)** — CRUD with permission `mssetting_save`.
+##### Deliveries (`/deliveries`)
+
+CRUD for the delivery methods. Permission `mssetting_save`.
+
+| Method | Route | Description |
+| --- | --- | --- |
+| GET | `/` | List the delivery methods |
+| POST | `/` | Create a delivery method |
+| DELETE | `/bulk` | Bulk deletion of delivery methods |
+| POST | `/sort` | Sort the delivery methods |
+| PUT | `/positions` | Update delivery positions |
+| GET | `/{id}` | Get a delivery method by ID |
+| PUT | `/{id}` | Update a delivery method |
+| DELETE | `/{id}` | Delete a delivery method |
+| GET | `/{id}/payments` | Payment methods of a delivery |
+| POST | `/{id}/payments` | Add a payment method to a delivery |
+| DELETE | `/{id}/payments/{payment_id}` | Remove a payment method from a delivery |
+
+##### Payments (`/payments`)
+
+CRUD for the payment methods. Permission `mssetting_save`.
+
+| Method | Route | Description |
+| --- | --- | --- |
+| GET | `/` | List the payment methods |
+| POST | `/` | Create a payment method |
+| DELETE | `/bulk` | Bulk deletion of payment methods |
+| POST | `/sort` | Sort the payment methods |
+| PUT | `/positions` | Update payment positions |
+| GET | `/{id}` | Get a payment method by ID |
+| PUT | `/{id}` | Update a payment method |
+| DELETE | `/{id}` | Delete a payment method |
+| GET | `/{id}/deliveries` | Delivery methods of a payment method |
+| POST | `/{id}/deliveries` | Add a delivery to a payment method |
+| DELETE | `/{id}/deliveries/{delivery_id}` | Remove a delivery from a payment method |
+
+##### Vendors (`/vendors`)
+
+CRUD for the vendors. Permission `mssetting_save`.
+
+| Method | Route | Description |
+| --- | --- | --- |
+| GET | `/` | List the vendors |
+| POST | `/` | Create a vendor |
+| DELETE | `/bulk` | Bulk deletion of vendors |
+| POST | `/sort` | Sort the vendors |
+| GET | `/{id}` | Get a vendor by ID |
+| PUT | `/{id}` | Update a vendor |
+| DELETE | `/{id}` | Delete a vendor |
+
+##### Statuses (`/statuses`)
+
+CRUD for the order statuses. Permission `mssetting_save`.
+
+| Method | Route | Description |
+| --- | --- | --- |
+| GET | `/` | List the statuses |
+| POST | `/` | Create a status |
+| DELETE | `/bulk` | Bulk deletion of statuses |
+| POST | `/sort` | Sort the statuses |
+| GET | `/{id}` | Get a status by ID |
+| PUT | `/{id}` | Update a status |
+| DELETE | `/{id}` | Delete a status |
+
+##### Link types (`/links`)
+
+CRUD for the product link types. Permission `mssetting_save`.
+
+| Method | Route | Description |
+| --- | --- | --- |
+| GET | `/` | List the link types |
+| POST | `/` | Create a link type |
+| DELETE | `/bulk` | Bulk deletion of link types |
+| GET | `/types` | Get the link types (alias kept for backward compatibility) |
+| GET | `/{id}` | Get a link type |
+| PUT | `/{id}` | Update a link type |
+| DELETE | `/{id}` | Delete a link type |
 
 #### Product data (`/product-data`)
 
@@ -530,6 +852,8 @@ Read and write are split into two middleware groups.
 
 | Method | Route | Description |
 | --- | --- | --- |
+| GET | `/{id}` | Product data |
+| PUT | `/{id}` | Save product data |
 | GET | `/{id}/categories/tree` | Category tree (`ms3_product_category_tree`) |
 | GET | `/{id}/links` | Link list |
 | POST | `/{id}/links` | Add link `{ slave, link }` |
@@ -557,6 +881,12 @@ Read and write are split into two middleware groups.
 | POST | `/preview` | Preview | `msproduct_save` |
 | POST | `/start` | Start import | `msproduct_save` |
 | GET | `/progress/{import_id}` | Import progress | `msproduct_save` |
+
+#### Gallery (`/utilities/gallery`)
+
+| Method | Route | Description | Permission |
+| --- | --- | --- | --- |
+| POST | `/update` | Bulk gallery operations | `msproductfile_generate` |
 
 ### Web API (`/api/v1/*`)
 
@@ -649,25 +979,9 @@ $router->group('/api/mgr/promocodes', function($router) use ($modx) {
         return Response::success(['codes' => $result]);
     });
 
-    $router->post('', function($params) use ($modx) {
-        $data = json_decode(file_get_contents('php://input'), true);
-
-        $code = $modx->newObject('msPromoCode');
-        $code->fromArray($data);
-
-        if ($code->save()) {
-            return Response::success(['id' => $code->get('id')]);
-        }
-        return Response::error('Failed to create promo code', 400);
-    });
-
-    $router->delete('/{id}', function($params) use ($modx) {
-        $code = $modx->getObject('msPromoCode', $params['id']);
-        if ($code && $code->remove()) {
-            return Response::success(['deleted' => true]);
-        }
-        return Response::error('Not found', 404);
-    });
+    // POST '' and DELETE '/{id}' are declared the same way: the request body is
+    // read from php://input, and the answer is built with Response::success()
+    // or Response::error() with the right code
 
 }, [
     new AuthMiddleware($modx, 'mgr')
@@ -676,12 +990,26 @@ $router->group('/api/mgr/promocodes', function($router) use ($modx) {
 
 ## Modular addon routes (`ms3.routes.d`)
 
+```mermaid
+flowchart TB
+  subgraph web [Web API]
+    w1[web.php] --> w2[ms3_routes_web.custom.php]
+    w2 --> w3["ms3.routes.d/web"]
+    w3 --> wb["build() of the dispatcher"]
+  end
+  subgraph mgr [Manager API]
+    m1[manager.php] --> m2[ms3_routes_manager.custom.php]
+    m2 --> m3["ms3.routes.d/manager"]
+    m3 --> mb["build() of the dispatcher"]
+  end
+```
+
 `ms3_routes_*.custom.php` files suit manual customization but **not addons** — if two components write to the same file, install/uninstall conflicts occur.
 
 Third-party components use the `core/config/ms3.routes.d/` directory — each addon creates its own file, so there are no conflicts.
 
-::: tip Analogy
-The pattern mirrors `ms3.services.d/` for [services](/en/components/minishop3/development/services).
+::: tip The same approach exists for services
+The `ms3.services.d/` directory for [services](/en/components/minishop3/development/services) is arranged the same way.
 :::
 
 ### Structure
@@ -814,13 +1142,13 @@ If a route file has a syntax error or throws an exception, it is logged and skip
 | **Files** | One per API type | One file per addon |
 | **Conflicts** | Possible with multiple addons | None |
 | **Install/uninstall** | Manual editing required | Atomic: create/delete file |
-| **Created by** | On ms3 install (example) | Addon via resolver |
+| **Created by** | The MiniShop3 install creates the manager file from the example. It does not create the web file: the package has no stub, so you create that file yourself | An add-on, through a resolver |
 
 ## System settings
 
 | Setting | Default | Description |
 | --- | --- | --- |
-| `ms3_cors_allowed_origins` | `["*"]` | CORS allowed origins |
+| `ms3_cors_allowed_origins` | empty string | Allowed CORS origins. Empty means same-origin |
 | `ms3_rate_limit_max_attempts` | `60` | Request limit |
 | `ms3_rate_limit_decay_seconds` | `60` | Limit window (seconds) |
 

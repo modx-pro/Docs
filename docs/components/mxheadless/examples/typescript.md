@@ -21,6 +21,8 @@ npx openapi-typescript https://example.com/api/v1/meta/openapi.json -o types/mxh
 
 ## Тип envelope
 
+`links` приходит только в ответах списков.
+
 ```ts
 export type MxEnvelope<T> = {
   data: T

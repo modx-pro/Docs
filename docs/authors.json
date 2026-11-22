@@ -73,6 +73,13 @@
     "modstore": "https://modstore.pro/authors/boshnik",
     "name": "Aleksandr Huz"
   },
+  "consoleloh": {
+    "modstore": "https://modstore.pro/authors/26661",
+    "name": {
+      "en": "Kirill Kuznetsov",
+      "ru": "Кирилл Кузнецов"
+    }
+  },
   "core01": {
     "modstore": "https://modstore.pro/authors/4689",
     "name": "Roman Sadoyan"
@@ -82,6 +89,12 @@
     "name": {
       "en": "Alexey Naumov",
       "ru": "Алексей Наумов"
+    }
+  },
+  "denius-dev": {
+    "name": {
+      "ru": "Денис Усманов",
+      "en": "Denis Usmanov"
     }
   },
   "DESIGNfromWITHIN": {
@@ -224,6 +237,7 @@
     "modstore": "https://modstore.pro/authors/giv4ik",
     "name": "Яна Вострякова"
   },
+  "web86": "web86",
   "webinmd": {
     "modstore": "https://modstore.pro/authors/120",
     "name": "Евгений Webinmd"

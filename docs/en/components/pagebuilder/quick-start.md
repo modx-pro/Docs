@@ -12,21 +12,19 @@ description: Install PageBuilder, permissions, Sections tab, and first frontend 
 | PHP | 8.2+ |
 | VueTools | 1.1.2+ |
 | pdoTools | 3.0+ |
-| PageBuilder (Free) | 1.0.14-beta |
-| PageBuilder Pro | 1.0.14-beta, requires `pagebuilder` ≥ 1.0.14 |
+| PageBuilder (Free) | 1.0.17-beta |
+| PageBuilder Pro | 1.0.17-beta, requires `pagebuilder` ≥ 1.0.17 |
 
-Install **PageBuilder** (Free) and **PageBuilder Pro** from [modstore.pro](https://modstore.pro/extras/). Without the provider, installation fails with `Package provider not found`.
+Install **PageBuilder** (Free) and **PageBuilder Pro** from [modstore.pro](https://modstore.pro/extras/). `Package provider not found` happens only for the encrypted **Pro** package when the provider is not connected. The current Free package is not encrypted. Free install does not show that message.
 
 1. [Connect ModStore](https://modstore.pro/info/connection).
 2. Install **VueTools** and **pdoTools** if they are not on the site yet.
-3. **Extras → Installer → Download Extras** — find **PageBuilder** (Free) or **PageBuilder Pro** → **Download** → **Install**.
+3. **Extras → Installer → Download Extras**: find **PageBuilder** (Free) or **PageBuilder Pro** → **Download** → **Install**.
 4. **Settings → Clear cache**. The `pagebuilder` namespace should appear in the package list.
 
 ::: tip Pro
-Installing **PageBuilder Pro** alone is enough: MODX pulls the Free core (`pagebuilder`) as a dependency. You do not need a separate Free install.
+Installing **PageBuilder Pro** is enough: Package Manager usually pulls the Free core (`pagebuilder`) as `requires.pagebuilder`. If the dependency did not download, install Free from the same provider.
 :::
-
-Packages in the catalog: [modstore.pro](https://modstore.pro/).
 
 ## 2. Grant permissions
 
@@ -44,7 +42,7 @@ The tab is off by default. In **System settings** → namespace `pagebuilder`:
 | Key | Value |
 | --- | --- |
 | `pagebuilder_resource_tab_enabled` | `1` |
-| `pagebuilder_resource_tab_parents` | empty = all resources, or parent IDs comma-separated |
+| `pagebuilder_resource_tab_parents` | empty = all resources. Otherwise the resource id itself, its direct parent, or any ancestor |
 
 Tab position: `pagebuilder_resource_tab_index` (`0` first and selected on open, `-1` last).
 
@@ -78,8 +76,8 @@ The snippet renders **published** sections for the current resource. The draft i
 
 1. Open the resource → **Sections** tab.
 2. Add a section (for example Hero) and fill in the fields.
-3. Save the MODX resource (**Save** in the resource toolbar). The editor validates required fields, writes the draft, and publishes sections to the site.
-4. Autosave on the tab writes the draft only. The storefront does not show it until you save the resource.
+3. Press **Save** in the resource toolbar. The editor validates required fields, writes the draft, and publishes sections.
+4. Autosave writes the draft only. The site does not show it until you save the resource.
 
 With `pagebuilder_fake_enabled = 1`, the inspector shows a **Fake** button that fills fields with demo data for quick layout checks.
 
@@ -99,7 +97,7 @@ If the block is empty:
 - the snippet lacks permission on the resource
 - the template caches the call without `!`. Use `[[!PageBuilder]]`
 
-`quiz` and `contact_form` sections (Pro) need **FetchIt** on the storefront. Without it the form shows an unavailability message.
+`quiz` and `contact_form` sections (Pro) need **FetchIt** on the site. Without it the form shows an unavailability message.
 
 ## Next steps
 

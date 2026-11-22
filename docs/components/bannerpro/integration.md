@@ -290,6 +290,20 @@ description: "Вывод BannerPro на сайте: чанки, ротация, 
 - `&toSeparatePlaceholders`
 - `&showLog=1` и активная сессия `mgr`
 
+```mermaid
+flowchart TD
+  A[Вызов BannerPro] --> B{cache не равен 0?}
+  B -->|нет| Z[Кеш не используется]
+  B -->|да| C{sortby пусто, RAND, weighted или ab?}
+  C -->|да| Z
+  C -->|нет| D{toSeparatePlaceholders или showLog в mgr?}
+  D -->|да| Z
+  D -->|нет| E[Ключ кеша: effective context, sortby, час, ресурс, родитель, метки, параметры]
+  E --> F{Есть запись в разделе bannerpro?}
+  F -->|да| G[HTML из кеша]
+  F -->|нет| H[Рендер баннеров и запись в кеш]
+```
+
 Принудительно отключить кэш для одного вызова:
 
 ::: code-group
@@ -386,6 +400,21 @@ description: "Вывод BannerPro на сайте: чанки, ротация, 
 5. Компонент вызывает `OnBannerProClick`.
 6. MODX перенаправляет посетителя на URL баннера.
 
+```mermaid
+flowchart TD
+  A[Клик по ссылке click_url] --> B[MODX: ресурс не найден]
+  B --> C[BannerProClickout ищет связь по adposition]
+  C --> D{Тот же IP, тот же баннер и позиция сегодня?}
+  D -->|да| E[duplicate: true, запись не создаётся]
+  D -->|нет| F[Запись в bannerpro_clicks]
+  E --> G[Событие OnBannerProClick]
+  F --> G
+  G --> H{Webhook URL задан и проходит проверку?}
+  H -->|да| I[POST JSON с подписью X-BannerPro-Signature]
+  H -->|нет| J[Перенаправление на URL баннера]
+  I --> J
+```
+
 Повторный клик с того же IP за сутки на ту же пару баннер + позиция не создаёт новую запись. Редирект и событие выполняются. В JSON события будет `duplicate: true`.
 
 URL баннера поддерживает плейсхолдеры из query string:
@@ -415,6 +444,19 @@ URL баннера поддерживает плейсхолдеры из query 
 ## Показы
 
 Для показов включите настройку `bannerpro_track_impressions`.
+
+```mermaid
+flowchart TD
+  A[Сниппет оборачивает баннер в data-bannerpro-impression] --> B[Подключается impression.js]
+  B --> C{Баннер попал в область видимости?}
+  C -->|нет| D[Ожидание: IntersectionObserver]
+  D --> C
+  C -->|да| E[pixel-запрос bannerimpression/adposition]
+  E --> F[MODX: OnPageNotFound]
+  F --> G[BannerProImpression пишет показ]
+  G --> H[Событие OnBannerProImpression]
+  H --> I[Событие bannerpro:impression в браузере]
+```
 
 При `bannerpro_impression_lazy = 1` (по умолчанию) `impression.js` подключается через IntersectionObserver, а не блокирующим `<script>` в head.
 

@@ -5,9 +5,14 @@
  *   node scripts/check-markdown-links.mjs docs/components/indexnow
  *   node scripts/check-markdown-links.mjs --external
  *   node scripts/check-markdown-links.mjs --changed
+ *   node scripts/check-markdown-links.mjs --check-anchors
+ *   node scripts/check-markdown-links.mjs --strict-anchors
  * Links are taken from the markdown-it parse, so code blocks, inline code and HTML comments
  * are skipped and reference-style links ([text][id] + [id]: url) are checked too.
  * --changed checks Markdown changed against the base branch and takes no paths.
+ * --check-anchors warns when a fragment is not a heading slug, a custom id,
+ * a repeated-heading suffix (-1, -2) or a settings-table row id.
+ * --strict-anchors reports those misses as errors.
  * Exit 0 if OK, 1 if broken, on unknown options or on a path that matches no Markdown.
  */
 import { execFileSync } from 'child_process'
@@ -25,9 +30,12 @@ const DOCS = join(ROOT, 'docs')
 const args = process.argv.slice(2)
 const checkExternal = args.includes('--external')
 const changedOnly = args.includes('--changed')
+const checkAnchors = args.includes('--anchors') || args.includes('--check-anchors') || args.includes('--strict-anchors')
+const strictAnchors = args.includes('--strict-anchors')
 const pathArgs = args.filter((a) => !a.startsWith('--'))
 
-const unknown = args.filter((a) => a.startsWith('-') && !['--external', '--changed'].includes(a))
+const KNOWN_FLAGS = ['--external', '--changed', '--anchors', '--check-anchors', '--strict-anchors']
+const unknown = args.filter((a) => a.startsWith('-') && !KNOWN_FLAGS.includes(a))
 if (unknown.length) {
   console.error(`Unknown option: ${unknown.join(', ')}`)
   process.exit(1)
@@ -203,6 +211,126 @@ async function checkHttp(url) {
   }
 }
 
+const anchorCache = new Map()
+let anchorFns = null
+
+function headingPlain(inline) {
+  const children = inline?.children ?? []
+  return children
+    .filter(child => child.type !== 'html_inline' && child.type !== 'emoji')
+    .map(child => child.content)
+    .join('')
+    .trim()
+}
+
+function splitCustomId(text) {
+  const match = text.match(/\{#([A-Za-z0-9_.:-]+)\}\s*$/)
+  if (!match) return { text, id: null }
+  return { text: text.slice(0, match.index).trim(), id: match[1] }
+}
+
+function claimSlug(base, seen, userDefined) {
+  if (!base) return null
+  if (userDefined) {
+    if (seen.has(base)) return null
+    seen.add(base)
+    return base
+  }
+  let slug = base
+  let index = 1
+  while (seen.has(slug)) {
+    slug = `${base}-${index}`
+    index += 1
+  }
+  seen.add(slug)
+  return slug
+}
+
+function addAnchor(anchors, slug) {
+  if (!slug) return
+  anchors.add(slug)
+  if (slug.includes('%')) {
+    try {
+      anchors.add(decodeURIComponent(slug))
+    } catch {
+      // keep the encoded slug
+    }
+  }
+}
+
+function inlineAt(tokens, index) {
+  const next = tokens[index + 1]
+  return next?.type === 'inline' ? next.content.trim() : ''
+}
+
+function collectTableAnchors(tokens, anchors) {
+  const seen = new Set()
+  let inHead = false
+  let headerCells = []
+  let headers = null
+  for (let i = 0; i < tokens.length; i++) {
+    const token = tokens[i]
+    if (token.type === 'thead_open') {
+      inHead = true
+      headerCells = []
+      continue
+    }
+    if (token.type === 'thead_close') {
+      inHead = false
+      headers = headerCells
+      continue
+    }
+    if (inHead && token.type === 'th_open') {
+      headerCells.push(inlineAt(tokens, i))
+      continue
+    }
+    if (inHead || token.type !== 'tr_open' || !headers?.length) continue
+    let cell = ''
+    for (let j = i + 1; j < tokens.length; j++) {
+      if (tokens[j].type === 'tr_close') break
+      if (tokens[j].type === 'td_open') {
+        cell = inlineAt(tokens, j)
+        break
+      }
+    }
+    addAnchor(anchors, anchorFns.uniqueSettingAnchor(headers[0], cell, seen))
+  }
+}
+
+function extractPageAnchors(filePath) {
+  if (anchorCache.has(filePath)) {
+    return anchorCache.get(filePath)
+  }
+  if (!existsSync(filePath)) {
+    return new Set()
+  }
+
+  const src = readFileSync(filePath, 'utf8')
+  const { content } = matter(src)
+  const anchors = new Set()
+  const seen = new Set()
+  const tokens = md.parse(content, {})
+
+  for (let i = 0; i < tokens.length; i++) {
+    if (tokens[i].type !== 'heading_open') continue
+    const inline = tokens[i + 1]
+    if (!inline || inline.type !== 'inline') continue
+    const split = splitCustomId(headingPlain(inline))
+    const id = split.id
+      ? claimSlug(split.id, seen, true)
+      : claimSlug(anchorFns.headingSlug(split.text), seen, false)
+    addAnchor(anchors, id)
+    const key = anchorFns.headingAnchor(split.text)
+    if (!key) continue
+    const legacy = anchorFns.legacyHeadingSlug(split.text)
+    if (legacy && legacy !== key) addAnchor(anchors, legacy)
+  }
+
+  collectTableAnchors(tokens, anchors)
+  anchorCache.set(filePath, anchors)
+  return anchors
+}
+
 const files = collectFiles()
 
 if (files.length === 0) {
@@ -211,6 +339,11 @@ if (files.length === 0) {
 }
 
 const errors = []
+const warnings = []
+
+if (checkAnchors) {
+  anchorFns = await import('../.vitepress/theme/anchors.ts')
+}
 
 for (const file of files) {
   const rel = relative(ROOT, file)
@@ -219,7 +352,46 @@ for (const file of files) {
 
   for (const link of extractMarkdownLinks(content)) {
     const href = link.href.trim()
-    if (!href || href.startsWith('#')) {
+    if (!href) {
+      continue
+    }
+
+    // Anchor validation when enabled
+    const hashIdx = href.indexOf('#')
+    if (checkAnchors && !link.image && hashIdx !== -1) {
+      const rawHash = href.slice(hashIdx + 1).split('?')[0]
+      if (rawHash) {
+        let targetFile = file
+        if (!href.startsWith('#')) {
+          const resolved = resolveInternalTarget(file, href)
+          if (resolved && resolved.endsWith('.md')) {
+            targetFile = resolved
+          } else {
+            targetFile = null
+          }
+        }
+        if (targetFile) {
+          const anchors = extractPageAnchors(targetFile)
+          let decoded = rawHash
+          try {
+            decoded = decodeURIComponent(rawHash)
+          } catch {
+            decoded = rawHash
+          }
+          const ok = anchors.has(rawHash) || anchors.has(decoded)
+          if (!ok) {
+            const msg = `${rel}: ${href} (anchor #${decoded} not found in ${relative(ROOT, targetFile)})`
+            if (strictAnchors) {
+              errors.push(msg)
+            } else {
+              warnings.push(msg)
+            }
+          }
+        }
+      }
+    }
+
+    if (href.startsWith('#')) {
       continue
     }
 
@@ -260,9 +432,17 @@ for (const file of files) {
   }
 }
 
+if (warnings.length > 0) {
+  console.warn(`Anchor warnings (${warnings.length}):`)
+  warnings.slice(0, 50).forEach((w) => console.warn('  -', w))
+  if (warnings.length > 50) {
+    console.warn(`  ... and ${warnings.length - 50} more anchor warnings`)
+  }
+}
+
 if (errors.length === 0) {
   console.log(
-    `OK: markdown links${checkExternal ? ' (with external)' : ''}${changedOnly ? ' (changed files)' : ''} for ${files.length} file(s).`
+    `OK: markdown links${checkExternal ? ' (with external)' : ''}${changedOnly ? ' (changed files)' : ''}${checkAnchors ? ' (anchors checked)' : ''} for ${files.length} file(s).`
   )
   process.exit(0)
 }

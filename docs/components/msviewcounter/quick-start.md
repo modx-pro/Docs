@@ -31,7 +31,11 @@ flowchart TB
 | MODX Revolution | 3.0+ |
 | PHP | 8.2+ |
 | MiniShop3 | установлен |
-| pdoTools | 3.x (для примеров Fenom) |
+| MySQL / MariaDB | 5.7+ / 10.2+ с InnoDB |
+
+::: warning
+Транспорт объявляет `pdotools >= 3.0.0` в требованиях, поэтому MODX потребует pdoTools при установке и откажется ставить пакет без него. В коде компонента pdoTools не используется вовсе: чанк `tplMsViewCounter` обычный MODX-чанк, сниппет работает через `$modx->getChunk()`. То есть без pdoTools код полностью работоспособен, но установка не пройдёт. Подробнее в разделе [Про pdoTools](index#pro-pdotools).
+:::
 
 ## Шаг 1: Установка пакета
 

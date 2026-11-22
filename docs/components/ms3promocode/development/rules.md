@@ -14,19 +14,22 @@
     "exclude_parent_ids": [],
     "vendor_ids": [5, 7],
     "product_data_rules": [
-        {"field": "price", "operator": ">=", "value": 1000},
-        {"field": "vendor", "operator": "IN", "value": [5, 7]}
+        {"field": "price",     "op": ">=", "value":  1000},
+        {"field": "vendor_id", "op": "IN", "values": [5, 7]}
     ],
     "product_option_rules": [
-        {"key": "color", "value": ["red", "blue"]}
+        {"key": "color", "values": ["red", "blue"]}
     ]
 }
 ```
 
+Ключи, не привязанные к зарегистрированным правилам, молча игнорируются — ошибку движок не поднимает.
+
 ## Логика комбинирования
 
 - **Между секциями** — AND. Товар должен пройти все непустые секции.
-- **Внутри одной секции** — OR. Товар проходит секцию, если совпадает хотя бы одно значение.
+- **Внутри секций-списков** (`product_ids`, `exclude_product_ids`, `parent_ids`, `exclude_parent_ids`, `vendor_ids`) — OR. Товар проходит секцию, если его id совпадает хотя бы с одним значением списка (для `exclude_*` — наоборот).
+- **Внутри `product_data_rules` и `product_option_rules`** клаузы объединяются **AND**: товар проходит секцию, только если выполнены все клаузы. OR действует только внутри одной клаузы — через массив `values` (операторы `IN` и `CONTAINS` в `product_data_rules`; поле `values` в `product_option_rules`). `BETWEEN` принимает массив из двух значений как диапазон, не как OR.
 - **Пустая секция** — игнорируется (не учитывается в AND).
 
 Пример: `vendor_ids: [5, 7]` + `product_data_rules: [{price >= 1000}]` означает «товары брендов 5 ИЛИ 7, И с ценой >= 1000».
@@ -37,49 +40,59 @@
 |------------------------------------------------|-------------------------|----------------------------------------------------------------|
 | `ms3PromoCode\Rules\ProductIdsRule`            | `product_ids`           | Включить только указанные ID товаров                           |
 | `ms3PromoCode\Rules\ExcludeProductIdsRule`     | `exclude_product_ids`   | Исключить указанные ID                                         |
-| `ms3PromoCode\Rules\ParentIdsRule`             | `parent_ids`            | Только товары из указанных категорий                           |
-| `ms3PromoCode\Rules\ExcludeParentIdsRule`      | `exclude_parent_ids`    | НЕ из указанных категорий                                      |
-| `ms3PromoCode\Rules\VendorIdsRule`             | `vendor_ids`            | Только указанные бренды                                        |
+| `ms3PromoCode\Rules\ParentIdsRule`             | `parent_ids`            | Товары из указанных категорий. Проверяется и `parent` ресурса, и запись в `msCategoryMember` (связь многие-ко-многим) |
+| `ms3PromoCode\Rules\ExcludeParentIdsRule`      | `exclude_parent_ids`    | Товары НЕ из указанных категорий (та же двойная проверка, с инверсией) |
+| `ms3PromoCode\Rules\VendorIdsRule`             | `vendor_ids`            | Товары с `msProductData.vendor_id` из списка                   |
 | `ms3PromoCode\Rules\ProductDataRule`           | `product_data_rules`    | Универсальный фильтр по полям `modx_ms3_products`              |
-| `ms3PromoCode\Rules\ProductOptionRule`         | `product_option_rules`  | Фильтр по опциям товара                                        |
+| `ms3PromoCode\Rules\ProductOptionRule`         | `product_option_rules`  | Фильтр по опциям товара (`modx_ms3_product_options`)           |
 
 ## ProductDataRule — операторы
 
-Это самая мощная секция — позволяет фильтровать по любому полю карточки товара.
+Фильтр по любому полю карточки товара. Форма клаузы: `{"field": "...", "op": "...", "value": ... | "values": [...]}`.
 
-| Оператор   | Тип значения       | Пример использования                                   |
-|------------|--------------------|--------------------------------------------------------|
-| `=`        | scalar             | `{"field": "vendor", "operator": "=", "value": 5}`     |
-| `!=`       | scalar             | `{"field": "color", "operator": "!=", "value": "red"}` |
-| `<`, `<=`  | number             | `{"field": "price", "operator": "<=", "value": 5000}`  |
-| `>`, `>=`  | number             | `{"field": "stock", "operator": ">", "value": 0}`      |
-| `IN`       | array              | `{"field": "vendor", "operator": "IN", "value": [5, 7]}` |
-| `NOT IN`   | array              | `{"field": "vendor", "operator": "NOT IN", "value": [3]}` |
-| `BETWEEN`  | array из 2 значений| `{"field": "price", "operator": "BETWEEN", "value": [1000, 5000]}` |
-| `LIKE`     | string             | `{"field": "article", "operator": "LIKE", "value": "AP%"}` |
-| `CONTAINS` | string             | `{"field": "pagetitle", "operator": "CONTAINS", "value": "Apple"}` |
+| Оператор   | Ключ значения     | Пример клаузы                                                 |
+|------------|-------------------|---------------------------------------------------------------|
+| `=`        | `value`           | `{"field": "vendor_id", "op": "=", "value": 5}`               |
+| `!=`, `<>` | `value`           | `{"field": "made_in", "op": "!=", "value": "China"}`          |
+| `<`, `<=`  | `value` (число)   | `{"field": "price", "op": "<=", "value": 5000}`               |
+| `>`, `>=`  | `value` (число)   | `{"field": "stock", "op": ">", "value": 0}`                   |
+| `IN`       | `values` (массив) | `{"field": "vendor_id", "op": "IN", "values": [5, 7]}`        |
+| `NOT IN`   | `values` (массив) | `{"field": "vendor_id", "op": "NOT IN", "values": [3]}`       |
+| `BETWEEN`  | `values` (`[min, max]`) | `{"field": "price", "op": "BETWEEN", "values": [1000, 5000]}` |
+| `LIKE`     | `value` (строка)  | `{"field": "article", "op": "LIKE", "value": "AP%"}`          |
+| `CONTAINS` | `values` (массив) | `{"field": "tags", "op": "CONTAINS", "values": ["sale", "new"]}` |
 
-Доступные поля — все колонки таблицы `modx_ms3_products` (см. `Mgr/ProductData/GetFields` процессор для актуального списка).
+Поведение операторов:
+
+- **`!=` и `<>`** — синонимы.
+- **`LIKE`** — шаблон применяется ко всей строке целиком. По задумке: `%` → любая подстрока, `_` → один символ.
+  ::: warning Известный баг
+  В текущей реализации `LIKE` символы-шаблоны `%` и `_` ищутся как **литералы** (отслеживается в [BACKLOG](https://github.com/biz87/ms3PromoCode/blob/main/BACKLOG.md)). До исправления оператор полезен только для точного равенства; для частичного совпадения — `CONTAINS` на JSON-поле или `=` на точном значении.
+  :::
+- **`CONTAINS`** — проверяет пересечение значений с полем-массивом (JSON): `tags`, `color`, `size` и подобные. По подстроке не ищет — для текстового поиска используйте `LIKE`.
+- **Неизвестный `op`** — клауза возвращает `false`, а с ней и вся секция `product_data_rules`.
+
+Доступные поля — все колонки `modx_ms3_products`; актуальный список выдаёт процессор `Mgr/ProductData/GetFields`. Фильтр по `vendor_id` эквивалентен секции `vendor_ids`.
 
 ## ProductOptionRule
 
-Опции товаров MS3 хранятся в отдельной таблице (`modx_ms3_product_options`). Структура секции:
+Опции товаров MS3 хранятся в отдельной таблице (`modx_ms3_product_options`). Структура клаузы:
 
 ```json
 {
     "key": "color",
-    "value": ["red", "blue", "green"]
+    "values": ["red", "blue", "green"]
 }
 ```
 
-| Поле   | Тип         | Описание                                                       |
-|--------|-------------|----------------------------------------------------------------|
-| `key`  | string      | Ключ опции (например, `color`, `size`, `material`)             |
-| `value`| string или array | Значения. Массив = OR (любое из перечисленного)            |
+| Поле     | Тип           | Описание                                                       |
+|----------|---------------|----------------------------------------------------------------|
+| `key`    | строка        | Ключ опции (например, `color`, `size`, `material`)             |
+| `values` | массив строк  | Значения опции. Клауза проходит, если у товара есть хотя бы одно из перечисленных (OR внутри клаузы). Одиночная строка не принимается — только массив |
 
 ## Создание собственного типа правила
 
-Чтобы добавить новую логику фильтрации (например, по тегам, по складу, по цене со скидкой и т.п.), реализуйте класс по контракту `RuleInterface`.
+Чтобы добавить своё правило (например, фильтр по тегам, по складу, по цене со скидкой), реализуйте класс по контракту `RuleInterface` и зарегистрируйте его через переопределение DI.
 
 ### Шаг 1: создать класс правила
 
@@ -92,15 +105,19 @@ use ms3PromoCode\Rules\RuleInterface;
 
 class ByTagRule implements RuleInterface
 {
-    /**
-     * @param msProduct $product Проверяемый товар
-     * @param mixed     $config  Значение из rules JSON для этой секции
-     * @return bool             Подходит ли товар
-     */
-    public function match(msProduct $product, $config): bool
+    public function getKey(): string
     {
-        if (!is_array($config) || $config === []) {
-            return true;  // пустая секция — пропускаем
+        return 'tags';
+    }
+
+    /**
+     * @param array<string, mixed> $rules Полный объект rules из промо-кода
+     */
+    public function matches(msProduct $product, array $rules): bool
+    {
+        $wanted = $rules[$this->getKey()] ?? null;
+        if (!is_array($wanted) || $wanted === []) {
+            return true; // секция пуста или отсутствует — правило неактивно
         }
 
         $productTags = $product->get('tags');
@@ -108,21 +125,38 @@ class ByTagRule implements RuleInterface
             return false;
         }
 
-        // OR-логика: подходит, если есть хотя бы одно совпадение
-        return (bool) array_intersect($productTags, $config);
+        // Подходит, если есть хотя бы одно пересечение
+        return (bool) array_intersect($productTags, $wanted);
     }
 }
 ```
 
-### Шаг 2: зарегистрировать в RuleEngine
+Правило само достаёт свой срез из полного `$rules` через `getKey()` — движок передаёт весь JSON как есть.
 
-В своём плагине на событии `OnMODXInit` или в любом другом раннем хуке:
+### Шаг 2: подключить правило в RuleEngine
+
+У `RuleEngine` нет публичного `register()` — набор стратегий задаётся через конструктор. Чтобы добавить своё правило, переопределите DI-регистрацию `ms3promocode_rule_engine` в своём плагине (на событии `OnMODXInit` или другом раннем) **после** `bootstrap.php` ms3PromoCode:
 
 ```php
-/** @var \ms3PromoCode\Services\RuleEngine $engine */
-$engine = $modx->services->get('ms3promocode_rule_engine');
+use ms3PromoCode\Services\RuleEngine;
+use ms3PromoCode\Rules\{
+    ProductIdsRule, ExcludeProductIdsRule,
+    ParentIdsRule, ExcludeParentIdsRule,
+    VendorIdsRule, ProductDataRule, ProductOptionRule,
+};
 
-$engine->register('tags', new \MyComponent\Rules\ByTagRule());
+$modx->services->add('ms3promocode_rule_engine', function () {
+    return new RuleEngine([
+        new ProductIdsRule(),
+        new ExcludeProductIdsRule(),
+        new ParentIdsRule(),
+        new ExcludeParentIdsRule(),
+        new VendorIdsRule(),
+        new ProductDataRule(),
+        new ProductOptionRule(),
+        new \MyComponent\Rules\ByTagRule(),
+    ]);
+});
 ```
 
 Теперь в `rules` JSON можно использовать секцию `tags`:
@@ -133,14 +167,18 @@ $engine->register('tags', new \MyComponent\Rules\ByTagRule());
 }
 ```
 
+::: tip Публичный `register()` в будущем
+Такой метод записан в [BACKLOG компонента](https://github.com/biz87/ms3PromoCode/blob/main/BACKLOG.md). После его появления рецепт сократится до одной строки `$engine->register(new ByTagRule())`. До тех пор — переопределение DI.
+:::
+
 ### Шаг 3 (опционально): добавить редактор в Vue-админку
 
-Сейчас Vue-редактор знает о фиксированном наборе секций. Чтобы добавить UI для своей секции:
+Vue-редактор работает с фиксированным набором секций. Простого способа добавить свой компонент сейчас нет: папка переопределений `assets/components/ms3promocode-overrides/` подменяет только фронтенд-ассеты (их регистрирует плагин на `OnLoadWebDocument`), а Vue-бандл админки — `assets/components/ms3promocode/js/mgr/vue-dist/ms3promocode.min.js` — подключает контроллер `controllers/mgr/home.class.php` напрямую, минуя этот механизм.
 
-- Создайте свой Vue-компонент (например, `TagsSection.vue`).
-- Соберите его в свой бандл и подмените файл в overrides-папке `assets/components/ms3promocode-overrides/js/mgr/vue-dist/`.
+Варианты:
 
-Это сложнее — обычно проще править JSON в БД напрямую или через свой плагин.
+- Править секцию напрямую в JSON поля `rules` промо-кода (из своего плагина или скриптом).
+- Форкнуть `vueManager/` и собрать свою версию с новой секцией — тогда нужно подменить `ms3promocode.min.js` целиком, не через переопределения.
 
 ::: tip
 Если ваше правило универсально и может быть полезно другим — сделайте PR в [репозиторий ms3PromoCode](https://github.com/biz87/ms3PromoCode).
@@ -157,16 +195,23 @@ use MiniShop3\Model\msProduct;
 interface RuleInterface
 {
     /**
-     * Проверить, подходит ли товар под конфигурацию правила.
-     *
-     * @param msProduct $product Проверяемый товар MS3
-     * @param mixed     $config  Значение из секции rules (массив, скаляр, объект)
-     * @return bool
+     * Ключ верхнего уровня в rules JSON, который читает это правило
+     * (например, "product_ids", "vendor_ids", "product_data_rules").
      */
-    public function match(msProduct $product, $config): bool;
+    public function getKey(): string;
+
+    /**
+     * Проверить, подходит ли товар под правило.
+     *
+     * @param array<string, mixed> $rules Полный объект rules; срез по своей
+     *                                    секции правило берёт само через getKey().
+     */
+    public function matches(msProduct $product, array $rules): bool;
 }
 ```
 
+Контракт: если `$rules[getKey()]` отсутствует или пуст, правило возвращает `true` (неактивно). Все семь встроенных стратегий работают по этой же схеме — см. `src/Rules/*.php`.
+
 ## Производительность
 
-Правила вычисляются для каждого товара корзины при каждом применении / пересчёте кода. Для типичных корзин (5–20 позиций) это работает мгновенно. Для очень больших корзин (100+ позиций) и сложных правил (LIKE по большому полю) — может стать медленно. Если столкнётесь с этим — рассмотрите вариант кэширования matching-результата на уровне сессии.
+Правила проверяются для каждого товара корзины при каждом применении и пересчёте кода. На корзинах 5–20 позиций — мгновенно. На корзинах от 100 позиций со сложными правилами (`LIKE` по большому полю) работа заметно замедлится — тогда кэшируйте результат отбора на уровне сессии.

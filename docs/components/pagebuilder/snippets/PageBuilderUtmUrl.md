@@ -5,15 +5,11 @@ description: Добавление UTM из реестра PageBuilder к URL
 
 # Сниппет PageBuilderUtmUrl
 
-Добавляет UTM-параметры из реестра панели управления к произвольному URL. Значения берутся из query string, `$_SESSION['utm']` или `default_value` записи в `pb_utm_params`.
-
-## Назначение
-
-Ссылка на лендинг или форму с теми же метками, что у текущего визита, без ручной сборки query string в шаблоне.
+Добавляет UTM-параметры из реестра панели управления к произвольному URL: ссылка получает метки текущего визита, query string в шаблоне собирать не нужно. Значения берутся из query string, `$_SESSION['utm']` или `default_value` записи в `pb_utm_params`.
 
 ## Где вызывать
 
-Шаблон, chunk секции (через MODX), кнопки вне PageBuilder. Для полей url/button внутри секций удобнее <code v-pre>{{utm:key}}</code> в инспекторе.
+Шаблон, chunk секции (через MODX), кнопки вне PageBuilder. Для полей url/button внутри секций удобнее <code v-pre>{{utm:key}}</code> в инспекторе. <!-- markdownlint-disable-line MD033 -->
 
 ## Параметры
 
@@ -62,7 +58,7 @@ description: Добавление UTM из реестра PageBuilder к URL
 
 ## Fenom: модификатор utm_query
 
-pdoTools регистрирует модификатор на `pdoToolsOnFenomInit`:
+Плагин pagebuilder регистрирует модификатор на событие `pdoToolsOnFenomInit`, которое вызывает pdoTools:
 
 ```fenom
 <a href="{$button.url|utm_query}">{$button.label}</a>
@@ -74,11 +70,11 @@ pdoTools регистрирует модификатор на `pdoToolsOnFenomIn
 <a href="{$button.url|utm_query:['utm_content' => 'hero-cta']}">{$button.label}</a>
 ```
 
-Эквивалент вызова сниппета для URL из данных секции.
+Для URL из данных секции это эквивалент вызова сниппета.
 
 ## Сессия UTM
 
-Чтобы в ссылку попали метки первого захода, перед рендером вызовите [PageBuilderUtmSession](PageBuilderUtmSession) или полагайтесь на плагин PageBuilder.
+Чтобы в ссылку попали метки первого захода, перед отрисовкой вызовите [PageBuilderUtmSession](PageBuilderUtmSession) или полагайтесь на плагин PageBuilder.
 
 ## См. также
 

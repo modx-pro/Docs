@@ -21,6 +21,7 @@ items: [
       { text: 'ms3FavoritesBtn', link: 'snippets/ms3FavoritesBtn' },
       { text: 'ms3FavoritesCounter', link: 'snippets/ms3FavoritesCounter' },
       { text: 'ms3FavoritesIds', link: 'snippets/ms3FavoritesIds' },
+      { text: 'ms3fMergeIds', link: 'snippets/ms3fMergeIds' },
       { text: 'ms3FavoritesPage', link: 'snippets/ms3FavoritesPage' },
       { text: 'ms3FavoritesLists', link: 'snippets/ms3FavoritesLists' },
       { text: 'ms3FavoritesPopularity', link: 'snippets/ms3FavoritesPopularity' },

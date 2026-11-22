@@ -13,7 +13,9 @@ description: Неопубликованный контент через ?preview
 | --- | --- |
 | Anonymous | Запрещено |
 | Сессия | Право MODX `view_unpublished` |
-| API key / OAuth | Scope `preview` и ACL пользователя key |
+| API key / OAuth | Scope `preview` |
+
+Проверка идёт одним условием: scope `preview` у ключа или токена либо право `view_unpublished` у текущей сессии MODX. ACL пользователя, создавшего ключ, в проверку не входит: identity ключа никогда не пробрасывается в `modX` как пользователь.
 
 ```bash
 curl -s 'https://example.com/api/v1/resources/12?preview=true' \

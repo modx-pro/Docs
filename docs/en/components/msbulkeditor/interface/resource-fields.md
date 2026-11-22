@@ -5,7 +5,7 @@ description: Boolean, SEO, replace, dates, resource groups, product links
 
 # Resource fields: boolean, SEO, text, dates, links
 
-Bulk operations on MODX resource (product) fields, excluding price/stock/TV/options.
+Bulk operations on MODX resource fields of a product. Price, stock, TV, and options are on separate pages.
 
 Open: **Run operation** → pick the type in the operation dialog.
 
@@ -37,7 +37,7 @@ Toggle resource flags and MS3 product labels.
 
 MS3 labels are also covered in [product and prices](product-and-prices).
 
-The `deleted` boolean and **Soft delete** (`soft_delete`) both set `deleted=1`. Soft delete skips already deleted rows and asks for confirm before apply — [product and prices](product-and-prices).
+The `deleted` boolean and **Soft delete** (`soft_delete`) both set `deleted=1`. Soft delete skips already deleted rows and asks for confirm before apply. See [product and prices](product-and-prices).
 
 ---
 
@@ -72,7 +72,7 @@ Set one SEO field for the whole selection.
 | `menutitle` | Menu title |
 | `alias` | URL alias |
 
-Parameters: `field`, `value`. No replace mode — use **Text replace** for substring replacement.
+Parameters: `field`, `value`. No replace mode. Use **Text replace** for substring replacement.
 
 ---
 
@@ -88,7 +88,7 @@ Find and replace in resource text fields.
 
 Parameters: `field`, `fields` (single-element array), `search`, `replace`.
 
-API also supports `useRegex`, `caseInsensitive`; UI defaults both to `false`.
+API also supports `useRegex` and `caseInsensitive`. UI defaults both to `false`.
 
 ---
 
@@ -104,10 +104,10 @@ API also supports `useRegex`, `caseInsensitive`; UI defaults both to `false`.
 | Mode | API `mode` | Parameters |
 | --- | --- | --- |
 | Set | `set` | `value` as `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS` |
-| Clear | `clear` | — |
+| Clear | `clear` | |
 | Offset by N days | `offset_days` | `days` (integer, may be negative) |
 
-Also via **Quick actions** → **Change dates** — [quick actions](quick-actions).
+Also via **Quick actions** → **Change dates**. See [quick actions](quick-actions).
 
 ---
 
@@ -117,8 +117,8 @@ Also via **Quick actions** → **Change dates** — [quick actions](quick-action
 
 Assign a MODX access group.
 
-- **`groupId`** — from `filters/references`.
-- API optional **`groupIds[]`**; UI selects one group.
+- **`groupId`** from `filters/references`.
+- API optional **`groupIds[]`**. UI selects one group.
 
 **Quick actions:** “Assign resource group”.
 
@@ -137,8 +137,8 @@ Works with `msProductLink` (MS3 related products).
 
 Parameters:
 
-- **`linkTypeId`** — MS3 link type ID;
-- **`targetProductId`** — related product (slave) ID.
+- **`linkTypeId`:** MS3 link type ID
+- **`targetProductId`:** related product (slave) ID
 
 Preview shows rows where the link already exists or is missing.
 
@@ -147,5 +147,5 @@ Preview shows rows where the link already exists or is missing.
 ## See also
 
 - [Quick actions](quick-actions)
-- [Product & prices](product-and-prices) — `text_set`
+- [Product & prices](product-and-prices): `text_set`
 - [Preview and apply](preview-and-apply)

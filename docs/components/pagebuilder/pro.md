@@ -5,7 +5,7 @@ description: "Флаги Pro, библиотека pull, шаблоны стра
 
 # PageBuilder Pro
 
-Дополнение **pagebuilderpro** расширяет бесплатный редактор. При установке подтягивает ядро **pagebuilder** как зависимость. Текущая линия: **1.0.15-beta**, требует `pagebuilder` ≥ **1.0.15**.
+Дополнение **pagebuilderpro** расширяет бесплатный редактор и подтягивает ядро **pagebuilder**. Текущая линия: **1.0.17-beta**, требует `pagebuilder` ≥ **1.0.17**.
 
 Free и Pro этой линии ставьте вместе: `ProFeatureProvider` реализует `serverContributions()` и `cmpContributions()`. Старый Pro без этих методов даёт fatal error при загрузке.
 
@@ -15,28 +15,29 @@ Free и Pro этой линии ставьте вместе: `ProFeatureProvider
 
 | Флаг | Назначение |
 | --- | --- |
-| `pro` | Лицензия Pro |
+| `pro` | Пакет pagebuilderpro установлен |
 | `library` | Общие блоки: save/link/insert/edit master, pull с другой страницы, запись synced-полей в master (`pb_library_items`) |
 | `versions` | Журнал событий секции (create/update/copy/remove/enable/disable) + View / Restore |
 | `page-templates` | Шаблоны страниц: упорядоченные пустые секции (`pb_page_templates`, `mgr/pagetemplate/*`) |
-| `responsive` | Значения полей отдельно для desktop, tablet и mobile (text, textarea, url, number, currency, richtext, slug) |
+| `responsive` | Значения полей отдельно для desktop, tablet и mobile (text, textarea, url, number, currency, richtext, slug). Имена `alt`, `caption` и `slug` вкладок не получают |
 | `conditions` | `settings.conditions` и evaluator (loggedIn, guest, context, GET, …) |
 | `presets` | Вкладка **Примеры** в каталоге (скрывается при `pagebuilder_catalog_examples_enabled = 0`) |
 | `i18n-copy` | Копирование секции между контекстами |
-| `advanced-fields` | 27 типов полей в панели управления (группа Pro в списке). Без Pro доступны 35 типов Free |
+| `advanced-fields` | 23 типа полей в панели управления (группа Pro в списке). Всего Pro-типов 27: к ним добавляются `datasource`, `form`, `product` и `products`. Без Pro доступны 35 типов Free |
 | `basket` | Глобальная корзина в панели управления (`mgr/basket/*`) |
 | `utm` | Новые UTM-правила и реестр. Уже опубликованные правила исполняет Free |
 | `collections` | Вкладки ресурса из панели управления (`pb_collections`, `mgr/collection/*`). Нужна ещё `pagebuilder_collections_enabled` |
 | `datasources` | [Dynamic list](sections/dynamic_list) и [Filterable grid](sections/filterable_grid): провайдеры `modx-resources`, `pagebuilder-tables`, `minishop3`, `mgr/datasource/*` |
+| `minishop3` | Поля `product` и `products` и секции витрины. Флага нет, пока пакет miniShop3 не установлен |
 | `forms` | CMP Forms, [form_builder](sections/form_builder), FetchIt, CSRF, honeypot. Письмо и webhook после commit. Submissions в БД не пишутся |
 | `api` | [Agent API](agent-api) и токены [REST v1](rest-api) (`mgr/resttoken/*`, вкладка API tokens) |
 | `image-crop` | Кадрирование полей image/gallery (`mgr/media/crop`) |
 
-Модуль `pro-resource.min.js` на вкладке ресурса добавляет в боковую колонку панель **Наследовать / Библиотека**. История секции открывается из контекстного меню строки.
+На вкладке ресурса модуль `pro-resource.min.js` добавляет панель **Наследовать / Библиотека**. История секции открывается из меню строки.
 
 ## Pro-секции
 
-Определения лежат в `pagebuilderpro/sections/`, chunk называется `pagebuilderpro_{key}`. Новые типы регистрируют plugin на `pbOnRegisterSectionDefinitions`.
+Определения лежат в `pagebuilderpro/sections/`. Chunk: `pagebuilderpro_{key}`. Новые типы регистрирует plugin на `pbOnRegisterSectionDefinitions`.
 
 | Группа | Примеры ключей |
 | --- | --- |
@@ -52,7 +53,7 @@ Free и Pro этой линии ставьте вместе: `ProFeatureProvider
 
 ## Общие блоки {#obshchie-bloki}
 
-Блок из редактора можно сохранить как общий. После **Сохранить как shared** секция на текущей странице сразу связывается с созданным master (`libraryLocalFields: []`).
+После **Сохранить как shared** секция на текущей странице сразу связывается с созданным master (`libraryLocalFields: []`).
 
 | Действие | Поведение |
 | --- | --- |
@@ -63,7 +64,7 @@ Free и Pro этой линии ставьте вместе: `ProFeatureProvider
 
 **Подтянуть** читает **черновик** источника. **Связать** создаёт master или берёт существующий, проставляет `libraryId` на источнике и вставляет linked-секцию на целевую. **Копировать** добавляет секции без связи.
 
-При отрисовке master merge + локальные поля из `libraryLocalFields`. Без ключа в settings остаётся прежнее перекрытие: локальные ключи перекрывают master. После записи Library сбрасывается HTML-кеш `pagebuilder/*`.
+При отрисовке master сливается с локальными полями из `libraryLocalFields`. Без ключа в settings локальные ключи перекрывают master. После записи Library сбрасывается HTML-кеш `pagebuilder/*`.
 
 Вкладка **Общие блоки** в каталоге видна даже при пустом списке.
 
@@ -105,11 +106,11 @@ Apply пишет черновик через `mgr/pagetemplate/apply` (на не
 
 `pricing-utm` это таблица `data_table`, не тарифы. `products-hero` требует miniShop3. `quiz-kitchen` требует FetchIt и задаёт старт «Начать подбор».
 
-## Constructor Bundle
+## Bundle
 
-Вкладка **Bundle** в текущем релизе **скрыта** (`BUNDLE_ENABLED = false` в `ProFeatureProvider`). Процессоры `mgr/bundle/*` и UI есть, в CMP вкладка не регистрируется. Не обещайте её пользователю, пока флаг не включат в выпуске.
+Вкладка **скрыта** (`BUNDLE_ENABLED = false`). Маршруты `mgr/bundle/*` не регистрируются. Вызов из менеджера отвечает `Invalid action.` Не обещайте вкладку, пока флаг не включат в выпуске.
 
-В бандл v1 не кладите secrets, токены, содержимое страниц и строки таблиц. Формы и datasources в этот формат не входят.
+Шаги export и состав бандла v1: [Панель управления → Bundle](cmp#bundle).
 
 ## Действия connector (Pro)
 
@@ -133,7 +134,7 @@ Apply пишет черновик через `mgr/pagetemplate/apply` (на не
 | `mgr/api/page/snapshot` / `apply` | [Agent API](agent-api) |
 | `mgr/datasource/*` | Превью datasource |
 | `mgr/form/*` | CMP Forms |
-| `mgr/bundle/*` | Export, dry-run и import UI-типов |
+| `mgr/bundle/*` | Export, dry-run и import UI-типов. Пока `BUNDLE_ENABLED = false`, действие не регистрируется |
 | `mgr/resttoken/*` | Токены [REST API v1](rest-api) |
 | `mgr/ms3/products/search` | Поиск товаров для commerce-секций |
 | `mgr/ms3/categories/search` | Поиск категорий miniShop3 (parent в сетках и каруселях) |

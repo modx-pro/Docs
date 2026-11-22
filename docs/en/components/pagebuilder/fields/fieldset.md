@@ -11,17 +11,17 @@ Version: **Pro**.
 
 ## Why this type
 
-A group label in the inspector. The group has no key of its own in the section data: nested fields keep their own names, and those names must be unique in the section. It is in Pro, to split a long form.
+A group label in the inspector. The group has no key of its own in the section data. Nested fields keep their own names.
 
 ## When to use
 
-- SEO title description block in one group
+- SEO title and description in one group
 - Overlay settings separate from content
 - CMP readability for 15+ fields
 
 ## Tips
 
-Heading only without nested is [heading](heading). Chunk uses flat keys seo_title not seo.title.
+A subtitle without nested fields is [heading](heading). In the chunk use the flat key `seo_title`, not `seo.title`.
 
 ## Similar types
 
@@ -45,10 +45,6 @@ Heading only without nested is [heading](heading). Chunk uses flat keys seo_titl
 }
 ```
 
-## Value
-
-Flat keys of nested fields in the section data.
-
 ## Section data {#output-in-section-data}
 
 The `seo` key in the schema is not stored in the section data. Nested fields are flat keys:
@@ -59,7 +55,7 @@ The `seo` key in the schema is not stored in the section data. Nested fields are
 }
 ```
 
-- Nested field names must be unique within the section.
+- Keep nested field names unique within the section. Saving does not reject a duplicate. The CMP only requires a non-empty `name`.
 
 ## Chunk example
 
@@ -76,8 +72,6 @@ The `seo` key in the schema is not stored in the section data. Nested fields are
 :::
 
 ## Common properties
-
-`fieldset` has no own key in the section data. Nested fields are **flat** keys alongside other section fields.
 
 | Key | Role |
 | --- | --- |

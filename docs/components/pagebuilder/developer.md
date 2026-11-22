@@ -39,7 +39,7 @@ description: Определение секций, модель данных, р�
 }
 ```
 
-Секции с `category: dev` или ключом с `_` не попадают в production-каталог.
+Секции с `category: dev` или ключом, который начинается с `_`, не попадают в каталог на сайте. Ключ `my_promo` в каталог попадает. Пример скрытого ключа: `_qa_field_matrix`.
 
 ### Pro-секции
 
@@ -74,11 +74,21 @@ JSON: `pagebuilderpro/sections/`. Chunk: `pagebuilderpro_{key}`. По умолч
 
 ```php
 <?php
+
+use PageBuilder\Section\SectionDefinition;
+
 switch ($modx->event->name) {
     case 'pbOnRegisterSectionDefinitions':
         /** @var \PageBuilder\Section\SectionRegistry $registry */
         $registry = $modx->event->params['registry'];
-        $registry->registerFromFile($modx->getOption('core_path') . 'components/mypackage/sections/custom.json');
+        $path = $modx->getOption('core_path') . 'components/mypackage/sections/custom.json';
+        $payload = json_decode((string) file_get_contents($path), true);
+        if (!is_array($payload)) {
+            break;
+        }
+        $payload['source'] = 'code';
+        $payload['readOnly'] = true;
+        $registry->register(SectionDefinition::fromArray($payload));
         break;
 }
 ```
@@ -89,9 +99,9 @@ Chunk стройте по [дизайн-системе](design-system): обол
 
 У типа может быть несколько категорий: массив `categories` и совместимое поле `category`. Фильтры CMP показывают тип в каждом выбранном slug.
 
-Во вкладке JSON редактора типа правят definition, включая nested fields у repeater, и применяют правку перед сохранением. В repeater кнопка **Копировать элемент** делает глубокую копию строки с новым `_rowId`.
+Во вкладке JSON правят definition, включая вложенные поля repeater, и применяют правку перед сохранением. В repeater кнопка **Копировать элемент** делает глубокую копию строки с новым `_rowId`.
 
-Флаг типа `cacheable` по умолчанию `true`. Если на странице есть включённый тип с `cacheable: false`, HTML-кеш документа не пишется. Кнопка MODX **Очистить кеш** сбрасывает partition `pagebuilder` (`OnSiteRefresh`).
+Флаг типа `cacheable` по умолчанию `true`. Если на странице есть включённый тип с `cacheable: false`, HTML-кеш документа не пишется. Кнопка MODX **Очистить кеш** сбрасывает раздел `pagebuilder` (`OnSiteRefresh`).
 
 ## Модель данных {#model-dannyh}
 
@@ -131,7 +141,7 @@ Pro: `pb_library_items`, `pb_section_events`, `pb_page_templates`. Таблиц�
 
 ### Кеш отрисовки
 
-Раздел кеша: `pagebuilder/{resourceId}`. Сбрасывается при publish и unpublish. Кеш не используется при проверке видимости по UTM во время запроса, при `use_cache=0` и при ошибках отрисовки.
+Раздел кеша: `pagebuilder/{resourceId}`. Сбрасывается при publish и unpublish. Кеш не пишется и не читается, если на документе есть UTM-правила, `conditions`, тип с `cacheable: false` или `runtimeContext: true`, а также при `use_cache=0` и при ошибке отрисовки.
 
 ### PHP-сервис
 
@@ -150,11 +160,11 @@ Plugin на `pbOnRegisterFeatureProviders` регистрирует свой `Fe
 
 События boot, save и отрисовки: [Менеджер и события](integration#sobytiya).
 
-В `pbOnBeforeSave` расширения могут заменить документ до записи черновика или публикации через `PageDocumentBag`. `DocumentChangeSet` отдельно фиксирует enable/disable секции (без ложного «update» при чистом тумблере).
+В `pbOnBeforeSave` расширения могут заменить документ до записи черновика через `PageDocumentBag`. Публикация этот объект не принимает. `DocumentChangeSet` отдельно фиксирует enable/disable секции (без ложного «update» при чистом тумблере).
 
 ## Public API
 
-Точка входа `assets/components/pagebuilder/api.php`. Read-only JSON. Включение и ключи: [Public API](public-api) и [настройки](settings#public-api).
+Точка входа `assets/components/pagebuilder/api.php`. JSON только для чтения. Включение и ключи: [Public API](public-api) и [настройки](settings#public-api).
 
 Запись и черновики: [Agent API](agent-api) (Pro) или вкладка **Секции** в менеджере.
 
@@ -185,7 +195,7 @@ await api.post('mgr/catalog/list', { resource_id: 42 })
 | `mgr/datatable/rows/list` | Строки: `search`, `page`, `limit`, `filters` |
 | `mgr/datatable/rows/save` / `remove` | Создание, изменение и удаление строк |
 
-Фильтры JSON: `{ "price": { "op": "gte", "value": "10" } }`. Операторы: `eq`, `contains`, `in`, `gte`, `lte`, `between`, `empty`, `not_empty`.
+Фильтры JSON: `{ "price": { "op": "gte", "value": "10" } }`. Операторы: `eq`, `contains`, `in`, `gt`, `lt`, `gte`, `lte`, `between`, `empty`, `not_empty`.
 
 Вкладка «Таблицы» или тип вкладки `table` в [Collections](cmp#collections). На сайте выводят строки через сниппет `PageBuilderTableRows`.
 

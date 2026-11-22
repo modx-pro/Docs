@@ -5,9 +5,9 @@ description: "Частые сбои msp3PayKeeper: ключи, webhook, возв
 
 # FAQ
 
-## Payment is not configured
+## Платёж не настроен
 
-Пустые `server_url`, логин или пароль API (`Settings::isConfigured()` ложно). Проверьте properties способа, затем системные настройки, затем кэш.
+Пустые `server_url`, логин или пароль API (`Settings::isConfigured()` возвращает false). Проверьте properties способа, затем системные настройки, затем кэш.
 
 При оплате `send()` возвращает эту ошибку. Кнопка **Sync** на вкладке при тех же пустых полях отвечает success: отдаёт список попыток и `note` `msp3paykeeper.err_not_configured`, без запроса к PayKeeper.
 
@@ -21,7 +21,7 @@ URL в кабинете:
 https://ваш-домен.ru/assets/components/msp3paykeeper/webhook.php
 ```
 
-HTTPS без Basic Auth и без 301.
+Требования: HTTPS, без Basic Auth и редиректов.
 
 ## Нет идентификатора платежа на возврате
 

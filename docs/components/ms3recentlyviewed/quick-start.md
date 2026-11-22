@@ -9,9 +9,9 @@ title: Быстрый старт
 |------------|--------|
 | MODX Revolution | 3.0.3+ |
 | PHP | 8.1+ |
-| MiniShop3 | установлен |
+| MiniShop3 | 1.0.0+ |
 | pdoTools | 3.0.0+ |
-| VueTools | 1.2.0+ для менеджера (Import Map `vue` + `vuetools/theme`). Без него страница Extras пустая |
+| VueTools | 1.2.0+ для менеджера (Import Map `vue` + `vuetools/theme`). Если ключей нет, модули снимаются и показывается предупреждение `ms3rv_vuetools_required` |
 | Fenom | чанки через pdoTools. Жёсткой проверки `class_exists(Fenom)` нет |
 
 ## Шаг 1: Установка
@@ -40,11 +40,11 @@ title: Быстрый старт
 
 :::
 
-Без `ms3rvLexiconScript` скрипт использует запасные русские фразы. Для мультиязычного сайта лексикон обязателен.
+Без `ms3rvLexiconScript` пустой список берёт русскую фразу «Вы ещё ничего не смотрели». Хранилище остаётся `localStorage`, лимит в JS падает до 20. Для cookie и своего `max_items` сниппет нужен на каждой странице.
 
 ## Шаг 3: Страница товара — передать ID для учёта
 
-Список заполняется при открытии страницы товара. Укажите ID текущего ресурса одним из способов.
+На шаблоне товара MiniShop3 (`ms3_template_product_default`) плагин **ms3recentlyviewedSync** пишет `window.ms3rvCurrentProductId`. На своём шаблоне задайте ID сами.
 
 **Атрибут на `<body>` (рекомендуется):**
 
@@ -86,7 +86,7 @@ title: Быстрый старт
 
 ### Клиентский вывод (JS)
 
-Контейнер и вызов `render()` (одинаково для Fenom и MODX):
+Одинаково для Fenom и MODX:
 
 ```html
 <div id="ms3-recently-viewed" class="ms3rv__list"></div>
@@ -99,9 +99,11 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 ```
 
-Скрипт запросит список у коннектора и выведет HTML. При отсутствии товаров блок не отображается.
+Если ID в браузере нет, контейнер получает абзац с фразой лексикона `ms3recentlyviewed_empty`. Сам контейнер остаётся на странице. Скрывается только предок `#ms3-recently-viewed-section`. `emptyTpl` уходит в коннектор, когда ID уже есть.
 
-К контейнеру **`.ms3rv__list`** при необходимости автоматически добавляется класс `row` (Bootstrap). При наличии в DOM **`#ms3-recently-viewed`** и **`#ms3-similar`** скрипт может сам вызвать `render` на `DOMContentLoaded`. Явное подключение `viewed.css` в шаблоне по-прежнему рекомендуется. При отсутствии ссылки JS может подтянуть стили сам.
+Сниппет без ID оборачивает `emptyTpl` в `div` с `data-ms3rv-hydrate="viewed"`. На `DOMContentLoaded` `viewed.js` подставляет список из браузера.
+
+К **`.ms3rv__list`** при необходимости добавляется класс `row` (Bootstrap). Если в DOM есть **`#ms3-recently-viewed`** или **`[data-ms3rv-hydrate="viewed"]`**, скрипт сам вызывает `render`. Подключите `viewed.css` в шаблоне. Если ссылки нет, JS подтягивает стили сам.
 
 ### Серверный вывод: cookie и плейсхолдер `viewedIds`
 
@@ -147,7 +149,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 ## Шаг 5: Счётчик просмотренных (опционально)
 
-Где нужно показать количество просмотренных (иконка, шапка):
+В иконке или шапке:
 
 ```html
 <span data-viewed-count style="display: none;">0</span>
@@ -181,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 :::
 
-Если используете только **`localStorage`**, для «Похожих» удобнее JS `renderSimilar()` или передача `ids` с сайта. Плейсхолдер **`viewedIds`** при `storage_type` = `localStorage` **пустой**. См. [Сниппет ms3recentlyviewedSimilar](snippets/ms3recentlyviewedSimilar), [Подключение на сайте](frontend).
+При **`localStorage`** плейсхолдер **`viewedIds`** пустой. Для «Похожих» вызывайте `renderSimilar()` или передайте `ids` с сайта. JS по умолчанию берёт 8 товаров, всегда убирает текущий товар и не шлёт `depth`. На сервере глубина остаётся 2. Пустой список прячет контейнер (`display: none`). См. [Сниппет ms3recentlyviewedSimilar](snippets/ms3recentlyviewedSimilar), [Подключение на сайте](frontend).
 
 ## Что дальше
 

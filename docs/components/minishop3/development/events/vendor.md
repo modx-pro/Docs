@@ -6,8 +6,10 @@ title: События производителей
 События для отслеживания операций с производителями (брендами).
 
 ::: warning Vue-настройки vs процессоры
-CRUD производителей в админке (**Extras → MiniShop3 → Производители**) идёт через `VendorsController` (Manager API) **без** `$modx->invokeEvent`. События ниже срабатывают только при вызове legacy-процессоров `MiniShop3\Processors\Settings\Vendor\*` (`runProcessor`, старый connector). Для перехвата изменений из Vue используйте хуки после сохранения через собственный REST middleware или модификацию контроллера в дополнении.
+CRUD производителей в админке (**Пакеты → MiniShop3 → Производители**) идёт через `VendorsController` (Manager API) **без** `$modx->invokeEvent`. События ниже срабатывают только при вызове устаревших процессоров `MiniShop3\Processors\Settings\Vendor\*` (`runProcessor`, старый connector). Для перехвата изменений из Vue используйте хуки после сохранения: свой REST middleware или правку контроллера в дополнении.
 :::
+
+Ключи в таблицах ниже пакет не собирает сам. Процессоры MiniShop3 задают `$classKey`, `$objectType = 'msVendor'` и имена событий в свойствах `$beforeSaveEvent`, `$afterSaveEvent`, `$beforeRemoveEvent`, `$afterRemoveEvent` — без них базовый процессор событий не поднимает. Сам вызов и набор параметров делает процессор MODX: `CreateProcessor`, `UpdateProcessor` или `RemoveProcessor`.
 
 ## msOnBeforeVendorCreate
 
@@ -32,13 +34,13 @@ switch ($modx->event->name) {
         /** @var \MiniShop3\Model\msVendor $vendor */
         $vendor = $scriptProperties['msVendor'];
 
-        // Проверка уникальности названия
-        $existing = $modx->getObject(\MiniShop3\Model\msVendor::class, [
-            'name' => $vendor->get('name'),
-        ]);
+        // Дубль названия сюда не дойдёт: Vendor\Create::beforeSet() отбивает его
+        // раньше ошибкой поля name. Проверяем то, чего процессор не знает, —
+        // например, свой справочник разрешённых брендов.
+        $allowed = $modx->getOption('my_allowed_vendors', null, '');
 
-        if ($existing) {
-            $modx->event->output('Производитель с таким названием уже существует');
+        if ($allowed !== '' && !in_array($vendor->get('name'), explode(',', $allowed), true)) {
+            $modx->event->output('Этого производителя нет в справочнике');
             return;
         }
         break;
@@ -97,7 +99,7 @@ switch ($modx->event->name) {
 | `id` | `int` | ID обновляемого производителя |
 
 ::: warning Старых значений полей нет
-К моменту вызова этого события `msVendor` уже содержит новые значения (MODX применяет их до срабатывания `beforeSaveEvent`). Метода вроде `getPrevious()` у объекта не существует — если нужен снимок «до», получайте его заранее (например, в контроллере, до `runProcessor`).
+К моменту вызова этого события `msVendor` уже содержит новые значения (MODX применяет их до срабатывания `beforeSaveEvent`). Метода вроде `getPrevious()` у объекта не существует. Если нужен снимок «до», получайте его заранее (например, в контроллере, до `runProcessor`).
 :::
 
 ### Прерывание операции

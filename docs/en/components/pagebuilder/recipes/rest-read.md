@@ -23,19 +23,26 @@ GET /assets/components/pagebuilder/api/v1.php?path=/pages/42
 Authorization: Bearer <secret>
 ```
 
-`pages.read` opens `GET /pages` and `GET /pages/{id-or-alias}`. `catalog.read` opens `GET /health` and `GET /catalog/sections`. The page list does not include the document body. A repeat with `If-None-Match` returns `304`.
+| Scope | Routes |
+| --- | --- |
+| `pages.read` | `GET /pages`, `GET /pages/{id-or-alias}` |
+| `catalog.read` | `GET /health`, `GET /catalog/sections` |
+
+The page list does not include the document body. A repeat with `If-None-Match` returns `304`.
+
+`GET /openapi.json` on the same `v1.php` does not require a Bearer token. Without a token the spec is built with scopes `catalog.read` and `pages.read`. The token secret is not part of the spec. REST and Pro must be on, otherwise the response is `404`.
 
 A revoked token returns `401`. `pagebuilder_rest_throttle_per_minute` (default 120) returns `429` and `Retry-After` when the limit is passed.
 
 ## Example fields
 
-The id `42` in the path is an example. Use the id or alias of a published resource.
+Use the id or alias of a published resource.
 
 Scope `pages.read` only: `GET /pages/42` returns the document. `GET /catalog/sections` without `catalog.read` is not available. With both scopes the type catalog opens on the same Bearer token.
 
 ## What to check
 
-The first request with the secret returns the page body and an `ETag` header. A repeat with `If-None-Match` returns `304`. After revoke the same secret returns `401`. Past `pagebuilder_rest_throttle_per_minute` (default 120) the response is `429` and `Retry-After`.
+The first request with the secret returns the page body and an `ETag` header. A repeat with `If-None-Match` returns `304`. After revoke the same secret returns `401`.
 
 ## Rollback
 

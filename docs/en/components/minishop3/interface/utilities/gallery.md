@@ -3,133 +3,132 @@ title: Gallery
 ---
 # Utilities: Gallery
 
-Tool for bulk regeneration of thumbnails for all product images.
+Bulk regeneration of thumbnails for every product.
 
 ## Purpose
 
-When images are uploaded to a product gallery, MiniShop3 automatically creates thumbnails of various sizes. If preview settings change afterward or you need to refresh all thumbnails, use this utility.
+On upload, MiniShop3 creates thumbnails of several sizes at once. Use the utility after you change preview settings, or when you want to rebuild every thumbnail.
 
 ## When to use
 
-- After changing preview sizes in [system settings](../settings)
+- After changing the `thumbnails` JSON on the Media Source
 - After migrating the site to a new server
-- After bulk image updates via FTP
-- When thumbnails are missing or corrupted
-- After a MiniShop3 update with image processing changes
+- After a bulk image update over FTP
+- When thumbnails are damaged or missing
+- After a MiniShop3 update that changes image processing
 
 ## Interface
 
+Regeneration starts from a button and runs in batches:
+
+```mermaid
+flowchart TB
+  Start[Regenerate_previews_button] --> Batch[POST_utilities/gallery/update]
+  Batch --> LimitParam[products_per_step_limit]
+  LimitParam --> PerProduct[For_each_product]
+  PerProduct --> ReadOriginal[Read_original]
+  ReadOriginal --> GenThumbs[Thumbnails_from_thumbnails]
+  GenThumbs --> SaveDirs[small_medium_large_directories]
+  Batch --> Progress[offset_and_done_in_the_response]
+```
+
 ### Info panel
 
-Shows current gallery state:
+Current gallery state:
 
-- **Media source** — file source name and ID
-- **Products with images** — count of products that have a gallery
-- **Total files** — total images in galleries
+- **Selected file source** shows the source name and ID. It comes from the `ms3_product_source_default` system setting (1 by default). When a source with that id has been deleted, the panel and the preview settings block stay empty even though the catalogue has products
+- **Total products** counts every product in the catalogue, whether or not it has a gallery
+- **Images** counts originals only (`msProductFile` with `parent_id = 0`); previews are not included
 
 ### Preview settings
 
-Collapsible section shows current thumbnail configuration:
+The collapsible section prints the JSON of each key in the product Media Source property **`thumbnails`** (the same source the gallery uses). Example: `small: {"width":120,"height":120,"mode":"cover",…}`.
 
-```
-small:  120x90
-medium: 360x270
-large:  720x540
-```
-
-::: tip Changing sizes
-Size settings are defined in MODX system settings:
-
-- `ms3_product_thumbnail_size` — thumbnail sizes
+::: tip Preview key on the product card
+`ms3_product_thumbnail_size` (default `small`) is the **key name** from `thumbnails` that fills the product preview field in the manager. Edit the sizes on the file source: **Media → Media Sources → `thumbnails` property**. An empty JSON uses `small` at 120×120.
 :::
 
 ### Processing parameters
 
 | Parameter | Description | Default |
 | --- | --- | --- |
-| Products per step | Products processed per iteration | 10 |
+| Products per step | How many products one iteration processes. Allowed range 1 to 100, and the arrows move it in steps of 5 | 10 |
 
 ::: warning Recommendations
 
-- On weak servers reduce to 5
-- On powerful servers you can increase to 20–30
-- Large values may cause timeouts
+The numbers are empirical and depend on the server. The code only fixes the default (10).
+
+- On a weak server, lower the value to 5
+- On a strong server, raise it to 20-30
+- A large value can hit the timeout
 :::
 
 ## Workflow
 
-1. **Prepare**
-   - Check preview settings in system settings
-   - Ensure enough disk space
-   - Run during low traffic if possible
+1. Check preview settings and free disk space. Run this when the site is quiet.
+2. Click **Regenerate previews**. The utility processes products in batches. The page shows the percent and the current iteration.
+3. Closing the page stops the run. When it finishes, the page shows how many products were processed. **Reset** prepares another run.
 
-2. **Start**
-   - Click **Regenerate previews**
-   - Processing runs in batches
-
-3. **Track progress**
-   - Indicator shows completion percent
-   - Current iteration vs total is shown
-   - You can stop by closing the page
-
-4. **Finish**
-   - On completion a message shows how many products were processed
-   - Click **Reset** to prepare for another run
+The start button stays disabled while «Total products» is zero. Iterations go out as recursive requests with no pauses: the next one leaves as soon as the previous answers, so the step size is the only load control.
 
 ## Technical details
 
 ### Processor
 
-The utility calls `MiniShop3\Processors\Utilities\Gallery\Update` (via manager API or `$modx->runProcessor()` with the full class name).
+The utility calls `MiniShop3\Processors\Utilities\Gallery\Update` (manager API or `$modx->runProcessor()` with the full class name).
 
 ### API endpoint
 
-```
+```http
 POST /api/mgr/utilities/gallery/update
 ```
 
+The route requires `msproductfile_generate`.
+
 **Parameters:**
 
-- `limit` — products per iteration
-- `offset` — offset (pagination)
+- `limit` is how many products one iteration processes
+- `offset` is the shift for the next batch
 
 **Response:**
 
 ```json
 {
   "success": true,
-  "object": {
+  "data": {
     "updated": 10,
     "total": 150,
     "offset": 10,
-    "done": false
+    "done": false,
+    "limit": 10
   }
 }
 ```
 
-### Processing steps
+### Processing
 
-For each product the utility:
+For each product the utility first **deletes every child preview row from the database**, then reads the originals, builds thumbnails for the keys of `thumbnails`, and updates the product `thumb` field.
 
-1. Gets the image list from the gallery
-2. For each image:
-   - Reads the original file
-   - Generates thumbnails per settings
-   - Saves previews to the corresponding directories
-3. Updates metadata in the database
+::: warning An interrupted run leaves products without previews
+The deletion happens before the generation, so a break in the middle (the page was closed, PHP died) leaves some products with their old rows removed but no new ones created. Running the utility again over the same products fixes it.
+:::
 
 ### File storage
 
-```
+Directory names are the keys of the `thumbnails` property on your Media Source, and the file extension comes from that key's `format`. The package ships four keys: `thumb`, `small`, `medium` (webp) and `large` (jpg). The file name matches the uploaded one — that is the default `imageNameType: friendly` mode. The tree looks like this:
+
+```text
 assets/images/products/
 ├── {product_id}/
-│   ├── original.jpg       # Original
-│   ├── small/             # Small previews
-│   │   └── original.jpg
-│   ├── medium/            # Medium previews
-│   │   └── original.jpg
-│   └── large/             # Large previews
-│       └── original.jpg
+│   ├── smartphone.jpg     # Original (the uploaded file name)
+│   ├── thumb/             # 150×150 webp
+│   │   └── smartphone.webp
+│   ├── small/             # 300×300 webp
+│   │   └── smartphone.webp
+│   ├── medium/            # 600×600 webp
+│   │   └── smartphone.webp
+│   └── large/             # 1200×1200 jpg
+│       └── smartphone.jpg
 ```
 
 ## Troubleshooting
@@ -138,28 +137,28 @@ assets/images/products/
 
 **Symptom:** Processing stops at a certain percent.
 
-**Fixes:**
+**What to try:**
 
-- Reduce products per step
-- Increase PHP `max_execution_time`
-- Check server error logs
+- Lower the products per step
+- Raise `max_execution_time` in PHP
+- Check the server error log
 
-### Thumbnails not created
+### Thumbnails are not created
 
-**Symptom:** After completion previews are missing.
+**Symptom:** Previews are still missing after the run.
 
 **Check:**
 
-- Write permissions on `assets/images/`
-- GD or ImageMagick on the server
-- Preview settings in system settings
+- Write permission on the base directory of the product media source. By default that is `assets/images/products/`, but the path comes from the source `basePath` property and may differ
+- A driver for Intervention Image v3 — the `gd` or `imagick` extension. Which one is used depends on the PHP environment
+- Preview settings in the system settings
 
-### "No products" error
+### Error "No products"
 
-**Symptom:** Message that there are no products to process.
+**Symptom:** There are no products to process.
 
 **Causes:**
 
-- No products with images in the catalog
-- Media source misconfigured
-- Gallery table is empty
+- The catalogue has no products at all, or `offset` ran past the end of the set
+
+There is no other cause: neither the presence of images nor the state of the gallery table affects this error, and products without images are processed silently.

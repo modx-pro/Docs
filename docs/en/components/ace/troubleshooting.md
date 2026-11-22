@@ -3,8 +3,6 @@ title: Troubleshooting
 ---
 # Troubleshooting
 
-Common Ace issues and what to check.
-
 ## Editor does not appear on snippet / chunk
 
 1. Plugin **Ace** is enabled
@@ -14,22 +12,22 @@ Common Ace issues and what to check.
 
 ## Resource shows textarea or TinyMCE instead of Ace
 
-Expected with another RTE setup:
+Expected:
 
-- `use_editor = Yes` and `which_editor` ≠ Ace → Ace does **not** claim `#ta`
-- richtext on → the selected RTE runs
+- `use_editor = Yes` and richtext on: Ace does not claim `#ta`. The package has no RTE initializer of its own
+- `use_editor = Yes` and `which_editor` is not `Ace`: a resource without richtext keeps a plain textarea
 
-For Ace in content: `use_editor = No` or `which_editor = Ace`. [Integration](integration#resources-and-rte).
+To put Ace on content for every resource, set `use_editor = No`. [Integration](integration#resources-and-rte).
 
 Check **context** values of `use_editor` / `which_editor`, not only globals.
 
 ## Fullscreen covered by MODX 3 panels
 
-Upgrade Ace to **1.9.9+**: the editor moves to `document.body` with a proper z-index. On 3.1+ insets keep the manager header visible.
+Upgrade Ace to **1.9.11**: the editor moves to `document.body` with z-index `12000`. Insets are measured from `#modx-header` and `#modx-action-buttons`. Until that measurement runs, `top` stays `60px` and `left` stays `70px`.
 
 ## Ctrl+S in fullscreen saves stale text
 
-Fixed in **1.9.10**: the hidden field stays in the form; `getValue()` runs before submit. Upgrade the package.
+Fixed in **1.9.10**: the hidden field stays in the form, and `getValue()` runs before submit. Since **1.9.11**, `<?php` stays in the editor after a snippet or plugin save when MODX removed only the wrapper. Undo is not reset. After a reload the editor shows the database text, already without the wrapper.
 
 ## CSS comments highlight as `<!--` instead of `//`
 
@@ -43,7 +41,7 @@ In **1.9.10** MODX mixed mode applies only to HTML/Smarty/Twig mimes. Upgrade or
 
 ## Draft is not offered
 
-`ace.draft_restore = Yes`. Empty drafts are hidden. Successful save clears the draft. TTL: 7 days. Data lives only in the user’s browser (localStorage).
+`ace.draft_restore = Yes`. The banner stays hidden when the draft is empty or matches the open text. A successful save clears the draft. TTL: 7 days. Data lives only in the user’s browser (localStorage).
 
 ## Install / Zip / preserved errors
 
@@ -57,7 +55,7 @@ Fixed in **1.9.9** (ace-builds worker 1.37.5). Upgrade the package.
 
 ### Ace and TinyMCE together?
 
-Yes. TinyMCE (or another RTE) for richtext resources, Ace for elements. Since 1.9.10 Ace does not claim `#ta` when `which_editor` ≠ Ace.
+Yes. Another RTE for richtext resources, Ace for elements. With `use_editor = Yes`, Ace does not claim `#ta` on a richtext resource or on a resource whose `which_editor` is not `Ace`.
 
 ### Do I need composer on the server?
 

@@ -1,6 +1,6 @@
 ---
 title: MODX events
-description: msbeOn* plugins — apply, fields, export extension
+description: msbeOn* plugins for apply, fields, and export extension
 ---
 
 # MODX events
@@ -72,7 +72,7 @@ if ($field === 'pagetitle' && $productId > 0) {
 
 Base URL: `{site}/assets/components/msbulkeditor/connector.php`.
 
-Auth: manager session (`mgr`) + `HTTP_MODAUTH` header = `user->getUserToken('mgr')` + route permission.
+Reads accept a manager session. Writes require POST and a token equal to `user->getUserToken('mgr')`. Pass the token as the `HTTP_MODAUTH` header or the `modAuth` field, plus the route permission.
 
 Main actions: `mgr/products/list`, `preview`, `apply`, `rollback`, `mgr/history/*`, `mgr/export/run`, `mgr/import/parse`, `mgr/import/run`, `mgr/bindings/check`, `mgr/bindings/apply`.
 
@@ -86,7 +86,7 @@ Response shape:
 }
 ```
 
-Errors: `"success": false`, `"message": "msbulkeditor_*"` — lexicon key.
+Handler errors: `"success": false` and a lexicon key `msbulkeditor_*` in `"message"`. Before the processor the connector returns plain text: `config.core.php not found.`, `Invalid action.`, `Processor failed.`. A caught processor failure is `msbulkeditor_processor_failed`. A write that is not POST is `msbulkeditor_auth_method_not_allowed`.
 
 Take modAuth from an open msBulkEditor page (`window.msBulkEditorConfig.modAuth`). Do not put the token in public scripts.
 
@@ -97,5 +97,6 @@ Take modAuth from an open msBulkEditor page (`window.msBulkEditorConfig.modAuth`
 | `msbe_operations` | Operation header (type, status, counters) |
 | `msbe_operation_items` | Per-product snapshots for rollback |
 | `msbe_presets` | Saved presets |
+| `msbe_user_states` | Manager UI state (columns, expert mode) |
 
 See also: [System settings](settings), [History](interface/history).

@@ -15,7 +15,6 @@ Requires PageBuilder Pro and miniShop3.
 
 ## Comparison in PageBuilder
 
-- Multiple SKUs in one spec table
 - Optional highlight for differing cells
 - Pick products in inspector, not query strings
 
@@ -32,7 +31,7 @@ Requires PageBuilder Pro and miniShop3.
 
 ## Products and highlight
 
-**Products** repeater or multirelation. **Highlight differences** marks differing values.
+**Products** is a multirelation. **Highlight differences** marks differing values. The type is marked `"cacheable": false`.
 
 ## Similar sections
 
@@ -45,13 +44,13 @@ Requires PageBuilder Pro and miniShop3.
 | --- | --- |
 | key | `product_comparison` |
 | Layer | Pro |
-| Category | commerce (`commerce`) |
+| Category | Commerce (`commerce`) |
 | Chunk | `pagebuilderpro_product_comparison` |
 | Requires | pro, minishop3 |
 
 ## Inspector fields
 
-Fill these fields in the section inspector. Field types are documented in the [field types reference](../fields/types).
+Field types: [field types reference](../fields/types).
 
 ### Title (`title`)
 
@@ -71,7 +70,7 @@ Type [yesno](../fields/yesno#output-in-section-data). Optional. Yes/no toggle.
 
 ## Section data {#output-in-section-data}
 
-Example payload after save. Media, video, and map values may be enriched on output:
+Example payload after save:
 
 ```json
 {

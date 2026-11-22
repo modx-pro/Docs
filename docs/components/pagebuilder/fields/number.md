@@ -25,7 +25,6 @@ description: "Число для счётчиков, лимитов и поряд
 
 ## Похожие типы
 
-- [currency](currency) для сумм с символом валюты
 - [select](select) для фиксированного набора чисел
 
 ## Настройка
@@ -45,13 +44,9 @@ description: "Число для счётчиков, лимитов и поряд
 }
 ```
 
-## Значение
-
-Число или `null`.
-
 ## Данные секции {#vyvod-v-section-data}
 
-Ключ `count` в данных секции (число или `null`):
+Ключ `count` — число или `null`:
 
 ```json
 {
@@ -75,22 +70,11 @@ description: "Число для счётчиков, лимитов и поряд
 
 ## Примечание
 
-Лимиты: `min`, `max`, `minValue`, `maxValue`, `allowDecimals`. Pro: `responsive`.
+Лимиты: `min`, `max`, `minValue`, `maxValue`, `allowDecimals`.
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в данных секции:
-
-| Ключ | Тип | Роль | Панель |
-| --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false`: скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
-
-**Pro** (capability `responsive`): при `responsive: true` в данных секции: ключи `desktop`, `tablet`, `mobile` вместо скаляра.
+**Pro**: при `responsive: true` в данных секции лежит объект `desktop` / `tablet` / `mobile` вместо числа, см. [responsive](overview#pro-responsive).
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).
 

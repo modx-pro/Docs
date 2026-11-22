@@ -3,10 +3,10 @@ title: msProducts snippet events
 ---
 # msProducts snippet events
 
-Events for integrating third-party packages (ms3Variants, msBrands, etc.) into the msProducts snippet without modifying MiniShop3 core code.
+Integrating third-party packages (ms3Variants, msBrands and others) into the msProducts snippet without changing MiniShop3 core code.
 
 ::: tip usePackages parameter
-To enable a package's data loading, pass its name in the snippet parameter:
+To let a package load its data, pass the package name in the snippet parameter:
 
 ```fenom
 {'msProducts' | snippet : [
@@ -27,12 +27,12 @@ Fired after the product list is loaded from the database, before processing. Int
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `rows` | `array` (reference) | Product rows, can be modified |
+| `rows` | `array` | Product rows. Changes apply only through `returnedValues['rows']`. A PHP reference does not survive at this level (see below) |
 | `productIds` | `array` | Array of product IDs `[1, 2, 3, ...]` |
 | `usePackages` | `array` | Requested packages `['ms3Variants', 'msBrands']` |
 | `scriptProperties` | `array` | All snippet call parameters |
 
-After the event, rows are updated from `returnedValues['rows']` via `EventGate::applyReturnedArray`.
+After the event the list rows are updated from `returnedValues['rows']` (`EventGate::applyReturnedArray`). A list in `rows` replaces the whole product array. An associative patch of one row goes through `msOnProductPrepare`.
 
 ### returnedValues
 
@@ -40,13 +40,15 @@ After the event, rows are updated from `returnedValues['rows']` via `EventGate::
 <?php
 switch ($modx->event->name) {
     case 'msOnProductsLoad':
+        $values = &$modx->event->returnedValues;
+        // Example: flag every product with no price
         $rows = $scriptProperties['rows'];
         foreach ($rows as $i => $row) {
             if (empty($row['price'])) {
                 $rows[$i]['price_hidden'] = true;
             }
         }
-        $modx->event->returnedValues = ['rows' => $rows];
+        $values['rows'] = $rows;
         break;
 }
 ```
@@ -118,20 +120,26 @@ Fired when preparing each product for output. Used to attach data loaded in `msO
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `row` | `array` (reference) | Product data, can be modified |
+| `row` | `array` | Product data. Changes apply only through `returnedValues['row']`. A PHP reference does not survive at this level (see below) |
 | `productId` | `int` | Product ID |
 | `idx` | `int` | Index of the product in the result set |
 
-After the event, the row is updated from `returnedValues['row']`.
+After the event the row is updated from `returnedValues['row']` (a patch or a full list replacement, as in import).
 
 ```php
 <?php
 switch ($modx->event->name) {
     case 'msOnProductPrepare':
-        $modx->event->returnedValues = ['row' => ['badge' => 'sale']];
+        $modx->event->returnedValues = [
+            'row' => ['badge' => 'sale'],
+        ];
         break;
 }
 ```
+
+::: warning Mutating `$scriptProperties['row']` by reference does not work
+Although `row` is passed as a reference on the calling side (`EventGate::invokeRaw(..., ['row' => &$rows[$k], ...])`), the PHP reference does not survive the merge pipeline of the MODX core: both `modElement::getProperties()` and `modX::invokeEvent()` use `array_merge()`, and that drops the reference. Changing `$scriptProperties['row']['field'] = ...` inside a plugin **never reaches** the template — set `$modx->event->returnedValues['row']` instead, as shown below.
+:::
 
 ### Basic example
 
@@ -146,11 +154,13 @@ switch ($modx->event->name) {
         }
 
         $productId = $scriptProperties['productId'];
-        $row = &$scriptProperties['row'];
 
-        // Attach data to product
+        // Attach the data to the product — only through returnedValues;
+        // mutating $scriptProperties['row'] by reference never reaches the template
         if (isset($myData[$productId])) {
-            $row['my_field'] = $myData[$productId];
+            $modx->event->returnedValues = [
+                'row' => ['my_field' => $myData[$productId]],
+            ];
         }
         break;
 }
@@ -170,19 +180,25 @@ switch ($modx->event->name) {
         }
 
         $productId = $scriptProperties['productId'];
-        $row = &$scriptProperties['row'];
 
+        // Attach the variants — only through returnedValues (see the warning above)
         if (isset($variantsMap[$productId])) {
-            $row['variants'] = $variantsMap[$productId];
-            $row['variants_count'] = count($variantsMap[$productId]);
-            $row['variants_json'] = json_encode($variantsMap[$productId]);
-            $row['has_variants'] = true;
+            $row = [
+                'variants' => $variantsMap[$productId],
+                'variants_count' => count($variantsMap[$productId]),
+                'variants_json' => json_encode($variantsMap[$productId]),
+                'has_variants' => true,
+            ];
         } else {
-            $row['variants'] = [];
-            $row['variants_count'] = 0;
-            $row['variants_json'] = '[]';
-            $row['has_variants'] = false;
+            $row = [
+                'variants' => [],
+                'variants_count' => 0,
+                'variants_json' => '[]',
+                'has_variants' => false,
+            ];
         }
+
+        $modx->event->returnedValues = ['row' => $row];
         break;
 }
 
@@ -234,7 +250,7 @@ switch ($modx->event->name) {
         }
 
         $productId = $scriptProperties['productId'];
-        $row = &$scriptProperties['row'];
+        $row = $scriptProperties['row'];
 
         $badges = [];
 
@@ -257,9 +273,14 @@ switch ($modx->event->name) {
             ];
         }
 
-        $row['badges'] = $badges;
-        $row['badges_json'] = json_encode($badges);
-        $row['has_badges'] = !empty($badges);
+        // Write through returnedValues (see the warning above)
+        $modx->event->returnedValues = [
+            'row' => [
+                'badges' => $badges,
+                'badges_json' => json_encode($badges),
+                'has_badges' => !empty($badges),
+            ],
+        ];
         break;
 }
 
@@ -322,8 +343,6 @@ Use your package name as the key in `eventData` to avoid conflicts with other pl
 ---
 
 ## Performance
-
-Events are designed for optimal performance:
 
 1. **msOnProductsLoad** — runs **once** to load data for all products
 2. **msOnProductPrepare** — runs per product but only attaches already-loaded data

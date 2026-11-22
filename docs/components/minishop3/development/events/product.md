@@ -17,7 +17,7 @@ title: События товаров (каталог)
 
 | Параметр | Тип | Описание |
 | --- | --- | --- |
-| `data` | `array` | Данные товара — по умолчанию `toArray()` объекта `msProductData` (core-поля: `price`, `article`, `weight`, `stock`, `vendor_id`, `tags`, `color`, `size` и т.д.), либо расширенный row, если вызывающий код передал свой `$data` (например, `ms3_products.php` передаёт весь row листинга, включая extra fields) |
+| `data` | `array` | Данные товара — по умолчанию `toArray()` объекта `msProductData` (core-поля: `price`, `article`, `weight`, `stock`, `vendor_id`, `tags`, `color`, `size` и т.д.), либо расширенный row, если вызывающий код передал свой `$data` (например, `ms3_products.php` передаёт весь row листинга, включая свои поля) |
 | `price` | `float` | Текущая цена |
 
 ### Модификация данных (с поддержкой цепочки)
@@ -171,6 +171,14 @@ switch ($modx->event->name) {
 
 Вызывается при получении полей товара. Позволяет добавить или модифицировать любые поля.
 
+::: danger В публичный Web API добавленные поля не попадают
+Сразу после события `ProductCatalogService` прогоняет результат через `whitelistPublicPayload()` и оставляет только ключи из двух статических списков — `RESOURCE_FIELDS` и `DATA_FIELDS` (двенадцать имён: `article`, `price`, `old_price`, `stock`, `weight`, `image`, `thumb`, `vendor_id`, `made_in`, `new`, `popular`, `favorite`).
+
+Поэтому всё, что плагин дописал в `data`, видно в Fenom-сниппетах и чанках, но из ответов `GET /api/v1/products` и `GET /api/v1/products/{id}` вырезается. На сайте с серверным рендерингом пример работает, на headless-витрине — молча нет.
+
+Этот allowlist статический: колонки, созданные утилитой [«Свои поля»](/components/minishop3/interface/utilities/extra-fields), он тоже не пропускает. Чтобы отдать своё поле наружу, нужен свой эндпоинт или свой контроллер каталога.
+:::
+
 ### Параметры
 
 | Параметр | Тип | Описание |
@@ -215,6 +223,10 @@ switch ($modx->event->name) {
 ```
 
 ### Добавление связанных данных
+
+::: info Модель отзывов в примере — ваша
+Класса `msProductReview` в MiniShop3 нет: в примере он стоит вместо вашей модели отзывов или любого другого источника связанных данных. Подставьте реальный класс своего дополнения.
+:::
 
 ```php
 <?php
@@ -326,6 +338,40 @@ switch ($modx->event->name) {
         $modx->eventData['msOnGetProductFields']['data'] = $data;
         $values = &$modx->event->returnedValues;
         $values['data'] = $data;
+        break;
+}
+```
+
+## msOnGetPublicSeo
+
+Вызывается из `PublicSeoService` после сборки SEO и overlay TV-карты (`ms3_public_seo_tv_map`), до финального whitelist. Товар и категория. На list/tree по умолчанию `include_seo=0`, на get — `1`.
+
+### Параметры
+
+| Параметр | Тип | Описание |
+| --- | --- | --- |
+| `seo` | `array` | Текущий whitelist SEO |
+| `payload` | `array` | Строка каталога (товар/категория) |
+| `og_type` | `string` | `product` или `website` (категория) |
+
+### Модификация
+
+Плагин возвращает patch в `$modx->event->returnedValues['seo']`. Неизвестные ключи отрезает whitelist. `og.title` / `og.description` копируют `title` / `description`, если явно не заданы в patch `seo.og`.
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnGetPublicSeo':
+        $seo = $scriptProperties['seo'];
+        $payload = $scriptProperties['payload'];
+        $ogType = $scriptProperties['og_type'];
+
+        if ($ogType === 'product' && !empty($payload['vendor'])) {
+            $seo['description'] = trim(($seo['description'] ?? '') . ' — ' . $payload['vendor']);
+        }
+
+        $values = &$modx->event->returnedValues;
+        $values['seo'] = $seo;
         break;
 }
 ```

@@ -49,7 +49,24 @@ Content-Type: `application/openapi+json`.
 curl -s https://example.com/api/v1/meta/endpoints | jq
 ```
 
+Поля каждой записи:
+
+| Поле | Смысл |
+| --- | --- |
+| `name` | Имя маршрута (`resources.create`, `objects.list`, …) |
+| `methods` | Список HTTP-методов |
+| `path` | Публичный путь с плейсхолдерами |
+| `pattern` | То же, что `path`: роут и каталог отдают одинаковое значение |
+| `public` | Доступен ли anonymous |
+| `permission` | Строка scope или `null` |
+| `object` | Имя объекта из registry или `null` |
+| `description` | Текст описания или `null` |
+| `tags` | Список тегов |
+| `parameters` | Описания path- и query-параметров маршрута |
+
 Discovery (`GET /api/v1`) ссылается на meta-URL в `links`. Полный список core-маршрутов: [Обзор API](overview).
+
+Корень OpenAPI-документа содержит нестандартное расширение `x-mxheadless.objects` со списком всех зарегистрированных имён объектов. Генераторы клиентов его игнорируют, но по нему удобно проверить, какие объекты доступны на конкретной установке.
 
 ## Schema vs OpenAPI
 

@@ -4,14 +4,14 @@
 
 | Уровень            | Описание                                                                  |
 |--------------------|---------------------------------------------------------------------------|
-| **Headless-ядро**  | Глобальный объект `window.ms3PromoCode` — apply / remove / validate / current / события |
+| **Headless-ядро**  | Глобальный объект `window.ms3PromoCode` — `apply` / `remove` / `validate` / `getCurrent` / события |
 | **UI-слой**        | Готовая форма ввода, монтируется по `[data-ms3-promocode="form"]`         |
 
-UI-слой — опциональный. Headless-ядро может работать без него — для собственных JS-интеграций (Vue/React/Svelte/любой SPA).
+UI-слой не обязателен. Headless-ядро работает без него — для своих JS-интеграций (Vue/React/Svelte/любой SPA).
 
 ## Что подключается
 
-Управляется системной настройкой [`ms3promocode.frontend_assets_preset`](../settings#ms3promocode-frontend-assets-preset):
+Управляется системной настройкой [`ms3promocode.frontend_assets_preset`](../settings#ms3promocode.frontend_assets_preset):
 
 | Пресет     | Подключаемые файлы                                                                            |
 |------------|-----------------------------------------------------------------------------------------------|
@@ -32,14 +32,14 @@ assets/components/ms3promocode/
 │   ├── ms3promocode.headless.js    # глобал window.ms3PromoCode
 │   ├── ui/
 │   │   └── PromoCodeUI.js          # класс готовой UI-формы
-│   └── ms3promocode.js             # auto-mount UI на data-атрибуты
+│   └── ms3promocode.js             # автомонтаж UI по data-атрибутам
 ```
 
 ## Разделы
 
 | Документ                              | Описание                                                              |
 |---------------------------------------|-----------------------------------------------------------------------|
-| [Шаблон формы](template)              | Чанк, data-атрибуты, override-папка                                   |
+| [Шаблон формы](template)              | Чанк, data-атрибуты, папка переопределений                            |
 | [JS API](js-api)                      | `window.ms3PromoCode` — методы и события                              |
 
 ## Сценарии использования
@@ -52,16 +52,16 @@ assets/components/ms3promocode/
 {'!ms3PromoCodeForm' | snippet}
 ```
 
-Всё работает — форма видна, применение/снятие через клик мышью, цены пересчитываются.
+Всё работает — форма видна, применение и снятие по клику, цены пересчитываются.
 
 ### 2. Своя форма, наша логика
 
-Пресет `core_ui`, в шаблоне свой HTML с `data-ms3-promocode="form"` и нужными `data-ms3pc-state="empty/applied"` блоками. UI-слой подхватит её автоматически.
+Пресет `core_ui`. В шаблоне — свой HTML с `data-ms3-promocode="form"` и блоками `data-ms3pc-state="empty/applied"`. UI-слой подхватит форму автоматически.
 
 См. [Шаблон формы](template).
 
 ### 3. Полный headless
 
-Пресет `core` — UI-слой не загружается. Вы пишете свой компонент (Vue/React) и используете `window.ms3PromoCode.apply(...)` напрямую.
+Пресет `core` — UI-слой не загружается. Свой компонент (Vue/React) обращается к `window.ms3PromoCode.apply(...)` напрямую.
 
 См. [JS API](js-api).

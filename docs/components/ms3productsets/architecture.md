@@ -22,7 +22,7 @@ title: Архитектура
 
 ## Таблицы БД
 
-Связь шаблонов массового применения со строками выдачи (логическая: `template_name` в строках ссылается на имя шаблона):
+`template_name` в строках `ms3_product_sets` ссылается на имя шаблона:
 
 ```mermaid
 flowchart TB
@@ -75,7 +75,7 @@ flowchart TD
 ```
 
 1. Нормализация параметров (`type`, `resource_id`, `max_items`, `exclude_ids`, чанки).
-2. Запрос `msps_get_products_by_type(...)`: сначала ручная подборка из `ms3_product_sets` (только опубликованные неудалённые `msProduct`); если пусто — авто-логика по типу.
+2. Запрос `msps_get_products_by_type(...)`: сначала ручная подборка из `ms3_product_sets` (только опубликованные неудалённые `msProduct`). Если список пуст и `ms3productsets.auto_recommendation` = 1, включается авто-логика типа. Тип `vip` настройку не читает. Он берёт `vip_set_{set_id}`.
 3. Если ID нет: `hideIfEmpty=true` → `''`, иначе отрисовка `emptyTpl`.
 4. Если `return=ids` → вернуть CSV ID.
 5. Иначе отрисовка через `msProducts` и опционально `tplWrapper`.
@@ -85,9 +85,9 @@ flowchart TD
 Общий порядок: ручные связи из `ms3_product_sets` → при пустоте авто (если `ms3productsets.auto_recommendation` = 1) → `exclude_ids` и лимит через `msps_apply_set_filters`.
 
 - `vip`: ручная подборка `type=vip`. Запасной вариант: `ms3productsets.vip_set_{set_id}`.
-- `auto_sales`: таблица, иначе co-purchase из заказов (`msps_get_auto_sales`: товары из тех же заказов, что и текущий, статусы `2,4,5`), иначе `similar`.
+- `auto_sales`: таблица, иначе co-purchase из заказов. `msps_get_auto_sales` берёт товары из тех же заказов, что и текущий, статусы `2,4,5`. `category_id` не используется. Список из заказов не фильтруется до `msProducts`. Запасной `similar` только если SQL вернул пустой массив.
 - `buy_together`, `also-bought`, `cross-sell`: таблица, иначе `auto_sales`, иначе авто по категории (`msps_get_auto_recommendations`).
-- `similar`: таблица, иначе `msps_get_similar_products` (та же категория, shuffle).
+- `similar`: таблица, иначе `msps_get_similar_products` (та же категория `parent`, shuffle). `category_id` не читается.
 - `cart_suggestion`: таблица, иначе авто по категории / `category_id`.
 - `popcorn`: таблица, иначе категория текущего товара, иначе авто с `resource_id=0`.
 - `auto`, `custom`: таблица с соответствующим `type`, иначе авто по категории.
@@ -98,7 +98,7 @@ flowchart TD
 
 При `ms3productsets.cache_lifetime` > 0 результат `msps_get_products_by_type` кешируется.
 
-Ключ: `ms3productsets/sets/{generation}/{md5(...)}`, где `generation` это счётчик `msps_get_cache_generation()`. Сброс (`msps_bump_cache_generation`) при сохранении/удалении шаблона, apply/unbind, sync TV, cleanup.
+Ключ: `ms3productsets/sets/{generation}/{md5(...)}`, где `generation` это счётчик `msps_get_cache_generation()`. Сброс вызывает `msps_bump_cache_generation` при сохранении и удалении шаблона, apply/unbind, sync TV и cleanup.
 
 Параметры в md5: `type`, `resource_id`, `category_id`, `set_id`, `limit`, отсортированные `exclude_ids`.
 
@@ -119,7 +119,7 @@ flowchart TD
 1. Админ заполняет TV-поля (`ms3productsets_*`) у товара.
 2. `OnDocFormSave` проверяет наличие этих TV на шаблоне ресурса.
 3. `msps_sync_product_sets_from_tv`:
-   - если TV **заполнен:** удаляются TV-записи (пустой `template_name`), вставляются новые `related_product_id` с `sortorder` из TV;
+   - если TV **заполнен:** удаляются TV-записи (пустой `template_name`), вставляются новые `related_product_id` с `sortorder` из TV.
    - если TV **пуст:** удаляются только записи **без** `template_name`, чтобы не затереть связи, созданные массовым применением шаблонов к категориям.
 
 ## Поток массового применения шаблона

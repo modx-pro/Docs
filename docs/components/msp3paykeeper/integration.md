@@ -24,13 +24,20 @@ description: Webhook PayKeeper, поток оплаты, вкладка зака
 
 ## Webhook
 
+### События пакета
+
+* **`msp3PayKeeperOnPrepareReceiptItem`** – позволяет изменить объект счета (`$params['item']`) перед отправкой в PayKeeper.
+* **`msp3PayKeeperOnProviderEvent`** – вызывается, когда получен webhook‑событие неизвестного типа (после успешной проверки подписи). В `payload` передаётся массив данных события, что даёт возможность разработчику обработать кастомные события PayKeeper.
+
+<!-- MEDIA: скриншот поля URL POST-оповещений в кабинете PayKeeper -->
+
 В кабинете PayKeeper один URL уведомлений:
 
 ```text
 https://ваш-домен.ru/assets/components/msp3paykeeper/webhook.php
 ```
 
-HTTPS без Basic Auth и без 301. PayKeeper шлёт form POST. Ядро MiniShop3 на `/api/v1/payment/webhook/{id}` ждёт JSON, этот маршрут для PayKeeper не подходит.
+Требования: HTTPS, без Basic Auth и редиректов. PayKeeper шлёт form POST. Ядро MiniShop3 на `/api/v1/payment/webhook/{id}` ждёт JSON, этот маршрут для PayKeeper не подходит.
 
 Подпись:
 
@@ -44,7 +51,7 @@ key = md5(id + sum + clientid + orderid + secret_word)
 
 Секрет для проверки подписи на `webhook.php`: сначала `secret_word` в properties активного способа, иначе **`msp3paykeeper_secret_word`**. Это не пароль API.
 
-Неизвестный тип события после валидной подписи: пакет отвечает `OK`. Статус заказа в ядре MiniShop3 не меняет. Пакет вызывает **`msp3PayKeeperOnProviderEvent`** с полем `payload`.
+Неизвестный тип события после валидной подписи: пакет отвечает `OK`. Пакет не меняет статус заказа в ядре MiniShop3. Вызывается событие **`msp3PayKeeperOnProviderEvent`** с полем `payload`.
 
 ## Как проходит оплата
 
@@ -73,6 +80,24 @@ flowchart LR
 
 ## Вкладка заказа
 
+### Ограничения Refund
+
+| Статус попытки | Возможность возврата | Сообщение lexicon |
+| --- | --- | --- |
+| `PENDING` | ❌ | `msp3paykeeper.err_refund_pending` |
+| `AUTHORIZED` (холд) | ❌ | `msp3paykeeper.err_refund_hold` |
+| `REFUNDED` | ❌ | `msp3paykeeper.err_refund_done` |
+| `PAID` | ✅ | — |
+| `PARTIALLY_REFUNDED` | ✅ | — |
+
+### Поведение Sync без полной конфигурации
+
+Если любые из настроек `server_url`, `api_login` или `api_password` пустые, кнопка **Sync** в вкладке заказа возвращает `success` со списком локальных попыток и нотой `msp3paykeeper.err_not_configured`. Платёжные запросы к PayKeeper не отправляются.
+
+## Чеки 54-ФЗ
+
+<!-- MEDIA: скриншот вкладки PayKeeper в карточке заказа MiniShop3 -->
+
 Плагин **`msp3paykeeper_bootstrap`**: `OnMODXInit` подключает autoload, `msOnManagerCustomCssJs` регистрирует вкладку на странице заказа MiniShop3.
 
 Запросы вкладки идут в `assets/components/msp3paykeeper/connector.php` с параметром `action`:
@@ -80,9 +105,9 @@ flowchart LR
 | `action` | Назначение |
 | --- | --- |
 | `mgr/getlist` | Список попыток оплаты |
-| `mgr/refund` | Возврат |
+| `mgr/refund` | Возврат <!-- MEDIA: скриншот формы возврата во вкладке заказа --> |
 | `mgr/cancel` | Отмена счёта |
-| `mgr/capture` | Списание холда |
+| `mgr/capture` | Списание холда <!-- MEDIA: скриншот кнопки списания холда во вкладке заказа --> |
 | `mgr/sync` | Синхронизация с PayKeeper |
 
 Попытки лежат в `ms3_payment_attempts`. Sync вызывает `GET /info/invoice/byid/` и `GET /info/payments/byid/`. Если `Settings::isConfigured()` ложно (пустые `server_url`, логин или пароль API), sync отвечает success: текущие попытки и `note` из лексикона `msp3paykeeper.err_not_configured`.
@@ -90,6 +115,8 @@ flowchart LR
 Пока попытка `pending` или `authorized`, вкладка не вызывает `reverse`. Сначала нужен webhook или capture. Возврат идёт по `id` из уведомления. `invoice_id` для reverse не подходит.
 
 ## Чеки 54-ФЗ
+
+<!-- MEDIA: скриншот примера чека в личном кабинете PayKeeper -->
 
 При включённом `msp3paykeeper_payment_receipt` и непустом email покупателя `service_name` уходит JSON с `cart`. Без email счёт создаётся, `cart` не добавляется. Код НДС задаёт `msp3paykeeper_vat_code` (список 1-10).
 

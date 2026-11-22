@@ -80,6 +80,7 @@ description: "Многошаговый квиз с режимами lead, pricin
 | Поле | Правило |
 | --- | --- |
 | `title` | Обязательно |
+| `description` | textarea, необязательное. Чанк выводит его под заголовком шага |
 | `type` | `single` (radio), `multi` (checkbox), `text`, `info` |
 | `required` | Пустой required-шаг блокирует Далее и submit. Для `info` игнорируется |
 | `options` | Для `single` / `multi`: `label`, `image`, `price_delta` (в сумму только в `pricing`) |

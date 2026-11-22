@@ -79,6 +79,8 @@ items: [
 
 ## Быстрая настройка webhook
 
+<!-- MEDIA: webhook — MODX: путь `assets/components/msp3prodamus/webhook.php`, HTTPS без 301 -->
+
 В кабинете один URL на страницу:
 
 ```text

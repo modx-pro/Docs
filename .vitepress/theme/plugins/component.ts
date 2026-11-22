@@ -14,6 +14,8 @@ import { categoryKeys } from '../categories.ts'
 
 import type { Author } from '../../../docs/authors.ts'
 import { findPath } from '../utils.ts'
+import { pageProse, snippetDescription } from '../excerpt.ts'
+import { titleTemplateFor } from '../seo-snippet.ts'
 
 const LOGO_CACHE_VERSION = (
   process.env.GITHUB_SHA?.slice(0, 8)
@@ -223,15 +225,24 @@ export default class DocsComponent {
         : pageData.title
     pageData.title = decodeHtmlEntities(rawTitle) ?? rawTitle
 
-    if (
-      component
-      && !pageData.description
-      && component.description
-    ) {
-      pageData.description = component.description
-    } else if (pageData.description) {
-      pageData.description = decodeHtmlEntities(pageData.description) ?? pageData.description
+    const ownDescription = pageData.frontmatter.description
+    const home = pageData.relativePath === 'index.md' || pageData.relativePath === 'en/index.md'
+    const own = typeof ownDescription === 'string'
+      ? decodeHtmlEntities(ownDescription.trim()) ?? ownDescription.trim()
+      : undefined
+    if (!home) {
+      pageData.description = snippetDescription(
+        pageData.title,
+        own,
+        pageProse(pageData.relativePath),
+        component?.description,
+      )
+    } else if (own) {
+      pageData.description = own
     }
+
+    const template = titleTemplateFor(pageData.title, component?.title, pageData.description, own)
+    if (template) pageData.titleTemplate = template
 
     return pageData
   }

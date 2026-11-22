@@ -4,6 +4,7 @@
 
 | Version | Date | Description |
 |---------|------|-------------|
+| [1.9.0](1.9.0) | 2026 | Results without the snippet call settings are no longer swapped, names instead of ids in SEO templates |
 | [1.2.0](1.2.0) | 2026 | Filter cache warmup |
 | [1.1.0](1.1.0) | 2024 | New snippets, SEO improvements, refactoring |
 | 1.0.0-beta1 | 2024 | First public release |

@@ -17,7 +17,9 @@ Result: a price list or a schedule is edited on the **Tables** tab. The section 
 
 1. On the resource open **Tables**, create a table, and add rows. Filters, pagination, and CSV or JSON import are on the same tab.
 2. On the **Sections** tab add `data_table`. In **Table** set `table_key`, in **Limit** set how many rows to show. The section inspector does not edit the rows.
-3. **Save** on the resource publishes the section. A custom row template uses the `PageBuilderTableRows` snippet with the same `table_key`.
+3. **Save** on the resource publishes the section.
+4. A custom row template uses the `PageBuilderTableRows` snippet with the same `table_key`. The section chunk calls it with `return=html`. Without `return` the snippet returns JSON. `limit` runs from 1 to 100, default 20.
+5. If a row depends on context or a tag, turn on "Filter by MODX context" (`use_context`) or "Merge UTM session filters" (`use_utm`) on the table field.
 
 ## Example fields
 

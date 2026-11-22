@@ -5,7 +5,7 @@ description: Минимальная выкладка Tickets на сайте
 
 # Быстрый старт
 
-Пакет не ставит готовый шаблон сайта. Ниже минимальная схема после [установки](index) и [прав](interface/setup-permissions).
+Пакет не ставит готовый шаблон сайта. Минимальная выкладка после [установки](index) и [прав](interface/setup-permissions):
 
 ## 1. Раздел и права
 
@@ -21,7 +21,7 @@ description: Минимальная выкладка Tickets на сайте
 | Тикет | страница записи | `TicketMeta`, контент, `TicketComments` |
 | Создание | форма с фронтенда | `TicketForm` |
 
-Стили и скрипты подключает плагин Tickets из `tickets_frontend_css` и `tickets_frontend_js`. Подробнее: [Фронтенд](frontend).
+Стили и скрипты подключают сниппеты при отрисовке: `[[++tickets.frontend_css]]` и `[[++tickets.frontend_js]]`, см. [Фронтенд](frontend).
 
 ## 3. Шаблон секции
 
@@ -76,7 +76,7 @@ description: Минимальная выкладка Tickets на сайте
 
 :::
 
-`TicketMeta` выводит автора, просмотры, рейтинг и кнопки голоса/избранного. Контент тикета — поле `content` ресурса (после Jevix на выводе).
+`TicketMeta` выводит автора, просмотры, рейтинг и кнопки голоса и избранного. На выводе контент тикета фильтрует Jevix.
 
 ## 5. Страница создания тикета
 
@@ -94,12 +94,12 @@ description: Минимальная выкладка Tickets на сайте
 
 :::
 
-Проверьте `tickets_default_template` и шаблон дочерних тикетов в настройках секции.
+Проверьте `tickets.default_template` и шаблон дочерних тикетов в настройках секции.
 
 ## 6. Проверка
 
-- [Системные настройки](settings): почта, редактор, `tickets_source_default`
+- [Системные настройки](settings): почта, редактор, `tickets.source_default`
 - Тестовый тикет из mgr и с фронтенда
-- Комментарий и письмо (или очередь `tickets_mail_queue`)
+- Комментарий и письмо (или очередь `tickets.mail_queue`)
 
-Дальше: [FAQ](faq), [FormIt](ticketformit), [настройки секции](interface/create-ticket-section#nastrojki-razdela).
+Дальше: [FAQ](faq), [FormIt](ticketformit), [настройки секции](interface/create-ticket-section#nastroyki-razdela).

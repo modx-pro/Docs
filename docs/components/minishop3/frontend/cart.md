@@ -5,7 +5,7 @@ title: Корзина
 
 Параметры вызова, плейсхолдеры и структура данных — в справочнике сниппета [msCart](/components/minishop3/snippets/mscart).
 
-<!-- ![Корзина на фронтенде](/components/minishop3/screenshots/fe-cart.png) -->
+![Корзина на фронтенде](/components/minishop3/screenshots/fe-cart.png)
 
 [![](https://file.modx.pro/files/3/f/b/3fb27bc4fb74bcbbfad003ba2165498cs.jpg)](https://file.modx.pro/files/3/f/b/3fb27bc4fb74bcbbfad003ba2165498c.png)
 
@@ -139,9 +139,18 @@ core/components/minishop3/elements/templates/cart.tpl
 
 Из JavaScript — `ms3.cartAPI.changeOption(productKey, options)`.
 
+```mermaid
+flowchart TB
+  Add[cartAPI.add] --> Cart[Сессия корзины]
+  Change[cartAPI.change] --> Cart
+  Opt[cartAPI.changeOption] --> Cart
+  Remove[cartAPI.remove] --> Cart
+  Clean[cartAPI.clean] --> Cart
+```
+
 ## Поля товара в разметке
 
-Полный перечень — в справочнике: [плейсхолдеры msCart](/components/minishop3/snippets/mscart#плейсхолдеры-в-чанке).
+Полный перечень — в справочнике: [плейсхолдеры msCart](/components/minishop3/snippets/mscart#pleysholdery-v-chanke).
 
 ### Опции позиции
 

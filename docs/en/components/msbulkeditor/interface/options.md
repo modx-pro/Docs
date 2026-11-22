@@ -5,7 +5,7 @@ description: Bulk change of scalar and multi-value product options
 
 # MiniShop3 options
 
-Bulk changes to MS3 **product options** (`ms3_product_options` table).
+Bulk changes to MiniShop3 **product options** (`ms3_product_options`).
 
 ![Option operation dialog](/components/msbulkeditor/screenshots/operation-option.png)
 
@@ -23,7 +23,7 @@ Bulk changes to MS3 **product options** (`ms3_product_options` table).
 | UI | API `valueKind` | When to use |
 | --- | --- | --- |
 | **Single value** | `scalar` | text/select/combobox with one string |
-| **Tags (multi-value)** | `multi` | MS3 comboMultiple, tags, colors — multiple rows per key |
+| **Tags (multi-value)** | `multi` | MS3 comboMultiple, tags, colors. Multiple rows per key |
 
 ---
 
@@ -62,7 +62,7 @@ Legacy format “single string `red,green`” is read on preview, but apply for 
 ## Beta limitations
 
 - Typed MS3 widgets (date, textarea) not available in bulk.
-- Before preview/apply for options, link in `ms3_category_options` is checked; gaps open the [binding wizard](binding-wizard).
+- Before preview/apply for options, the link in `ms3_category_options` is checked. Gaps open the [binding wizard](binding-wizard).
 - Auto-detect option type from MS3 catalog is not implemented: choose `valueKind` manually.
 
 ---
@@ -81,13 +81,13 @@ Legacy format “single string `red,green`” is read on preview, but apply for 
 
 ## Option columns in the table
 
-Options can be added to the grid via [columns](column-settings) (key `msbe:option:*`). Multi-value displays comma-separated. Scalar options support inline editing — see [inline editing](inline-editing).
+Options can be added to the grid via [columns](column-settings) (key `msbe:option:*`). Several values are shown separated by commas. A click saves one string and replaces the previous list. See [inline editing](inline-editing).
 
 ---
 
 ## Inline (scalar)
 
-Clicking a single-value option cell writes `option` / `mode: set` / `valueKind: scalar` for one product. Multi-value (tags) — bulk only.
+Clicking any option cell writes `option` / `mode: set` / `valueKind: scalar` for one product and replaces a tag list with that single string.
 
 ---
 

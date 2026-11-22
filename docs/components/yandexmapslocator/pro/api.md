@@ -5,7 +5,7 @@ description: 'YandexMapsLocator Pro: api.php locations и geocode'
 
 # REST API v1
 
-Только **Pro** (capability `pro`). Запрос со страницы сниппета в Free идёт через `search.php`: [Интерфейс](../frontend).
+Только **Pro**: эндпоинт живёт в файле `api.php` namespace `yandexmapslocatorpro` и работает по факту установки пакета. Запрос со страницы сниппета в Free идёт через `search.php`: [Интерфейс](../frontend).
 
 Базовый URL:
 
@@ -24,6 +24,27 @@ description: 'YandexMapsLocator Pro: api.php locations и geocode'
 
 PATH_INFO вида `api.php/api/v1/...` на многих хостингах отдаёт HTML 404. Берите `route=`.
 
+```mermaid
+flowchart TD
+    req["Запрос к api.php"] --> opt{"OPTIONS?"}
+    opt -->|да| p204["CORS preflight и 204"]
+    opt -->|нет| guard{"api_enabled и Bearer?"}
+    guard -->|нет| err["503, 401 или 405"]
+    guard -->|да| route{"route содержит /api/v1?"}
+    route -->|нет| err
+    route -->|да| method{"Метод GET?"}
+    method -->|нет| err
+    method -->|да| bucket{"Бакет list, при address ещё geocode"}
+    bucket -->|исчерпан| err
+    bucket -->|есть запас| parse["RequestParser: fields, include, sortby"]
+    parse --> bad{"Ошибка парсера?"}
+    bad -->|да| e400["400 invalid_field, where_not_allowed"]
+    bad -->|нет| work["Санитайзер, выборка, сериализация"]
+    work --> cache{"Публичный кеш?"}
+    cache -->|нет| pub["Cache-Control private, max-age=60"]
+    cache -->|да| priv["Cache-Control public, max-age=60"]
+```
+
 ## Аутентификация
 
 Пустой `yandexmapslocator_api_token`: публичное чтение, удобно на стенде. На рабочем сайте задайте токен для серверных клиентов (сервер Nuxt, свой сервер). В HTML страницы со сниппетом токен не попадает. Локатор на сайте тогда ходит в `search.php`.
@@ -40,14 +61,14 @@ Authorization: Bearer YOUR_TOKEN
 | `limit` | По умолчанию 20, max 100 |
 | `offset` | max 10000 |
 | `fields` | Белый список полей через запятую |
-| `include` | `resource`, `tv` (`tv` требует `resource`) |
+| `include` | `resource`, `tv` (`tv` требует `resource`). Любой `include` снимает публичный кеш ответа |
 | `sortby` | `pagetitle`, `distance`, `menuindex`, `id`, `createdon` |
 | `sortdir` | `ASC` / `DESC` |
 | `lat`, `lng` | Координаты для distance |
 | `address` | Адрес (геокодируется) |
 | `radius` | км |
 | `filters`, `category` | `category` режет список сам. «Открыто сейчас»: `filters=working_now` |
-| `amenity` / `amenities` | Теги удобств через запятую (можно без `filters=amenity`) |
+| `amenity` / `amenities` | Теги удобств через запятую (можно без `filters=amenity`). Работает как «И»: нужны все перечисленные теги |
 | `brand` | Фильтр по TV `yandexmaps_brand` |
 | `context` | MODX context |
 | `product_id` | Pro: фильтр MiniShop3 |
@@ -55,6 +76,8 @@ Authorization: Bearer YOUR_TOKEN
 `where` → `400 where_not_allowed`.
 
 По умолчанию короткий набор: `id`, `resource_id`, `title`, `address`, `coordinates`. Для `distance`, `is_open_now`, `status_hint`, `closes_at` и т.п. перечислите их в `fields`.
+
+`fields=resource` без `include=resource` вернёт точку без блока `resource`: поле просто не попадёт в ответ, ошибки не будет.
 
 ### Примеры запросов
 
@@ -136,6 +159,8 @@ Authorization: Bearer YOUR_TOKEN
 ```text
 ?route=api/v1/locations&parents=5&amenity=wifi,card&fields=id,title,amenities
 ```
+
+Останутся точки, у которых есть оба тега. Режима «любого из» у параметра нет: запрашивайте по одному тегу или фильтруйте на своей стороне.
 
 С ресурсом и TV (имена TV из `yandexmapslocator_api_resource_tvs`):
 
@@ -329,6 +354,7 @@ Pro: `is_open_now`, `status_hint`, `closes_at`, `next_open_at`, `working_hours_s
 | `empty_address` | 400 | пустой `address` у geocode |
 | `not_found` | 404 | нет точки |
 | `rate_limit_exceeded` | 429 | лимит IP |
+| `internal_error` | 500 | необработанная ошибка, смотрите лог MODX |
 
 `yandexmapslocator_api_enabled = Нет` → `503` на REST:
 

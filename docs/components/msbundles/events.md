@@ -5,77 +5,77 @@ description: Системные события msOnBundle* для плагино
 
 # События
 
-Нужны, если вы пишете плагин: запретить добавление комплекта, поменять цену, не дать удалить системный набор в менеджере.
+Для плагинов: запретить добавление, изменить цену, защитить от удаления.
 
-При установке пакет регистрирует события в группе **msBundles**. Имена удобно брать из `MsBundles\Events\BundleEventNames`.
+Пакет регистрирует события в группе **msBundles**. Имена — в `MsBundles\Events\BundleEventNames`.
 
 ## События корзины
 
 | Имя | Когда |
 | --- | --- |
-| `msOnBeforeBundleAdd` | До записи строк в корзину |
-| `msOnBundleAdded` | После успешного добавления |
-| `msOnBeforeBundleRemove` | До удаления по `bundle_hash` (API или каскад) |
+| `msOnBeforeBundleAdd` | До записи в корзину |
+| `msOnBundleAdded` | После добавления |
+| `msOnBeforeBundleRemove` | До удаления по `bundle_hash` |
 | `msOnBundleRemoved` | После удаления |
-| `msOnBeforeBundleChange` | До синхронизации qty группы в корзине |
+| `msOnBeforeBundleChange` | До синхронизации qty |
 | `msOnBundleChanged` | После синхронизации qty |
 | `msOnBundlePriceCalculate` | После расчёта цены |
 | `msOnBundleStockCheck` | После проверки остатков |
 
-Отмена before-событий: вернуть непустую строку из плагина или `$modx->event->output('Причина')`.
+Отмена before: вернуть строку или `$modx->event->output('Причина')`.
 
-## События менеджера (CRUD)
+## События менеджера
 
 | Имя | Когда |
 | --- | --- |
-| `msOnBeforeBundleSave` | До create/update комплекта |
-| `msOnBundleSaved` | После успешного сохранения |
-| `msOnBeforeBundleDelete` | До удаления комплекта из БД |
-| `msOnBundleDeleted` | После удаления из БД |
+| `msOnBeforeBundleSave` | До create/update |
+| `msOnBundleSaved` | После сохранения |
+| `msOnBeforeBundleDelete` | До удаления из БД |
+| `msOnBundleDeleted` | После удаления |
 
-`msOnBeforeBundleRemove` срабатывает при удалении из корзины. Удаление комплекта в админке это `msOnBeforeBundleDelete`.
+В админке — `msOnBeforeBundleDelete`, из корзины — `msOnBeforeBundleRemove`.
 
-## Ключевые параметры
+## Параметры
 
 ### msOnBeforeBundleAdd / msOnBundleAdded
 
-`bundle`, `quantity`, `price`, `stock` / `bundle_hash` (после add), `source` = `api`.
+`bundle`, `quantity`, `price`, `stock` / `bundle_hash`, `source` = `api`.
 
 ### msOnBeforeBundleRemove / msOnBundleRemoved
 
-`bundle_hash`, `source` = `api` \| `cart_sync`. Для `cart_sync` также `product_key`.
+`bundle_hash`, `source` = `api` | `cart_sync`. Для `cart_sync`: `product_key`.
 
 ### msOnBeforeBundleChange / msOnBundleChanged
 
 `bundle_hash`, `product_key`, `old_quantity`, `new_quantity`, `count`, `source` = `cart_sync`.
 
-Подмена qty: `returnedValues['new_quantity']` — целое ≥ 1.
+Подмена: `returnedValues['new_quantity']` — целое ≥ 1.
 
 ### msOnBundlePriceCalculate / msOnBundleStockCheck
 
-`bundle`, `quantity`, `result`. Подмена: `returnedValues['result']` → DTO цены или остатков.
+`bundle`, `quantity`, `result`. Подмена: `returnedValues['result']` → DTO.
 
 ### msOnBeforeBundleSave / msOnBundleSaved
 
-Save: `id`, `is_new`, `bundle`, `payload`, `products`. После save: `id`, `is_new`, `bundle` (detail-массив).
+`id`, `is_new`, `bundle`, `payload`, `products`. После: `id`, `is_new`, `bundle` (detail).
 
 ### msOnBeforeBundleDelete / msOnBundleDeleted
 
-`id`, `bundle` (публичный массив до удаления).
+`id`, `bundle` (массив).
 
-## События miniShop3 (плагин msBundles)
+## События miniShop3
 
-Плагин подписан на существующие события MS3:
+Плагин msBundles подписан на:
 
 | Событие MS3 | Назначение |
 | --- | --- |
-| `msOnBeforeChangeInCart` | Синхронизация qty группы → `msOnBeforeBundleChange` / `msOnBundleChanged` |
-| `msOnBeforeRemoveFromCart` | Каскад удаления → `msOnBeforeBundleRemove` / `msOnBundleRemoved` |
-| `msOnGetCart` | Legacy-строки: `is_lead` / `line_index` в памяти для рендера |
+| `msOnBeforeChangeInCart` | Синхронизация qty |
+| `msOnBeforeRemoveFromCart` | Каскад удаления |
+| `msOnGetCart` | Legacy-строки: `is_lead` / `line_index` |
 
-При ошибке синхронизации или cancel: `$modx->event->output($message)` блокирует операцию корзины.
+Ошибка или cancel: `$modx->event->output($message)` блокирует операцию.
 
-## Примеры плагинов
+## Примеры
 
 Отмена добавления:
 
@@ -91,7 +91,7 @@ switch ($modx->event->name) {
 }
 ```
 
-Запрет удаления в менеджере:
+Запрет удаления:
 
 ```php
 <?php

@@ -5,7 +5,7 @@ description: "Разные значения text, url и number для desktop, 
 
 # Значения по экранам
 
-Результат: заголовок или ссылка отличаются на компьютере, планшете и телефоне. Нужны PageBuilder Pro и capability `responsive`. Типы: text, textarea, url, number, currency, richtext, slug.
+Результат: заголовок или ссылка отличаются на компьютере, планшете и телефоне. Нужны PageBuilder Pro и capability `responsive`. Типы: text, textarea, url, number, currency, richtext, slug. Поле с именем `slug`, `alt` или `caption` переключателя не получает, даже если тип в списке.
 
 ## Что нужно заранее
 
@@ -14,7 +14,7 @@ description: "Разные значения text, url и number для desktop, 
 
 ## Шаги
 
-1. Откройте поле в инспекторе и нажмите иконку планшета. Появятся вкладки desktop, tablet, mobile.
+1. Откройте поле в инспекторе и нажмите кнопку с подсказкой «Разные значения для планшета и телефона» (иконка связи). Появятся вкладки desktop, tablet, mobile.
 2. Заполните три значения. **Одно значение для всех экранов** сворачивает карту и берёт desktop, если в схеме нет жёсткого `responsive: true`.
 3. На сайте режим задаёт `pagebuilder_responsive_apply`.
    - `manual` (по умолчанию): одно значение. Берётся `?pb_bp=` или `pagebuilder_default_breakpoint`.
@@ -34,11 +34,11 @@ description: "Разные значения text, url и number для desktop, 
 | tablet | `Каталог` |
 | mobile | `Каталог` |
 
-При `pagebuilder_responsive_apply` = `manual` откройте страницу с `?pb_bp=mobile` и с `?pb_bp=desktop`. При `css` в HTML три значения, лишние прячет media query.
+При `manual` откройте `?pb_bp=mobile` и `?pb_bp=desktop`. При `css` в HTML три значения.
 
 ## Что проверить
 
-Вкладки появляются только после иконки планшета и при включённом редакторе. Свёрнутое поле на сайте показывает desktop. В чанке `{$title|pb_text}`, не `escape`.
+Вкладки появляются только после кнопки «Разные значения для планшета и телефона» и при включённом редакторе. Свёрнутое поле на сайте показывает desktop.
 
 ## Откат
 

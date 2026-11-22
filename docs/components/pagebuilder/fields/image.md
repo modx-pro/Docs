@@ -5,26 +5,24 @@ description: "Media-объект изображения с alt и enrich metadat
 
 # Поле image
 
-Версия: **Free**. Кадрирование — capability `image-crop` (**Pro**).
+Версия: **Free**. Кадрирование: capability `image-crop` (**Pro**).
 
 <!-- ![image](/components/pagebuilder/screenshots/fields/image.jpg) -->
 
 ## Зачем этот тип
 
 - После сохранения в объекте есть ширина, высота и расширение
-- Альтернативный текст и подпись — отдельные поля схемы секции (`text` и т.п.); у media-объекта редактируется `title` в Info
-- Одно изображение, без списка как у [gallery](gallery)
+- Альтернативный текст и подпись задают отдельными полями схемы. `title` media-объекта правят в Info
+- Одно изображение, не список как у [gallery](gallery)
 
 ## Когда использовать
 
 - Фон первого экрана, превью карточки, фото автора
-- Картинка для превью внутри секции
 - Логотип партнёра с альтернативным текстом
 
 ## Советы
 
-- Несколько фото: [gallery](gallery) (Pro)
-- В чанке берите `{$photo.url}`, не путь к файлу строкой
+В чанке берите `{$photo.url}`, а не строку пути к файлу.
 
 ## Похожие типы
 
@@ -49,15 +47,15 @@ description: "Media-объект изображения с alt и enrich metadat
 }
 ```
 
-Ключ `crops` опционален. С Pro и `image-crop` в инспекторе доступно кадрирование; именованные пресеты из `crops` задают размеры, без них — свободный кадр `default`.
+`crops` опционален. С Pro и `image-crop` в инспекторе доступно кадрирование. Именованные пресеты задают размеры. Без пресетов кадр сохраняют под ключом `default`.
 
 ## Значение
 
-Media-объект. Кнопка Info редактирует width, height, title. При выборе из браузера подтягиваются size и имя файла.
+Media-объект. Кнопка Info правит `width`, `height`, `title`. Выбор из браузера заполняет `size` и имя файла.
 
 ## Данные секции {#vyvod-v-section-data}
 
-Ключ `photo` в данных секции после save enrich:
+После save enrich:
 
 ```json
 {
@@ -81,6 +79,16 @@ Media-объект. Кнопка Info редактирует width, height, titl
 - Именованные кадры лежат в `photo.crops.*` и не перезаписывают исходный `url`.
 - Плагин на `pbOnAfterMediaCrop` может дописать `crops.<ключ>.variants`. Это уменьшенные файлы рядом с кадром.
 
+## Отображаемый URL {#display-url}
+
+Модификатор `pb_image_src`, чанк `pagebuilder_partial_image` и инспектор берут один порядок URL: `crops.default`, затем первый кадр с `url`, затем исходный `url`.
+
+```fenom
+{$photo|pb_image_src}
+```
+
+В превью менеджера относительный путь получает `base_url`, чтобы файл не искался внутри `/manager/`. `pb_image_src` этот префикс не добавляет. Адреса `http`, `https`, `//`, `data:` и `blob:` превью не меняет.
+
 ## Пример в chunk
 
 ::: code-group
@@ -99,11 +107,11 @@ Media-объект. Кнопка Info редактирует width, height, titl
 
 :::
 
-<a id="crop-plugin"></a>
-
-## Плагин после кадрирования
+## Плагин после кадрирования {#crop-plugin}
 
 Процессор `mgr/media/crop` после записи файла вызывает `pbOnAfterMediaCrop`. Параметр `result`: `\PageBuilder\Media\MediaCropResult` (`url`, `width`, `height`, `path`, `sourcePath`). Ядро не делает водяной знак и нарезку. Плагин правит кадр и кладёт URL копий в `variants`.
+
+Кадр пишется не поверх исходника, а в подкаталог `pagebuilder-crops` рядом с ним: `assets/images/pagebuilder-crops/hero-<хеш>.<расширение>`. Имя файла: исходное имя плюс хеш геометрии. Файлы `variants` ложатся в этот же каталог.
 
 ```php
 <?php
@@ -113,26 +121,10 @@ switch ($modx->event->name) {
         if (!$result instanceof \PageBuilder\Media\MediaCropResult || !is_file($result->path)) {
             break;
         }
-        $image = imagecreatefromstring((string) file_get_contents($result->path));
-        if ($image === false) {
-            break;
-        }
-        $ink = imagecolorallocate($image, 255, 255, 255);
-        imagestring($image, 3, 8, 8, 'sample', $ink);
-        imagejpeg($image, $result->path, 85);
-        $thumb = imagescale($image, 400);
-        $variantPath = preg_replace('/\.\w+$/', '-400.jpg', $result->path);
-        if ($thumb !== false && is_string($variantPath)) {
-            imagejpeg($thumb, $variantPath, 85);
-            imagedestroy($thumb);
-            $result->variants[] = [
-                'key' => '400',
-                'url' => preg_replace('/\.\w+$/', '-400.jpg', $result->url),
-                'width' => 400,
-                'height' => (int) round(400 * imagesy($image) / max(1, imagesx($image))),
-            ];
-        }
-        imagedestroy($image);
+        $result->variants[] = [
+            'key' => '400',
+            'url' => preg_replace('/\.\w+$/', '-400.jpg', $result->url),
+        ];
         break;
 }
 ```
@@ -149,10 +141,10 @@ switch ($modx->event->name) {
 | `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
-- Дополнительно: `crops` (Pro, `image-crop`). Нет `responsive`. Значение — media-объект, enrich при save.
+- Дополнительно: `crops` (Pro, `image-crop`). У типа нет `responsive`. Enrich при save.
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).
 

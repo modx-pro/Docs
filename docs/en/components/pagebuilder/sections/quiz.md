@@ -22,7 +22,7 @@ Requires PageBuilder Pro and **FetchIt**.
 ## Prerequisites
 
 1. **pagebuilderpro** transport and capability `pro`.
-2. **FetchIt** extra. Without it the section shows "Form temporarily unavailable. Install FetchIt."
+2. **FetchIt**. Without it the section shows "Form temporarily unavailable. Install FetchIt."
 3. Recipient: **Notify email** on the section or system setting `emailsender`.
 
 ## Add the section
@@ -53,13 +53,14 @@ If you do not set button labels, the frontend uses the lexicon. The next step is
 | Layer | Pro |
 | Category | conversion (`conversion`) |
 | Chunk | `pagebuilderpro_quiz` |
-| Requirements | pro, FetchIt |
+| Requirements | pro |
+| `runtimeContext` | `true` (page context, see [catalog](index)) |
 
-## Editor fields
+## Inspector fields
 
 ### Mode (`mode`)
 
-Type [select](../fields/select#section-data-output). `lead`: steps and contact. `pricing`: same plus total. `survey`: steps, contact off by default. Unknown value is treated as `lead` by the handler.
+Type [select](../fields/select#output-in-section-data). `lead`: steps and contact. `pricing`: same plus total. `survey`: steps, contact off by default. Unknown value is treated as `lead` by the handler.
 
 ### Cover
 
@@ -73,11 +74,12 @@ Type [select](../fields/select#section-data-output). `lead`: steps and contact. 
 
 ### Steps (`steps`)
 
-Type [repeater](../fields/repeater#section-data-output). Required.
+Type [repeater](../fields/repeater#output-in-section-data). Required.
 
 | Field | Rule |
 | --- | --- |
 | `title` | Required |
+| `description` | textarea, not required. The chunk prints it under the step title |
 | `type` | `single` (radio), `multi` (checkbox), `text`, `info` |
 | `required` | Empty required step blocks Next and submit. Ignored for `info` |
 | `options` | For `single` / `multi`: `label`, `image`, `price_delta` (counts toward total only in `pricing`) |
@@ -423,7 +425,7 @@ Fenom chunk `pagebuilderpro_quiz_option`:
 </label>
 ```
 
-## Related pages
+## See also
 
 - [Contact form](contact_form)
 - [PageBuilderQuiz snippet](../snippets/PageBuilderQuiz)

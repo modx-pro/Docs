@@ -7,9 +7,10 @@ title: Быстрый старт
 
 ## 1. Установите пакет
 
-1. Установите `mxQuickView` в `Extras -> Installer`.
-2. Очистите кэш MODX.
-3. Проверьте системные настройки namespace `mxquickview` (белый список, при Fenom-чанках — pdoTools 3.x).
+1. Подключите провайдер ModStore с адресом `https://modstore.pro/extras/` в «Конфигурация → Менеджер пакетов».
+2. Установите `mxQuickView` в `Extras -> Installer`.
+3. Очистите кэш MODX.
+4. Проверьте системные настройки namespace `mxquickview` (белый список, при Fenom-чанках — pdoTools 3.x).
 
 ## 2. Подключите инициализацию в шаблоне
 

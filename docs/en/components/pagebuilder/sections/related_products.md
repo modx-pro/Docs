@@ -32,7 +32,7 @@ Requires PageBuilder Pro and miniShop3.
 
 ## Category and exclude
 
-**Category**, **Exclude product** (current), **Limit**. Best on product resource context.
+**Category**, **Exclude product** (current), **Limit**. Best on product resource context. The type is marked `"cacheable": false`.
 
 ## Similar sections
 
@@ -45,13 +45,13 @@ Requires PageBuilder Pro and miniShop3.
 | --- | --- |
 | key | `related_products` |
 | Layer | Pro |
-| Category | commerce (`commerce`) |
+| Category | Commerce (`commerce`) |
 | Chunk | `pagebuilderpro_related_products` |
 | Requires | pro, minishop3 |
 
 ## Inspector fields
 
-Fill these fields in the section inspector. Field types are documented in the [field types reference](../fields/types).
+Field types: [field types reference](../fields/types).
 
 ### Title (`title`)
 
@@ -79,7 +79,7 @@ Type [select](../fields/select#output-in-section-data). Optional. Dropdown with 
 
 ## Section data {#output-in-section-data}
 
-Example payload after save. Media, video, and map values may be enriched on output:
+Example payload after save:
 
 ```json
 {

@@ -3,12 +3,10 @@ title: Каталог товаров
 ---
 # Каталог товаров
 
-Вывод вариантов в карточках каталога с использованием SSR (Server-Side Rendering).
+Как вывести варианты в карточках каталога и добавлять в корзину выбранный вариант.
 
 ## Подключение вариантов
 
-Для загрузки вариантов в каталоге используйте параметр `usePackages`:
-
 ```fenom
 {'msProducts' | snippet : [
     'parents' => 0,
@@ -17,216 +15,141 @@ title: Каталог товаров
 ]}
 ```
 
-## Чанк ms3_products_row_variants
+С параметром `usePackages` каждый товар получает [плейсхолдеры вариантов](#placeholders). В каталог попадают только активные варианты в порядке `position`.
 
-В комплекте идёт готовый чанк для карточки товара с вариантами:
+::: warning Значение `ms3Variants` — с учётом регистра
+При `ms3variants` или без `usePackages` плейсхолдеров нет: условие `{if $has_variants}` ложно, и карточка продаёт товар без варианта.
+:::
+
+Второй вызов `msProducts` на той же странице получает плейсхолдеры вариантов от первого, даже без `usePackages`. У товаров из первого списка — их варианты, у остальных — пустые значения.
+
+## Модуль ProductCardUI {#product-card-ui}
+
+Для чанка с вариантами нужен модуль `ProductCardUI.js` из ms3Variants вместо стандартного модуля MiniShop3. Без замены у списка вариантов нет обработчика: виден и покупается только первый вариант, а состояние корзины пишется в формы первого варианта.
+
+Замените в системной настройке `ms3_frontend_assets` (JSON-массив путей) элемент со стандартным модулем на путь к модулю ms3Variants:
+
+| Было | Стало |
+|------|-------|
+| `"[[+jsUrl]]web\/ui\/ProductCardUI.js"` | `"/assets/components/ms3variants/js/web/ProductCardUI.js"` |
+
+- В настройке слеши стандартного пути экранированы (`web\/ui\/`) — ищите строку в таком виде.
+- Путь к модулю ms3Variants указан от корня сайта. Если MODX установлен в подкаталог, поправьте его.
+
+Чем модуль ms3Variants отличается от стандартного:
+
+- селекторы карточек прописаны в нём жёстко (`.ms3-product-card`, `.qty-input`), настройки `ms3Config.selectors` не учитываются;
+- кнопки «−/+» обрабатывает он сам во всех карточках, включая карточки без вариантов;
+- хуки MiniShop3 при «−/+» называются `beforeChangeCart` / `afterChangeCart` вместо `beforeQuantityChange` / `afterQuantityChange`. Обработчики подключаются через `ms3.hooks.addHook('beforeChangeCart', fn)`; `fn` получает `{productKey, count}` (в `afterChangeCart` — ещё `response`), `cancel = true` в этом объекте отменяет изменение;
+- после «−/+» в карточке блоки корзины, выведенные сервером (например, мини-корзина в чанке), показывают прежнее содержимое до перезагрузки страницы;
+- в карточках, добавленных на страницу после загрузки (подгрузка, фильтры), выбор варианта не работает, и штатного способа подключить их нет.
+
+Обновление MiniShop3 эту настройку не меняет: модуль ms3Variants остаётся, а исправления стандартного модуля до карточек не доходят.
+
+::: danger Перед удалением ms3Variants верните стандартный модуль
+При удалении пакета файл модуля удаляется, а настройка `ms3_frontend_assets` остаётся прежней. Корзина перестанет работать на всём сайте, в консоли браузера будет `ReferenceError: ProductCardUI is not defined`. Сначала верните в настройку `"[[+jsUrl]]web/ui/ProductCardUI.js"`, затем удаляйте пакет.
+:::
+
+## Чанк ms3_products_row_variants {#chunk}
+
+Стандартный чанк `ms3_products_row_variants` — готовая карточка. Свой чанк работает с модулем ProductCardUI, если в нём есть эта разметка:
+
+| Элемент | Разметка | Что делает |
+|---------|----------|------------|
+| Карточка | `class="ms3-product-card"`, `data-product-id="{$id}"` | Без них модуль карточку не видит |
+| Изображение | `<img class="product-image">` — первый такой элемент в карточке | Меняется при выборе варианта |
+| Обёртка | `.ms3v-catalog` | Внутри — список и блоки вариантов |
+| Список | `<select class="ms3v-select">`, у пунктов `value="{$variant.id}"` | Выбор варианта |
+| Блок варианта | `.ms3v-variant-block`, `data-variant-id`, `data-variant-image` | Показывается блок выбранного варианта |
+| Форма добавления | `.ms3_form.ms3v-add-form`, `data-cart-state="add"`, скрытое `options` = `{"_variant_id": ID}` | Добавляет вариант в корзину |
+| Форма изменения | `.ms3v-change-form`, `data-cart-state="change"`, поля `product_key` и `count` (`.qty-input`) — оставьте пустыми, модуль заполнит их данными позиции корзины, кнопки `.qty-btn` с `data-action="decrease"` / `"increase"` | Показывается, когда вариант в корзине |
+
+Когда вариант в корзине, модуль показывает его форму изменения и добавляет « ✓» к пункту списка.
+
+Если `data-variant-image` пустой, у карточки остаётся изображение предыдущего варианта. Пишите `data-variant-image="{$variant.small ?: $variant.image_url}"`: эскиз `small` есть, только если его имя передано в параметре `msProducts` `includeThumbs` (например, `'includeThumbs' => 'small'`, имена — из настроек источника файлов товаров), иначе берётся оригинал.
+
+Поле `options` с JSON имеет приоритет над полями `options[...]`, поэтому стандартные опции MiniShop3 в форме варианта не передаются — см. [Страница товара](product#cart-form).
+
+У товара без вариантов в стандартном чанке нет формы изменения: после добавления в корзину «−/+» в его карточке не появляются. В стандартном чанке MiniShop3 `ms3_products_row` они есть.
+
+## Минимальный чанк
+
+Карточка без модуля ProductCardUI: список вариантов внутри формы меняет `_variant_id` в поле `options`.
 
 ```fenom
-<div class="product-card" data-product-id="{$id}">
-    {* Изображение *}
-    <div class="product-image">
-        <img src="{$thumb}" class="product-image" alt="{$pagetitle}">
-    </div>
-
-    {* Название *}
-    <h3><a href="/{$id | url}">{$pagetitle}</a></h3>
-
-    {if $has_variants}
-        {* ========== ТОВАР С ВАРИАНТАМИ ========== *}
-        <div class="ms3v-catalog" data-product-id="{$id}">
-
-            {* Селектор вариантов *}
-            <select class="ms3v-select">
-                {foreach $variants as $idx => $variant}
-                    {set $label = ''}
-                    {foreach $variant.options_array as $optVal}
-                        {if $label}{set $label = $label ~ ', '}{/if}
-                        {set $label = $label ~ $optVal}
-                    {/foreach}
-                    <option value="{$variant.id}" {if $idx == 0}selected{/if}>
-                        {$label} — {$variant.price | number : 0 : ',' : ' '} ₽
-                    </option>
+<div>
+    {$pagetitle}
+    <form method="post" class="ms3_form">
+        <input type="hidden" name="id" value="{$id}">
+        <input type="hidden" name="ms3_action" value="cart/add">
+        {if $has_variants}
+            <input type="hidden" name="options" value='{["_variant_id" => $variants[0].id] | json_encode}'>
+            <select onchange="this.form.elements.options.value = JSON.stringify({_variant_id: this.value})">
+                {foreach $variants as $v}
+                    <option value="{$v.id}">{$v.options_array | join : ', '} — {$v.price}</option>
                 {/foreach}
             </select>
-
-            {* Блоки вариантов *}
-            {foreach $variants as $idx => $variant}
-                {set $variantImage = $variant.small ?: $variant.image_url}
-                <div class="ms3v-variant-block"
-                     data-variant-id="{$variant.id}"
-                     data-variant-image="{$variantImage}"
-                     {if $idx > 0}style="display:none"{/if}>
-
-                    {* Цена *}
-                    <div class="variant-price">
-                        {if $variant.old_price > $variant.price}
-                            <span class="old-price">{$variant.old_price | number} ₽</span>
-                        {/if}
-                        <span class="current-price">{$variant.price | number} ₽</span>
-                    </div>
-
-                    {* Форма добавления *}
-                    {set $variantOptions = ["_variant_id" => $variant.id]}
-                    <form method="post" class="ms3_form">
-                        <input type="hidden" name="id" value="{$id}">
-                        <input type="hidden" name="count" value="1">
-                        <input type="hidden" name="options" value='{$variantOptions | json_encode}'>
-                        <input type="hidden" name="ms3_action" value="cart/add">
-
-                        <button type="submit" {if !$variant.in_stock}disabled{/if}>
-                            В корзину
-                        </button>
-                    </form>
-                </div>
-            {/foreach}
-        </div>
-
-    {else}
-        {* ========== ТОВАР БЕЗ ВАРИАНТОВ ========== *}
-        <div class="product-price">{$price} ₽</div>
-
-        <form method="post" class="ms3_form">
-            <input type="hidden" name="id" value="{$id}">
-            <input type="hidden" name="count" value="1">
-            <input type="hidden" name="options" value="{}">
-            <input type="hidden" name="ms3_action" value="cart/add">
-            <button type="submit">В корзину</button>
-        </form>
-    {/if}
+        {/if}
+        <button type="submit">В корзину</button>
+    </form>
 </div>
 ```
 
-## Переключение вариантов
+У списка нет атрибута `name`, поэтому сам он в форму не отправляется. Закончившиеся варианты в этом чанке не блокируются, состояние «в корзине» не показывается.
 
-### Модуль ProductCardUI
-
-В комплекте идёт JavaScript модуль `ProductCardUI.js`, который заменяет стандартный модуль MiniShop3 и добавляет поддержку вариантов в каталоге.
-
-Для подключения замените стандартный `ProductCardUI.js` в системной настройке `ms3_frontend_assets`:
-
-```
-"[[+jsUrl]]web/ui/ProductCardUI.js"
-```
-
-на:
-
-```
-"/assets/components/ms3variants/js/web/ProductCardUI.js"
-```
-
-Модуль полностью совместим со стандартным — карточки без вариантов продолжат работать как раньше. Для карточек с вариантами модуль автоматически:
-- Обрабатывает изменение селектора `.ms3v-select`
-- Показывает/скрывает блоки `.ms3v-variant-block`
-- Переключает изображение в карточке товара
-
-### Переключение изображения
-
-При выборе варианта изображение карточки обновляется автоматически, если:
-1. У блока варианта есть атрибут `data-variant-image`
-2. В карточке есть элемент `.product-image`
-
-```fenom
-<div class="ms3v-variant-block"
-     data-variant-id="{$variant.id}"
-     data-variant-image="{$variant.small}">
-```
-
-### С эскизами изображений
-
-Для корректной работы переключения изображений передайте `includeThumbs`:
-
-```fenom
-{'msProducts' | snippet : [
-    'parents' => 0,
-    'usePackages' => 'ms3Variants',
-    'includeThumbs' => 'small,medium',
-    'tpl' => 'ms3_products_row_variants'
-]}
-```
-
-В данных варианта появятся поля `small`, `medium` с URL эскизов.
-
-## Плейсхолдеры товара
-
-При использовании `usePackages => 'ms3Variants'` добавляются:
+## Плейсхолдеры товара {#placeholders}
 
 | Плейсхолдер | Тип | Описание |
 |-------------|-----|----------|
-| `{$has_variants}` | bool | Есть ли варианты |
+| `{$has_variants}` | bool | Есть ли у товара варианты для вывода |
 | `{$variants_count}` | int | Количество вариантов |
-| `{$variants}` | array | Массив вариантов |
-| `{$variants_json}` | string | JSON вариантов |
+| `{$variants}` | array | Варианты — поля в разделе [Поля варианта](#variant-fields) |
+| `{$variants_json}` | string | Те же данные JSON-массивом. Структура отличается от `{$variants_json}` сниппета `msProductVariants` |
 
-## Структура варианта
+У товара без вариантов: `{$has_variants}` = false, `{$variants_count}` = 0, `{$variants}` — пустой массив, `{$variants_json}` — `[]`.
+
+## Поля варианта {#variant-fields}
 
 ```php
 [
     'id' => 1,
-    'sku' => 'ABC-123-red',
+    'product_id' => 42,
+    'sku' => 'ABC-123-red',        // может быть пустым
     'price' => 1500.00,
-    'old_price' => 2000.00,
+    'old_price' => 2000.00,        // может быть пустым
     'count' => 10,
+    'weight' => 0.5,
+    'active' => true,
+    'position' => 0,
     'in_stock' => true,
-    'image_url' => '/assets/images/42/product.jpg',
-    'small' => '/assets/images/42/small/product.jpg',
-    'options_array' => [
-        'color' => 'Красный',
-        'size' => 'XL'
-    ]
+    'file_id' => 7,                // может быть пустым
+    'image_url' => '/assets/images/42/product.jpg', // пусто без изображения
+    'small' => '/assets/images/42/small/product.jpg', // только с includeThumbs
+    'options' => [['key' => 'color', 'value' => 'Красный']],
+    'options_array' => ['color' => 'Красный'],
+    'created_at' => '2026-01-01 12:00:00',
+    'updated_at' => '2026-01-01 12:00:00',
 ]
 ```
 
+`price` — цена из записи варианта. Модификаторы цены MiniShop3 (событие `msOnGetProductPrice`, скидки групп покупателей) к ней не применяются.
+
 ## Фильтрация по наличию
 
-Настройка `ms3variants_show_out_of_stock` влияет на отображение:
+Зависит от настроек [`ms3variants_show_out_of_stock`](../settings#ms3variants_show_out_of_stock) и [`ms3variants_check_stock`](../settings#ms3variants_check_stock):
 
-**При `true` (по умолчанию):**
-- Все варианты отображаются
-- У вариантов без остатков кнопка заблокирована
+- **Показ закончившихся = Да** (по умолчанию) — показываются все активные варианты. В стандартном чанке кнопка закончившегося варианта заблокирована, только если включён контроль остатков. При `ms3variants_check_stock` = Нет вариант с остатком 0 считается «в наличии» и покупается.
+- **Показ закончившихся = Нет** — скрыты варианты с остатком 0. При `ms3variants_check_stock` = Нет такие варианты считаются «в наличии», и скрывать нечего.
 
-**При `false`:**
-- Варианты без остатков скрыты
-- Если у товара нет доступных вариантов, `has_variants = false`
-
-## Минимальный чанк
-
-Простейший чанк с вариантами:
-
-```fenom
-<div class="product" data-product-id="{$id}">
-    <a href="/{$id | url}">
-        <img src="{$thumb}" alt="{$pagetitle}">
-        <h3>{$pagetitle}</h3>
-    </a>
-
-    {if $has_variants}
-        <select class="ms3v-select" onchange="this.form.elements.options.value = JSON.stringify({_variant_id: this.value})">
-            {foreach $variants as $v}
-                <option value="{$v.id}">{$v.options_array | join : ', '} — {$v.price} ₽</option>
-            {/foreach}
-        </select>
-
-        <form method="post" class="ms3_form">
-            <input type="hidden" name="id" value="{$id}">
-            <input type="hidden" name="options" value='{["_variant_id" => $variants[0].id] | json_encode}'>
-            <input type="hidden" name="ms3_action" value="cart/add">
-            <button type="submit">В корзину</button>
-        </form>
-    {else}
-        <span class="price">{$price} ₽</span>
-        <form method="post" class="ms3_form">
-            <input type="hidden" name="id" value="{$id}">
-            <input type="hidden" name="ms3_action" value="cart/add">
-            <button type="submit">В корзину</button>
-        </form>
-    {/if}
-</div>
-```
+::: warning Товар, у которого закончились все варианты, покупается по базовой цене
+При показе закончившихся = Нет у такого товара `{$has_variants}` = false. Чанк рисует обычную форму без варианта, и товар уходит в корзину по базовой цене, без проверки остатков вариантов.
+:::
 
 ## Производительность
 
-Варианты загружаются одним SQL-запросом для всех товаров страницы через событие `msOnProductsLoad`. Это обеспечивает высокую производительность даже при большом количестве товаров.
+Не указывайте `usePackages` там, где варианты не выводятся. Запросы на страницу:
 
-::: tip Оптимизация
-Параметр `usePackages` загружает варианты только когда он указан. На страницах где варианты не нужны (главная, лендинги) не указывайте этот параметр.
-:::
+- один запрос — варианты всех товаров;
+- по запросу опций на каждый вариант;
+- по запросу файла на каждый вариант с изображением;
+- ещё один запрос эскизов при `includeThumbs`.

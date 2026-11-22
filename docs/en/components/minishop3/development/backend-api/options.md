@@ -5,16 +5,14 @@ description: Programmatic work with product options — create, assign to catego
 
 # Options API
 
-Programmatic interface for working with the MiniShop3 options system from PHP.
-
-Options in MiniShop3 use the EAV pattern (Entity-Attribute-Value) and three models:
+Options in MiniShop3 follow the EAV pattern (Entity-Attribute-Value) and consist of three models:
 
 - **msOption** — option definition (key, caption, type)
 - **msCategoryOption** — option-to-category link (active, required, position)
 - **msProductOption** — option value for a specific product
 
 ```
-msOption (color, "Color", combo-multiple)
+msOption (color, "Color", comboMultiple)
     ├── msCategoryOption (option → category "Clothing", active=true)
     │       ├── msProductOption (product=10, key=color, value="Red")
     │       ├── msProductOption (product=10, key=color, value="Blue")
@@ -25,7 +23,19 @@ msOption (color, "Color", combo-multiple)
 
 ## OptionService (facade)
 
-Main service for options. Wraps three sub-services.
+`OptionService` reads and writes values and assigns options to categories. It brings three services together.
+
+```mermaid
+flowchart LR
+  opt[msOption] --> cat[msCategoryOption]
+  cat --> val[msProductOption]
+  facade[OptionService] --> loader[Loader]
+  facade --> sync[Sync]
+  facade --> category[Category]
+  loader -->|getProductOptionValues| val
+  sync -->|saveProductOptions| val
+  category -->|assignOptionToCategories| cat
+```
 
 ```php
 $optionService = $modx->services->get('ms3_option_service');
@@ -45,16 +55,17 @@ $values = $optionService->getProductOptionValues($productId, ['color']);
 
 ### Loading for templates
 
-`loadOptionsForProduct` returns data with metadata for Fenom templates:
+`loadOptionsForProduct` returns values together with metadata — for Fenom templates:
 
 ```php
 $options = $optionService->loadOptionsForProduct($productId);
 // [
 //     'color' => ['Red', 'Blue'],
 //     'color.caption' => 'Color',
-//     'color.type' => 'combo-multiple',
+//     'color.type' => 'comboMultiple',
 //     'color.description' => 'Select color',
-//     'color.category_name' => 'Product properties',
+//     'color.measure_unit' => null,
+//     'color.group_name' => 'Product properties',
 //     'size' => ['L', 'XL'],
 //     'size.caption' => 'Size',
 //     ...
@@ -64,9 +75,11 @@ $options = $optionService->loadOptionsForProduct($productId);
 $options = $optionService->loadOptionsForProduct($productId, false);
 ```
 
+The loader does not list metadata keys in advance. It puts **every** column of the query into the array as `key.column`. That covers all `msOption` fields (`caption`, `description`, `type`, `measure_unit`, `properties`, and the rest) plus `group_name`, the option group name joined from `msOptionGroup`. The group name lives in `group_name`. There is no `category_name` key.
+
 ### Batch loading
 
-For catalogs use batch loading to avoid N+1:
+For catalogs use batch loading — it avoids N+1 queries:
 
 ```php
 $allOptions = $optionService->loadOptionsForProducts([1, 2, 3, 4, 5]);
@@ -93,7 +106,7 @@ $optionService->saveProductOptions($productId, [
 ], false);  // removeOther = false
 ```
 
-On save, values are normalized: trimmed, deduplicated, empty strings removed.
+On save, values are normalized: trimmed, deduplicated, and empty strings dropped.
 
 ### Available option keys
 
@@ -116,7 +129,9 @@ $optionService->addOptionToCategory(
     $categoryId,
     '',       // default value
     true,     // active
-    0         // position
+    0,        // position
+    null,     // caption — the option label inside this category
+    null      // description — the option description inside this category
 );
 
 // Remove option from category
@@ -132,8 +147,6 @@ When an option is assigned to a category it is automatically added to all produc
 
 ### Accessing sub-services
 
-For specific tasks you can use sub-services directly:
-
 ```php
 $loader = $optionService->getLoader();     // OptionLoaderService — read
 $sync = $optionService->getSync();         // OptionSyncService — write
@@ -148,21 +161,29 @@ Option definition is stored in table `ms3_options`.
 
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
-| `key` | varchar(191) | '' | Unique key (letters, digits, hyphen, underscore) |
+| `key` | varchar(191) | '' | Unique key. The allowed character set is wider than it looks. See [Key validation](#key-validation) |
 | `caption` | varchar(191) | '' | Display name |
 | `description` | text | null | Description |
 | `measure_unit` | tinytext | null | Unit of measure |
-| `modcategory_id` | integer | 0 | MODX category ID (for manager grouping) |
-| `type` | varchar(191) | '' | Option type (combo-multiple, textfield, numberfield, etc.) |
+| `option_group_id` | integer \| null | null | Option group ID (`msOptionGroup`); `null` — no group |
+| `type` | varchar(191) | '' | Option type (comboMultiple, textfield, numberfield, etc.) |
 | `properties` | json | null | Extra properties |
 
-### Key validation
+### Key validation {#key-validation}
 
-Option key must:
+The `msOption` model map sets a regex for the key and a list of reserved names (`id`, `type`, `price`, `color`, `size`, and other product and resource fields).
 
-- Contain only Latin letters, digits, hyphen, underscore
-- Not start with a digit or space
-- Not match reserved field names (`id`, `type`, `price`, `weight`, `image`, `published`, and other `modResource` fields)
+`POST /api/mgr/options` and a direct `save()` do not run these rules. The controller trims the key, replaces a dot with `_`, and checks uniqueness. The map rules run only when code calls `$option->validate()`.
+
+The map regex is `/^(?!\W+)(?!\d)[a-zA-Z0-9\x2d-\x2f\x7f-\xff-_]+(?!\s)$/`. Three rules follow from it, and none of them is in the field description:
+
+- the key does not start with a digit: the map rejects `1c_code` and accepts `c1_code`;
+- the key does not start with a non-word character and does not end with a space;
+- the character set is wider than you would expect: besides Latin letters and digits it allows `-`, `.`, `/`, `_`, and bytes `\x7f-\xff`, so a Cyrillic key passes.
+
+Because of that, `1c_code` is saved through the Manager API, while code that writes the option through the model with `validate()` rejects the same key.
+
+A reserved key such as `color` is saved through the Manager API and then shadowed by the product column in the template ([#841](https://github.com/modx-pro/MiniShop3/issues/841)).
 
 ### Programmatic usage
 
@@ -173,7 +194,7 @@ use MiniShop3\Model\msOption;
 $option = $modx->newObject(msOption::class);
 $option->set('key', 'material');
 $option->set('caption', 'Material');
-$option->set('type', 'combo-multiple');
+$option->set('type', 'comboMultiple');
 $option->save();
 
 // Get option
@@ -199,6 +220,8 @@ Option–category link. Table `ms3_category_options`.
 | `position` | integer | 0 | Sort order |
 | `active` | boolean | false | Whether option is active in category |
 | `required` | boolean | false | Whether option is required |
+| `caption` | string \| null | null | Option caption in this category; `null` — falls back to `msOption` |
+| `description` | string \| null | null | Option description in this category; `null` — falls back to `msOption` |
 | `value` | text | null | Default value |
 
 ::: info Composite primary key
@@ -245,7 +268,7 @@ $link->remove();
 
 ## msProductOption model
 
-Option value for a product. Table `ms3_product_options`. One row per value. For multi-value options (combo-multiple) multiple rows with the same `key` are created.
+Option value for a product. Table `ms3_product_options`. One row per value. For multi-value options (comboMultiple) multiple rows with the same `key` are created.
 
 ### msProductOption fields
 
@@ -261,7 +284,7 @@ Always use `OptionService` for product options. Creating `msProductOption` direc
 
 ## CategoryOptionService
 
-Dedicated service for category-side options. Used in the manager to build the category options list.
+`CategoryOptionService` returns the options of a category. The manager list is built on it.
 
 ```php
 use MiniShop3\Model\msCategory;
@@ -286,7 +309,7 @@ $categoryOptionService->clearCache();
 
 ### OptionLoaderService
 
-Handles all option read operations.
+All option read operations.
 
 ```php
 $loader = $optionService->getLoader();
@@ -306,7 +329,7 @@ $keys = $loader->getOptionKeys($productId, $parentId);
 
 ### OptionSyncService
 
-Handles writing and syncing option values.
+Writing and syncing option values.
 
 ```php
 $sync = $optionService->getSync();
@@ -329,8 +352,6 @@ $sync->updateOptionKey('old_key', 'new_key');
 
 ### OptionCategoryService
 
-Manages option–category links.
-
 ```php
 $categoryService = $optionService->getCategory();
 
@@ -338,7 +359,8 @@ $categoryService = $optionService->getCategory();
 $assigned = $categoryService->assignToCategories($optionId, [5, 12]);
 
 // Add with parameters
-$categoryService->addToCategory($optionId, $categoryId, '', true, 0);
+// ..., position, caption, description
+$categoryService->addToCategory($optionId, $categoryId, '', true, 0, null, null);
 
 // Remove from category
 $categoryService->removeFromCategory($optionId, $categoryId);
@@ -359,7 +381,7 @@ $categoryService->removeFromCategories($optionId, [5, 12, 18]);
 ## REST API
 
 ::: info Since v1.10.0-beta1
-Legacy processors `Processors/Settings/Option/*` and `Processors/Category/Option/*` were fully removed together with the ExtJS UI (22 files, ~2600 lines). All operations go through two REST controllers: `OptionsController` and `CategoryOptionsController`.
+The old processors `Processors/Settings/Option/*` and `Processors/Category/Option/*` were removed together with the ExtJS interface. Every operation goes through two REST controllers: `OptionsController` and `CategoryOptionsController`.
 :::
 
 ### Option management — `/api/mgr/options/*`
@@ -368,18 +390,18 @@ Controller `MiniShop3\Controllers\Api\Manager\OptionsController`, permission `ms
 
 | Method | Path | Description |
 | --- | --- | --- |
-| `GET` | `/api/mgr/options` | List options with filters: `query`, `modcategory_id`, `category_id`, `categories[]` |
-| `GET` | `/api/mgr/options/{id}` | Option detail + linked categories map |
+| `GET` | `/api/mgr/options` | List options with filters: `query`, `option_group_id`, `category_id`, `categories[]`. `option_group_id=0` selects options without a group |
+| `GET` | `/api/mgr/options/{id}` | One option + linked categories map |
 | `POST` | `/api/mgr/options` | Create: normalizes `key`, checks uniqueness, links to categories |
 | `PUT` | `/api/mgr/options/{id}` | Partial update; on `key` change resyncs `msProductOption` via `OptionSyncService::updateOptionKey` |
-| `DELETE` | `/api/mgr/options/{id}` | Delete (cascade via lifecycle `msOption::remove` → `msCategoryOption` → `msProductOption`) |
+| `DELETE` | `/api/mgr/options/{id}` | Delete. Cascade: `msOption::remove` → `msCategoryOption` → `msProductOption` |
 | `DELETE` | `/api/mgr/options/bulk` | Bulk delete: `ids[]` |
 | `POST` | `/api/mgr/options/bulk/assign` | Assign `options[]` to `categories[]` |
 | `GET` | `/api/mgr/options/types` | Type list with localized names |
-| `GET` | `/api/mgr/options/tree` | Resource tree for linking options to product categories (since 1.11.0 — `msCategory` as selectable nodes + `modResource`/`modDocument`/`modWebLink` with `isfolder=1` as navigation, `selectable: bool` flag per node). Lazy by `parent`. `checked` flag for categories where the option is already assigned (if `option_id` is passed) |
+| `GET` | `/api/mgr/options/tree` | Resource tree for linking options to product categories, lazy by `parent`. Since 1.11.0 `msCategory` nodes are selectable, while `modResource`/`modDocument`/`modWebLink` with `isfolder=1` are navigation only; every node carries a `selectable: bool` flag. The `checked` flag marks categories where the option is already assigned (if `option_id` is passed) |
 | `GET` | `/api/mgr/options/suggestions` | Unique `msProductOption.value` values by `key` for `comboOptions` autocomplete on the product card |
 
-> Since 1.11.0 the `GET /api/mgr/options/modcategories` endpoint was removed. Option grouping now uses `msOptionGroup` — see «Option groups» below.
+> Since 1.11.0 the `GET /api/mgr/options/modcategories` endpoint has been removed. Option grouping goes through `msOptionGroup` — see "Option groups" below.
 
 ### Option groups — `/api/mgr/option-groups/*`
 
@@ -387,11 +409,11 @@ Controller `MiniShop3\Controllers\Api\Manager\OptionGroupsController`, permissio
 
 | Method | Path | Description |
 | --- | --- | --- |
-| `GET` | (root) | Group list. Params: `start`, `limit` (`0` = all), `query` (search by `name` / `description`). Response: groups with `options_count`. |
+| `GET` | (root) | Group list. Params: `start`, `limit` (`0` = all), `query` (search by `name` / `description`). Every group in the response carries `options_count` — the number of options in it |
 | `GET` | `/{id}` | One group + `options_count` |
 | `POST` | (root) | Create group: `name` (required), `description`, `sort_order` |
 | `PUT` | `/{id}` | Update: `name`, `description`, `sort_order` |
-| `DELETE` | `/{id}` | Delete group. Options are not deleted — `option_group_id` is cleared (moved to «No group») |
+| `DELETE` | `/{id}` | Delete group. Options are not deleted — `option_group_id` is cleared, so they move to "No group" |
 | `PUT` | `/positions` | Save new order: either `positions: { id: position, ... }` or `ids: [id, id, ...]` (ordered list) |
 | `DELETE` | `/bulk` | Bulk delete: `ids[]`. Options are unlinked (not deleted), then groups are removed |
 
@@ -401,27 +423,28 @@ Controller `MiniShop3\Controllers\Api\Manager\CategoryOptionsController`, permis
 
 | Method | Path | Description |
 | --- | --- | --- |
-| `GET` | (root) | Options linked to the category. Each row returns `caption` (effective), `global_caption`/`global_description` + `category_caption`/`category_description` (override) |
+| `GET` | (root) | Options linked to the category. Each row returns the effective `caption` and, next to it, `global_caption`/`global_description` plus the `category_caption`/`category_description` overrides |
 | `POST` | (root) | Link option to category: `option_id`, `value`, `active`, `required`, `caption`, `description` |
 | `PUT` | `/{option_id}` | Partial update of link: `value`, `active`, `required`, `position`, `caption`, `description` |
 | `DELETE` | `/{option_id}` | Remove link. Product values are deleted only if the option is not active in any other product category |
 | `POST` | `/sort` | Save new order (`option_ids[]`) |
 | `POST` | `/bulk` | Bulk actions: `activate` / `deactivate` / `require` / `unrequire` / `remove` for `option_ids[]` |
-| `POST` | `/duplicate` | Copy links from `category_from`; existing in current category are skipped |
+| `POST` | `/duplicate` | Copy links from `category_from`; links that already exist in the current category are skipped |
 
 ### Schema API — `msOptionType::getSchema()`
 
-::: info Since v1.10.0-beta1
-:::
-
-Each type class in `Controllers/Options/Types/` can return a declarative field description instead of an ExtJS JS string:
+Since v1.10.0-beta1 every type class in `Controllers/Options/Types/` has `getField()` (a string for ExtJS) and `getSchema()`.
 
 ```php
 abstract class msOptionType
 {
-    abstract public function getField($field);        // legacy — returns JS string for ExtJS
-    public function getSchema(array $field): array;   // new — array for Vue renderer
+    abstract public function getField($field);
+    public function getSchema(array $field): array;
 }
 ```
 
-`OptionLoaderService::getFieldsForProduct()` attaches `schema` to each `option_fields` row alongside legacy `ext_field`. The Vue product card reads `schema`; legacy `ext_field` remains for backward compatibility (but is no longer used in core).
+::: warning Nothing calls `getSchema()` yet
+The method is declared on `msOptionType` and duplicated on the `msOption` model, but the package never calls it. `OptionLoaderService::getFieldsForProduct()` does not put it into `option_fields`. The Vue product card does not request it and builds the field from `type`. The core still fills `ext_field` with the string from `getField()`.
+
+Overriding `getSchema()` in your own option type does nothing. The result is not used. Until schema rendering is wired up, field behavior is set through `getField()` and `type`.
+:::

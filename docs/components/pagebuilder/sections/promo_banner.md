@@ -110,7 +110,7 @@ description: "Баннер с текстом, кнопкой, фоном и оп
 Fenom chunk `pagebuilderpro_promo_banner`:
 
 ```fenom
-{set $promoBg = is_array($background) ? ($background.url ?: '') : ($background ?: '')}
+{set $promoBg = $background|pb_image_src}
 {set $productId = $pb_product_resource !: ($product_id !: 0)}
 {set $listing = ''}
 {if $productId}

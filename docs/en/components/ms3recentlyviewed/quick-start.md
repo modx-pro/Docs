@@ -9,9 +9,9 @@ title: Quick start
 |-------------|---------|
 | MODX Revolution | 3.0.3+ |
 | PHP | 8.1+ |
-| MiniShop3 | installed |
+| MiniShop3 | 1.0.0+ |
 | pdoTools | 3.0.0+ |
-| VueTools | 1.2.0+ for the manager (Import Map `vue` + `vuetools/theme`). Without it the Extras page is empty |
+| VueTools | 1.2.0+ for the manager (Import Map `vue` + `vuetools/theme`). If the keys are missing, the modules are removed and the alert `ms3rv_vuetools_required` is shown |
 | Fenom | used by chunks via pdoTools; no hard `class_exists(Fenom)` check |
 
 ## Step 1: Installation
@@ -40,13 +40,11 @@ In the template (or shared head/footer), load the lexicon **first**, then CSS an
 
 :::
 
-Without `ms3rvLexiconScript` the script falls back to Russian strings. For a multilingual site the lexicon is required.
+Without `ms3rvLexiconScript` an empty list uses the Russian phrase “Вы ещё ничего не смотрели”. Storage stays `localStorage` and the JS limit falls back to 20. Cookie mode and a custom `max_items` need the snippet on every page.
 
 ## Step 3: Product page — pass ID for tracking
 
-The list fills when a product page opens.
-
-On the MiniShop3 product template (`ms3_template_product_default`) the plugin **ms3recentlyviewedsync** sets `window.ms3rvCurrentProductId`. On a custom product template set the ID yourself.
+On the MiniShop3 product template (`ms3_template_product_default`) the plugin **ms3recentlyviewedSync** sets `window.ms3rvCurrentProductId`. On a custom product template set the ID yourself.
 
 **Attribute on `<body>` (recommended):**
 
@@ -88,7 +86,7 @@ On the MiniShop3 product template (`ms3_template_product_default`) the plugin **
 
 ### Client-side (JS)
 
-Container and render call (same for Fenom and MODX):
+Same for Fenom and MODX:
 
 ```html
 <div id="ms3-recently-viewed" class="ms3rv__list"></div>
@@ -101,11 +99,11 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 ```
 
-The script writes the list or `emptyTpl` into the container (`display` stays visible). Only `#ms3-recently-viewed-section` is hidden when empty. A wrapper `#ms3-recently-viewed` without that section stays on the page.
+If the browser has no IDs, the container gets a paragraph with lexicon `ms3recentlyviewed_empty`. The container stays on the page. Only the ancestor `#ms3-recently-viewed-section` is hidden. `emptyTpl` is sent to the connector when IDs already exist.
 
-A server snippet with no IDs (guest + `localStorage`) marks the container with `data-ms3rv-hydrate` so `viewed.js` can fill it from the browser.
+A snippet with no IDs wraps `emptyTpl` in a `div` with `data-ms3rv-hydrate="viewed"`. On `DOMContentLoaded`, `viewed.js` fills the list from the browser.
 
-Class **`row`** may be added automatically to **`.ms3rv__list`** (Bootstrap). If **`#ms3-recently-viewed`** and **`#ms3-similar`** exist, the script may auto-call render on `DOMContentLoaded`. Still load `viewed.css` in the template. If the link is missing, JS may inject styles.
+Class **`row`** may be added to **`.ms3rv__list`** (Bootstrap). If **`#ms3-recently-viewed`** or **`[data-ms3rv-hydrate="viewed"]`** is in the DOM, the script calls `render` itself. Load `viewed.css` in the template. If the link is missing, JS injects the stylesheet.
 
 ### Server output: cookie and `viewedIds` placeholder
 
@@ -151,7 +149,7 @@ For a user authenticated in the current context you can omit `ids`:
 
 ## Step 5: Viewed count (optional)
 
-Where you want the number of viewed items (icon, header):
+In an icon or header:
 
 ```html
 <span data-viewed-count style="display: none;">0</span>
@@ -185,7 +183,7 @@ Server output: snippet **ms3recentlyviewedSimilar** with `ids` (viewed IDs). For
 
 :::
 
-With **`localStorage`** only, use JS `renderSimilar()` or pass `ids` from the front. Placeholder **`viewedIds`** is **empty** when `storage_type` = `localStorage`. See [Snippet ms3recentlyviewedSimilar](snippets/ms3recentlyviewedSimilar), [Frontend setup](frontend).
+With **`localStorage`** the **`viewedIds`** placeholder is empty. For similar products call `renderSimilar()` or pass `ids` from the page. JS defaults to 8 products, always drops the current product and does not send `depth`. The server then keeps depth 2. An empty list hides the container (`display: none`). See [Snippet ms3recentlyviewedSimilar](snippets/ms3recentlyviewedSimilar), [Frontend setup](frontend).
 
 ## Next steps
 

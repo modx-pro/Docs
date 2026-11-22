@@ -3,7 +3,7 @@ title: Delivery addresses
 ---
 # Delivery addresses
 
-<!-- ![Account: addresses](/components/minishop3/screenshots/fe-customer-addresses.png) -->
+![Account: addresses](/components/minishop3/screenshots/fe-customer-addresses.png)
 
 Page for managing customer delivery addresses. Lets customers create, edit, delete addresses, and set a default address.
 
@@ -394,6 +394,13 @@ On delete and set-default, a confirmation dialog is shown (`ms3Confirm`). Confir
 | `afterDeleteAddress` | After deleting address |
 
 ## Form handling
+
+```mermaid
+flowchart TB
+  Form[Address form] --> Req["name city street are required"]
+  Req --> API["customer/address-create or update"]
+  API --> Field[comment not text_address]
+```
 
 | Action | ms3_action | Description |
 | --- | --- | --- |

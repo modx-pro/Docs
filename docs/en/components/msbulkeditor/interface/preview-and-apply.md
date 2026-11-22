@@ -5,7 +5,7 @@ description: Preview diff, exclude rows, chunked apply, progress
 
 # Preview and apply
 
-Main flow: **preview, then apply**. You check the diff before writing to the database.
+You check the before/after table, then press **Apply**. Nothing is written until then.
 
 ![Preview block below the table](/components/msbulkeditor/screenshots/preview-block.png)
 
@@ -14,11 +14,11 @@ Main flow: **preview, then apply**. You check the diff before writing to the dat
 ## Steps
 
 1. **Run operation** / quick actions / preset → parameter dialog.
-2. **Preview** — `products/preview` request.
+2. **Preview** sends `products/preview`.
 3. A **Preview** block appears below the table.
 4. Optionally **exclude rows** (see below).
-5. **Apply** — `products/apply` with the same definition + `excludeProductIds`.
-6. **Progress** — poll `products/progress` until complete.
+5. **Apply** sends `products/apply` with the same definition + `excludeProductIds`.
+6. **Progress** polls `products/progress` until complete.
 
 ---
 
@@ -38,17 +38,17 @@ Detail row limit: `msbulkeditor_preview_detail_limit` (default 100).
 
 Columns: product ID, field, before, after, status.
 
-Statuses: `changed`, `unchanged`, `skipped`, `error`, after apply — `applied`, `rolled_back`.
+Statuses: `changed`, `unchanged`, `skipped`, `error`. After apply: `applied`, `rolled_back`.
 
 ---
 
 ## Excluding rows from apply
 
-After preview, changed rows can be **unchecked** — the ID goes into `excludeProductIds` on apply.
+After preview, changed rows can be **unchecked**. The ID goes into `excludeProductIds` on apply.
 
 - Hint above the table explains exclusion.
 - Summary recalculates “Will change” excluding unchecked rows.
-- **Cancel** — clears preview and definition, hides the block.
+- **Cancel** clears preview and definition, then hides the block.
 
 Rows with **`skipped`**, **`error`**, or **`unchanged`** (no value change) show a disabled checkbox with a tooltip. Only rows that will actually change can be excluded from apply.
 
@@ -66,9 +66,9 @@ Rows with **`skipped`**, **`error`**, or **`unchanged`** (no value change) show 
 
 **Apply** is disabled when `msbulkeditor_apply_no_changes` (0 changes).
 
-Form validation errors (empty required field, invalid date, etc.) show in the dialog before the preview request — keys `msbulkeditor_validation_*`.
+Form validation errors (empty required field, invalid date, etc.) show in the dialog before the preview request. Keys: `msbulkeditor_validation_*`.
 
-Over the expert limit the API returns `msbulkeditor_expert_limit_exceeded` — narrow filters on the [grid](products-grid#expert-mode).
+Over the expert limit the API returns `msbulkeditor_expert_limit_exceeded`. Narrow filters on the [grid](products-grid#expert-mode).
 
 ---
 
@@ -76,7 +76,7 @@ Over the expert limit the API returns `msbulkeditor_expert_limit_exceeded` — n
 
 Apply runs in **chunks** (`msbulkeditor_chunk_size`, default 50 products). Progress: “Processed X of Y”.
 
-Each chunk fits the PHP time limit; the full catalog is processed as a series of chunks.
+Each chunk fits the PHP time limit. The full catalog is processed as a series of chunks.
 
 After completion, grid rows **refresh** without a full page reload.
 
@@ -84,21 +84,20 @@ After completion, grid rows **refresh** without a full page reload.
 
 ## Apply progress
 
-**ProgressPanel** appears below the grid:
+A progress panel appears below the grid:
 
 ![Apply progress panel](/components/msbulkeditor/screenshots/progress-panel.png)
 
-- operation title;
-- status (`running`, `completed`, `failed`, `cancelled`);
-- `processed / total` counter and progress bar.
+- operation title
+- status (`running`, `completed`, `failed`)
+- `processed / total` counter and progress bar
 
-The SPA polls `products/progress` until a terminal status. While apply runs, a new **Apply** is blocked (`OperationQueue` — one active bulk operation per site). ProgressPanel has no “Cancel apply” button.
+The panel polls `products/progress` until a terminal status. While apply runs, a new **Apply** is blocked (one active bulk operation per site). There is no “Cancel apply” button.
 
 | Status | Action |
 | --- | --- |
 | `completed` | Check grid and **History** |
-| `failed` | Open **History** — some items may be `applied`; partial rollback available |
-| `cancelled` | Terminal API status (no mid-apply cancel in UI); then **History** |
+| `failed` | Open **History**. Some items may be `applied`. Partial rollback is available |
 
 Details: [history](history).
 
@@ -129,8 +128,8 @@ Each apply sends an **`idempotencyKey`**. A repeat request with the same key doe
 
 Full `fieldType` list: [Features](../features), [flows](flows#fieldtype-reference).
 
-- **Resource fields:** boolean_toggle, text_replace, seo, link, dates, resource_group — [resource fields](resource-fields)
-- **Other:** variant, gallery_regenerate, resource_utility, soft_delete — [product and prices](product-and-prices), [quick actions](quick-actions)
+- **Resource fields:** boolean_toggle, text_replace, seo, link, dates, resource_group. See [resource fields](resource-fields)
+- **Other:** variant, gallery_regenerate, resource_utility, soft_delete. See [product and prices](product-and-prices), [quick actions](quick-actions)
 
 ---
 

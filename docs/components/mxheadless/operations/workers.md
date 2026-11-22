@@ -49,6 +49,8 @@ php /path/to/modx/core/components/mxheadless/bin/audit-prune.php
 - Строки `failed` после исчерпания `mxheadless_webhook_max_attempts`
 - Лог worker: `Processed 0` при активных мутациях
 
+Worker берёт записи со статусом `pending`, у которых `next_attempt_on` пуст или уже наступил, сортирует по `created_on` и режет по `--limit`. Доставки, отложенные backoff, в выборку не попадают, пока не подойдёт их `next_attempt_on`.
+
 ## См. также
 
 - [Webhooks](/components/mxheadless/operations/webhooks)

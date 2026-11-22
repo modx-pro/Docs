@@ -5,31 +5,31 @@ description: Сниппет PageBuilderResource — секции другого 
 
 # Сниппет PageBuilderResource
 
-Тот же PHP, что у [PageBuilder](PageBuilder). В properties сниппета `resource_id` помечен обязательным, но код берёт текущий ресурс, если передали `0`.
+Выводит секции другого ресурса. Тот же PHP, что у [PageBuilder](PageBuilder). Ресурс задаётся параметром `resource_id`.
 
 ## Назначение
-
-<!-- MEDIA: screenshot-front | nice | на главной виден блок секций с другого resource_id (например FAQ) | тестовый стенд: дочерняя страница с секцией faq, главная с [[!PageBuilderResource? &resource_id=`…` &section_types=`faq`]] -->
 
 - Hero или FAQ с дочерней страницы на главной.
 - Общий блок контента на нескольких ресурсах без дублирования секций в каждом документе.
 
 ## Где вызывать
 
-Любой шаблон или chunk, где нужен HTML опубликованных секций **чужого** ресурса. Вызов некэшированный.
+Шаблон или чанк. Вызов некэшированный.
 
 ## Параметры
 
 | Параметр | По умолчанию | Описание |
 | --- | --- | --- |
-| `resource_id` | `0` | ID источника. `0` = текущий ресурс. Если ресурс не найден, сниппет вернёт пустую строку |
+| `resource_id` | `0` | ID источника. `0` = текущий ресурс |
 | `section_types` | пусто | Фильтр по ключам секций |
 | `return_values` | `0` | JSON вместо HTML (как у PageBuilder) |
 | `use_cache` | `1` | Кеш HTML |
 | `load_css` | из настройки | Frontend CSS |
 | `wrap_page` | как `load_css` | Обёртка `pb-page` |
 
-В properties сниппета **PageBuilderResource** перечислены только `resource_id` и `section_types`. Остальные параметры работают так же, как у PageBuilder.
+Если ресурс не определился, ответ пустая строка, в том числе при `return_values=1`. Если id есть, а записи PageBuilder нет, `return_values=1` отдаёт `{ "plainText": "", "sections": [] }`.
+
+В properties перечислены только `resource_id` и `section_types`. Отметки обязательности у `resource_id` нет. Остальные параметры работают как у PageBuilder. Сниппет без аргументов не падает.
 
 ## Пример: FAQ с страницы «О компании» на главной
 

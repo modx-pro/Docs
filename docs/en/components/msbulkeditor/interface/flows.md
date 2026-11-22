@@ -5,7 +5,7 @@ description: "Step-by-step flows A–J: filter, operations, inline, import, roll
 
 # User flows
 
-Step-by-step guide to msBulkEditor: filtering, operations, rollback. Flows A–J. Screenshots are inline below.
+Flows A–J with screenshots: filter, operate, import, roll back. Tab overview: [Interface](./).
 
 ---
 
@@ -65,7 +65,7 @@ KPI **Matching filter** and **Selected** show selection size. The label next to 
 
 **Toolbar lock:** without selected rows and without expert mode, **Run operation**, **Quick actions**, and **Presets** menu are disabled.
 
-In expert mode the `⋯` column offers **Select only this row** (crosshair) — `selectedIds = [id]` without turning expert off. Details: [products grid](products-grid#actions-column-expert-mode-only).
+In expert mode the `⋯` column offers **Select only this row** (crosshair). That sets `selectedIds = [id]` without turning expert off. Details: [products grid](products-grid#actions-column-expert-mode-only).
 
 ---
 
@@ -101,10 +101,10 @@ sequenceDiagram
 2. Select rows **or** enable **expert mode** and check “Matching filter: N”.
 3. **Run operation** → pick type in **Operation type** (see [type table](#fieldtype-reference)).
 4. Fill the form (fields depend on type).
-5. **Preview** — diff table appears below the grid.
+5. **Preview.** The diff table appears below the grid.
 6. Uncheck rows if needed ([preview](preview-and-apply)).
-7. **Apply** — progress shows “X of Y”.
-8. **History** — verify; on error use **Rollback**.
+7. **Apply.** Progress shows “X of Y”.
+8. **History.** Verify. On error use **Rollback**.
 
 ![Preview block](/components/msbulkeditor/screenshots/preview-block.png)
 
@@ -203,7 +203,7 @@ Details: [presets](presets).
 No bulk operation dialog.
 
 1. Click cell (`pagetitle`, `price`, `stock`, `published`, `article`, `weight`, text TV, scalar option).
-2. **Image TV** — double-click → MODX media browser.
+2. **Image TV:** double-click → MODX media browser.
 3. Enter / blur / toggle → save via preview/apply pipeline for **one ID**.
 
 ![Inline edit cell](/components/msbulkeditor/screenshots/inline-edit.png)
@@ -215,10 +215,10 @@ Details: [inline editing](inline-editing).
 ## Flow E — Column settings
 
 1. **Products** → **Table settings** (columns icon).
-2. Move columns between Available and Visible; reorder with arrows or drag.
-3. Width — in dialog or by dragging column header border.
-4. **Save** — persisted in `ui/state` (per MODX user).
-5. **Restore** — browser localStorage snapshot, not factory defaults.
+2. Move columns between Available and Visible. Reorder with arrows or drag.
+3. Set width in the dialog or by dragging the column header border.
+4. **Save** writes the set to `ui/state` (per MODX user).
+5. **Restore** loads the browser localStorage snapshot, not factory defaults.
 
 ![Column manager dialog](/components/msbulkeditor/screenshots/column-manager.png)
 
@@ -229,9 +229,9 @@ Details: [columns](column-settings).
 ## Flow F — Catalog filtering
 
 1. **Search**, **category**, **published** → **Apply filters**.
-2. **More filters** — template, vendor, additional category, image, MS3 labels, deleted, duplicate URI.
+2. **More filters:** template, vendor, additional category, image, MS3 labels, deleted, duplicate URI.
 3. Category tree syncs with **Category** filter.
-4. **Reset** — defaults.
+4. **Reset** restores defaults.
 
 ![Filter panel](/components/msbulkeditor/screenshots/filters.png)
 
@@ -243,7 +243,7 @@ Details: [products grid](products-grid).
 
 ## Flow G — Export
 
-1. On **Products** — filter + selection (rows or expert).
+1. On **Products**, filter and select rows or enable expert mode.
 2. **Import & export** → **Export** block.
 3. CSV/XLSX, column list → **Run export** (file download).
 
@@ -264,7 +264,7 @@ Details: [import and export](import-export).
 
 ![Import mapping](/components/msbulkeditor/screenshots/import-mapping.png)
 
-Alternative: JSON + mapping in **Advanced** block — [import and export](import-export).
+Alternative: JSON + mapping in the **Advanced** block. See [import and export](import-export).
 
 ---
 
@@ -305,9 +305,9 @@ Before preview on **TV** or **Option** operations:
 1. Fill TV name or option key → **Preview**.
 2. If bindings are missing, the wizard dialog opens.
 3. Review templates/categories without links.
-4. For mixed templates — optionally enable “primary scope only”.
+4. For mixed templates, optionally enable “primary scope only”.
 5. **Apply and continue** → `bindings/apply` → preview.
-6. **Cancel** — operation stops.
+6. **Cancel** stops the operation.
 
 ![TV/option binding wizard](/components/msbulkeditor/screenshots/binding-wizard.png)
 
@@ -339,8 +339,11 @@ Types in **Run operation** (Operation type Select):
 | Dates | `dates` | [resource fields](resource-fields) |
 | Resource group | `resource_group` | [resource fields](resource-fields) |
 | Variant (ms3Variants) | `variant` | [product and prices](product-and-prices) |
+| Gallery thumbnails | `gallery_regenerate` | [quick actions](quick-actions) |
+| Cache / URI | `resource_utility` | [quick actions](quick-actions) |
+| Soft delete | `soft_delete` | [product and prices](product-and-prices) |
 
-**Quick actions only** (not in main Select): `gallery_regenerate`, `resource_utility`, `soft_delete`.
+Gallery regenerate, cache clear, URI regenerate, and soft delete are in this type list. **Quick actions** starts them without picking a type.
 
 ### Dialog screenshots
 
@@ -415,7 +418,7 @@ Types in **Run operation** (Operation type Select):
 | `msbulkeditor_presets` | Preset CRUD |
 | `msbulkeditor_import_export` | File import/export |
 
-System settings: `msbulkeditor_expert_limit`, `msbulkeditor_preview_detail_limit`, `msbulkeditor_chunk_size`, `msbulkeditor_import_max_rows` — [System settings](../settings).
+System settings: `msbulkeditor_expert_limit`, `msbulkeditor_preview_detail_limit`, `msbulkeditor_chunk_size`, `msbulkeditor_import_max_rows`. See [System settings](../settings).
 
 ---
 

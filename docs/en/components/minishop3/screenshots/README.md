@@ -35,7 +35,7 @@ An active link without the file breaks `pnpm build` (`Rollup failed to resolve i
 | `mgr-product-gallery.png` | Product gallery tab | [interface/gallery.md](../interface/gallery.md) |
 | `mgr-product-categories.png` | **Categories** tab on the product card | [interface/product.md](../interface/product.md) |
 | `mgr-system-settings.png` | System Settings → minishop3 namespace | [quick-start.md](../quick-start.md) |
-| `fe-catalog.png` | Storefront catalog | [frontend/catalog.md](../frontend/catalog.md) |
+| `fe-catalog.png` | Frontend catalog | [frontend/catalog.md](../frontend/catalog.md) |
 | `fe-product.png` | Product page | [frontend/product.md](../frontend/product.md) |
 | `fe-cart.png` | Cart | [frontend/cart.md](../frontend/cart.md) |
 | `fe-checkout.png` | Checkout | [frontend/order.md](../frontend/order.md) |

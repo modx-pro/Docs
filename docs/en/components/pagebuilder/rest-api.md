@@ -5,15 +5,17 @@ description: "Read-only PageBuilder Pro REST: Bearer, scopes, GET /pages, ETag, 
 
 # REST API v1 (Pro)
 
-Read-only delivery of published content. It does not replace the Free [Public API](public-api). Page writes stay in the manager and in [Agent API](agent-api).
+Read-only published content. You need PageBuilder Pro and `pagebuilder_rest_api_enabled = 1`. It does not replace the Free [Public API](public-api). Page writes stay in the manager and in [Agent API](agent-api).
 
 ```text
 /assets/components/pagebuilder/api/v1.php?path=/pages/42
 ```
 
-You need PageBuilder Pro and `pagebuilder_rest_api_enabled = 1`.
-
 ## Which API
+
+1. One frontend and a key in server env: [Public API](public-api).
+2. Several apps, token revoke, scopes, and `If-None-Match`: REST v1.
+3. Draft or field schemas from the manager: [Agent API](agent-api), not this transport.
 
 | | Public API (Free) | REST API v1 (Pro) |
 | --- | --- | --- |
@@ -25,10 +27,6 @@ You need PageBuilder Pro and `pagebuilder_rest_api_enabled = 1`.
 | ETag / 304 | no | yes |
 | Per-token throttle | no | yes |
 
-1. One frontend and a key in server env: [Public API](public-api).
-2. Several apps, token revoke, scopes, and `If-None-Match`: REST v1.
-3. Draft or field schemas from the manager: [Agent API](agent-api), not this transport.
-
 After publish in the manager, `publishedRevision` grows. PageBuilder does not send an outbound webhook. The frontend compares the revision itself.
 
 ## Settings
@@ -38,7 +36,7 @@ Keys: [system settings](settings#rest-api). Issue tokens on the CMP **API tokens
 | Key | Default | Description |
 | --- | --- | --- |
 | `pagebuilder_rest_api_enabled` | `0` | Enable the transport |
-| `pagebuilder_rest_token_pepper` | empty | SHA-256 pepper. Empty means `site_id` |
+| `pagebuilder_rest_token_pepper` | empty | SHA-256 pepper. Empty means `site_id`. If `site_id` is empty too, the pepper is `pagebuilder` |
 | `pagebuilder_rest_tokens` | `[]` | Token JSON without secrets |
 | `pagebuilder_rest_throttle_per_minute` | `120` | Request limit per token prefix. `0` disables the limit |
 
@@ -59,7 +57,9 @@ Scope `pages.read` opens `GET /pages` and `GET /pages/{id-or-alias}`. This token
 | `catalog.read` | `GET /health`, `GET /catalog/sections` |
 | `pages.read` | `GET /pages`, `GET /pages/{id-or-alias}` |
 
-`GET /pages` returns published pages with `publishedRevision > 0`. The list has no document body.
+`GET /pages` returns pages with `publishedRevision > 0`. The list has no document body.
+
+The selection includes every such page in the context when the resource is published, not deleted, and allowed by the `view` policy. Sort is `menuindex`, then resource id. `offset` and `limit` slice that list. `total` counts pages before the slice. A `q` search narrows both the list and `total`.
 
 | Query | Description |
 | --- | --- |
@@ -72,7 +72,7 @@ Scope `pages.read` opens `GET /pages` and `GET /pages/{id-or-alias}`. This token
 
 | Query | Description |
 | --- | --- |
-| `include` | `document`, `values`. Fields match `web/page/get` |
+| `include` | `document`, `values`, `html`, `sections`. Same as `web/page/get`. Default `document,values` |
 | `context` | Context for alias |
 | `section_types` | Type filter, for example `hero,cta` |
 

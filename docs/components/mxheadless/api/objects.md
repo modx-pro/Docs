@@ -7,13 +7,13 @@ description: Generic CRUD /objects/{name} для зарегистрирован�
 
 Универсальный CRUD для объектов из `ObjectRegistry`. В URL — имя (`products`, `orders`), не PHP-класс.
 
-| Метод | Path | Scope |
-| --- | --- | --- |
-| GET | `/objects/{name}` | `{name}.read` |
-| GET | `/objects/{name}/{id}` | `{name}.read` |
-| POST | `/objects/{name}` | `{name}.create` |
-| PUT / PATCH | `/objects/{name}/{id}` | `{name}.update` |
-| DELETE | `/objects/{name}/{id}` | `{name}.delete` |
+| Метод | Path | Scope | Успех |
+| --- | --- | --- | --- |
+| GET | `/objects/{name}` | `{name}.read` | `200` |
+| GET | `/objects/{name}/{id}` | `{name}.read` | `200` |
+| POST | `/objects/{name}` | `{name}.create` | `201` |
+| PUT / PATCH | `/objects/{name}/{id}` | `{name}.update` | `200` |
+| DELETE | `/objects/{name}/{id}` | `{name}.delete` | `200` |
 
 Шаблон фиксирован в `RoutesRegistrar`: `{name}.{action}`. Не `objects.{name}.read`.
 
@@ -34,4 +34,9 @@ curl -s 'https://example.com/api/v1/objects/products?limit=10' \
 
 ## Query и мутации
 
-Те же правила [querying](querying) и [mutations](mutations), что у resources. Поля и фильтры — из определения объекта.
+Те же правила [querying](querying) и [mutations](mutations), что у resources. Поля и фильтры из определения объекта.
+
+Два отличия от `resources`:
+
+- каскадного удаления нет: `DELETE` трогает одну запись, даже если в объекте есть поле `parent`
+- правила валидации записей применяются одинаково, но проверки `alias`, `parent`, `class_key`, `template`, `content_type` имеют смысл только для ресурсов. Для extras-объектов реальны проверки типов, `immutable`, `hidden` и `required`.

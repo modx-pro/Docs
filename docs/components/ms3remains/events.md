@@ -5,19 +5,17 @@ description: События остатка, проекции и хуки MiniSho
 
 # События
 
-При каждом реальном изменении количества `RemainService` вызывает два события MODX: `ms3remainsOnBeforeRemainChange` и `ms3remainsOnAfterRemainChange`.
+`setQuantity` и `changeBy` вызывают два события MODX: `ms3remainsOnBeforeRemainChange` и `ms3remainsOnAfterRemainChange`. То же число тоже проходит этот путь: порог `|old - target| < 0.0005` у `setQuantity` и `|delta| < 0.0005` у `changeBy`.
 
-Они срабатывают при ручной правке в manager, CSV-импорте, списании и возврате по заказу, вызове сервисного API. Если `setQuantity` получает то же число, что уже лежит в строке (`|old - target| < 0.0005`), события не вызываются. Пересчитывается только проекция.
+События срабатывают при ручной правке в manager, списании и возврате по заказу и вызове сервисного API. CSV вызывает `setQuantity` только если дельта строки не около нуля. Повтор того же числа в файле события не шлёт.
 
 Отмена: плагин возвращает непустую строку из обработчика. `StockEventDispatcher` бросает `DomainException` с кодом `event_listener_failed` и этим текстом. Правило одно для Before и After. Если сервис владеет транзакцией, изменение откатывается.
 
-События компонента регистрируются при установке пакета. Создайте свой плагин и повесьте его на нужные события.
+События компонента регистрируются при установке. Создайте плагин и повесьте его на нужные события.
 
 ```mermaid
 flowchart TB
-  delta{"Количество реально меняется?"}
-  delta -->|нет| onlyProj["Только проекция"]
-  delta -->|да| before["ms3remainsOnBeforeRemainChange"]
+  call["setQuantity или changeBy"] --> before["ms3remainsOnBeforeRemainChange"]
   before --> cancel1{"Плагин вернул текст?"}
   cancel1 -->|да| fail["Откат"]
   cancel1 -->|нет| write["Запись количества и проекция"]
@@ -53,11 +51,11 @@ flowchart TB
 | `comment` | string | комментарий |
 | `user_id` | int | id пользователя |
 
-Здесь удобно писать журнал аудита или проверять низкий остаток. Не отправляйте email и webhook до commit. При откате транзакции письмо уже уйдёт. Непустая строка из After тоже откатывает операцию.
+Пишите журнал аудита или проверяйте низкий остаток. Не отправляйте email и webhook до commit. При откате транзакции письмо уже уйдёт. Непустая строка из After тоже откатывает операцию.
 
 ## Примеры плагинов
 
-Все примеры ниже: тело плагина. Создайте элемент Plugin, привяжите к событиям из `switch`.
+Все примеры: тело плагина. Создайте элемент Plugin, привяжите к событиям из `switch`.
 
 ### Лимит количества при ручной правке
 
@@ -239,24 +237,14 @@ switch ($modx->event->name) {
 /** @var modX $modx */
 
 use Ms3Remains\ValueObject\RemainChangeResult;
-use Ms3Remains\ValueObject\StockIdentity;
 
 switch ($modx->event->name) {
     case 'ms3remainsOnBeforeRemainChange':
         $userId = (int) ($modx->event->params['user_id'] ?? 0);
         $new = (float) ($modx->event->params['new_quantity'] ?? 0);
-        $identity = $modx->event->params['identity'] ?? null;
 
         if ($userId > 0 && $new > 10000) {
             return 'Количество слишком большое для ручной правки';
-        }
-
-        if (
-            $identity instanceof StockIdentity
-            && $identity->variantId !== null
-            && $new < 0
-        ) {
-            return 'Отрицательный остаток варианта запрещён';
         }
         break;
 
@@ -275,7 +263,7 @@ switch ($modx->event->name) {
 }
 ```
 
-Остаток в БД хранится как `DECIMAL(12,3)`. Перед записью через API нежелательные значения можно отсечь в Before, как в примере выше.
+Остаток в БД хранится как `DECIMAL(12,3)`. Перед записью через API значение можно отсечь в Before.
 
 ## События MiniShop3, которые слушает компонент
 

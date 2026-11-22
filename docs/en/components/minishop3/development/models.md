@@ -4,11 +4,9 @@ description: xPDO models and database structure
 ---
 # Models and database schema
 
-MiniShop3 uses xPDO ORM for database access. All models live in the `MiniShop3\Model` namespace.
+MiniShop3 models are xPDO classes in the `MiniShop3\Model` namespace.
 
-## xPDO models
-
-### Core classes
+## Core classes
 
 ```php
 use MiniShop3\Model\msProduct;
@@ -30,42 +28,46 @@ $address = $order->getOne('Address');
 $customer = $modx->getObject(msCustomer::class, ['email' => $email]);
 ```
 
-### Model relations
+## Model relations
 
-```php
-// Product → Product data (1:1)
-$product->getOne('Data');
+`getOne()` is for 1:1 and N:1. `getMany()` is for 1:N.
 
-// Product → Options (1:N)
-$product->getMany('Options');
+| Model | Alias | Type | Returns |
+| --- | --- | --- | --- |
+| `msProduct` | `Data` | 1:1 | product data (`msProductData`) |
+| `msProduct` | `Options` | 1:N | product option values |
+| `msProduct` | `Categories` | 1:N | extra categories (`msCategoryMember`), composite |
+| `msProduct` | `Category` | N:1 | the parent category (`msCategory`) |
+| `msProductData` | `Categories` | 1:N | extra categories of the same product |
+| `msProductData` | `Files` | 1:N | gallery files |
+| `msOrder` | `Address` | 1:1 | order address (`msOrderAddress`) |
+| `msOrder` | `Products` | 1:N | order line items |
+| `msOrder` | `Customer` | N:1 | the customer (`msCustomer`) |
+| `msCustomer` | `Tokens` | 1:N | auth tokens |
+| `msCustomer` | `CustomerGroup` | N:1 | the customer group |
+| `msCustomerAddress` | `Customer` | N:1 | the customer, the reverse relation from an address |
+| `msCustomerToken` | `Customer` | N:1 | the customer, the reverse relation from a token |
 
-// Product → Gallery files (1:N)
-$data->getMany('Files');
-
-// Order → Order products (1:N)
-$order->getMany('Products');
-
-// Order → Customer (N:1)
-$order->getOne('msCustomer');
-
-// Customer → Addresses (1:N)
-$customer->getMany('Addresses');
-```
+`msCustomer` has no `Addresses` relation. Addresses are read with a direct query to `msCustomerAddress` by `customer_id`. See [Working with a customer](#customer-example).
 
 ## Schema file
 
-The database schema is defined in an XML file:
+The XML schema describes models for the xPDO generator:
 
 ```
 core/components/minishop3/schema/minishop3.mysql.schema.xml
 ```
 
-Main schema attributes:
+| Attribute | Value |
+| --- | --- |
+| `package` | `MiniShop3\Model` |
+| `baseClass` | `xPDO\Om\xPDOObject` |
+| `platform` | `mysql` |
+| `version` | `3.0` |
 
-- **package**: `MiniShop3\Model`
-- **baseClass**: `xPDO\Om\xPDOObject`
-- **platform**: `mysql`
-- **version**: `3.0`
+::: warning XML does not create the tables
+Table structure comes from the model maps in `src/Model/mysql/` and from Phinx migrations. XML is only for the model generator. It takes no part in installation, and in places it has already drifted from the map, for example on the uniqueness of the index on the customer last name ([the details](https://github.com/modx-pro/MiniShop3/issues/905)). Check fields against the model map.
+:::
 
 ## Database tables
 
@@ -92,6 +94,7 @@ Main schema attributes:
 | `weight` | decimal(13,3) | Weight |
 | `image` | varchar(255) | Main image |
 | `thumb` | varchar(255) | Thumbnail |
+| `preview_file_id` | int | Gallery file ID used as the main preview (gallery order is not changed) |
 | `vendor_id` | int | Vendor ID |
 | `made_in` | varchar(100) | Country of origin |
 | `new` | tinyint(1) | "New" flag |
@@ -142,13 +145,25 @@ Main schema attributes:
 | `createdon` | datetime | Created at |
 | `updatedon` | datetime | Updated at |
 
-### Customers (NEW in MiniShop3)
+### Customers
 
 | Model | Table | Description |
 | --- | --- | --- |
 | `msCustomer` | `ms3_customers` | Store customer |
+| `msCustomerGroup` | `ms3_customer_groups` | Customer groups (segmentation, catalogue ACL) |
 | `msCustomerAddress` | `ms3_customer_addresses` | Saved customer addresses |
 | `msCustomerToken` | `ms3_customer_tokens` | Auth tokens |
+
+#### msCustomerGroup — main fields
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `id` | int | Group ID |
+| `name` | varchar(191) | Group name |
+| `user_group_id` | int | MODX user group ID (the principal for modAccessResourceGroup) |
+| `active` | tinyint(1) | Active |
+| `created_at` | datetime | Creation date |
+| `updated_at` | datetime | Update date |
 
 #### msCustomer — main fields
 
@@ -170,7 +185,7 @@ Main schema attributes:
 | `privacy_accepted_at` | datetime | Privacy policy acceptance date |
 
 ::: tip Difference from miniShop2
-In miniShop2 customer = modUser. In MiniShop3 customer is a separate entity msCustomer, which can optionally be linked to modUser.
+In miniShop2 the customer was a `modUser`. In MiniShop3 the customer is a separate entity, `msCustomer`, and the link to `modUser` is optional.
 :::
 
 ### Delivery and payment
@@ -180,6 +195,76 @@ In miniShop2 customer = modUser. In MiniShop3 customer is a separate entity msCu
 | `msDelivery` | `ms3_deliveries` | Delivery methods |
 | `msPayment` | `ms3_payments` | Payment methods |
 | `msDeliveryMember` | `ms3_delivery_payments` | Delivery–payment link |
+
+### Shipments
+
+Tables without xPDO models: access goes through `PdoShipmentStore` and the `ms3_shipment_lifecycle` DI key (`ShipmentLifecycleService`). Phinx migrations: `create_shipments`, `create_shipment_events`.
+
+| Table | Description |
+| --- | --- |
+| `ms3_shipments` | One shipment per order (`uniq_shipment_order`) |
+| `ms3_shipment_events` | Webhook idempotency: `provider_event_id` per shipment |
+
+#### ms3_shipments — fields
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `id` | int | Shipment ID |
+| `order_id` | int unsigned | Order ID (unique) |
+| `delivery_id` | int unsigned | Delivery method ID |
+| `status` | varchar(32) | `preparing`, `shipped`, `in_transit`, `delivered`, `cancelled`, `returned`, `failed` |
+| `tracking_number` | varchar(191) | Tracking number |
+| `external_id` | varchar(191) | ID on the provider side |
+| `provider` | varchar(191) | Provider class or name |
+| `carrier` | varchar(191) | Carrier |
+| `shipped_at` | int unsigned | Unix time of dispatch |
+| `delivered_at` | int unsigned | Unix time of delivery |
+| `last_event_id` | varchar(191) | Latest `provider_event_id` |
+| `meta` | text | JSON metadata |
+| `createdon` / `updatedon` | int unsigned | Unix time |
+
+With `ms3_shipment_enabled=1`, `OrderStatusService` carries the shipment status over to the order: `shipped` → `ms3_status_sent`, `cancelled` / `failed` → `ms3_status_canceled`. For `delivered` / `in_transit` see the `ms3_shipment_on_*_status` settings.
+
+### Payment attempts
+
+Tables without xPDO models. Access goes through `PdoPaymentAttemptStore` and the `ms3_payment_lifecycle` DI key (`PaymentLifecycleService`). Phinx migration: `create_payment_attempts`.
+
+| Table | Description |
+| --- | --- |
+| `ms3_payment_attempts` | A payment attempt for an order |
+| `ms3_payment_attempt_events` | Webhook idempotency: `provider_event_id` per attempt and event type |
+
+#### ms3_payment_attempts — fields
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `id` | int | Attempt ID |
+| `order_id` | int unsigned | Order ID |
+| `payment_method_id` | int unsigned | Payment method ID |
+| `provider` | varchar(191) | Provider class or name |
+| `external_id` | varchar(191) | ID on the provider side |
+| `status` | varchar(32) | `pending`, `authorized`, `paid`, `failed`, `cancelled`, `refunded`, `partially_refunded`. Default `pending` |
+| `amount` | decimal(13,3) | Amount |
+| `currency` | varchar(8) | Currency, default `RUB` |
+| `payload` | text | Provider payload |
+| `refunded_amount` | decimal(13,3) | Refunded amount |
+| `refund_external_id` | varchar(191) | Refund ID on the provider side |
+| `refundedon` | int unsigned | Unix time of the refund |
+| `createdon` / `updatedon` | int unsigned | Unix time |
+
+Unique key: `payment_method_id`, `provider`, `external_id`.
+
+#### ms3_payment_attempt_events — fields
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `id` | int | Event ID |
+| `attempt_id` | int unsigned | Attempt ID |
+| `event_type` | varchar(32) | Event type |
+| `provider_event_id` | varchar(191) | Provider event ID |
+| `createdon` | int unsigned | Unix time |
+
+Unique key: `attempt_id`, `event_type`, `provider_event_id`.
 
 ### Vendors
 
@@ -192,15 +277,17 @@ In miniShop2 customer = modUser. In MiniShop3 customer is a separate entity msCu
 | Model | Table | Description |
 | --- | --- | --- |
 | `msOption` | `ms3_options` | Option catalog |
+| `msOptionGroup` | `ms3_option_groups` | Option groups (replaced the use of `modCategory` for grouping, since 1.11.0) |
 
-### Field configuration (NEW in MiniShop3)
+### Field configuration
 
 | Model | Table | Description |
 | --- | --- | --- |
 | `msModelField` | `ms3_model_fields` | Model field settings |
 | `msModelFieldSection` | `ms3_model_field_sections` | Field sections |
-| `msProductField` | `ms3_product_fields` | Product fields (legacy) |
-| `msPageSection` | `ms3_page_sections` | Page sections (legacy) |
+| `msGridField` | `ms3_grid_fields` | Grid column configuration: `customers`, `orders`, `order_products`, `vendors`, `category-products`, `deliveries` |
+| `msProductField` | `ms3_product_fields` | Product fields. A row is created by `ExtraFieldsService` together with its field, and read by `ConfigService` and `FieldConfigManager` |
+| `msPageSection` | `ms3_page_sections` | Page sections. Serves `/api/mgr/config/page-fields/{page_key}` |
 | `msExtraField` | `ms3_extra_fields` | Extra fields |
 
 ### Notifications
@@ -213,10 +300,27 @@ In miniShop2 customer = modUser. In MiniShop3 customer is a separate entity msCu
 
 ### Creating an order
 
+::: warning This is not how to create an order
+The example below only shows how order records are laid out in the database. An order assembled this way has passed no validation, got no cost or delivery calculation, fired no events and sent no notifications.
+
+To create orders from code there is the `ms3_programmatic_order` service (`ProgrammaticOrderService`): it builds a draft and finalises it the usual way, and with `idempotency_key` a repeated call will not produce a duplicate.
+
+```php
+$result = $modx->services->get('ms3_programmatic_order')->create([
+    'idempotency_key' => 'crm-order-15', // required
+    'products' => [
+        ['product_id' => $productId, 'count' => 2],
+    ],
+    'delivery_id' => $deliveryId,
+    'payment_id' => $paymentId,
+]);
+```
+
+:::
+
 ```php
 use MiniShop3\Model\msOrder;
 use MiniShop3\Model\msOrderProduct;
-use MiniShop3\Model\msOrderAddress;
 
 // Create order
 $order = $modx->newObject(msOrder::class);
@@ -239,12 +343,12 @@ $orderProduct->fromArray([
     'price' => $price,
     'count' => $count,
     'cost' => $price * $count,
-    'options' => json_encode($options),
+    'options' => $options,
 ]);
 $orderProduct->save();
 ```
 
-### Working with customer
+### Working with a customer {#customer-example}
 
 ```php
 use MiniShop3\Model\msCustomer;
@@ -272,73 +376,63 @@ $address->fromArray([
 ]);
 $address->save();
 
-// Get all customer addresses
-$addresses = $customer->getMany('Addresses');
+// Get all customer addresses with a direct query —
+// msCustomer has no Addresses relation
+$addresses = $modx->getIterator(msCustomerAddress::class, [
+    'customer_id' => $customer->get('id'),
+]);
 ```
 
 ### Iterating records
 
+`getIterator()` fetches rows one at a time and never holds the whole set in memory — on large result sets it beats `getCollection()`:
+
 ```php
 use MiniShop3\Model\msOrder;
 
-// Correct: getIterator() — lazy loading
 foreach ($modx->getIterator(msOrder::class, ['status_id' => 2]) as $order) {
     // Process order
 }
-
-// Incorrect: getCollection() loads everything into memory
-// $orders = $modx->getCollection(msOrder::class, $criteria);
 ```
+
+::: danger getIterator() and classes without their own table
+`getCollection()` and `getObject()` add a `class_key` filter to the criteria themselves — that is what `addDerivativeCriteria()` does. On top of that, `msProduct` and `msCategory` duplicate the guard in their own `loadCollection()` and `load()`. **`getIterator()` goes through neither: it builds the iterator directly, and no filter is applied.**
+
+For `msProduct` and `msCategory` this matters: they have no table of their own and live in `site_content` along with every other MODX resource. Without the filter the query picks up foreign rows, and the first of them raises an error along the lines of "Instantiated a derived class msProduct that is not a subclass of the requested class msCategory".
+
+So with `getIterator()` on such classes, set `class_key` by hand:
+
+```php
+$criteria = [
+    'class_key' => msProduct::class, // required
+    'parent' => $categoryId,
+];
+
+foreach ($modx->getIterator(msProduct::class, $criteria) as $product) {
+    // …
+}
+```
+
+Models with a table of their own — `msOrder`, `msCustomer`, `msProductData` and the rest from the tables above — are unaffected.
+:::
 
 ## Model architecture
 
-### Difference from miniShop2
+A model owns its table and relations. Business logic lives in services. See [Service layer](/en/components/minishop3/development/services).
 
-miniShop2 used "fat models" — model classes contained a lot of business logic: validation, calculations, notifications, etc.
-
-In MiniShop3 business logic lives in the **service layer** (`src/Services/`, `src/Controllers/`):
-
-### miniShop2 — fat model
-
-```mermaid
-flowchart TB
-  msOrder["msOrder"]
-  msOrder --- V[validation]
-  msOrder --- C[cost calculation]
-  msOrder --- S[status change]
-  msOrder --- N[notifications]
-  msOrder --- D[database access]
-```
-
-### MiniShop3 — model + services
-
-```mermaid
-flowchart LR
-  OrderController["OrderController — business logic"] --> msOrder["msOrder — DB, relations, service calls"]
-  NotificationManager["NotificationManager — notifications"] --> msOrder
-```
-
-### Pragmatic approach
-
-::: info Compromise with MODX architecture
-In modern approaches (Clean Architecture, DDD) models should only handle database access and not know about the service layer, repositories, or controllers.
-
-However, MODX architecture commonly puts business logic in models (`modResource`, `modUser`, etc.). Since some MiniShop3 models extend MODX classes (`msProduct extends modResource`, `msCategory extends modResource`), they must follow similar patterns.
-
-Therefore MiniShop3 models reference services for business logic — a pragmatic compromise for MODX ecosystem compatibility.
-:::
-
-### Example: calling a service from a model
+The models never became fully "thin": `msProduct` and `msCategory` extend `modResource`, and MODX keeps business logic in models. So a model may call a service:
 
 ```php
 // src/Model/msProductData.php
 class msProductData extends xPDOSimpleObject
 {
-    public function getPrice(array $data = []): float
+    public function getPrice($data = [])
     {
-        // Delegate to formatting service
-        $ms3 = $this->xpdo->services->get('ms3');
-        return $ms3->format->price($this->get('price'));
+        if (empty($data)) {
+            $data = $this->toArray();
+        }
+
+        return $this->getProductDataService()->getModifiedPrice($this, $data);
     }
 }
 ```
@@ -354,7 +448,7 @@ This allows:
 - Full PHP 8 type hints
 - Full control over model code
 
-**Important:** Do not run `buildModel()` — it will overwrite custom model methods.
+**Do not** run `buildModel()`. It overwrites methods that were added by hand.
 :::
 
 ### Model file structure
@@ -376,11 +470,12 @@ use MODX\Revolution\modResource;
 
 class msProduct extends modResource
 {
-    // Custom model methods
-    public function getPrice(): float
+    // Custom model methods. Do not override getPrice(): msProduct already has it
+    // with a different signature, and it runs the price through modifiers
+    public function getRawPrice(): float
     {
         $data = $this->getOne('Data');
-        return $data ? (float)$data->get('price') : 0.0;
+        return $data ? (float) $data->get('price') : 0.0;
     }
 }
 ```
@@ -394,7 +489,7 @@ namespace MiniShop3\Model\mysql;
 class msProduct extends \MiniShop3\Model\msProduct
 {
     public static $metaMap = [
-        'package' => 'MiniShop3\\Model\\',
+        'package' => 'MiniShop3\\Model',
         'version' => '3.0',
         'extends' => 'MODX\\Revolution\\modResource',
         'fields' => [
@@ -407,20 +502,26 @@ class msProduct extends \MiniShop3\Model\msProduct
 
 ## Phinx migrations
 
-Schema changes are applied via Phinx migrations:
+Phinx migrations change the database schema:
 
 ```
 core/components/minishop3/migrations/
-├── 20240101000000_create_customers_table.php
-├── 20240102000000_add_customer_fields.php
+├── 20251020000000_initial_schema.php
+├── 20251021000000_seed_page_sections.php
+├── 20251022000000_seed_product_fields.php
+├── 20251023000000_seed_order_statuses.php
 └── ...
 ```
 
 ### Running migrations
 
+You normally do not run them by hand: on install and upgrade the `resolver_02_migrations` resolver applies them, and `ExtraFieldsService` does when you work with extra fields. Both use the `production` environment, which is also the default in `phinx.php`.
+
+For development, run them from the CLI:
+
 ```bash
 cd /path/to/modx
-php vendor/bin/phinx migrate -c core/components/minishop3/phinx.php
+php core/components/minishop3/vendor/bin/phinx migrate -c core/components/minishop3/phinx.php
 ```
 
 ### Example migration
@@ -452,8 +553,6 @@ class CreateCustomersTable extends AbstractMigration
 
 ### Product
 
-`msProduct` (extends `modResource`) and `msProductData` (table `ms3_products`)
-
 ```mermaid
 erDiagram
   msProduct ||--|| msProductData : "1:1"
@@ -471,4 +570,10 @@ erDiagram
   msCustomer ||--o{ msCustomerAddress : "1:N"
   msOrder }o--|| msDelivery : "N:1"
   msOrder }o--|| msPayment : "N:1"
+  msOrder ||--o| ms3_shipments : "1:0..1"
+  ms3_shipments ||--o{ ms3_shipment_events : "1:N"
 ```
+
+`ms3_shipments` / `ms3_shipment_events` are PDO tables, not `MiniShop3\Model\*` classes.
+
+The `msCustomer → msCustomerAddress` line shows the relation in the database: addresses point at the customer through `customer_id`. The schema has no alias for walking from a customer to the addresses — only the other way round, `$address->getOne('Customer')`.

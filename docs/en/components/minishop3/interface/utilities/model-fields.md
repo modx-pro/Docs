@@ -3,83 +3,74 @@ title: Model fields
 ---
 # Utilities: Model fields
 
-Manage existing model fields from the database.
+Fields from the `ms3_model_fields` table: how existing model columns are shown.
 
 ## Purpose
 
-Manage fields from `ms3_model_fields` (display config for existing model columns):
+You edit labels, widgets, and sections of existing fields. Data in the tables does not change.
 
-::: info Not page-fields
-[Product fields](/en/components/minishop3/interface/utilities/product-fields) (`ms3_product_fields`, `page_key=product_data`) control only the product “Data” tab. [Extra fields](/en/components/minishop3/interface/utilities/extra-fields) create new DB columns. Cookbook: [Model fields](/en/components/minishop3/manager/model-fields/cookbook).
+::: info Not the same as page-fields
+[Product fields](/en/components/minishop3/interface/utilities/product-fields) (`ms3_product_fields`, `page_key=product_data`) configure only the Product properties tab on the product card. [Extra fields](/en/components/minishop3/interface/utilities/extra-fields) create new database columns. Cookbook: [Model fields](/en/components/minishop3/manager/model-fields/cookbook).
 :::
 
-<!-- ![Model fields utility](/components/minishop3/screenshots/mgr-model-fields.png) -->
+![Model fields utility](/components/minishop3/screenshots/mgr-model-fields.png)
 
-From this utility you can:
-
-- view all model fields
-- edit display settings
-- assign fields to sections
-- configure widgets (xtype)
-- manage field sections
-
-## Difference from "Extra fields"
+## Difference from extra fields
 
 | Aspect | Model fields | Extra fields |
 | --- | --- | --- |
-| Source | Existing DB fields | New fields |
+| Source | Existing fields in the database | New fields |
 | Column creation | No | Yes (ALTER TABLE) |
-| Deletion | From configuration only | Full removal |
-| Use | Display configuration | Schema extension |
+| Deletion | From the configuration only | Full removal |
+| Use | Display setup | Schema extension |
 
 ## Interface
 
 ### Model selection
 
-Model filter at the top:
+The filter at the top of the page offers 4 models:
 
-- msProductData — product data
-- msVendor — vendors
-- msOrder — orders
-- msOrderAddress — addresses
-- msOrderProduct — order line items
+- msOrder, orders
+- msOrderAddress, addresses
+- msOrderProduct, order lines
+- msVendor, vendors
+
+`msProductData` is not in this list. Product data is configured in [Product fields](product-fields).
 
 ### Sections panel
 
-Left panel lists sections for the selected model.
-
-**Section actions:**
-
-- Add new section
-- Edit existing
-- Delete section
-- Reorder (drag-and-drop)
+A collapsible Manage sections panel above the fields table. Columns: drag handle, Key, Title, Hidden, System, Actions.
 
 ### Fields table
 
-Right side shows fields and settings:
+Below the sections panel: fields and their settings.
 
 | Column | Description |
 | --- | --- |
-| Name | System field name |
-| Label | Display name |
-| Type (xtype) | Widget type |
-| Section | Section assignment |
-| Visibility | Show field |
-| Width | Grid width (3–12) |
+| Field name | System field name |
+| Title | Display name |
+| Section | Which section the field belongs to |
+| Width | Grid width (1–12) |
+| Field type | Widget type |
+| Visible | Whether the field is shown |
+| Required | The field must be filled in |
 
 ## Editing a field
 
-Click a row to open the edit dialog.
+Click a row. The edit dialog opens.
 
 ### Basic parameters
 
 | Parameter | Description |
 | --- | --- |
-| Label | Display field name |
-| Description | Hint below input |
-| Section | Group where the field appears |
-| Visibility | Show in form |
+| Field name | The system column name. Required, set at creation |
+| Label | Display name of the field |
+| Description | Hint under the input |
+| Placeholder | Hint text inside the input |
+| Section | Group the field is shown in |
+| Visibility | Show the field on the form |
+| Required | The field cannot be left empty |
+| Order | Position of the field inside the section |
 
 ### Widget type (xtype)
 
@@ -94,52 +85,71 @@ Click a row to open the edit dialog.
 
 ### Grid width
 
-Uses a 12-column grid:
+The grid has 12 columns and the width is set with a slider — any integer from 1 to 12. Common values:
 
 | Value | Width | Description |
 | --- | --- | --- |
-| 3 | 25% | Quarter row |
-| 4 | 33% | Third row |
-| 6 | 50% | Half row |
-| 8 | 67% | Two thirds |
-| 12 | 100% | Full row |
+| 3 | 25% | A quarter of the row |
+| 4 | 33% | A third of the row |
+| 6 | 50% | Half of the row |
+| 8 | 67% | Two thirds of the row |
+| 12 | 100% | The whole row |
 
 ### Data source for combo
 
-For `combo` type set JSON configuration:
+For the `combo` type, set a JSON configuration with a required `source.type`.
+
+A model (a class from the registry):
 
 ```json
 {
-  "store": [
-    ["value1", "Option 1"],
-    ["value2", "Option 2"],
-    ["value3", "Option 3"]
-  ]
+  "source": {
+    "type": "model",
+    "class": "MiniShop3\\Model\\msOption",
+    "valueField": "id",
+    "labelTemplate": "{caption}",
+    "where": {"active": true},
+    "sort": {"caption": "ASC"},
+    "limit": 500
+  }
 }
 ```
 
-Or load from API:
+Besides `valueField` and `labelTemplate`, a source accepts `labelField` — a single column for the label, `name` by default — and `sort` written as «field: direction». `limit` defaults to 500: that is a guard against pulling thousands of rows, not a ceiling to remove lightly.
+
+Sources are read in order of priority: the database row, then `custom/combos/{model}.php`, then the shipped `config/combos/{model}.php`. The first one found wins.
+
+A static list:
 
 ```json
 {
-  "url": "/api/mgr/options/list",
-  "valueField": "id",
-  "displayField": "name"
+  "source": {
+    "type": "static",
+    "options": [
+      { "value": "value1", "label": "Option 1" },
+      { "value": "value2", "label": "Option 2" }
+    ]
+  }
 }
 ```
+
+A `url` field is not required. There is no ready route `GET /api/mgr/options/list`. The option list is `GET /api/mgr/options`.
 
 ## Section management
 
 ### Creating a section
 
-1. Click "+" in the sections panel
+1. Click "+" on the sections panel
 2. Fill the form:
 
 | Field | Description |
 | --- | --- |
-| Key | Unique identifier |
+| Model | Which model the section belongs to. Required, fixed after creation |
+| Key | Unique identifier. Fixed after creation |
+| Lexicon key | Key for the translated title |
 | Label | Display name |
-| Order | Position in section list |
+| Hidden | The section is not shown on the form |
+| Order | Position in the section list |
 
 ### Editing a section
 
@@ -147,52 +157,31 @@ Click the edit icon next to the section name.
 
 ### Deleting a section
 
-::: warning Note
-Deleting a section does not delete fields; they move to "No section".
+::: warning Caution
+Deleting a section does not delete the fields. They move to No section.
+
+A section flagged as default (`is_default`) cannot be deleted — the server answers `Cannot delete default section`. Such sections are marked in the System column.
 :::
 
 ### Section order
 
-Drag sections to change display order.
+Drag sections to change the order.
 
 ## Usage examples
 
-### Grouping price fields
+### Hide technical fields
 
-1. Create section "Prices":
-   - Key: `prices`
-   - Label: `Prices`
+Fields that are usually hidden:
 
-2. Move fields into the section:
-   - `price` → Prices
-   - `old_price` → Prices
-   - `wholesale_price` → Prices (if added)
-
-### Field width
-
-For compact layout:
-
-| Field | Width |
-| --- | --- |
-| article | 6 (50%) |
-| price | 3 (25%) |
-| old_price | 3 (25%) |
-| weight | 4 (33%) |
-| stock | 4 (33%) |
-
-### Hiding technical fields
-
-Fields often hidden:
-
-- `id` — auto-generated
-- `createdon` — technical dates
-- `source` — when using a single media source
+- `id` is generated automatically
+- `createdon` holds technical dates
+- `source` when a single source is used
 
 ## API endpoints
 
 ### Model list
 
-```
+```http
 GET /api/mgr/model-fields/models
 ```
 
@@ -201,9 +190,9 @@ GET /api/mgr/model-fields/models
 ```json
 {
   "success": true,
-  "object": {
+  "data": {
     "models": [
-      { "value": "msProductData", "label": "Product data" },
+      { "value": "msOrder", "label": "Order" },
       { "value": "msVendor", "label": "Vendor" }
     ]
   }
@@ -212,13 +201,33 @@ GET /api/mgr/model-fields/models
 
 ### Model field list
 
-```
-GET /api/mgr/model-fields?model=msProductData
+```http
+GET /api/mgr/model-fields?model=msOrder
 ```
 
-### Update field
+### Create a field
 
+```http
+POST /api/mgr/model-fields
 ```
+
+The body is the field parameters (the same ones as in the dialog: `label`, `xtype`, `section_id`, `visible`, `width`, …). It requires `mssetting_save`.
+
+### The other endpoints
+
+| Method | Route | Description |
+| --- | --- | --- |
+| `GET` | `/api/mgr/model-fields/{id}` | One field |
+| `DELETE` | `/api/mgr/model-fields/{id}` | Delete a field |
+| `GET` | `/api/mgr/model-fields/visible/{model}` | Visible fields of the model only — this is what the order forms use |
+| `GET` | `/api/mgr/model-fields/combo-options/{model}` | Choices for every combo field of the model |
+| `GET` | `/api/mgr/model-fields/combo-options/{model}/{field_name}` | Choices for a single combo field |
+
+The gate on `visible` and `combo-options` is softer: any one of the nine MiniShop3 permissions is enough, while writes require `mssetting_save`. Otherwise the order form would not open for a manager without the settings permission.
+
+### Update a field
+
+```http
 PUT /api/mgr/model-fields/{id}
 ```
 
@@ -235,15 +244,23 @@ PUT /api/mgr/model-fields/{id}
 }
 ```
 
+### Reorder fields
+
+```http
+PUT /api/mgr/model-fields/ranks
+```
+
+The body is JSON with the new field order (the same order as drag-and-drop in the UI). It requires `mssetting_save`.
+
 ### Model sections
 
-```
-GET /api/mgr/model-fields/sections/msProductData
+```http
+GET /api/mgr/model-fields/sections/msOrder
 ```
 
-### Create section
+### Create a section
 
-```
+```http
 POST /api/mgr/model-fields/sections
 ```
 
@@ -251,30 +268,35 @@ POST /api/mgr/model-fields/sections
 
 ```json
 {
-  "model": "msProductData",
+  "model": "msOrder",
   "section_key": "prices",
   "label": "Prices",
   "sort_order": 10
 }
 ```
 
-### Delete section
+### Edit a section
 
+```http
+PUT /api/mgr/model-fields/sections/{id}
 ```
+
+The body is the section fields you change (`label`, `sort_order`, …). It requires `mssetting_save`.
+
+### Reorder sections
+
+```http
+PUT /api/mgr/model-fields/sections/ranks
+```
+
+The body is JSON with the new section order. It requires `mssetting_save`.
+
+### Delete a section
+
+```http
 DELETE /api/mgr/model-fields/sections/{id}
 ```
 
-## Configuration impact
+## Relation to other configuration
 
-Changes here affect:
-
-1. **Product card** — field display on the "Data" tab
-2. **Grids** — available columns
-3. **Import** — fields available for mapping
-4. **API** — object serialization
-
-To apply changes in the UI you may need:
-
-- Page reload
-- Browser cache clear
-- MODX cache clear
+Do not confuse this screen with [Product fields](product-fields) (`product_data`) or with [Grid columns](grid-columns). This screen does not define CSV import or the public API.

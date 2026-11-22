@@ -5,13 +5,12 @@ description: "Image grid with alt text and optional caption per slide"
 
 # Gallery
 
-Several photos or screenshots in one section. Each image has its own alt text and optional caption. Rendering is in Free. A new section of this type is created by PageBuilder Pro (`authoring: Pro; runtime in Free`).
+Several photos or screenshots in one section. Each image has its own alt text and optional caption. Rendering is in Free. PageBuilder Pro creates a new section of this type (`authoring: Pro; runtime in Free`).
 
 ![Gallery](/components/pagebuilder/screenshots/sections/gallery.jpg)
 
 ## What the gallery adds
 
-- Several images in one section, each with alt and caption
 - Inspector repeater: new row equals new slide on the site
 - Grid markup lives in the chunk, not hand-built columns
 
@@ -40,14 +39,14 @@ Add rows in the **Slides** repeater with an **Image** each. Fill alt text for ac
 | Parameter | Value |
 | --- | --- |
 | key | `gallery` |
-| Layer | Free |
+| Layer | authoring: Pro; runtime in Free |
 | Category | media (`media`) |
 | Chunk | `pagebuilder_gallery` |
 | Requires | — |
 
 ## Inspector fields
 
-Fill these fields in the section inspector. Field types are documented in the [field types reference](../fields/types).
+Field types: [field types reference](../fields/types).
 
 ### Title (`title`)
 

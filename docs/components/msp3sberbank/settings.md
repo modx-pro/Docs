@@ -19,6 +19,8 @@ description: Ключи API Сбербанка, callback, чеки 54-ФЗ, URL 
 
 Без пары login + password шлюз отклонит `register.do` (часто **errorCode 5**).
 
+<!-- MEDIA: MODX: Системные настройки, фильтр `msp3sberbank`, секция обязательных полей (api_url, api_login, api_password) -->
+
 ## Режим и API
 
 | Ключ | Тип | По умолчанию | Описание |
@@ -40,7 +42,7 @@ description: Ключи API Сбербанка, callback, чеки 54-ФЗ, URL 
 
 | Ключ | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
-| `msp3sberbank_paid_status_id` | число | `2` | ID статуса «Оплачен». При `0` используется `ms3_status_paid`. |
+| `msp3sberbank_paid_status_id` | число | `2` | ID статуса «Оплачен». При `0` пакет берёт `ms3_status_paid`. |
 | `msp3sberbank_authorized_status_id` | число | `0` | ID статуса после холда (pre-auth). `0`: не менять. |
 | `msp3sberbank_reverse_status_id` | число | `0` | ID статуса после отмены холда (`reverse`). `0`: не менять. |
 | `msp3sberbank_refund_status_id` | число | `0` | ID статуса после возврата. `0`: `ms3_status_refunded` или не менять. |
@@ -60,6 +62,8 @@ https://ваш-домен.ru/assets/components/msp3sberbank/callback.php
 
 Если задан секрет или публичный ключ, callback без верного `checksum` отвечает **400**. Без ключей endpoint принимает запрос при валидном `orderId`/`mdOrder`, но статус всё равно перепроверяется через `getOrderStatusExtended.do`.
 
+<!-- MEDIA: MODX: Системные настройки, секция Callback и безопасность, заполненные поля callback_secret или callback_public_key (textarea с PEM) -->
+
 Алгоритм checksum: [Интеграция, callback](integration#callback).
 
 ## Чеки 54-ФЗ {#чеки-54-фз}
@@ -71,6 +75,8 @@ https://ваш-домен.ru/assets/components/msp3sberbank/callback.php
 | `msp3sberbank_tax_type` | число | `0` | Код НДС в позиции чека (`tax.taxType`). Одна ставка на все позиции. |
 
 При включённом `send_order_bundle` компонент добавляет **orderBundle** в **register.do** и в **deposit.do** для двухстадийной схемы.
+
+<!-- MEDIA: MODX: Системные настройки, секция Чеки 54-ФЗ, поля send_order_bundle=Да, ffd_version=1.2, tax_type=0 -->
 
 Чек собирается из данных заказа MiniShop3:
 

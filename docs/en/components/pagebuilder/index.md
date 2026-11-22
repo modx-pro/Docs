@@ -251,43 +251,90 @@ items: [
 
 ![Section editor on a resource](/components/pagebuilder/screenshots/mgr-sections-tab.png)
 
-You build a page from sections on the **Sections** tab in MODX. Autosave writes the draft. **Save** on the MODX resource validates fields and publishes sections to the site. The standard resource **Content** field is not used for sections. On the storefront, the `PageBuilder` snippet renders the blocks.
+You build a page from sections on the **Sections** tab in MODX. Autosave writes the draft. **Save** on the MODX resource validates fields and publishes sections to the site. The resource **Content** field is not used for sections. The `PageBuilder` snippet outputs the blocks on the site.
 
-The sidebar covers installation, the editor, frontend output, Pro, the developer section, and separate lists of [field types](fields/types) and [sections](sections/). Start here: [Quick start](quick-start).
+Start here: [Quick start](quick-start).
 
-## Features
+## Resource editor
 
-### Resource editor
+The **Sections** tab holds the editor:
 
-On the **Sections** tab: table or compact editorial list (default from `pagebuilder_resource_view_mode`, toggle in the toolbar). Add from the catalog, drag to reorder, Alt+↑/↓, duplicate, copy sections from another page. In the editorial list you enable and disable sections on each row. Deleted sections go to the page trash. Edit content in the **Properties** modal inspector. While the inspector is open for a newly added section, autosave pauses: **Cancel** rolls the draft back to the state before the add. Visibility rules (context, UTM) open via **Visibility** when the system setting is enabled. Draft preview in a drawer via a signed link. Undo/redo in the current session. Before publish (Save resource) the editor validates required fields.
+- table or compact editorial list (default from `pagebuilder_resource_view_mode`, toggle in the toolbar)
+- add from the catalog, drag to reorder, Alt+↑/↓, duplicate, copy sections from another page
+- in the editorial list you enable and disable sections on each row
+- deleted sections go to the page trash
+- edit content in the **Properties** modal inspector
+- while the inspector is open for a newly added section, autosave pauses
+- **Cancel** rolls the draft back to the state before the add
+- visibility rules (context, UTM) open via **Visibility** when the system setting is enabled
+- draft preview in a drawer via a signed link
+- undo and redo in the current session
+- before publish (**Save** resource) the editor validates required fields
 
-### Draft and publish
+## Draft and publish
 
-Autosave writes the draft only. **Save** on the MODX resource: validate → draft → publish to `published_json`. **Unpublish** clears the published version; the draft remains. On save the server compares revision numbers to avoid overwriting concurrent edits.
+Autosave writes the draft only. **Save** on the MODX resource: validate → draft → publish to `published_json`. **Unpublish** clears the published version. The draft remains. On save the server compares revision numbers so concurrent edits are not overwritten.
 
-### Free: sections and fields
+```mermaid
+flowchart TD
+  A[Autosave in the inspector] -->|mode: draft| B[Draft write, published_json unchanged]
+  C[Save MODX resource] --> D{revision matches?}
+  D -->|no| E[Revision conflict: edits not overwritten]
+  D -->|yes| F[Section field validation]
+  F -->|errors| G[Response with the problem list, no publish]
+  F -->|ok| H[Publish: draft → published_json]
+  I[Unpublish] --> J{revision matches?}
+  J -->|no| E
+  J -->|yes| K[publishedRevision = 0, draft stays]
+```
 
-12 built-in types: hero, richtext, gallery, faq, cta, cards, contact, stats, testimonials, image, spacer, video. A new `gallery` is created in Pro; rendering stays in Free. In the control panel (**Blocks**) filter types with **All / From package / Mine** chips, bulk-hide presets, and set custom catalog previews instead of schematic images. 35 field types in Free and 27 in Pro (62 total): text, richtext, repeater, migx, file, select, and more. With `pagebuilder_responsive_editor_enabled`, the inspector shows per-device value tabs.
+## Free: sections and fields
 
-### PageBuilder Pro
+11 built-in types: hero, richtext, faq, cta, cards, contact, stats, testimonials, image, spacer, video.
 
-Global library (**Shared blocks**): pull from another page (Link | Copy), write-through for linked sections, page templates, section event journal (View/Restore). **Examples** tab in the catalog (Examples toggle / `pagebuilder_catalog_examples_enabled`). [Agent API](agent-api) for scripts and agents. **Basket** in the control panel restores deleted sections and table rows across resources. Pro catalog: features, team, tabs, maps, [forms](sections/contact_form), [quiz](sections/quiz), miniShop3 commerce blocks. The `video` section is created in Free. 27 more field types: gallery, map, relation, table, embeddedTable, editorjs, and more.
+Pro creates a new `gallery` (`authoring: pro`). Rendering an existing `gallery` stays in Free.
 
-### Resource tables
+In the control panel (**Blocks**):
 
-The **Tables** tab stores large row sets in the database: filters, CSV/JSON import, bulk delete. On the storefront, `PageBuilderTableRows` outputs rows. The `data_table` section (Pro) embeds a small table in section JSON.
+- **All / From package / Mine** chips
+- bulk-hide of preset types
+- your own catalog preview instead of the schematic image
 
-### UTM and contexts
+35 field types in Free and 27 in Pro (62 total): text, richtext, repeater, migx, file, select, and more. With `pagebuilder_responsive_editor_enabled`, the inspector shows per-device value tabs.
+
+## PageBuilder Pro
+
+- global library (**Shared blocks**): pull from another page (Link | Copy), write-through for linked sections
+- page templates and section event journal (View/Restore)
+- **Examples** tab in the catalog (Examples toggle / `pagebuilder_catalog_examples_enabled`)
+- [Agent API](agent-api) for scripts and agents
+- **Basket** in the control panel: sections and table rows across resources
+- catalog: [gallery](sections/gallery), features, team, tabs, maps, [forms](sections/contact_form), [quiz](sections/quiz), miniShop3 blocks
+- image/gallery crop: capability `image-crop`
+- the `video` section is created in Free
+- 27 more field types: gallery, map, relation, table, embeddedTable, editorjs, and more
+
+## Resource tables
+
+The **Tables** tab stores large row sets in the database: filters, CSV/JSON import, bulk delete. On the site, `PageBuilderTableRows` outputs rows. The `data_table` section (Pro) embeds a small table in section JSON.
+
+## UTM and contexts
 
 The UTM registry in the control panel requires capability `utm` (Pro). Already published rules still run in Free. Visibility rules (context, UTM, Pro conditions) open via **Visibility** in the inspector when `pagebuilder_inspector_visibility_enabled` is on. Snippets `PageBuilderUtmSession` and `PageBuilderUtmUrl` help on landing pages. Fields support the <code v-pre>{{utm:key}}</code> placeholder. <!-- markdownlint-disable-line MD033 -->
 
-### Collections and control panel
+## Collections and control panel
 
-Requires PageBuilder Pro and capability `collections`. With `collections_enabled`, resource tabs (sections, tables, iframe, and more) are configured in the control panel. Without the capability the tabs are absent. **Components → PageBuilder** lists resources with sections and section types.
+Requires PageBuilder Pro and capability `collections`. With `collections_enabled`, resource tabs (sections, tables, iframe, and more) are configured in the control panel. Without the capability the tabs are absent. **Components → PageBuilder** opens the type builder and Pro tabs. The CMP has no resource list. The section editor is the resource tab.
 
-### Snippets, Public API, and events
+## Snippets, Public API, and events
 
-`PageBuilder` outputs section HTML, `PageBuilderResource` returns sections from another resource, `PageBuilderSitemap` builds an XML sitemap. [Public API](public-api) serves published sections as JSON for headless frontends (`api.php`). `pbOn*` events let plugins hook save, publish, render, and section type registration. See [workflow](workflow), [cmp](cmp), [pro](pro).
+| What | Why |
+| --- | --- |
+| `PageBuilder` | section HTML |
+| `PageBuilderResource` | sections from another resource |
+| `PageBuilderSitemap` | XML sitemap |
+| [Public API](public-api) | published sections as JSON (`api.php`) |
+| `pbOn*` events | plugins on save, publish, render, and type registration |
 
 ## System requirements
 
@@ -301,10 +348,10 @@ Requires PageBuilder Pro and capability `collections`. With `collections_enabled
 
 ## Packages
 
-| Extra | Version | Contents |
+| Package | Version | Contents |
 | --- | --- | --- |
-| `pagebuilder` | 1.0.14-beta | Free: core, sections, control panel, snippets, MIGX, responsive, Save = publish, type filter and custom previews |
-| `pagebuilderpro` | 1.0.14-beta | Pro: requires `pagebuilder` ≥ 1.0.14, quiz, library pull, page templates, section journal |
+| `pagebuilder` | 1.0.17-beta | Free: core, sections, control panel, snippets, MIGX, responsive, Save = publish, type filter and custom previews |
+| `pagebuilderpro` | 1.0.17-beta | Pro: requires `pagebuilder` ≥ 1.0.17, quiz, library pull, page templates, section journal |
 
 MODX namespace: `pagebuilder`.
 
@@ -334,18 +381,19 @@ MODX namespace: `pagebuilder`.
 
 | URL / path | Purpose |
 | --- | --- |
-| Component `pagebuilder` → `index` | Resource catalog with sections, section types (Pro) |
+| Component `pagebuilder` → `index` | Section type builder and Pro tabs. There is no resource list. The section editor is the resource tab |
 | `assets/components/pagebuilder/connector.php` | MGR API (VueTools) |
 | `assets/components/pagebuilder/preview.php` | Draft preview in iframe |
 | `assets/components/pagebuilder/api.php` | Public API: published sections JSON (headless) |
+| `assets/components/pagebuilder/api/v1.php` | REST API v1 (Pro): Bearer tokens, scopes `pages.read` / `catalog.read` |
 | Snippet `[[!PageBuilder]]` | Published section HTML on the site |
 
 ## Permissions
 
 | Permission | Purpose |
 | --- | --- |
-| `pagebuilder_view` | Sections tab, catalog, preview token |
-| `pagebuilder_save` | Draft save and publish (fallback: `save_document`) |
-| `pagebuilder_manage_types` | Control panel section types (no fallback to view) |
+| `pagebuilder_view` | Sections tab, type catalog, preview token. `save_document` opens the same |
+| `pagebuilder_save` | Draft save and publish (also `save_document`) |
+| `pagebuilder_manage_types` | Control panel section types (no `view` substitute) |
 
 Access to a specific resource is also checked by the MODX policy (`view`, `save`).

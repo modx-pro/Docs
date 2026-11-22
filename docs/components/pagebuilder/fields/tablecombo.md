@@ -11,7 +11,7 @@ description: "Выпадающий список из класса MODX чере�
 
 ## Зачем этот тип
 
-Выпадающий список. Варианты загружаются из разрешённого класса MODX через `optionsSource` и процессор `mgr/field/options`, либо из статического `options` в schema. В инспекторе это не сетка: сетка строк у поля [table](table). Нужны PageBuilder Pro и `advanced-fields`. Пусто, если нет ни `options`, ни `optionsSource`.
+Выпадающий список: варианты загружаются из разрешённого класса MODX через `optionsSource` и процессор `mgr/field/options` либо из статического `options` в схеме. В инспекторе это не сетка — сетка строк у поля [table](table). Пусто, если нет ни `options`, ни `optionsSource`.
 
 ## Когда использовать
 

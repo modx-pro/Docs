@@ -13,7 +13,7 @@ description: Журнал обращений mxheadless_api_log и prune
 
 Таблица `{prefix}mxheadless_api_log`: `request_id`, `identity_key`, `api_key_id`, `method`, `path`, `context_key`, `status_code`, `duration_ms`, `created_on`.
 
-В таблицу не попадают bodies, `Authorization`, cookies и query string.
+В таблицу не попадают bodies, `Authorization`, cookies, query string и IP-адрес клиента. IP используется только для rate limit.
 
 GET логируются только при `mxheadless_audit_log_get=true`.
 
@@ -23,4 +23,8 @@ GET логируются только при `mxheadless_audit_log_get=true`.
 php core/components/mxheadless/bin/audit-prune.php --days=90
 ```
 
-Без `--days` берётся `mxheadless_audit_retention_days`. Ставьте в cron.
+Без `--days` берётся `mxheadless_audit_retention_days`. Ставьте в cron. Справка по ключам: `--help`.
+
+```text
+Removed 128 audit row(s) older than 90 day(s)
+```

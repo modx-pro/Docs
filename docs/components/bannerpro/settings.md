@@ -9,7 +9,12 @@ description: "Настройки BannerPro: кэш, клики, показы, UT
 
 ![Системные настройки — bannerpro](/components/bannerpro/screenshots/settings-namespace.png)
 
-Часть ключей (UTM, webhook, A/B TTL) редактируется и во вкладке **Компоненты → BannerPro → Настройки** через connector actions `settings_utm_*` и `settings_integrations_*`. Остальные ключи — только здесь.
+Часть ключей (UTM, webhook, A/B TTL) редактируется и во вкладке **Компоненты → BannerPro → Настройки** через connector actions:
+
+- `settings_utm_get` / `settings_utm_update` — чтение и запись UTM‑параметров
+- `settings_integrations_get` / `settings_integrations_update` — webhook, `ab_ttl`, аналитика
+
+Остальные ключи редактируются только здесь.
 
 ## Кэш
 
@@ -22,7 +27,7 @@ description: "Настройки BannerPro: кэш, клики, показы, UT
 
 Ключ кэша включает **effective context** (`activeContext`): текущий контекст MODX или значение `&context=` из вызова сниппета. Два вызова с разным `context` на одной странице не делят один кэш.
 
-При сохранении баннера или позиции админка сбрасывает кэш по тегу `bannerpro`.
+При сохранении баннера или позиции админка сбрасывает весь раздел кэша `bannerpro`.
 
 ## Клики и показы
 
@@ -101,7 +106,7 @@ Cookie связывает клик по баннеру с заказом MiniSho
 | `bannerpro_api_cors_origin` | textfield | пусто | CORS: `*`, origin или список через запятую |
 | `bannerpro_api_rate_limit` | numberfield | `0` | Запросов в минуту на ключ (`0` = без лимита) |
 
-**REST API ключ**: секрет для `Authorization: Bearer …` в `api.php`. Смотрите в **Система → Настройки системы** (namespace `bannerpro`, подпись «REST API ключ»). Resolver создаёт 32 hex-символа при установке или обновлении, если поле пустое.
+**REST API ключ**: секрет для `Authorization: Bearer …` в `api.php`. Смотрите в **Система → Настройки системы** (namespace `bannerpro`, подпись «REST API ключ»). Resolver установщика генерирует 32-символьный hex-ключ при первой установке, если поле пустое.
 
 Точка входа:
 
@@ -174,7 +179,7 @@ URL должен быть `http://` или `https://`. Запрещены `local
 | --- | --- | --- | --- |
 | `bannerpro_ab_ttl` | numberfield | `30` | Срок cookie `bannerpro_ab_{positionId}` при `&sortby=ab` (дней) |
 
-Подробнее: [Интеграция](integration#a-b-split).
+Подробнее: [Интеграция](integration#ab-delenie).
 
 ## Права доступа
 

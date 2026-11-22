@@ -23,19 +23,26 @@ GET /assets/components/pagebuilder/api/v1.php?path=/pages/42
 Authorization: Bearer <secret>
 ```
 
-`pages.read` открывает `GET /pages` и `GET /pages/{id-or-alias}`. `catalog.read` открывает `GET /health` и `GET /catalog/sections`. Список страниц не содержит тело документа. Повтор с `If-None-Match` отвечает `304`.
+| Scope | Маршруты |
+| --- | --- |
+| `pages.read` | `GET /pages`, `GET /pages/{id-or-alias}` |
+| `catalog.read` | `GET /health`, `GET /catalog/sections` |
+
+Список страниц не содержит тело документа. Повтор с `If-None-Match` отвечает `304`.
+
+`GET /openapi.json` на том же `v1.php` не требует Bearer. Без токена спецификация строится со scopes `catalog.read` и `pages.read`. Секрет токена в неё не входит. Нужны включённый REST и Pro, иначе ответ `404`.
 
 Отозванный токен отвечает `401`. Лимит `pagebuilder_rest_throttle_per_minute` (по умолчанию 120) при превышении отвечает `429` и `Retry-After`.
 
 ## Пример полей
 
-Id `42` в пути это пример. Подставьте id или alias опубликованного ресурса.
+Подставьте id или alias опубликованного ресурса.
 
 Scope только `pages.read`: `GET /pages/42` возвращает документ, `GET /catalog/sections` без `catalog.read` недоступен. Оба scope: каталог типов открывается тем же Bearer.
 
 ## Что проверить
 
-Первый запрос с секретом отвечает телом страницы и заголовком `ETag`. Повтор с `If-None-Match` отвечает `304`. После отзыва тот же секрет отвечает `401`. Сверх `pagebuilder_rest_throttle_per_minute` (по умолчанию 120) ответ `429` и `Retry-After`.
+Первый запрос с секретом отвечает телом страницы и заголовком `ETag`. Повтор с `If-None-Match` отвечает `304`. После отзыва тот же секрет отвечает `401`.
 
 ## Откат
 

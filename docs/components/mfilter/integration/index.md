@@ -1,7 +1,5 @@
 # Интеграции
 
-mFilter интегрируется с популярными компонентами MODX.
-
 ## Поддерживаемые компоненты
 
 | Компонент | Описание |
@@ -11,64 +9,59 @@ mFilter интегрируется с популярными компонент�
 
 ## Принцип интеграции
 
-mFilter работает через параметр `element` — любой сниппет, возвращающий ресурсы:
+mFilter получает список ресурсов от элемента — сниппета из параметра `&element`, например `msProducts` или `pdoResources`.
 
-```php
-[[!mFilter?
-    &element=`msProducts`    // MiniShop3
-    &element=`mSearch`       // mSearch
-    &element=`pdoResources`  // pdoTools
-    &element=`getTickets`    // Tickets
-]]
+```fenom
+{'!mFilter' | snippet : ['element' => 'msProducts']}
+{'!mFilter' | snippet : ['element' => 'pdoResources']}
 ```
 
-## Element/Paginator режим
+Без `&element` mFilter выбирает ресурсы сам, по `parents`, — см. [mFilter](../snippets/mfilter). mSearch подключается не через `&element`: mFilter сам ищет фразу и пересекает её с выборкой элемента, см. [mSearch](msearch).
 
-mFilter передаёт отфильтрованные ID во внешний element:
+## Режим с `&element`
 
-```
-1. element получает все ID (returnIds=1)
-2. mFilter фильтрует ID
-3. element рендерит отфильтрованные ID
-4. paginator обеспечивает пагинацию
-```
+1. Элемент возвращает все ID области (`returnIds=1`).
+2. mFilter фильтрует ID и делит их на страницы.
+3. Пагинатор — сниппет из `&paginator`, например pdoPage, — выводит строки текущей страницы через элемент.
+4. Ссылки на страницы выводит mFilter чанком `tplPagination`.
 
-### Схема работы
+Элемент вызывается дважды, с разными параметрами:
 
-```
-┌─────────────┐    IDs    ┌─────────────┐
-│   element   │ ────────► │   mFilter   │
-│ (msProducts)│           │  (фильтры)  │
-└─────────────┘           └──────┬──────┘
-                                 │
-                          filtered IDs
-                                 │
-                                 ▼
-                         ┌─────────────┐
-                         │  paginator  │
-                         │  (pdoPage)  │
-                         └──────┬──────┘
-                                │
-                             HTML
-                                │
-                                ▼
-                         ┌─────────────┐
-                         │   Browser   │
-                         └─────────────┘
+```mermaid
+sequenceDiagram
+    participant F as mFilter
+    participant P as Пагинатор
+    participant E as Элемент
+    F->>E: вызов 1: returnIds=1, limit=0
+    E-->>F: все ID области, в порядке элемента
+    Note over F: фильтрует ID, делит на страницы
+    F->>P: ID текущей страницы
+    P->>E: вызов 2: resources, parents=0, пустой sortby
+    E-->>P: строки текущей страницы
+    Note over F: ссылки страниц — чанк tplPagination
 ```
 
-## Совместимость
+## Требования к element
 
-### Требования к element
+Элемент должен поддерживать параметры:
 
-Element должен поддерживать:
+| Параметр | Требование |
+|----------|------------|
+| `returnIds` | Вернуть ID через запятую или JSON `{"id": вес}` вместо HTML |
+| `limit` | `0` — без ограничения |
+| `resources` | Список ID для вывода. mFilter передаёт его вместе с `parents=0` |
+| `sortby` | Пустой — выводить `resources` в переданном порядке |
 
-- Параметр `resources` — список ID для вывода
-- Параметр `returnIds` — возврат ID вместо HTML
+Порядок mFilter получает от элемента при выборке, а при выводе страницы передаёт пустой `sortby` и не сортирует заново. Сниппеты на pdoTools, включая `msProducts`, так и делают.
 
-### Требования к paginator
+Элемент получает все параметры вызова `mFilter`, кроме `element`, `paginator`, `useFilters`, `ajax` и `ajaxMode`. Лексиконы для `msProducts` mFilter загружает сам. Для других элементов перечислите их в `&lexicons`: после фильтрации без перезагрузки лексиконы страницы не загружены.
 
-Paginator должен поддерживать:
+## Требования к paginator
 
-- Параметр `element` — сниппет для рендеринга
-- Параметр `resources` — список ID
+Пагинатор должен поддерживать параметры:
+
+| Параметр | Требование |
+|----------|------------|
+| `element` | Сниппет, которым отрисовываются строки |
+| `resources` | Список ID |
+| `page`, `pageLimit`, `pageNavVar`, `setMeta` | Как у pdoPage: ими mFilter выключает собственную навигацию pdoPage |

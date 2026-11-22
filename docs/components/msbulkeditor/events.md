@@ -74,7 +74,7 @@ if ($field === 'pagetitle' && $productId > 0) {
 
 Базовый URL: `{site}/assets/components/msbulkeditor/connector.php`.
 
-Аутентификация: сессия менеджера (`mgr`) + заголовок `HTTP_MODAUTH` = `user->getUserToken('mgr')` + право на маршрут.
+Чтение принимает сессию менеджера. Запись требует метод POST и токен, равный `user->getUserToken('mgr')`. Токен передаётся заголовком `HTTP_MODAUTH` или полем `modAuth`. Нужно ещё право маршрута.
 
 Основные действия: `mgr/products/list`, `preview`, `apply`, `rollback`, `mgr/history/*`, `mgr/export/run`, `mgr/import/parse`, `mgr/import/run`, `mgr/bindings/check`, `mgr/bindings/apply`.
 
@@ -88,7 +88,7 @@ if ($field === 'pagetitle' && $productId > 0) {
 }
 ```
 
-Ошибки: `"success": false`, `"message": "msbulkeditor_*"` — ключ лексикона.
+Ошибки обработчиков: `"success": false` и `"message"` с ключом лексикона `msbulkeditor_*`. До процессора коннектор отдаёт обычный текст: `config.core.php not found.`, `Invalid action.`, `Processor failed.`. Перехваченный сбой процессора — ключ `msbulkeditor_processor_failed`. Запись не методом POST — `msbulkeditor_auth_method_not_allowed`.
 
 Токен modAuth берите из открытой страницы msBulkEditor (`window.msBulkEditorConfig.modAuth`). Не храните токен в публичных скриптах.
 

@@ -5,21 +5,19 @@ description: PageBuilder snippet — HTML of published resource sections
 
 # PageBuilder snippet
 
-Renders **published** resource sections as HTML. Drafts never appear on the site. Each section uses its Fenom chunk (`pagebuilder_{key}`).
+Renders **published** resource sections as HTML. The HTML path (`return_values` omitted) returns an empty string until the page is published. With `return_values=1` and no publish, the JSON is the draft.
 
-## Purpose
-
-Main PageBuilder output in the template or resource **Content** field.
+Each section uses its Fenom chunk: Free `pagebuilder_{key}`, Pro `pagebuilderpro_{key}` (`data_table` → `pagebuilder_data_table`). Chunks have no separate namespace. The `pagebuilder_data_table` chunk is installed with the package.
 
 ## Where to call
 
 - Template of a page built in the **Sections** tab.
 - Content field when the template outputs `[[*content]]`.
-- Do not use a cached call without `!` if sections change often.
+- Uncached call (`[[!PageBuilder]]`). Without `!` the HTML can go stale when sections change.
 
 ## Requirements
 
-- Installed **pagebuilder** (or **pagebuilderpro**) extra.
+- Installed **pagebuilder** (or **pagebuilderpro**) component.
 - **pdoTools** 3.0+ for Fenom in section chunks.
 - Published section snapshot on the resource.
 
@@ -33,8 +31,11 @@ Main PageBuilder output in the template or resource **Content** field.
 | `use_cache` | `1` | MODX cache for HTML. `0` when debugging render events |
 | `load_css` | from `pagebuilder_load_frontend_css` | Register `pagebuilder-sections.css` and related bundles |
 | `wrap_page` | like `load_css` | Wrapper `<div class="pb-page">` |
+| `qa_css` | `0` | `1` registers `pagebuilder-qa.css`. QA CSS also loads on its own when the page has a QA section. It applies only while `load_css` is on |
 
-`load_css` and `wrap_page` are not listed in snippet properties but are supported in code. See [System settings → Snippet relation](../settings#snippet-relation).
+`load_css`, `wrap_page`, and `qa_css` are not listed in snippet properties, but the call accepts them. See [System settings → Snippet relation](../settings#snippet-relation).
+
+Flags `use_cache`, `load_css`, `wrap_page`, `qa_css`, and `return_values` read a string. `0`, `false`, `no`, `off`, and an empty string turn a flag off. Any other value turns it on. The setting `pagebuilder_load_frontend_css` uses the same rule.
 
 ## Basic call
 
@@ -51,8 +52,6 @@ Main PageBuilder output in the template or resource **Content** field.
 :::
 
 ## Section type filter
-
-Hero and CTA only:
 
 ::: code-group
 
@@ -72,7 +71,7 @@ Hero and CTA only:
 
 ## return_values
 
-JSON for SEO plugins and headless hybrids. Same shape as `values` in [Public API](../public-api):
+JSON for SEO plugins. Same shape as `values` in [Public API](../public-api):
 
 ::: code-group
 
@@ -86,19 +85,31 @@ JSON for SEO plugins and headless hybrids. Same shape as `values` in [Public API
 
 :::
 
-With `return_values=1`, event `pbOnGetValues` runs. CSS and `pb-page` wrapper are not registered.
+With `return_values=1`, event `pbOnGetValues` runs. CSS and the `pb-page` wrapper are not registered. The source is the published snapshot when `publishedRevision > 0`, otherwise the draft. If no resource can be resolved, the response is an empty string even with `return_values=1`.
 
 ## CSS and wrapper
 
 With `load_css=1`, the snippet registers frontend CSS (see [Design system](../design-system)). Pro and commerce bundles load when capability `pro` is active.
 
-Disable globally: `pagebuilder_load_frontend_css = 0`. Per call: `` &load_css=`0` ``.
+Disable CSS globally with `pagebuilder_load_frontend_css` = `0`. For one call use ``&load_css=`0` ``.
+
+With `&wrap_page=`1``, the plugin inserts CSS on `OnWebPagePrerender` even when `load_css=0`. It looks for `class="pb-page"` in the output and ignores the setting. No styles at all: `wrap_page=0`.
+
+```mermaid
+flowchart TB
+    A{"load_css = 1?"} -->|"yes"| B["snippet registers frontend CSS"]
+    A -->|"no"| C{"wrap_page = 1?"}
+    C -->|"yes"| D["plugin inserts CSS on OnWebPagePrerender"]
+    C -->|"no"| E["no styles"]
+```
 
 ## HTML cache
 
 MODX partition: `pagebuilder/{resourceId}`, key `render/{context}/{resourceId}/{publishedRevision}[/{typeHash}]`. Cleared on publish/unpublish. Render errors are not cached.
 
-Events `pbOnBeforeRenderDocument` and `pbOnBeforeRenderSection` run only on cache miss:
+The cache is skipped entirely when the document has UTM rules, `conditions`, or a section with `cacheable: false`. Same for a type with `runtimeContext: true`: `contact_form`, `form_builder`, `quiz`, `dynamic_list`, `filterable_grid`. On that document the events run on every request.
+
+Events `pbOnBeforeRenderDocument` and `pbOnBeforeRenderSection` run on a cache miss. Disable the cache for one call:
 
 ::: code-group
 
@@ -112,9 +123,20 @@ Events `pbOnBeforeRenderDocument` and `pbOnBeforeRenderSection` run only on cach
 
 :::
 
+```mermaid
+flowchart TB
+    A[PageBuilder call] --> B{"UTM, conditions, cacheable:false, or runtimeContext?"}
+    B -->|"yes"| C["cache skipped: events on every request"]
+    B -->|"no"| D{"use_cache = 1?"}
+    D -->|"no"| E["on render: pbOnBeforeRenderDocument, pbOnBeforeRenderSection"]
+    D -->|"yes"| F{"Cache present?"}
+    F -->|"miss"| E
+    F -->|"hit"| G["HTML from cache: no events"]
+```
+
 ## Skipped sections
 
-Sections with unmet `requires` (Pro, miniShop3) are omitted. Unknown types are logged and skipped.
+A section with unmet `requires` (Pro, miniShop3) is omitted from the HTML. The snippet fires `pbOnCheckSectionRequirement` before that check. An unknown requirement is logged, and the section is skipped.
 
 ## See also
 

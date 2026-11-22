@@ -5,7 +5,7 @@ description: Visible columns, order, and width of the products grid
 
 # Column settings
 
-Manage **table columns** on the Products tab.
+Choose which columns appear on **Products**, in which order and width.
 
 ![Table settings dialog](/components/msbulkeditor/screenshots/column-manager.png)
 
@@ -28,11 +28,11 @@ Two list panels:
 
 Additionally:
 
-- **Search** by field name in Available;
-- **add / remove** buttons for the highlighted field;
-- **drag and drop**: from Available to Selected and reorder within Selected (handle left of the name);
-- **Up / Down** — order in Selected (keyboard and buttons preserved);
-- **Width** — pixel value (min. 40) for each selected column.
+- **Search** by field name in Available
+- **add / remove** buttons for the highlighted field
+- **drag and drop** from Available to Selected and reorder within Selected (handle left of the name)
+- **Up / Down:** order in Selected (keyboard and buttons preserved)
+- **Width:** pixel value (min. 40) for each selected column
 
 In the **grid**, width can be changed by dragging the right edge of a column header (40–480 px). The value is saved in `ui/state` with other table settings.
 
@@ -55,8 +55,8 @@ The field list comes from the **`fields/catalog`** API (`mgr/fields/catalog`).
 | `resource` | `pagetitle`, `published`, `alias` |
 | `ms3` | `price`, `stock`, `article`, `weight` |
 | `computed` | `id`, `variant_count` |
-| `tv` | `msbe:tv:*` — when `templateId` is passed |
-| `option` | `msbe:option:*` — when `parent` (category) is passed |
+| `tv` | `msbe:tv:*` when `templateId` is passed |
+| `option` | `msbe:option:*` when `parent` (category) is passed |
 
 Each entry: `{ key, label, group, editable, inlineCapable, source? }`. TVs and options include `source` (`tv:name`, `option:key`).
 
@@ -64,15 +64,15 @@ Six columns are shown by default: `id`, `pagetitle`, `price`, `stock`, `publishe
 
 The **Preview** column (`thumb`) is pinned on the left in the grid and is **not** shown in the Table settings dialog.
 
-If the **`fields/catalog`** API is unavailable, the Available list falls back to a static front-end registry (~20 resource/ms3/computed fields). After a successful response, the catalog replaces the static list; TVs and options are added when `templateId` / `parent` are present.
+If the **`fields/catalog`** API is unavailable, the Available list falls back to a static front-end registry (~20 resource/ms3/computed fields). After a successful response, the catalog replaces the static list. TVs and options are added when `templateId` / `parent` are present.
 
 ---
 
 ## Per-user persistence
 
-When `msbulkeditor_enable_save_setting_user = Yes` (default), columns and widths are stored in **modUserSetting** for the current manager user.
+When `msbulkeditor_enable_save_setting_user = Yes` (default), columns and widths are stored in **`msbe_user_states`** for the current manager user.
 
-When **No** — all users see the same layout (UI persistence disabled).
+When **No**, the server does not store the layout. On load everyone starts from the same table. The browser still writes a copy to `localStorage`. **Restore** in the dialog reads that copy.
 
 ---
 
@@ -84,13 +84,13 @@ When **No** — all users see the same layout (UI persistence disabled).
 
 ## Empty states
 
-- **No available** — all fields are already in Selected;
-- **No search results** — refine the query;
-- **No selected** — add at least one column before saving.
+- **No available:** all fields are already in Selected
+- **No search results:** refine the query
+- **No selected:** add at least one column before saving
 
 ---
 
 ## See also
 
 - [Products grid](products-grid)
-- [Inline editing](inline-editing) — which columns are editable by click
+- [Inline editing](inline-editing)

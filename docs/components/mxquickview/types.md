@@ -30,6 +30,11 @@ title: Типы рендера
 - Проверяется по `mxquickview_allowed_chunk`.
 - Отрисовка: `$modx->getChunk($name, $props)`.
 - В `$props` доступны поля ресурса, `msProductData`, `variants_*` (`has_variants=true|false`, `variants_html`, `variants_json`).
+- Список плейсхолдеров чанков поставки `mxqv_product` и `mxqv_resource` — в разделе [Плейсхолдеры чанков поставки](/components/mxquickview/api#pleysholdery-chankov-postavki).
+
+::: warning
+Строки «Арт. », «В корзину», «Подробнее» в чанках поставки зашиты по-русски и лексиконом не переводятся. В своих чанках замените их на плейсхолдеры. Классы `qv-resource__*` из `mxqv_resource` в `mxqv.css` не описаны: стили для них нужно писать самостоятельно.
+:::
 
 ### Пример
 
@@ -68,7 +73,7 @@ title: Типы рендера
 - Проверяется по `mxquickview_allowed_snippet`.
 - Отрисовка: `$modx->runSnippet($name, $props)`.
 - В вызов передаются поля ресурса как параметры сниппета, кроме `msCart`: ключ `id` снимается, задаётся `resource_id`.
-- Имя сниппета в `data-mxqv-element` может начинаться с `!` (префикс снимается в процессоре).
+- Имя сниппета в `data-mxqv-element` может начинаться с `!` (префикс снимает класс рендера).
 - POST-поля `mode`, `output`, `modal_library` учитываются только при отрисовке `msCart` (контейнер корзины), не для `template`.
 
 ### Пример
@@ -142,7 +147,8 @@ title: Типы рендера
 
 - Берёт режим из `modalLibrary` (`native`, `bootstrap`, `fancybox`) в `mxQuickView.initialize`.
 - Поддерживает заголовок (`data-mxqv-title`).
-- Кнопки prev/next и клавиши ←/→ работают только при `modalLibrary` `native` или `bootstrap`. У Fancybox навигации loop нет.
+- Клавиши ←/→ переключают соседние элементы списка во всех режимах, включая `fancybox`.
+- Кнопки prev/next есть только у `native` и `bootstrap`, у `fancybox` их в разметке нет.
 
 ## `selector`
 

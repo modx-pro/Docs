@@ -1,6 +1,6 @@
 # Разработка
 
-Документация для разработчиков, которые хотят расширить или интегрировать ms3PromoCode в своё решение.
+Для разработчиков, которые расширяют или интегрируют ms3PromoCode.
 
 ## Разделы
 
@@ -16,39 +16,41 @@
 ```
 Controllers / Plugin
    │
-   └─→ ApplicationService (фасад)
-         │
-         ├─→ PromoCodeService    (CRUD + поиск + счётчик)
-         ├─→ ValidationService   (lifecycle + min_order)
-         ├─→ DiscountCalculator  (расчёт + распределение)
-         ├─→ RuleEngine          (matching по правилам)
-         │     └─→ Rule strategies (ProductIds, Vendors, ...)
-         └─→ UsageTracker        (запись + откат + restore)
+   ├─→ ApplicationService (фасад)
+   │     │
+   │     ├─→ PromoCodeService    (CRUD + поиск + счётчик)
+   │     ├─→ ValidationService   (lifecycle + min_order)
+   │     ├─→ DiscountCalculator  (расчёт + распределение)
+   │     └─→ RuleEngine          (matching по правилам)
+   │           └─→ Rule strategies (ProductIds, Vendors, ...)
+   │
+   └─→ UsageTracker              (запись + откат + restore)
+         └─→ PromoCodeService    (increment / decrement used_count)
 ```
 
-Все сервисы регистрируются в DI-контейнере MODX через [bootstrap.php](https://github.com/biz87/ms3PromoCode/blob/main/core/components/ms3promocode/bootstrap.php) и доступны через `$modx->services->get('ms3promocode_*')`.
+Плагин MS3 вызывает `UsageTracker` напрямую на `msOnCreateOrder` и `msOnChangeOrderStatus` — в обход фасада, чтобы запись применения не зависела от повторного расчёта скидки.
+
+Сервисы регистрируются в DI-контейнере MODX через [bootstrap.php](https://github.com/biz87/ms3PromoCode/blob/main/core/components/ms3promocode/bootstrap.php) и доступны через `$modx->services->get('ms3promocode_*')`.
 
 ## Архитектура JS-слоя
 
 ```
-window.ms3PromoCode (headless)
+window.ms3PromoCode (headless singleton: state + events)
+   ▲    │
+   │    ├─ .client → Ms3PromoCodeApiClient  (fetch wrapper)
+   │    └─ .api    → Ms3PromoCodeAPI        (REST endpoints mapping)
    │
-   ├─ Ms3PromoCodeApiClient  (fetch wrapper)
-   ├─ Ms3PromoCodeAPI        (REST endpoints mapping)
-   └─ ms3PromoCode           (singleton: state + events)
-            ▲
-            │
-            └── Ms3PromoCodeUI (DOM-обёртка, опционально)
+   └── Ms3PromoCodeUI (DOM-обёртка, необязательна)
 ```
 
-UI-слой использует только публичный API headless-ядра — не лезет напрямую в HTTP.
+UI обращается только к `window.ms3PromoCode` — без прямых HTTP-запросов.
 
 ## Что можно расширить
 
 | Расширение                           | Где                                                                  |
 |--------------------------------------|----------------------------------------------------------------------|
-| Свой тип правила                     | Добавить класс в `Rules/` + регистрация в `RuleEngine`               |
-| Реакция на свои события              | Подписка на DOM `ms3promocode:*` или MS3 events                      |
-| Кастомизация формы покупателя        | Override-папка для CSS/JS или собственный шаблон чанка               |
-| Свои Manager API endpoints           | Добавить процессор в `src/Processors/Mgr/` + connector.php           |
-| Кастомные системные настройки        | Добавить в `_build/elements/settings.php`                            |
+| Свой тип правила                     | Добавить класс в `Rules/`, подменить сервис `ms3promocode_rule_engine` в DI с полным списком стратегий |
+| Реакция на события                   | Подписка на DOM `ms3promocode:*` или события MS3                     |
+| Своя форма покупателя                | Папка переопределений для CSS/JS или собственный шаблон чанка        |
+| Свои методы Manager API              | Добавить процессор в `src/Processors/Mgr/` + connector.php           |
+| Свои системные настройки             | Добавить в `_build/elements/settings.php`                            |

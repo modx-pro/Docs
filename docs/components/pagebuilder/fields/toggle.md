@@ -21,7 +21,7 @@ description: "Boolean через switch PrimeVue в инспекторе"
 
 ## Советы
 
-Классический MODX yes/no: [yesno](yesno). Значение всё равно boolean, не строка.
+Классический MODX yes/no: [yesno](yesno).
 
 ## Похожие типы
 

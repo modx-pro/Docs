@@ -28,12 +28,12 @@ Trigger: **Run operation** → fill TV/option → **Preview** (or apply a preset
 
 ## Dialog contents
 
-1. **Intro** — TV name or option key and binding kind.
-2. **Gap list** — template or category missing the binding, with affected product count.
-3. **Apply and continue** — calls `bindings/apply`, creates links, then continues preview.
-4. **Cancel** — preview is aborted.
+1. **Intro:** TV name or option key and binding kind.
+2. **Gap list:** template or category missing the binding, with affected product count.
+3. **Apply and continue** calls `bindings/apply`, creates links, then continues preview.
+4. **Cancel** aborts preview.
 
-If the TV/option **does not exist** in MODX/MS3, the apply button is hidden; an entity-not-found error is shown.
+If the TV/option **does not exist** in MODX/MS3, the apply button is hidden. An entity-not-found error is shown.
 
 If there are **no gaps**, the dialog reports bindings are OK and preview continues without DB changes.
 
@@ -47,8 +47,8 @@ When the selection spans **different** templates (TV) or parents (option), a che
 
 When checked:
 
-- binding is created for the primary scope (template or category with the most products);
-- preview selection is narrowed with a `template` or `parent` filter to that scope.
+- binding is created for the primary scope (template or category with the most products)
+- preview selection is narrowed with a `template` or `parent` filter to that scope
 
 Without the checkbox, bindings apply to **all** scopes in the gap list.
 
@@ -78,4 +78,4 @@ Details: [MODX events](../events).
 
 - [TV parameters](tv-parameters)
 - [MiniShop3 options](options)
-- [User flows — Flow J](flows#flow-j--tv--option-binding-wizard)
+- [User flows, Flow J](flows#flow-j--tv--option-binding-wizard)

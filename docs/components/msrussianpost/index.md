@@ -40,7 +40,7 @@ items:
 
 - **Интеграция с доставками MiniShop3** — класс `msrussianpost\Delivery\RussianPostDelivery`, привязка виджета к доставке через настройку `delivery_id` (или авто по классу в БД)
 - **Виджет на оформлении заказа** — ввод индекса, список методов с ценой и сроком. Показ и скрытие при смене способа доставки (обёртка `.msrp__wrapper` или `[data-msrp-widget]`)
-- **Плагины** — **msRussianPost Autoload** (`OnMODXInit`) подключает класс доставки, **msRussianPost Delivery** (`msOnGetDeliveryCost`) подставляет стоимость выбранного метода, **msRussianPost Order tariff** (`msOnSubmitOrder`, `msOnBeforeCreateOrder`, `msOnCreateOrder`) сохраняет код тарифа в свойствах заказа для карточки в менеджере MiniShop3
+- **Плагины** — класс доставки подгружает `bootstrap.php` при инициализации пространства имён, до `OnMODXInit`, так что плагин **msRussianPost Autoload** для этого не нужен: в контексте `mgr` он добавляет в карточку заказа MiniShop3 блок **«Выбранный тариф Почты России»**. Плагин **msRussianPost Delivery** (`msOnGetDeliveryCost`) подставляет стоимость выбранного метода, **msRussianPost Order tariff** (`msOnSubmitOrder`, `msOnBeforeCreateOrder`, `msOnCreateOrder`) сохраняет код тарифа в свойствах заказа
 - **Кэш ответов API** — настраиваемый TTL, очистка из панели компонента в MODX
 - **Админ-панель (Vue 3, PrimeVue 4)** — раздел **Extras → Почта России**: тестовый расчёт, журнал запросов к API, справочник кодов объектов, очистка кэша (нужен [VueTools](https://docs.modx.pro/components/vuetools/)) — см. [Админка в MODX](admin-ui)
 - **Фронтенд** — ES-модульный скрипт без jQuery, хуки `ms3Hooks`, кастомные DOM-события
@@ -66,10 +66,13 @@ items:
 
 ### Через ModStore
 
-1. [Подключите репозиторий ModStore](https://modstore.pro/info/connection), если ещё не подключён
-2. **Extras → Installer → Download Extras** — найдите **msRussianPost**, установите пакет
-3. Убедитесь, что установлен **MiniShop3**. Установите **VueTools** отдельно, если нужен раздел **Extras → Почта России** в панели управления MODX
-4. **Настройки → Очистить кэш**
+1. Добавьте провайдер **modstore.pro** (**Система → Управление пакетами → Провайдеры**): URL `https://modstore.pro/extras/`, email и API-ключ из личного кабинета modstore.pro. Транспортный пакет зашифрован, без провайдера установка падает с `Package provider not found`
+2. [Подключите репозиторий ModStore](https://modstore.pro/info/connection), если ещё не подключён
+3. **Extras → Installer → Download Extras** — найдите **msRussianPost**, установите пакет
+4. Убедитесь, что установлен **MiniShop3**. Установите **VueTools** отдельно, если нужен раздел **Extras → Почта России** в панели управления MODX
+5. **Настройки → Очистить кэш**
+
+При установке и обновке пакет один раз отправляет обезличенные сведения о среде на `metrics.modx.pro`. Настройки для отключения в пакете нет, подробности — в разделе [Быстрый старт](quick-start#установка).
 
 ### После установки
 

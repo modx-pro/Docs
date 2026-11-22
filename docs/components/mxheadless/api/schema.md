@@ -21,8 +21,8 @@ curl -s https://example.com/api/v1/schema
     "objects": {
       "resources": {
         "class": "MODX\\Revolution\\modResource",
-        "fields": ["id", "pagetitle", "longtitle", "alias", "uri", "content", "published", "parent", "template", "properties"],
-        "filterable": ["id", "parent", "published", "deleted", "alias", "hidemenu", "template"],
+        "fields": ["id", "type", "pagetitle", "longtitle", "description", "alias", "..."],
+        "filterable": ["id", "parent", "published", "deleted", "context_key", "template", "alias", "class_key", "hidemenu", "isfolder", "menuindex"],
         "sortable": ["id", "menuindex", "pagetitle", "createdon", "editedon", "publishedon"],
         "searchable": ["pagetitle", "longtitle", "description", "introtext", "alias", "uri"],
         "required": ["pagetitle"],
@@ -40,10 +40,14 @@ curl -s https://example.com/api/v1/schema
     }
   },
   "meta": {
-    "count": 1
+    "count": 8
   }
 }
 ```
+
+В примере сокращён только список `fields`: реальное определение `resources` содержит 39 полей, включая `type`, `link_attributes`, `pub_date`, `unpub_date`, `introtext`, `content`, `richtext`, `menuindex`, `searchable`, `cacheable`, `deleted`, `deletedon`, `deletedby`, `publishedon`, `publishedby`, `menutitle`, `content_dispo`, `class_key`, `context_key`, `content_type`, `uri`, `uri_override`, `hide_children_in_tree`, `show_in_tree`, `properties`. Остальные списки приведены полностью.
+
+`meta.count` — число всех зарегистрированных объектов. Восемь core-объектов (`resources`, `contexts`, `chunks`, `templates`, `snippets`, `tvs`, `categories`, `content_types`) регистрируются до входа в pipeline запроса, поэтому по HTTP `count` не меньше 8 и равен нулю не бывает. Extras добавляют свои объекты через `OnMxHeadlessRegister`.
 
 | Ключ | Смысл |
 | --- | --- |
@@ -51,13 +55,11 @@ curl -s https://example.com/api/v1/schema
 | `filterable` | Поля для `filter[field][op]` |
 | `sortable` | Поля для `sort` |
 | `searchable` | Поля для параметра `q` |
-| `required` | Обязательны при create, нельзя очистить при update |
-| `protected` | Нужно field-level право на запись |
+| `required` | Обязательны при create, обязательны в теле на `PUT`, нельзя очистить |
+| `protected` | Нужно field-level право на чтение и запись |
 | `immutable` | Явная запись даёт `422` |
 | `readable` / `creatable` / `updatable` / `deletable` | Флаги из `ObjectDefinition` |
 | `relations` | Include для `include=` (`name`, `target`, `type`) |
-
-Extras добавляют записи в `OnMxHeadlessRegister`. До bootstrap core `count` может быть `0`.
 
 ## Schema и OpenAPI
 

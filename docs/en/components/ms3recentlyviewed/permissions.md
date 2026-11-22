@@ -3,8 +3,6 @@ title: Permissions
 ---
 # Permissions
 
-MODX permissions open the admin sections.
-
 ## Permissions
 
 | Permission | Action |
@@ -12,10 +10,8 @@ MODX permissions open the admin sections.
 | `view` | View dashboard and history |
 | `save_log` | Delete and CSV export |
 
-Without **view**, the **ms3RecentlyViewed** menu item and component pages are unavailable. Without `save_log`, “Delete selected” and “Export” are hidden (`canSaveLog`). Connector `mgr/views/export` returns an error, not a file.
+Without **view** the manager connector returns 403 `ms3rv_unauthorized`. Without `save_log` the buttons **Delete Selected** and **Export CSV** stay hidden (`canSaveLog`). `mgr/views/remove`, `mgr/views/removeMultiple` and `mgr/views/export` return JSON `success: false`, not a file.
 
-## Assigning
+The package does not add these keys to a policy template. `view` is a normal MODX permission. `save_log` is not shipped. Until the key is on the user’s policy, delete and export stay closed. A sudo user skips `hasPermission` in MODX, so the buttons show.
 
-1. **Manage → Access Control**.
-2. Select a policy or create one.
-3. Assign **view** and optionally `save_log` to roles or users.
+To open delete and export, add the `save_log` permission to a policy template and grant it to the role.

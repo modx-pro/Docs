@@ -3,31 +3,31 @@ title: crawlerDetectBlock
 ---
 # PreHook crawlerDetectBlock
 
-FormIt preHook: blocks the submit if the library treats the request as a bot. Without an explicit UA it reads JayBizzle headers, not only `User-Agent`.
+PreHook FormIt блокирует отправку, если библиотека определяет запрос как бот. Без явного UA проверяет заголовки JayBizzle, не только `User-Agent`.
 
-Add it to FormIt `&preHooks`. A direct `[[!crawlerDetectBlock]]` call returns `"1"` / `"0"`, same as `isCrawler`.
+Добавьте хук в `&preHooks` FormIt. Прямой вызов `[[!crawlerDetectBlock]]` возвращает `"1"` / `"0"`, как `isCrawler`.
 
-If the service is unavailable, the hook returns `true` and the form is sent.
+Если сервис недоступен, хук возвращает `true` и форма отправляется.
 
-List other preHooks comma-separated: `crawlerDetectBlock,otherHook`.
+Другие preHooks перечислите через запятую: `crawlerDetectBlock,другойХук`.
 
-## How it works
+## Как это работает
 
-1. User submits the form.
-2. FormIt runs preHook `crawlerDetectBlock` **before** validation and send.
-3. If bot, the hook returns `false`, writes `fi.validation_error_message` and `$hook->addError('crawlerdetect', …)`.
-4. If human, the hook returns `true`.
+1. Пользователь отправляет форму.
+2. FormIt вызывает preHook `crawlerDetectBlock` **до** валидации и отправки.
+3. Если бот, хук возвращает `false`, пишет `fi.validation_error_message` и `$hook->addError('crawlerdetect', …)`.
+4. Если человек, хук возвращает `true`.
 
-## Block message
+## Сообщение при блокировке
 
-Text is set in **System settings** → `crawlerdetect_block_message`. Transport default is the Russian string «Не удалось отправить форму. Попробуйте позже.»
+Задайте текст в **Системных настройках** → `crawlerdetect_block_message`. По умолчанию: «Не удалось отправить форму. Попробуйте позже.»
 
-Output the FormIt placeholder in the form template:
+В шаблоне формы выведите плейсхолдер FormIt:
 
 - **MODX:** `[[+fi.validation_error_message]]`
 - **Fenom:** `{$modx->getPlaceholder('fi.validation_error_message')}`
 
-## Examples
+## Примеры
 
 ::: code-group
 
@@ -51,7 +51,7 @@ Output the FormIt placeholder in the form template:
 
 :::
 
-### Multiple preHooks (e.g. with CAPTCHA)
+### Несколько preHooks (например, с CAPTCHA)
 
 ::: code-group
 
@@ -65,10 +65,10 @@ Output the FormIt placeholder in the form template:
 
 :::
 
-CrawlerDetect is first in the list and blocks bots before CAPTCHA.
+CrawlerDetect стоит первым в списке и отсечёт ботов до CAPTCHA.
 
-## Compatibility
+## Совместимость
 
-- **FetchIt.** If FetchIt posts to a page with FormIt, add `crawlerDetectBlock` to FormIt preHooks on that page. When a bot is blocked FetchIt gets an error response and shows the message from CrawlerDetect settings.
-- **SendIt.** FormIt parameters are in presets (file from `si_path_to_presets`). Add `'preHooks' => 'crawlerDetectBlock'` to the preset. When a bot is blocked SendIt returns an error and shows the message from CrawlerDetect settings. See [Integration → SendIt](../integration#ajax-form-sendit).
-- **AjaxForm.** If AjaxForm calls FormIt on the server, add `crawlerDetectBlock` to FormIt preHooks.
+- **FetchIt.** Если FetchIt отправляет данные на страницу с FormIt, добавьте `crawlerDetectBlock` в preHooks FormIt на этой странице. При блокировке ботом FetchIt получит ответ с ошибкой и покажет сообщение из настроек CrawlerDetect.
+- **SendIt.** Параметры FormIt задаются в пресетах (файл из настройки `si_path_to_presets`). Добавьте в пресет `'preHooks' => 'crawlerDetectBlock'`. При блокировке ботом SendIt вернёт ошибку и покажет сообщение из настроек CrawlerDetect. Подробнее: [Интеграция → SendIt](../integration#ajax-форма-sendit).
+- **AjaxForm.** Если AjaxForm вызывает FormIt на сервере, добавьте `crawlerDetectBlock` в preHooks FormIt.

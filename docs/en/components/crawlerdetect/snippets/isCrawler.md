@@ -1,26 +1,26 @@
 ---
 title: isCrawler
 ---
-# isCrawler snippet
+# Сниппет isCrawler
 
-Detects whether the visitor is a bot. Without `&userAgent` JayBizzle concatenates headers: `HTTP_USER_AGENT`, `HTTP_FROM`, `HTTP_SEC_CH_UA`, and the rest of its list.
+Сниппет определяет, является ли посетитель ботом. Без `&userAgent` библиотека склеивает заголовки JayBizzle: `HTTP_USER_AGENT`, `HTTP_FROM`, `HTTP_SEC_CH_UA` и остальные из её списка.
 
-**Returns:** `"1"` (bot) or `"0"` (not bot).
+**Возвращает:** `"1"` (бот) или `"0"` (не бот).
 
-Call uncached: `[[!isCrawler]]` (MODX) or `$modx->runSnippet('isCrawler', [])` (Fenom). Otherwise the result is shared across visitors.
+Вызывайте без кэша: `[[!isCrawler]]` (MODX) или `$modx->runSnippet('isCrawler', [])` (Fenom), иначе результат будет общим для всех посетителей.
 
-## Parameters
+## Параметры
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| **userAgent** | Explicit string. Empty: JayBizzle headers from the request | — |
-| **placeholderPrefix** | Placeholder prefix for detected bot name | `crawlerdetect.` |
+| Параметр | Описание | По умолчанию |
+|----------|----------|--------------|
+| **userAgent** | Явная строка. Пусто: заголовки JayBizzle из запроса | нет |
+| **placeholderPrefix** | Префикс плейсхолдера для имени обнаруженного бота | `crawlerdetect.` |
 
-When a bot is detected, placeholder `crawlerdetect.matches` (or your prefix) is set to the bot name, e.g. `Googlebot`. Use it when debugging.
+При обнаружении бота в плейсхолдер `crawlerdetect.matches` (или с вашим префиксом) записывается имя бота, например `Googlebot`. Нужно для отладки.
 
-## Examples
+## Примеры
 
-### Show widget to humans only
+### Показать виджет только людям
 
 ::: code-group
 
@@ -36,7 +36,7 @@ When a bot is detected, placeholder `crawlerdetect.matches` (or your prefix) is 
 
 :::
 
-### Don’t load analytics for bots
+### Не подключать аналитику ботам
 
 ::: code-group
 
@@ -52,7 +52,7 @@ When a bot is detected, placeholder `crawlerdetect.matches` (or your prefix) is 
 
 :::
 
-### Different content for bot and human
+### Разный контент для бота и человека
 
 ::: code-group
 
@@ -71,7 +71,7 @@ When a bot is detected, placeholder `crawlerdetect.matches` (or your prefix) is 
 
 :::
 
-### Debug: which bot was detected
+### Отладка: какой бот обнаружен
 
 ::: code-group
 
@@ -83,7 +83,7 @@ When a bot is detected, placeholder `crawlerdetect.matches` (or your prefix) is 
 ```fenom
 {$modx->runSnippet('isCrawler', [])}
 {if $modx->getPlaceholder('crawlerdetect.matches')}
-  Bot: {$modx->getPlaceholder('crawlerdetect.matches')}
+  Бот: {$modx->getPlaceholder('crawlerdetect.matches')}
 {/if}
 ```
 

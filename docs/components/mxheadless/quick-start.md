@@ -28,6 +28,8 @@ php build.php
 curl -s 'https://your-site.example/assets/components/mxheadless/api.php?route=/v1/health'
 ```
 
+Второй fallback-параметр, если `route` занят: `?path=/v1/health`.
+
 ## 3. Проверить gateway
 
 ```bash

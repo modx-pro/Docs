@@ -64,7 +64,7 @@ URL с `?product_id=` или `?msr_product_id=` предзаполняет фи�
 С **1.1.0** при праве **`review_moderate`**:
 
 - кнопка **«Добавить отзыв»** над таблицей
-- **«Редактировать отзыв»** в действиях строки (иконка карандаша).
+- **«Редактировать отзыв»** в действиях строки.
 
 В диалоге задайте ресурс (любой неудалённый `site_content`, не только `msProduct`). Поля: рейтинг 1–5, заголовок, текст, имя и email автора, статус, чекбокс **Verified purchase**. **Ответ магазина** доступен при праве **`review_reply`**.
 
@@ -106,8 +106,8 @@ API: `mgr/question/create`, `mgr/question/update`, `mgr/question/get`. См. [AJ
 
 - **Очередь приглашений** — статусы писем (`mgr/request_queue/list`), выгрузка CSV (`mgr/export/request_queue`), **Обработать очередь** (`queue_process`).
 - **Экспорт** отзывов и вопросов в CSV.
-- **Импорт отзывов** из CSV (мастер из трёх шагов, **`review_import`**).
-- **Импорт вопросов** из CSV (с **1.2.4**, **`review_import`**): колонки `product_id`, `text`, `status`, `author_email` или `author_name`; опционально `answer_text`, `notify`, `pinned`.
+- **Импорт отзывов** из CSV (мастер из трёх шагов, **`review_import`**): колонки `product_id`, `rating`, `text`, `status` и одно из `author_email` / `author_name`.
+- **Импорт вопросов** из CSV (с **1.2.4**, **`review_import`**): колонки `product_id`, `text`, `status`, `author_email` или `author_name`. Опционально `answer_text`, `notify`, `pinned`.
 - Подсказка cron: `action=request/process` + **`msreviews_cron_key`**.
 
 ## См. также

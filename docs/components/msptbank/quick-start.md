@@ -33,6 +33,8 @@ description: Установка mspTBank, ключи терминала, webhook
    - **`msptbank_terminal_key`**: TerminalKey из кабинета T-Bank (20 символов).
    - **`msptbank_password`**: Password терминала (20 символов). Храните как секрет.
 
+<!-- MEDIA: Системные настройки msptbank_terminal_key и msptbank_password | админка MODX, Настройки → Системные настройки, фильтр msptbank -->
+
 Где взять в кабинете:
 
 ```text
@@ -54,6 +56,8 @@ TerminalKey и Password должны относиться **к одному те
 https://ваш-домен.ru/assets/components/msptbank/webhook.php
 ```
 
+<!-- MEDIA: Указание Notification URL в кабинете T‑Bank | личный кабинет T‑Bank, настройки терминала → Notification URL -->
+
 1. Включите уведомления о платежах, подтверждениях и отменах (названия флагов зависят от версии кабинета).
 
 Детали обработки: [Интеграция, webhook](integration#webhook).
@@ -65,6 +69,8 @@ https://ваш-домен.ru/assets/components/msptbank/webhook.php
 1. **MiniShop3 → Настройки → Оплаты** (или эквивалент в вашей сборке).
 2. Включите (**Активен**) способ **TBank**.
 3. Проверьте, что способ доступен на странице оформления заказа.
+
+<!-- MEDIA: Активированный способ оплаты TBank в MiniShop3 → Оплаты | админка MiniShop3, Настройки → Оплаты -->
 
 Двухстадийная схема включается настройкой **`msptbank_two_stage`**, а не вторым способом оплаты.
 
@@ -86,6 +92,9 @@ https://ваш-домен.ru/assets/components/msptbank/webhook.php
 1. Включите **`msptbank_test_mode`** = «Да». Запросы пойдут на `https://rest-api-test.tinkoff.ru/v2/`.
 2. Используйте TerminalKey и Password **рабочего терминала без приставки DEMO** (по [инструкции T-Bank](https://developer.tbank.ru/eacq/intro/errors/test)).
 3. Добавьте **IP сервера** в белый список тестовой среды через чат личного кабинета Т-Бизнес.
+
+<!-- MEDIA: Настройка msptbank_test_mode = Да и IP whitelist в кабинете T‑Bank | админка MODX, Системные настройки msptbank_test_mode; личный кабинет T‑Bank, тестовая среда → whitelist IP -->
+
 4. Если проверяете чеки, убедитесь, что у тестового заказа есть Email или телефон.
 5. На время отладки включите **`msptbank_debug`** = «Да».
 

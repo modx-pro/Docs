@@ -27,7 +27,7 @@ description: Сниппеты msYandexDelivery и msydLexiconScript, видже�
 
 Сниппет `msYandexDelivery` подключает CSS/JS чекаута и конфиг `window.msYandexDeliveryFrontend`. Скрипт CDN виджета ПВЗ грузится по требованию, когда активен тариф `self_pickup`. Контейнер `data-msyd-widget` скрыт, пока не выбран способ доставки Яндекса.
 
-Чанк **`tplYandexDeliveryMethods`** — обёртка `<div class="msyd-methods" data-msyd-methods>` для списка методов.
+Чанк **`tplYandexDeliveryMethods`** — обёртка `<div class="msyd-methods" data-msyd-methods>` для списка методов доставки.
 
 ## Сниппет `msYandexDelivery`
 
@@ -35,7 +35,7 @@ description: Сниппеты msYandexDelivery и msydLexiconScript, видже�
 
 | Параметр | По умолчанию | Описание |
 | --- | --- | --- |
-| `connectorUrl` | `{assets_url}components/msyandexdelivery/connector.php` | URL AJAX-коннектора |
+| `connectorUrl` | `{assets_url}components/msyandexdelivery/connector.php` | URL connector |
 | `widgetScriptUrl` | из `msyandexdelivery_widget_script_url` или CDN v2 | URL скрипта виджета |
 | `city` | из резолва города | Фиксированное имя города для карты. Для витрины надёжнее `&geoId=` |
 | `geoId` | из `msyandexdelivery_widget_geo_id` | `geo_id` центра карты. Алиас: `geo_id` |
@@ -82,7 +82,7 @@ description: Сниппеты msYandexDelivery и msydLexiconScript, видже�
 5. Выбор уходит в сессию и в `msOrder.properties.msyandexdelivery` (tariff, platform_station_id, address, price, delivery_days).
 6. Плагин на `msOnGetDeliveryCost` и `YandexDelivery::getCost()` подставляют стоимость. При сохранении опции `delivery_cost` синхронизируется из `option.price`, а tariff выравнивается по `delivery_id`.
 
-Публичные actions коннектора (без mgr-auth): `calculate`, `select_option`, `list_pickup_points`.
+Публичные действия коннектора (без mgr-auth): `calculate`, `select_option`, `list_pickup_points`.
 
 ### Связка с формой MS3
 
@@ -109,3 +109,53 @@ ID ПВЗ с виджета часто приходит с дефисами. Pla
 Это `geo_id` региона/города из [location/detect](https://yandex.ru/support/delivery-profile/ru/api/other-day/ref/2.-Tochki-samoprivoza-i-PVZ/apib2bplatformlocationdetect-post), не id ПВЗ и не id склада.
 
 Частые значения: Москва `213`, Санкт-Петербург `2`, Казань `43`, Екатеринбург `54`, Новосибирск `65`.
+
+## Вспомогательные классы и хелперы {#helpers}
+
+### StationId
+
+`MsYandexDelivery\Support\StationId::normalize(string $id): string`
+
+Нормализует ID ПВЗ: удаляет дефисы и преобразует к формату Platform API.
+
+```php
+// Пример: виджет вернул "MSK-01-01", API ждёт "MSK0101"
+$normalized = StationId::normalize('MSK-01-01'); // "MSK0101"
+```
+
+Используется в `YandexDeliveryService::selectOption()` после выбора точки на чекауте.
+
+### PickupStationMatcher
+
+`MsYandexDelivery\Support\PickupStationMatcher`
+
+Сопоставляет точку из CDN-виджета (prod-каталог) с точкой в test API. Если API не знает точку, сервис ищет ближайшую по адресу через `pickup-points/list`.
+
+Логика в `YandexDeliveryService::matchStation()`:
+
+```php
+if (!$apiKnowsStation) {
+    $matched = $matcher->findBestMatch($widgetPoint, $apiPoints);
+    // возвращает ближайшую точку из API или null
+}
+```
+
+### Хелперы {#helper-functions}
+
+Файл: `core/components/msyandexdelivery/include/helpers.php`
+
+| Функция | Назначение |
+| --- | --- |
+| `msyd_get_draft_order()` | Получить черновик заказа из сессии или БД |
+| `msyd_build_cargo(array $products): array` | Сформировать массив грузов из товаров заказа (вес, габариты, стоимость) |
+| `msyd_resolve_widget_city(): array{city:string,geo_id:int}` | Определить город для виджета: возвращает `['city' => 'Москва', 'geo_id' => 213]` |
+
+Пример использования `msyd_build_cargo()`:
+
+```php
+$products = $order->getMany('Product'); // msOrderProduct
+$cargo = msyd_build_cargo($products);
+// ['weight' => 2.5, 'dimensions' => [30, 20, 10], 'value' => 5000]
+```
+
+Хелперы подключаются через `require_once` в сниппетах и процессорах.

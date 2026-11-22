@@ -27,11 +27,11 @@ After the normalizer (`CartResponseNormalizer`):
 ```json
 {
   "success": true,
-  "message": "",
+  "message": "Cart data retrieved",
   "data": {
     "items": [
       {
-        "product_key": "123_…",
+        "product_key": "msfed12817960fa4b48dca19facff2b61b",
         "product_id": 123,
         "name": "…",
         "count": 1,
@@ -45,7 +45,7 @@ After the normalizer (`CartResponseNormalizer`):
       }
     ],
     "cart": {
-      "123_…": {}
+      "msfed12817960fa4b48dca19facff2b61b": {}
     },
     "status": {
       "total_positions": 1,
@@ -63,6 +63,8 @@ After the normalizer (`CartResponseNormalizer`):
 | `items` | always array | Read in new clients |
 | `cart` | map by `product_key` | Legacy. Empty cart → `{}`, not `[]` |
 | `status` | totals | Products only. Delivery / payment / total: `GET /order/cost` |
+
+The line key is `ms` followed by 32 md5 hex characters. Which fields go into the key is set by `ms3_cart_product_key_fields` (`id,options` by default). Money and weight arrive as JSON numbers rounded to two and three decimals, so a round price reads `7451`, not `7451.00`. Empty `options` arrive as `{}`.
 
 ## Example
 

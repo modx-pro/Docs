@@ -1,11 +1,11 @@
 ---
 title: Features
-description: What msBulkEditor can do — operations, inline, history, presets, import
+description: "What msBulkEditor can do: operations, inline, history, presets, import"
 ---
 
 # Features
 
-Bulk MiniShop3 catalog management in the MODX manager: filter, preview, apply, history, presets, CSV/XLSX.
+You filter products, preview a before/after table, apply changes, roll back mistakes, save presets, and exchange CSV/XLSX.
 
 ![Flow: filter → preview → apply → history](/components/msbulkeditor/screenshots/features-flow.png)
 
@@ -44,8 +44,8 @@ Step-by-step: [Flows](interface/flows).
 
 | Permission | Capability |
 | --- | --- |
-| `msbulkeditor_view` | Grid, preview, history (read) |
-| `msbulkeditor_edit` | Apply, inline, UI save |
+| `msbulkeditor_view` | Grid, preview, history (read), read and save UI state |
+| `msbulkeditor_edit` | Apply and inline edit |
 | `msbulkeditor_rollback` | Rollback |
 | `msbulkeditor_presets` | Preset CRUD |
 | `msbulkeditor_import_export` | File import/export |
@@ -55,7 +55,8 @@ More: [System settings](settings#permissions).
 ## Limits
 
 - only MiniShop3 products (`msProduct`)
-- no inline for multi-value options and TV list/checkbox/file
+- a click on an option column saves one string and replaces the tag list
+- no inline edit for TV list/checkbox/file
 - option type in bulk (`valueKind`) is chosen manually
 
 See [FAQ](faq#limits).

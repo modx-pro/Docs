@@ -7,7 +7,7 @@ description: Creating extra fields, xtypes, repeater and key-value for orders an
 
 An extra field adds a column to the model table and a widget in the Vue form. Full parameter reference: [Extra fields](/en/components/minishop3/interface/utilities/extra-fields).
 
-<!-- ![Extra fields utility](/components/minishop3/screenshots/mgr-extra-fields.png) -->
+![Extra fields utility](/components/minishop3/screenshots/mgr-extra-fields.png)
 
 ## Goal
 
@@ -113,7 +113,7 @@ After creating a field for `MiniShop3\Model\msOrder`, open an order card. **Addi
 
 Save sends the field key at the top level of `PUT /api/mgr/orders/{id}` (see [example](/en/components/minishop3/manager/examples/order-custom-field)).
 
-<!-- ![Additional order fields on the order card](/components/minishop3/screenshots/mgr-order-extra-field.png) -->
+![Additional order fields on the order card](/components/minishop3/screenshots/mgr-order-extra-field.png)
 
 ## API appendix
 

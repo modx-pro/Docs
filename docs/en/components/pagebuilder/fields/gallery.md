@@ -11,7 +11,7 @@ Version: **Pro**.
 
 ## Why this type
 
-Several photos in one field. Each photo has its own alt text and caption. After save, the file gets a URL, width, and height, the same as [image](image). The type is in PageBuilder Pro.
+Several photos in one field. Info on a photo edits `width`, `height`, and `title`. A gallery item has no separate `alt` or `caption` fields. The example uses `title` as `alt`. After save, the file gets a URL, width, and height, the same as [image](image).
 
 ## When to use
 
@@ -21,7 +21,7 @@ Several photos in one field. Each photo has its own alt text and caption. After 
 
 ## Tips
 
-One photo is easier with [image](image). In the chunk, loop the array and use the photo URL: `{$slide.url}`.
+In the chunk use the photo `url` from the array item.
 
 ## Similar types
 
@@ -92,16 +92,16 @@ Key `shots` in the section data: array of media objects after enrich:
 
 ## Chunk example
 
+Write the gallery loop in Fenom. In MODX without Fenom use a snippet or one item by index.
+
 ::: code-group
 
 ```modx
-{foreach $shots as $image}
 [[$pagebuilder_partial_image?
-  &image=`{$image}`
-  &alt=`{$image.title}`
+  &image=`[[+shots.0]]`
+  &alt=`[[+shots.0.title]]`
   &class=`pb-gallery__media`
 ]]
-{/foreach}
 ```
 
 ```fenom
@@ -119,13 +119,13 @@ For fields with `name` that are stored in the section data:
 | Key | Type | Role | CMP |
 | --- | --- | --- | --- |
 | `tab` | string | Group subtitle in the inspector | yes |
-| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `width` | 25, 33, 50, 66, 75, 100 | Field width as % of the row (flex). The CMP offers only these values | yes |
 | `description` | string | Hint under the label | yes |
 | `default` | any | Initial value for a new section | yes |
 | `active` | bool | `false` hides the field in the inspector | yes |
 | `required` | bool | Required on **publish** (draft still saves) | yes |
 
-- Also: `groups: true`: groups on gallery items.
+- Also: `groups: true` enables groups on gallery items.
 
 See [fields overview](overview#obshchie-svoystva-polya).
 

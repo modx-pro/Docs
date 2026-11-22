@@ -19,7 +19,7 @@ The category edit page (`msCategory`) extends standard MODX functionality with p
 
 ### Products
 
-<!-- ![Category products table](/components/minishop3/screenshots/mgr-category-products.png) -->
+![Category products table](/components/minishop3/screenshots/mgr-category-products.png)
 
 Main category tab — product table with:
 

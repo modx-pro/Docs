@@ -21,7 +21,7 @@ The old `xtype` key, for schemas that are not switched to `text` yet. The inspec
 
 ## Tips
 
-UI does not mount Ext modx-combo. New schemas use native [text](text) or [combo](combo).
+New schemas use [text](text) or [combo](combo).
 
 ## Similar types
 
@@ -70,10 +70,6 @@ Key `ext` in the section data:
 
 :::
 
-## Notes
-
-The inspector renders plain `InputText`. `xtype` is only a hint; MODX does not mount an ExtJS widget.
-
 ## Common properties
 
 For fields with `name` that are stored in the section data:
@@ -81,7 +77,7 @@ For fields with `name` that are stored in the section data:
 | Key | Type | Role | CMP |
 | --- | --- | --- | --- |
 | `tab` | string | Group subtitle in the inspector | yes |
-| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `width` | 25, 33, 50, 66, 75, 100 | Field width as % of the row (flex). The CMP offers only these values | yes |
 | `description` | string | Hint under the label | yes |
 | `default` | any | Initial value for a new section | yes |
 | `active` | bool | `false` hides the field in the inspector | yes |

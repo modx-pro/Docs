@@ -15,7 +15,16 @@ description: "HTML-строка из привычного richtext MODX"
 - Ссылки, списки и базовое форматирование из коробки
 - В chunk отдаёт готовый HTML, парсить блоки не нужно
 
-Режим редактора берётся из `pageBuilderConfig.richText`: при `whichEditor` = `mxEditorJs` и доступном Editor.js — блок Editor.js. Иначе при `useEditor` ≠ false — RTE ресурса MODX (`MODx.loadRTE`). Если инициализация не удалась или редактор выключен — запасной вариант: обычная многострочная textarea (PrimeVue `Textarea`).
+Режим редактора берётся из `pageBuilderConfig.richText`. При `whichEditor` = `mxEditorJs` и доступном Editor.js включается блок Editor.js. Иначе при `useEditor` ≠ false работает RTE ресурса MODX (`MODx.loadRTE`). Если инициализация не удалась или редактор выключен, остаётся обычная многострочная textarea.
+
+```mermaid
+flowchart TB
+    A{"whichEditor = mxEditorJs и Editor.js доступен?"} -->|"да"| B[Блок Editor.js]
+    A -->|"нет"| C{"useEditor ≠ false?"}
+    C -->|"да"| D["RTE ресурса MODX: MODx.loadRTE"]
+    C -->|"нет"| E[Многострочная textarea]
+    D -->|"инициализация не удалась"| E
+```
 
 ## Когда использовать
 
@@ -25,8 +34,7 @@ description: "HTML-строка из привычного richtext MODX"
 
 ## Советы
 
-- Блочная вёрстка Editor.js: [editorjs](editorjs)
-- Сырой HTML или CSS: [ace](ace)
+Сырой HTML или CSS: [ace](ace).
 
 ## Похожие типы
 
@@ -73,10 +81,6 @@ HTML-строка.
 ```
 
 :::
-
-## Примечание
-
-Pro: `responsive`.
 
 ## Общие свойства
 

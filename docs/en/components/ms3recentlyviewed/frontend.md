@@ -7,7 +7,7 @@ Lexicon, styles and scripts: [Quick start](/en/components/ms3recentlyviewed/quic
 
 ## Integration check: empty stats in admin
 
-Stats and history in admin come from `ms3recentlyviewed_items`. Records are written when sync is enabled, for **logged-in** and **anonymous** (guest) users.
+Stats and history in admin come from `ms3recentlyviewed_items`. Rows are written when sync is enabled, for **logged-in** and **anonymous** (guest) users.
 
 - Guests are identified by session. Guest tracking: `ms3recentlyviewed.track_anonymous`.
 - Bot views are not stored when **`ms3recentlyviewed.block_bots`** is on.
@@ -18,9 +18,9 @@ Stats and history in admin come from `ms3recentlyviewed_items`. Records are writ
 - Lexicon and `viewed.js` on every product page
 - Product page has `data-viewed-product-id` on `<body>` or `window.ms3rvCurrentProductId`
 - `ms3recentlyviewed.sync_enabled` = Yes
-- Logged-in users authenticated in the **web** context (not only in the manager)
+- the user is authenticated in the **current** site context, not only in the manager
 
-`fromDB` works only for users logged in on the frontend (web context).
+`fromDB`, `action=sync` and `action=get` use the current context. `web` is used only when the context is missing. `action=similar` switches to `ms3recentlyviewed.context` (default `web`).
 
 ### `viewedIds` placeholder (cookie)
 
@@ -33,26 +33,33 @@ Plugin **ms3recentlyviewedViewedIdsPlaceholder** (event **OnWebPageInit**, prior
 
 Actions:
 
-- **Render viewed list** — optional `ids`, `limit`, `tpl`, `emptyTpl`, `includeThumbs`. Empty `ids` is not an error: the snippet returns `emptyTpl`.
-- **Similar** — `action=similar`, `ids`, optionally `limit`, `tpl`, `depth`
+- **Render viewed list** — no `action`. Parameters `ids`, `limit`, `tpl`, `emptyTpl`, `includeThumbs`. Empty `ids` returns a wrapper with the `emptyTpl` HTML and `data-ms3rv-hydrate="viewed"`.
+- **Similar** — `action=similar`, `ids`, optionally `limit`, `tpl`, `depth`. With no IDs the snippet returns an empty string.
 - **`track`** + `product_id` — writes a view for guests (session) and logged-in users when sync is on
-- **`sync`** + `ids`, **`get`** — web-authenticated users only
+- **`sync`** + `ids`, **`get`** — a user authenticated in the current context. The response is JSON.
 
-**Response:** HTML of the list. Empty string when no products. If `window.MODX_ASSETS_URL` or `window.MODX_BASE_URL` is set, the JS builds the connector URL itself.
+**List response:** HTML. If `window.MODX_ASSETS_URL` or `window.MODX_BASE_URL` is set, the JS builds the connector URL itself.
 
-IDs are parsed as integers (cap 100). POST `tpl` / `emptyTpl` (list and similar) go through `ms3rv_sanitize_chunk_name`. Only `[a-zA-Z0-9_-]` is allowed. `@FILE` and paths are stripped. Empty name → default chunk. Snippet properties in the template still use `ms3rv_resolve_chunk_name` (`trim`, `@FILE` allowed). If the snippet returns empty, the fallback reads `showUnpublished` / `showDeleted` from POST. Both are off by default.
+| Item | Rule |
+|------|------|
+| IDs | integers, cap 100 |
+| POST `tpl` / `emptyTpl` (list and similar) | `ms3rv_sanitize_chunk_name`, only `[a-zA-Z0-9_-]` |
+| `@FILE` and paths | stripped |
+| Empty name | default chunk |
+| Snippet properties in the template | `ms3rv_resolve_chunk_name` (`trim`, `@FILE` allowed) |
+| Snippet returns empty | fallback reads `showUnpublished` / `showDeleted` from POST, both off by default |
 
 ## Chunks
 
 | Chunk | Purpose |
 |-------|---------|
-| tplViewedItem | Product card in “Recently viewed” list |
-| tplViewedEmpty | Empty state |
+| tplViewedItem | “Recently viewed” card. The shipped chunk hardcodes `priceCurrency` as `RUB`. Copy the chunk to set another currency |
+| tplViewedEmpty | Empty state. Text comes from lexicon `ms3recentlyviewed_empty` |
 | tplViewedOuter | Optional wrapper. Placeholders: `output`, `hydrate`, `tpl`, `emptyTpl`, `limit`, `includeThumbs` |
-| tplSimilarItem | Card in “Similar” block |
-| tplMs3rvLexiconScript | Optional wrapper for `ms3rvLexiconScript`. The snippet can emit the script tag itself |
+| tplSimilarItem | “Similar” card. The shipped chunk also hardcodes `priceCurrency` as `RUB` |
+| tplMs3rvLexiconScript | Installed by the package and never read by the snippet. `ms3rvLexiconScript` builds the output itself |
 
-Override chunks (Fenom or MODX). `tpl` and `emptyTpl` are available in the snippet and in JS `render()` calls.
+You can replace the chunks (Fenom or MODX). `tpl` and `emptyTpl` are available in the snippet and in JS `render()` calls.
 
 ## Styles and BEM
 
@@ -67,3 +74,11 @@ There are no `--ms3rv-*` CSS variables on the storefront. `--ms3rv-accent*` exis
 ## Passing product ID manually
 
 Optionally add a button with `data-viewed-toggle` and `data-id`. A click adds the product to the list, for example from a catalog grid without opening the product page.
+
+After that click, an authenticated user refreshes `#ms3rv-fromdb-content` with `action=get`.
+
+You can put starting IDs in `data-initial-ids` on the container. Shared render options are read from `window.ms3rvRenderOptions`: `tpl`, `emptyTpl`, `limit`, `similarLimit`.
+
+Buttons `[data-slider-prev]` and `[data-slider-next]` inside `.ms3rv-slider` scroll `.ms3rv-slider__wrapper`.
+
+`window.ms3RecentlyViewed` exposes `getAll`, `save`, `add`, `sync`, `getFromDB`, `render`, `renderSimilar`, `trackToDB`.

@@ -3,7 +3,7 @@ title: msOrderTotal
 ---
 # msOrderTotal
 
-Snippet for cart and order totals. Used for the header mini-cart with automatic refresh when the cart changes.
+Cart and order totals for a mini-cart in the site header. The widget is re-rendered when the cart changes, provided `selector` is set.
 
 ::: warning Caching
 The snippet uses the user session and must be called **uncached** (`!msOrderTotal`).
@@ -15,37 +15,28 @@ The snippet uses the user session and must be called **uncached** (`!msOrderTota
 | --- | --- | --- |
 | **tpl** | `tpl.msOrderTotal` | Layout chunk |
 | **return** | `tpl` | Format: `data` (array), `tpl` (chunk output) |
-| **selector** | (auto) | CSS selector for the container used for auto-update |
+| **selector** | — | CSS selector of the container. Required for auto-update. Not declared in the snippet properties ([#805](https://github.com/modx-pro/MiniShop3/issues/805)) |
+
+::: warning The formatPrices / withCurrency properties
+The admin may show `formatPrices` and `withCurrency` for this snippet. The code reads neither: `*_formatted` always carries the currency or weight unit ([#825](https://github.com/modx-pro/MiniShop3/issues/825)).
+:::
 
 ## Default chunk
 
-The component ships with a ready-made chunk `tpl.msOrderTotal`:
+The component ships the `tpl.msOrderTotal` chunk:
 
 ```fenom
 <span class="ms3-order-total">
     <span class="ms3-order-total__count">{$total_count}</span>
     {if $total_count > 0}
-        <span class="ms3-order-total__cost">{$total_cost} {'ms3_frontend_currency' | lexicon}</span>
+        <span class="ms3-order-total__cost">{$total_cost_formatted}</span>
     {/if}
 </span>
 ```
 
-The chunk comes with CSS styles in `default.css`.
-
 ## Widget auto-update
 
-The snippet automatically registers for refresh when the cart changes. When products are added, removed, or updated, the widget **re-renders** with current data.
-
-### How it works
-
-1. On call, the snippet registers itself in `ms3Config.render.cart`
-2. When the cart changes, JavaScript sends a request to the server
-3. The server re-invokes the snippet with the same parameters
-4. The new HTML replaces the widget content
-
-### selector parameter
-
-By default the widget updates inside a container chosen automatically. To target a specific container, use the `selector` parameter:
+Set `selector` on every call — without it the widget does not update:
 
 ```fenom
 <div id="header-cart">
@@ -55,14 +46,25 @@ By default the widget updates inside a container chosen automatically. To target
 </div>
 ```
 
-On update, all HTML inside `#header-cart` is replaced with the new content.
+::: warning Without `selector` the widget does not update
+There is no container auto-detection for msOrderTotal. When the selector is not set, the script walks a fallback list — `#ms3oc-cart-live`, `#msb-test-cart`, `#msCart`, `[data-ms-cart]`, `.msCart`. Those are **cart** roots; no widget selector is among them.
 
-### Multiple widgets on a page
+Two outcomes, both silent: several matches — nothing updates; a single match (the page has a cart) — the widget HTML is written **into the cart** and wipes it.
 
-You can place several widgets with different chunks:
+The «+» and «−» buttons never update the widget without `selector`: the quantity handler has no fallback list at all.
+:::
+
+### How it works
+
+1. On call the snippet registers itself in `ms3Config.render.cart`
+2. When the cart changes, JavaScript sends a request to the server
+3. The server re-runs the snippet with the same parameters
+4. The new HTML replaces everything inside the container from `selector`
+
+### Several widgets on a page
 
 ```fenom
-{* Mini-cart in header *}
+{* Mini-cart in the header *}
 <div id="header-minicart">
     {'!msOrderTotal' | snippet : [
         'tpl' => 'tpl.headerMiniCart',
@@ -70,7 +72,7 @@ You can place several widgets with different chunks:
     ]}
 </div>
 
-{* Counter in mobile menu *}
+{* Counter in the mobile menu *}
 <div id="mobile-cart-count">
     {'!msOrderTotal' | snippet : [
         'tpl' => 'tpl.mobileCartCount',
@@ -79,218 +81,134 @@ You can place several widgets with different chunks:
 </div>
 ```
 
-Each widget updates independently with its own chunk.
+::: warning Calls must differ in their parameters
+The re-render token is a hash of the call's parameter set. Two calls with entirely identical parameters get the same token, and the client takes the first container it finds for it. Only that one updates; the second keeps the old numbers.
+
+A different `selector` solves this — it is part of the parameter set. That is why the widgets in the example above have different `selector` and different `tpl`.
+:::
+
+### When the widget does not update
+
+Only cart operations trigger a re-render: adding, removing, changing quantity, changing an option, emptying.
+
+| What the customer does | What happens to the widget |
+| --- | --- |
+| Picks a delivery or payment method | No update. The recalculation bypasses the widget — the text goes into three fixed elements of the checkout page: `#ms3_order_cart_cost`, `#ms3_order_delivery_cost`, `#ms3_order_cost` |
+| Clears the order form | No update |
+
+So the `cost`, `delivery_cost` and `payment_cost` fields are correct only as of page render: after a delivery method is picked they go stale. In a mini-cart show the product cost (`cart_cost`), not the payable total.
+
+::: warning Call parameters live in a cache
+The server keeps them for as many seconds as `ms3_snippet_cache_ttl` sets — an hour by default. If the page stays open longer or the cache is cleared, the server does not find the parameters and simply returns no HTML — the widget stops updating with nothing to show for it on the page. The only diagnostic is a `Snippet parameters not found for token: …` line in the MODX error log.
+:::
+
+::: warning The `ms3_register_global_config` setting is required
+When it is off, the `ms3Config` object is not printed on the page, while the widget registration is printed regardless. The console gets `ms3Config is not defined`, and re-rendering works neither for the widget nor for the cart. The setting is on by default.
+:::
 
 ## Examples
 
-### Basic call with default chunk
+### Basic call
 
 ```fenom
 {'!msOrderTotal' | snippet}
 ```
 
-Outputs the item count and total in the styled widget.
-
-### Get data without rendering
+### Getting data without output
 
 ```fenom
 {set $total = '!msOrderTotal' | snippet : ['return' => 'data']}
 
 {if $total.total_count > 0}
-    In cart: {$total.total_count} items for {$total.cart_cost}
+    In the cart: {$total.total_count} products for {$total.cart_cost_formatted}
 {/if}
 ```
 
-::: warning No auto-update
-With `return=data` auto-update does not run — data is fetched once on page load.
+::: warning Do not set `selector` with `return=data`
+The data is taken once — re-rendering is not provided for this mode. But registration happens before the snippet looks at `return`, so a call with `selector` still lands in the re-render list. The server returns an array instead of HTML, and its text representation is written into the container.
 :::
 
-### Custom chunk
+### A chunk inside the call
+
+For short markup there is no need for a separate chunk — pass it to `tpl` through `@INLINE`:
 
 ```fenom
-{'!msOrderTotal' | snippet : [
-    'tpl' => 'tpl.myMiniCart'
-]}
-```
-
-### Header mini-cart
-
-```fenom
-<a href="/cart/" class="header-cart-link">
+<div id="header-cart">
     {'!msOrderTotal' | snippet : [
-        'tpl' => '@INLINE <span class="cart-count">{$total_count}</span>
-                  <span class="cart-sum">{$cart_cost} ₽</span>'
+        'selector' => '#header-cart',
+        'tpl' => '@INLINE {$total_count} pcs. for {$cart_cost_formatted}'
     ]}
-</a>
+</div>
 ```
 
-## Data structure
+## Data structure and placeholders
 
-The snippet returns an array with cart and order totals:
+With `return=data` the snippet returns an array of these fields; with `return=tpl` it passes them to the chunk as placeholders (`{$total_count}`, `{$cost_formatted}`). Output amounts and weight on the site through `*_formatted`.
 
 | Field | Description |
 | --- | --- |
-| `cost` | Total to pay (products + delivery + payment fee) |
-| `cost_formatted` | Total with currency symbol |
-| `cart_cost` | Products cost |
-| `cart_cost_formatted` | Products cost with currency |
+| `cost` | Total payable (products + delivery + payment fee) |
+| `cost_formatted` | Total with the currency symbol |
+| `cart_cost` | Product cost |
+| `cart_cost_formatted` | Product cost with currency |
 | `delivery_cost` | Delivery cost |
 | `delivery_cost_formatted` | Delivery cost with currency |
 | `payment_cost` | Payment method fee |
 | `payment_cost_formatted` | Fee with currency |
-| `total_count` | Total item count |
-| `total_cost` | Products cost (same as `cart_cost`) |
-| `total_cost_formatted` | Products cost with currency |
+| `total_count` | Total product quantity |
+| `total_cost` | Product cost by cart. Matches `cart_cost` until a plugin changes it through `msOnGetCartCost` |
+| `total_cost_formatted` | Product cost with currency |
 | `total_weight` | Total weight |
-| `total_weight_formatted` | Total weight with unit |
+| `total_weight_formatted` | Total weight with the unit |
 | `total_discount` | Discount amount |
 | `total_discount_formatted` | Discount with currency |
 | `total_positions` | Number of lines (unique products) |
 
-```php
-[
-    'cost' => 8100,            // Total to pay
-    'cart_cost' => 7500,       // Products cost
-    'delivery_cost' => 300,    // Delivery cost
-    'payment_cost' => 300,     // Payment fee (e.g. 4%)
-    'total_count' => 5,        // Total item count
-    'total_cost' => 7500,      // Products cost
-    'total_weight' => 2500,    // Total weight (grams)
-    'total_discount' => 500,   // Discount amount
-    'total_positions' => 3,    // Number of lines
-]
-```
-
-::: tip Difference between cost and cart_cost
-
-- `cart_cost` — cost of products in the cart only
-- `cost` — final amount to pay: products + delivery + payment fee
-:::
-
-## Placeholders in chunk
-
-With `return=tpl`, all fields are passed to the chunk as placeholders. For display use `*_formatted`:
-
-- `{$cost_formatted}`, `{$cart_cost_formatted}`, `{$delivery_cost_formatted}`, `{$payment_cost_formatted}`
-- `{$total_cost_formatted}`, `{$total_discount_formatted}`, `{$total_weight_formatted}`
-
-```fenom
-{* tpl.myMiniCart *}
-<div class="mini-cart">
-    {if $total_count > 0}
-        <a href="/cart/" class="mini-cart-link">
-            <span class="mini-cart-count">{$total_count}</span>
-            <span class="mini-cart-cost">{$cost_formatted}</span>
-        </a>
-    {else}
-        <span class="mini-cart-empty">Cart is empty</span>
-    {/if}
-</div>
-```
-
 ## CSS classes
 
-The default chunk uses BEM-style classes:
+Styles for the default chunk live in `assets/components/minishop3/css/web/default.css`.
 
 | Class | Description |
 | --- | --- |
 | `.ms3-order-total` | Widget container |
-| `.ms3-order-total__count` | Item count |
+| `.ms3-order-total__count` | Product quantity counter |
 | `.ms3-order-total__cost` | Order total |
 
-### Built-in styles
+::: tip The file is not loaded on its own
+`default.css` is not part of the `ms3_frontend_assets` system setting — that list holds only the notification styles and the scripts. Only the demo template `base.tpl` loads it. On your own markup add the file to the template or to `ms3_frontend_assets`, otherwise the widget stays unstyled.
+:::
 
-Styles from `default.css`:
+## A counter without re-rendering
 
-```css
-.ms3-order-total {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: #f8f9fa;
-    border-radius: 2rem;
-    font-size: 0.9rem;
-    transition: all 0.2s ease;
-}
+The snippet refreshes the whole widget: the server re-renders the chunk and returns ready HTML. For a couple of numbers in the header that is heavy — if all you need is a counter, update it yourself on the `ms3:cart:updated` event. No snippet call is needed then: the data comes with the server response to any cart action.
 
-.ms3-order-total:hover {
-    background: #e9ecef;
-}
-
-.ms3-order-total__count {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 1.5rem;
-    height: 1.5rem;
-    padding: 0 0.4rem;
-    background: var(--bs-primary, #0d6efd);
-    color: #fff;
-    border-radius: 1rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-
-.ms3-order-total__count:empty,
-.ms3-order-total__count[data-count="0"] {
-    background: #6c757d;
-}
-
-.ms3-order-total__cost {
-    font-weight: 500;
-    color: #212529;
-}
+```html
+<span class="cart-count">0</span>
+<span class="cart-cost">0</span>
 ```
 
-## Full mini-cart example
-
-```fenom
-<header class="site-header">
-    <nav class="main-nav">
-        {* ... menu ... *}
-    </nav>
-
-    <div id="header-cart" class="header-cart">
-        {'!msOrderTotal' | snippet : [
-            'selector' => '#header-cart',
-            'tpl' => '@INLINE
-                <a href="/cart/" class="header-cart__link">
-                    <svg class="header-cart__icon" width="24" height="24">
-                        <use xlink:href="#icon-cart"/>
-                    </svg>
-                    {if $total_count > 0}
-                        <span class="header-cart__badge">{$total_count}</span>
-                        <span class="header-cart__sum">{$cart_cost} ₽</span>
-                    {/if}
-                </a>
-            '
-        ]}
-    </div>
-</header>
+```javascript
+document.addEventListener('ms3:cart:updated', function (e) {
+    // detail does not always arrive — check before reading it
+    const status = e.detail && e.detail.status;
+    if (!status) {
+        return;
+    }
+    document.querySelector('.cart-count').textContent = status.total_count;
+    document.querySelector('.cart-cost').textContent = status.total_cost;
+});
 ```
+
+::: tip These numbers carry no formatting
+`status` holds raw values, without a currency symbol or thousands separators. Ready-made strings like `1,500 $` come only from the chunk, in the `*_formatted` fields.
+:::
+
+The composition of `detail` and the other frontend events are on the [Cart](/en/components/minishop3/frontend/cart) page.
 
 ## Difference from msCart
 
-| msOrderTotal | msCart |
+| msOrderTotal | [msCart](mscart) |
 | --- | --- |
-| Totals only | Full cart with products |
-| Lightweight, fast | Loads all product data |
-| For header mini-cart | For cart page |
-| Minimal data | All product fields, options, thumbnails |
+| Totals only: amounts, quantity, weight | All product fields, options, thumbnails |
+| For a header mini-cart | For the cart page |
 | Widget auto-update | Cart auto-update |
-
-## Deprecated data attributes
-
-::: warning Deprecated approach
-The attributes `data-ms-cart-count`, `data-ms-cart-cost` are still supported for backward compatibility, but auto-update via the `selector` parameter is recommended.
-:::
-
-For compatibility with older code you can use:
-
-```html
-<span data-ms-cart-count>0</span>
-<span data-ms-cart-cost>0</span>
-```
-
-MiniShop3 JavaScript updates these elements when the cart changes, but without full chunk re-render.

@@ -7,7 +7,7 @@ description: "Ключ схемы из CMP Forms. Capability forms. Слой Pro
 
 Версия: **Pro**, capability `forms`.
 
-Строка: ключ схемы из вкладки CMP **Forms**. Список схем читает `mgr/form/list`. Сама форма на сайте собирается секцией [form_builder](../sections/form_builder) через FetchIt.
+Строка: ключ схемы из вкладки CMP **Forms**. Сама форма на сайте собирается секцией [form_builder](../sections/form_builder) через FetchIt.
 
 ## Настройка
 

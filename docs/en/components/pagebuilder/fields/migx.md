@@ -5,25 +5,22 @@ description: "ExtJS MIGX grid in the section inspector (Free); requires the MIGX
 
 # Field migx
 
-Edition: **Free**. Requires the **MIGX** package. Without it the field stays in the CMP, but the grid does not mount (fallback: JSON textarea).
+Version: **Free**. Requires the **MIGX** package. Without it the field stays in the CMP, but the grid does not mount: a JSON textarea and a Retry MIGX button.
 
 ## Why this type
 
-- Real ExtJS MIGX TV grid, not a Vue repeater
-- Reuse an existing MIGX Config or set `formtabs` / `columns` like a TV
-- Useful when editors already work with MIGX
+A real ExtJS MIGX TV grid, not a Vue repeater.
 
 ## When to use
 
 - Complex rows with the same tabs as in MIGX Configs
 - Migrating content from a MIGX TV into PageBuilder sections
-- When you need native MIGX add/edit, not `repeater`
+- Native MIGX add/edit windows instead of `repeater`
 
 ## Tips
 
 - Prefer a config name in `configs` (MIGX → Configs)
 - Add/edit windows stack above the inspector (z-index)
-- Without MIGX: JSON in a textarea and a Retry button
 
 ## Similar types
 
@@ -62,7 +59,11 @@ Or inline `formtabs` / `columns` (same as TV input properties):
 
 ## Value
 
-JSON array of objects (same as a MIGX TV value):
+JSON array of objects: `MIGX_id` and formtabs fields, same as a MIGX TV value.
+
+## Section data {#output-in-section-data}
+
+The field key (for example `items`) stores a MIGX row array:
 
 ```json
 {
@@ -73,18 +74,12 @@ JSON array of objects (same as a MIGX TV value):
 }
 ```
 
-## Section data {#output-in-section-data}
-
-The field key (for example `items`) stores a MIGX row array with `MIGX_id` and formtabs fields.
-
 ## Chunk example
 
 ::: code-group
 
 ```modx
-{foreach $items as $item}
-  <div>{$item.title}</div>
-{/foreach}
+[[+items.0.title]]
 ```
 
 ```fenom
@@ -97,20 +92,24 @@ The field key (for example `items`) stores a MIGX row array with `MIGX_id` and f
 
 ## Common properties
 
-| Key | Type | Role | Panel |
+For fields with `name` that are stored in the section data:
+
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Group subtitle | yes |
-| `width` | 25–100 | Field width % | yes |
-| `description` | string | Hint | yes |
-| `default` | array | Initial value | yes |
-| `active` | bool | Hide in inspector | yes |
-| `required` | bool | Required on publish | yes |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25, 33, 50, 66, 75, 100 | Field width as % of the row (flex). The CMP offers only these values | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | array | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 | `configs` | string | MIGX config name | yes |
 | `formtabs` | string/array | Item form tabs | yes |
 | `columns` | string/array | Grid columns | yes |
 
-## Next
+See [fields overview](overview#obshchie-svoystva-polya).
 
-- [Type reference](types)
+## See also
+
+- [Field types reference](types)
 - [repeater](repeater)
 - [Fields overview](overview)

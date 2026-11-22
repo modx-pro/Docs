@@ -80,7 +80,7 @@ For fields with `name` that are stored in the section data:
 | Key | Type | Role | CMP |
 | --- | --- | --- | --- |
 | `tab` | string | Group subtitle in the inspector | yes |
-| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `width` | 25, 33, 50, 66, 75, 100 | Field width as % of the row (flex). The CMP offers only these values | yes |
 | `description` | string | Hint under the label | yes |
 | `default` | any | Initial value for a new section | yes |
 | `active` | bool | `false` hides the field in the inspector | yes |

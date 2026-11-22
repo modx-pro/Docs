@@ -5,9 +5,9 @@ description: "Схема полей в JSON секции, виджеты инс�
 
 # Обзор полей
 
-Поля задают, что редактор заполняет в секции. Схему хранят в JSON типа (`core/components/pagebuilder/sections/{key}.json`) или собирают в панели управления.
+Поля задают, что редактор заполняет в секции. Схему хранят в JSON-файле типа (`core/components/pagebuilder/sections/{key}.json`) или собирают в панели управления.
 
-В [справочнике](types) 62 типа (35 Free и 27 Pro). У типов со страницей есть JSON **Настройка**, блок **Данные секции** и пример для Fenom или HTML. В chunk значения приходят из `section.data`.
+В [справочнике](types) 62 типа (35 Free и 27 Pro).
 
 <!-- ![Инспектор секции](/components/pagebuilder/screenshots/mgr-section-inspector.jpg) -->
 
@@ -28,17 +28,17 @@ description: "Схема полей в JSON секции, виджеты инс�
 | `type` | Виджет и валидация |
 | `label` | Подпись в инспекторе |
 | `required` | Обязательно при **publish** (черновик сохраняется) |
-| `options` | Статический список (select, radio, checkboxgroup, colorpalette) |
+| `options` | Статический список (select, radio, multiselect, checkboxgroup, colorpalette, tablecombo, tablemulticombo) |
 | `optionsSource` | Динамический список из xPDO-класса |
 | `searchAction` | Connector для picker relation, напр. `mgr/ms3/products/search` |
 | `showWhen` | Условная видимость соседнего поля |
 | `fields` | Вложенная схема repeater, fieldset, jsongrid |
 
-Полный цикл на примере `richtext`: [richtext.md](richtext).
+Полный цикл на примере [richtext](richtext).
 
 ## Общие свойства поля
 
-Для полей с `name`, которые попадают в данные секции (не `heading` / `dependent`):
+Для полей с `name`, попадающих в данные секции:
 
 | Ключ | Тип | Инспектор | Панель |
 | --- | --- | --- | --- |
@@ -51,7 +51,7 @@ description: "Схема полей в JSON секции, виджеты инс�
 
 **Декоративные типы** (`heading`, `dependent`): в data не пишутся. Доступны `tab`, `width`, `label`.
 
-**Fieldset (Pro):** собственного ключа в data нет. Вложенные `fields` попадают в данные секции как плоские ключи. См. [fieldset.md](fieldset).
+**Fieldset (Pro):** собственного ключа в data нет. Вложенные `fields` попадают в данные секции как плоские ключи. См. [fieldset](fieldset).
 
 Остальные ключи схемы (`showWhen`, `currency`, `mask`, `sourceField`, `columns`, `table_key`, …) панель управления не затирает: `sectionTypeForm.ts` сохраняет их в passthrough `extra`.
 
@@ -71,7 +71,7 @@ description: "Схема полей в JSON секции, виджеты инс�
 }
 ```
 
-Имена `alt`, `caption`, `slug` из responsive исключены (`responsiveValues.ts`). Если в JSON поля стоит `"responsive": true`, разные значения включены всегда. Свернуть их в одну строку нельзя.
+Имена `alt`, `caption`, `slug` из responsive исключены (`responsiveValues.ts`). Если в JSON поля стоит `"responsive": true`, разные значения включены всегда и свернуть их в одну строку нельзя.
 
 Пороги экранов задаются в `pagebuilder_responsive_breakpoints` (или `responsiveBreakpoints` на типе секции). По умолчанию: desktop ≥1024, tablet ≥768, mobile ≥0; превью в менеджере берёт `previewWidth`. Режим вывода: `pagebuilder_responsive_apply`.
 
@@ -104,7 +104,7 @@ description: "Схема полей в JSON секции, виджеты инс�
 }
 ```
 
-Живые примеры: секция `_qa_field_matrix` (в каталоге: **QA: все типы полей**), блок «Meta parity».
+Живые примеры: секция **QA: все типы полей** в каталоге, в ней блок «Meta parity».
 
 ## Repeater
 
@@ -119,7 +119,7 @@ description: "Схема полей в JSON секции, виджеты инс�
 }
 ```
 
-В данных секции лежит массив объектов. У каждой строки служебный `_rowId`. В chunk: `{foreach $items as $item}` и `{$item.title|escape}`. Порядок строк в инспекторе: ручка перетаскивания или стрелки. Тот же drag есть у gallery, keyvalue, inline table и связанных списков. Подробнее: [repeater.md](repeater).
+В данных секции лежит массив объектов. У каждой строки служебный `_rowId`. В chunk: `{foreach $items as $item}` и `{$item.title|escape}`. Порядок строк меняют ручкой перетаскивания или стрелками, ручка есть и у gallery, keyvalue, inline table и связанных списков. Подробнее: [repeater](repeater).
 
 ## showWhen
 
@@ -132,25 +132,25 @@ description: "Схема полей в JSON секции, виджеты инс�
 }
 ```
 
-Поле видно, если `showWhen.field` совпало с `showWhen.value`. Массив в `value` значит «любое из значений». Код: `fieldVisibility.ts`. Ещё примеры: [types.md](types#составные-сценарии).
+Поле видно, когда значение поля `showWhen.field` равно `showWhen.value`. Массив в `value` значит «любое из значений». Код: `fieldVisibility.ts`. Ещё примеры: [types](types#составные-сценарии).
 
 ## optionsSource
 
-Whitelist классов в `FieldOptionsService` (`modResource`, `modTemplate`, `modChunk`, …). Список опций: connector `mgr/field/options`. Хук: `pbOnFieldValues`.
+Список разрешённых классов в `FieldOptionsService` (`modResource`, `modTemplate`, `modChunk`, …). Список опций: connector `mgr/field/options`. Хук: `pbOnFieldValues`.
 
 ## Фронт и enrich
 
-`SectionRenderer` передаёт `section.data` в chunk как плейсхолдеры. Дополнительно в properties: `id`, `type`, `settings`. Массив секции теги MODX не обходят. Цикл в примерах пишет Fenom. Вкладка MODX повторяет этот цикл и не ставит фильтр `pb_text`: такого выходного фильтра нет.
+`SectionRenderer` передаёт `section.data` в chunk как плейсхолдеры. Дополнительно в properties: `id`, `type`, `settings`. Массив секции теги MODX не обходят, поэтому примеры показывают цикл на Fenom. Вкладка MODX повторяет этот цикл без фильтра `pb_text`: такого выходного фильтра в тегах нет.
 
 При сохранении черновика `SectionFieldEnricher` дополняет:
 
 - **image / file / gallery**: media-объекты (`filename`, `extension`, `width`, `height`, `size`, `type`, …)
-- **video**: `embed_url`, `provider`, `watch_url`. Плоские `video_*` при `type=video` или имени поля с `video`
+- **video**: `embed_url`, `provider`, `watch_url`. Плоские `video_*` — только при `type=video`; имя поля с «video» enrich-ит вложенный объект, без плоских ключей
 - **map**: `embed_url`, `watch_url`. Плоские `map_*`
 
-В chunk для media используйте `{$photo.url}`, не голую строку path. См. [image.md](image), [video.md](video).
+В chunk для media берите `{$photo.url}`, а не строку пути к файлу. См. [image](image), [video](video).
 
 ## Дальше
 
 - [Справочник типов](types)
-- [Инспектор](../integration)
+- [Менеджер и события](../integration)

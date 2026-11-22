@@ -27,9 +27,12 @@ location / {
 
 - С PATH_INFO: `.../api.php/v1/health`
 - Без PATH_INFO (типичный nginx/Herd): `.../api.php?route=/v1/health`
+- Второй query-параметр, если `route` занят: `.../api.php?path=/v1/health`
 
-Голый `api.php` отдаёт discovery. См. [Установку](installation).
+Приоритет разбора: `PATH_INFO`, `ORIG_PATH_INFO`, путь после `api.php` в URL, `?route=`, `?path=`. Голый `api.php` отдаёт discovery. `route` и `path` вырезаются из query и в обработчик не попадают.
+
+См. [Установку](installation).
 
 ## Прокси и HTTPS
 
-За load balancer заполните `mxheadless_trusted_proxies`, иначе rate limit и audit видят IP прокси. Пакет не подменяет схему URL из `X-Forwarded-Proto`. HTTPS настраивайте на веб-сервере или reverse proxy.
+За load balancer заполните `mxheadless_trusted_proxies`, иначе rate limit считает всех клиентов одним адресом прокси. IP ни в чём, кроме rate limit, не используется: в журнал `mxheadless_api_log` он не пишется. Пакет не подменяет схему URL из `X-Forwarded-Proto`. HTTPS настраивайте на веб-сервере или reverse proxy.

@@ -40,7 +40,7 @@ sequenceDiagram
 3. Получает ID товаров через `msps_get_products_by_type`.
 4. Если результат пуст, возвращает `''` или `emptyTpl`.
 5. Если ID есть:
-   - при `return=ids` возвращает CSV ID;
+   - при `return=ids` возвращает CSV ID
    - иначе вызывает `msProducts` и отрисовывает карточки.
 6. При `tplWrapper` оборачивает итоговый HTML.
 7. При `toPlaceholder` складывает результат в placeholder.
@@ -55,7 +55,7 @@ sequenceDiagram
 ## 3. Добавление в корзину из карточки подборки / «весь набор»
 
 1. Клик по `data-add-to-cart` или «Добавить весь набор» (`data-add-set`).
-2. Если на странице есть `window.ms3Config.actionUrl`, запрос идёт в **MiniShop3 Web API**: `POST` на `api.php?route=/api/v1/cart/add` с JSON `{ id, count, options }` и `credentials: 'same-origin'`.
+2. Если на странице есть `window.ms3Config.actionUrl`, запрос идёт в **MiniShop3 Web API**. Это `POST` на `api.php?route=/api/v1/cart/add` с JSON `{ id, count, options }` и `credentials: 'same-origin'`.
 3. Иначе запасной путь: POST в коннектор `action=add_to_cart`. Сервис `ms3`, токен из cookie `ms3_token`, вызов `Cart::add()`.
 4. При успехе: уведомление **iziToast** (success/error), `msps:cart:update`. При ответе API ещё `ms3:cart:updated` с `detail.data` для обновления карточек MS3.
 
@@ -63,15 +63,15 @@ sequenceDiagram
 
 1. UI отправляет `save_template`.
 2. Коннектор проверяет имя, тип (`MSPS_ADMIN_TEMPLATE_TYPES`), непустой список существующих `msProduct`.
-3. `msps_save_template` делает INSERT/UPDATE в `ms3_product_set_templates`. При переименовании шаблона обновляет `template_name` и `type` в уже применённых связях.
+3. `msps_save_template` делает INSERT/UPDATE в `ms3_product_set_templates`. При переименовании шаблона он обновляет `template_name` и `type` в уже применённых связях.
 4. `msps_bump_cache_generation`, UI перезагружает список.
 
 ## 5. Применение шаблона к категории
 
 1. UI отправляет `apply_template` (`template_id`, `parent_id/parent_ids`, `replace`).
-2. Категория рекурсивно разворачивается до всех `msProduct`.
+2. Категория рекурсивно разворачивается до опубликованных `msProduct` с `deleted` = 0 (глубина до 10). Если таких ID нет, берутся `product_ids`.
 3. Для каждого товара создаются связи в `ms3_product_sets`.
-4. UI получает `applied`: число строк, реально добавленных через `INSERT IGNORE` (без учёта дублей и self-link).
+4. UI получает `applied`: число строк, реально добавленных через `INSERT IGNORE`. Дубли и self-link в это число не входят.
 
 ## 6. Отвязка шаблона от категории
 

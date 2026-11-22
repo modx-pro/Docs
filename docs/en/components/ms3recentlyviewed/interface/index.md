@@ -3,7 +3,7 @@ title: Admin interface
 ---
 # Admin interface
 
-Menu item **ms3RecentlyViewed** (parent `components`). Child **Settings** opens system settings for namespace `ms3recentlyviewed`. The page needs `view`. `save_log` covers delete and CSV export.
+Menu item **Recently Viewed** (key `ms3recentlyviewed`, parent `components`). Child **Settings** opens system settings for namespace `ms3recentlyviewed`. The page needs `view`. Until `save_log` is on a policy, delete and CSV export stay hidden.
 
 Long tabs scroll inside their area.
 

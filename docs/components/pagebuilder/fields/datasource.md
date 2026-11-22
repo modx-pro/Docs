@@ -7,9 +7,13 @@ description: "Объект провайдера, фильтров и лимит�
 
 Версия: **Pro**, capability `datasources`.
 
-Объект запроса, не список строк. Провайдеры: `modx-resources`, `pagebuilder-tables`, `minishop3`. Строки появляются на рендере в секциях [dynamic_list](../sections/dynamic_list) и [filterable_grid](../sections/filterable_grid).
+Объект запроса, не список строк. Провайдеры: `modx-resources`, `pagebuilder-tables`, `minishop3`. Строки появляются при отрисовке в секциях [dynamic_list](../sections/dynamic_list) и [filterable_grid](../sections/filterable_grid).
 
-Операторы фильтра: `eq`, `contains`, `in`, `gte`, `lte`, `between`, `empty`, `not_empty`. Ключи `sql`, `php`, `snippet` и `class` отклоняются. `limit` не больше 100. Превью в менеджере: `mgr/datasource/query`.
+Операторы фильтра: `eq`, `contains`, `in`, `gte`, `lte`, `between`, `empty`, `not_empty`.
+
+- Ключи `sql`, `php`, `snippet` и `class` отклоняются
+- `limit` не больше 100
+- Превью в менеджере: `mgr/datasource/query`
 
 ## Настройка
 

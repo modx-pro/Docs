@@ -178,4 +178,4 @@ description: 'Карта самовывоза товара: YandexMapsLocator Pr
 4. Точки опубликованы, `parents` верный.
 5. Заполнены `latitude` / `longitude`.
 
-См. [productId не фильтрует](../faq#productid-не-фильтрует).
+См. [productId не фильтрует](../faq#productid-ne-filtruet).

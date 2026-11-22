@@ -31,6 +31,8 @@ description: Установка msp3Prodamus, демо-страница payform,
 
 Резолвер создаёт способ **Оплата через Prodamus**, класс `Msp3Prodamus\Payment\ProdamusPayment`.
 
+<!-- MEDIA: установка — MODX: Управление пакетами, провайдер modstore.pro, пакет msp3Prodamus в списке -->
+
 Секрет и URL для ссылки можно положить в `msPayment.properties`. Поля: `secret`, `secret_key`, `payform_url`. При миграции: `form_url`, `webhook_secret`. Непустые properties перекрывают системные настройки.
 
 Секрет нужен и для ссылки, и для `webhook.php`. Достаточно одного места: properties способа или **`msp3prodamus_secret_key`**.
@@ -47,6 +49,8 @@ description: Установка msp3Prodamus, демо-страница payform,
 | Секрет | Войдите на платёжную страницу как владелец. Нижнее меню: **Настройки**. Скопируйте ключ в **`msp3prodamus_secret_key`**. В properties способа: `secret` или `secret_key`. |
 | `sys` | **`msp3prodamus_sys`**: код интеграции. Согласуют с поддержкой Prodamus. У всех магазинов одной интеграции код один и тот же. |
 | URL уведомлений | **Настройки**, поле **Настройка уведомлений**. После ввода нажмите **сохранить**. |
+
+<!-- MEDIA: настройки payform — страница payform «Настройки», виден секрет и поле «Настройка уведомлений» с URL webhook -->
 
 Как войти на страницу: инструкция Prodamus в ссылке ниже. Новый ключ на этой странице не генерируется. Его выдаёт поддержка Prodamus. Поля и кнопка сохранения URL: [где найти секрет и URL уведомлений](https://help.prodamus.ru/payform/integracii/rest-api/url-dlya-uvedomlenii-i-sekretnyi-klyuch). Описание `sys`: [самостоятельная интеграция](https://help.prodamus.ru/payform/integracii/rest-api/instrukcii-dlya-samostoyatelnaya-integracii-servisov).
 
@@ -74,6 +78,8 @@ HTTPS, без Basic Auth и без 301. HTTP на `*.test` часто отвеч
 2. Либо properties способа: `payform_url`, `secret` или `secret_key`, при необходимости `sys`. Непустые properties перекрывают системные настройки для ссылки и `webhook.php`.
 3. Очистите кэш MODX.
 
+<!-- MEDIA: настройки — MODX «Системные настройки», фильтр `msp3prodamus`, поля `payform_url`, `secret_key`, `sys` заполнены -->
+
 Список полей: [Системные настройки](settings).
 
 ## Шаг 3: Демо-страница
@@ -91,6 +97,8 @@ HTTPS, без Basic Auth и без 301. HTTP на `*.test` часто отвеч
 1. В админке MiniShop3 откройте **Настройки → Оплаты**.
 2. Включите **Оплата через Prodamus**.
 3. Привяжите способ к сценарию оформления заказа.
+
+<!-- MEDIA: способ оплаты — MiniShop3 «Настройки → Оплаты», галочка «Оплата через Prodamus» включена -->
 
 Отдельного двухстадийного способа нет.
 

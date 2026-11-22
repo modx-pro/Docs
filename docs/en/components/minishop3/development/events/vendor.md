@@ -3,11 +3,13 @@ title: Vendor events
 ---
 # Vendor events
 
-Events for tracking vendor (brand) operations.
+Tracking operations on vendors (brands).
 
 ::: warning Vue settings vs processors
-Vendor CRUD in the admin (**Extras → MiniShop3 → Vendors**) goes through `VendorsController` (Manager API) **without** `$modx->invokeEvent`. The events below fire only when legacy processors `MiniShop3\Processors\Settings\Vendor\*` are called (`runProcessor`, old connector). To intercept changes from Vue, use post-save hooks via your own REST middleware or by extending the controller in an addon.
+Vendor CRUD in the manager (**Extras → MiniShop3 → Vendors**) goes through `VendorsController` (Manager API) **without** `$modx->invokeEvent`. The events below fire only when the older processors `MiniShop3\Processors\Settings\Vendor\*` are called (`runProcessor`, the old connector). To intercept changes made in the Vue manager, add your own REST middleware after the save, or extend the controller in an add-on.
 :::
+
+The package does not build the keys in the tables below. The MiniShop3 processors set `$classKey`, `$objectType = 'msVendor'` and the event names in the `$beforeSaveEvent`, `$afterSaveEvent`, `$beforeRemoveEvent` and `$afterRemoveEvent` properties — without those the base processor fires no event at all. The call itself and the parameter array come from the MODX processor: `CreateProcessor`, `UpdateProcessor`, or `RemoveProcessor`.
 
 ## msOnBeforeVendorCreate
 
@@ -18,7 +20,10 @@ Fired **before** creating a vendor.
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `msVendor` | `msVendor` | Vendor object |
+| `object` | `msVendor` | The same reference as `msVendor` (MS2-style alias) |
 | `mode` | `string` | Mode: `new` |
+| `data` | `array` | Vendor fields at call time (`$object->toArray()`) |
+| `id` | `int` | Vendor ID (`0` — not created yet) |
 
 ### Aborting the operation
 
@@ -29,12 +34,13 @@ switch ($modx->event->name) {
         /** @var \MiniShop3\Model\msVendor $vendor */
         $vendor = $scriptProperties['msVendor'];
 
-        $existing = $modx->getObject(\MiniShop3\Model\msVendor::class, [
-            'name' => $vendor->get('name'),
-        ]);
+        // A duplicate name never reaches here: Vendor\Create::beforeSet() rejects it
+        // earlier with a field error on name. Check what the processor does not know —
+        // a reference list of allowed brands, for instance.
+        $allowed = $modx->getOption('my_allowed_vendors', null, '');
 
-        if ($existing) {
-            $modx->event->output('A vendor with this name already exists');
+        if ($allowed !== '' && !in_array($vendor->get('name'), explode(',', $allowed), true)) {
+            $modx->event->output('This vendor is not in the reference list');
             return;
         }
         break;
@@ -52,7 +58,9 @@ Fired **after** creating a vendor.
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `msVendor` | `msVendor` | Created vendor object |
+| `object` | `msVendor` | The same reference as `msVendor` (MS2-style alias) |
 | `mode` | `string` | Mode: `new` |
+| `id` | `int` | ID of the created vendor |
 
 ### Example
 
@@ -68,6 +76,7 @@ switch ($modx->event->name) {
             $vendor->get('id')
         ));
 
+        // Creating a page for the vendor
         // $page = $modx->newObject('modResource', [...]);
         break;
 }
@@ -83,10 +92,17 @@ Fired **before** updating a vendor.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `msVendor` | `msVendor` | Vendor object |
+| `msVendor` | `msVendor` | Vendor object (fields already hold the NEW values — no snapshot of the old ones) |
+| `object` | `msVendor` | The same reference as `msVendor` (MS2-style alias) |
 | `mode` | `string` | Mode: `upd` |
+| `data` | `array` | Vendor fields at call time — already the new values (`$object->toArray()`) |
+| `id` | `int` | ID of the vendor being updated |
 
-### Example
+::: warning The previous field values are gone
+By the time this event fires, `msVendor` already holds the new values — MODX applies them before `beforeSaveEvent` runs. The object has no `getPrevious()`-style method, so take the "before" snapshot earlier, for example in the controller ahead of `runProcessor`.
+:::
+
+### Aborting the operation
 
 ```php
 <?php
@@ -94,10 +110,11 @@ switch ($modx->event->name) {
     case 'msOnBeforeVendorUpdate':
         $vendor = $scriptProperties['msVendor'];
 
-        $modx->eventData['vendor_before'] = [
-            'name' => $vendor->getPrevious('name'),
-            'logo' => $vendor->getPrevious('logo'),
-        ];
+        // Reject an empty name
+        if (trim((string) $vendor->get('name')) === '') {
+            $modx->event->output('Vendor name cannot be empty');
+            return;
+        }
         break;
 }
 ```
@@ -113,7 +130,9 @@ Fired **after** updating a vendor.
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `msVendor` | `msVendor` | Updated vendor object |
+| `object` | `msVendor` | The same reference as `msVendor` (MS2-style alias) |
 | `mode` | `string` | Mode: `upd` |
+| `id` | `int` | ID of the updated vendor |
 
 ### Example
 
@@ -123,15 +142,11 @@ switch ($modx->event->name) {
     case 'msOnVendorUpdate':
         $vendor = $scriptProperties['msVendor'];
 
-        $before = $modx->eventData['vendor_before'] ?? [];
-
-        if ($before['name'] !== $vendor->get('name')) {
-            $modx->log(modX::LOG_LEVEL_INFO, sprintf(
-                '[Vendor] Renamed: %s → %s',
-                $before['name'],
-                $vendor->get('name')
-            ));
-        }
+        $modx->log(modX::LOG_LEVEL_INFO, sprintf(
+            '[Vendor] Vendor updated: %s (ID: %d)',
+            $vendor->get('name'),
+            $vendor->get('id')
+        ));
         break;
 }
 ```
@@ -147,6 +162,8 @@ Fired **before** deleting a vendor.
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `msVendor` | `msVendor` | Vendor object to delete |
+| `object` | `msVendor` | The same reference as `msVendor` (MS2-style alias) |
+| `id` | `int` | ID of the vendor being deleted |
 
 ### Aborting the operation
 
@@ -156,6 +173,7 @@ switch ($modx->event->name) {
     case 'msOnBeforeVendorDelete':
         $vendor = $scriptProperties['msVendor'];
 
+        // Refuse the delete while products are linked
         $productCount = $modx->getCount(\MiniShop3\Model\msProductData::class, [
             'vendor_id' => $vendor->get('id'),
         ]);
@@ -182,6 +200,8 @@ Fired **after** deleting a vendor.
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `msVendor` | `msVendor` | Deleted vendor object |
+| `object` | `msVendor` | The same reference as `msVendor` (MS2-style alias) |
+| `id` | `int` | ID of the deleted vendor |
 
 ### Example
 
@@ -197,6 +217,7 @@ switch ($modx->event->name) {
             $vendor->get('id')
         ));
 
+        // Clear the cache
         $modx->cacheManager->delete('vendors_list');
         break;
 }
@@ -218,6 +239,7 @@ switch ($modx->event->name) {
     case 'msOnVendorCreate':
         $vendor = $scriptProperties['msVendor'];
 
+        // Create the brand page in the catalogue
         $brandsParent = $modx->getOption('brands_resource_id', null, 0);
         if ($brandsParent) {
             $page = $modx->newObject('modResource', [
@@ -231,6 +253,7 @@ switch ($modx->event->name) {
             $page->setTVValue('vendor_id', $vendor->get('id'));
             $page->save();
 
+            // Store the link
             $vendor->set('resource_id', $page->get('id'));
             $vendor->save();
         }
@@ -239,6 +262,7 @@ switch ($modx->event->name) {
     case 'msOnVendorUpdate':
         $vendor = $scriptProperties['msVendor'];
 
+        // Update the brand page
         $resourceId = $vendor->get('resource_id');
         if ($resourceId) {
             $page = $modx->getObject('modResource', $resourceId);
@@ -253,6 +277,7 @@ switch ($modx->event->name) {
     case 'msOnVendorDelete':
         $vendor = $scriptProperties['msVendor'];
 
+        // Delete the brand page
         $resourceId = $vendor->get('resource_id');
         if ($resourceId) {
             $page = $modx->getObject('modResource', $resourceId);

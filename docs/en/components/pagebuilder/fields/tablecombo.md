@@ -5,13 +5,15 @@ description: "Dropdown from a MODX class through optionsSource"
 
 # Field tablecombo
 
-Version: **Pro**.
+Version: **Pro** (`advanced-fields`).
 
 <!-- ![tablecombo](/components/pagebuilder/screenshots/fields/tablecombo.jpg) -->
 
 ## Why this type
 
-A dropdown. Options load from a MODX class through `optionsSource` and the `mgr/field/options` processor. It is not a grid in the inspector. The row grid is [table](table). It needs PageBuilder Pro and the `advanced-fields` capability. Without `optionsSource` the list is empty.
+A dropdown. Options load from a MODX class through `optionsSource` and the `mgr/field/options` processor, or from a static `options` list in the schema. This is not a grid. The row grid is [table](table).
+
+The list is empty only when both `options` and `optionsSource` are missing. A non-empty static `options` is used first.
 
 ## When to use
 
@@ -21,7 +23,7 @@ A dropdown. Options load from a MODX class through `optionsSource` and the `mgr/
 
 ## Tips
 
-ModResource picker → [relation](relation) or [combo](combo). Multiple ids → [tablemulticombo](tablemulticombo).
+ModResource picker: [relation](relation) or [combo](combo). Multiple ids: [tablemulticombo](tablemulticombo).
 
 ## Similar types
 
@@ -82,7 +84,7 @@ For fields with `name` that are stored in the section data:
 | Key | Type | Role | CMP |
 | --- | --- | --- | --- |
 | `tab` | string | Group subtitle in the inspector | yes |
-| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `width` | 25, 33, 50, 66, 75, 100 | Field width as % of the row (flex). The CMP offers only these values | yes |
 | `description` | string | Hint under the label | yes |
 | `default` | any | Initial value for a new section | yes |
 | `active` | bool | `false` hides the field in the inspector | yes |

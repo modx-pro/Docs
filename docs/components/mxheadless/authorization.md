@@ -52,6 +52,7 @@ flowchart TD
 | `categories.read` | `GET /categories`, `GET /categories/{id}` |
 | `content_types.read` | `GET /content_types`, `GET /content_types/{id}` |
 | `preview` | `?preview=true` без `view_unpublished` у сессии. Также участвует в проверке `include_deleted` |
+| `fields.{field}` | Поле из `protectedFields` объекта |
 | `*` | Все scopes (только для ключей и токенов) |
 
 Meta-маршруты (`/`, `/health`, `/schema`, `/docs`, `/meta/*`) и `POST /auth/token` не требуют scope.
@@ -118,14 +119,24 @@ Anonymous может читать discovery, health, schema, docs, meta, `GET /r
 
 ## Поля
 
-Скрытые поля не попадают в JSON. Protected отдаются только при отдельном праве в definition. Запрос `fields=` на неизвестное или запрещённое поле даёт `422`.
+Скрытые поля не попадают в JSON. Protected отдаются и записываются только при отдельном field-level праве: scope `fields.{field}` у ключа или токена, MODX-право `mxheadless_fields_{field}` у сессии. Запрос `fields=` на неизвестное или запрещённое поле даёт `422`.
+
+| Право | Кто | Что открывает |
+| --- | --- | --- |
+| `fields.{field}` | API key, OAuth | Поле `{field}` из `protectedFields` на чтение и запись |
+| `mxheadless_fields_{field}` | Сессия MODX | То же для текущего пользователя |
+| `mxheadless_fields_all` | Сессия MODX | Все `protectedFields` объекта |
+
+Поля из `hiddenFields` (`properties` у `resources`) не открываются никаким флагом: они вырезаются из ответа и запись в них даёт `422`. Поля из `immutableFields` не пишутся даже с полным набором прав.
+
+Поля из `protectedFields` у `resources`: `createdby`, `editedby`, `deletedby`, `publishedby`.
 
 ## Preview и deleted
 
 | Query | Кто |
 | --- | --- |
-| `preview=true` | Session с `view_unpublished` или scope `preview` |
-| `include_deleted=1` | Не для anonymous. Нужны `preview`, `resources.update`, `resources.delete` или соответствующие права MODX |
+| `preview=true` | Session с `view_unpublished` или scope `preview`. Достаточно одного из двух: права пользователя-владельца ключа не проверяются |
+| `include_deleted=1` | Не для anonymous. Нужны `preview`, `resources.update`, `resources.delete`, `view_unpublished` или `empty_recycle_bin` |
 
 ## См. также
 

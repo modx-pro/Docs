@@ -8,11 +8,11 @@ Headless API for programmatic interaction with MiniShop3 without DOM binding.
 
 ## Architecture
 
-MiniShop3 uses a two-layer architecture:
+Two layers: UI for server markup, and a headless core.
 
 ```mermaid
 flowchart TB
-  ms3["ms3.js — entry point, auto-init"]
+  ms3["ms3.js — entry point, auto-initialisation"]
 
   subgraph ui ["UI Layer — DOM bindings for SSR"]
     CartUI[CartUI.js]
@@ -77,13 +77,13 @@ For SPA apps (Vue, React, Svelte) load only the core:
 ```javascript
 // Config
 const config = {
-  apiUrl: '/assets/components/minishop3/api.php',
+  actionUrl: '/assets/components/minishop3/api.php',
   tokenName: 'ms3_token'
 }
 
 // Core init
 const tokenManager = new TokenManager(config)
-const apiClient = new ApiClient({ baseUrl: config.apiUrl, tokenManager })
+const apiClient = new ApiClient({ baseUrl: config.actionUrl, tokenManager })
 tokenManager.setApiClient(apiClient)
 
 // Getting the token
@@ -109,6 +109,12 @@ With standard loading the following are available:
 | `window.ms3Message` | Notifications (if UI loaded) |
 | `window.ms3Config` | Server config |
 
+::: warning `ms3Config` can be switched off by a setting
+With `ms3_register_global_config = false` the object is not printed on the page. The snippets `msCart` and `msOrderTotal` still print the line `ms3Config.render.cart.push(…)`. That line registers a render token and touches the object without a check. The console shows `ReferenceError: ms3Config is not defined`, and re-rendering of the cart and the totals widget stops.
+
+The setting is on by default. Turn it off only when your own code prints the config.
+:::
+
 ```javascript
 // Using the global object
 await ms3.cartAPI.add(123, 1)
@@ -122,20 +128,21 @@ API for working with the cart.
 
 ### Methods
 
-#### get()
+#### get(params)
 
-Get cart contents.
+Get the cart contents. The only parameter is `include_thumbs`: with it, each line gets a `thumb` field.
 
 ```javascript
 const response = await ms3.cartAPI.get()
+const withThumbs = await ms3.cartAPI.get({ include_thumbs: 1 })
 
 // response:
 {
   success: true,
-  message: "ms3_cart_get_success",
+  message: "Cart data retrieved",
   data: {
     cart: {
-      // Object where key is product_key
+      // Object where the key is product_key
       "ms43ce202fd27c84c28230cc771328e37f": {
         id: 10,
         product_id: 152248,
@@ -154,6 +161,22 @@ const response = await ms3.cartAPI.get()
         }
       }
     },
+    items: [
+      // The same lines as an array, with flat old_price, discount_price and discount_cost
+      {
+        product_key: "ms43ce202fd27c84c28230cc771328e37f",
+        product_id: 152248,
+        name: "Product name",
+        count: 2,
+        price: 148343,
+        cost: 296686,
+        weight: 2.508,
+        options: {},
+        old_price: 0,
+        discount_price: 0,
+        discount_cost: 0
+      }
+    ],
     status: {
       total_count: 9,
       total_cost: 1094850,
@@ -164,6 +187,8 @@ const response = await ms3.cartAPI.get()
   }
 }
 ```
+
+New code reads `items`: it is an array, the line order is predictable, and empty `options` arrive as an object. The `cart` key stays for older scripts.
 
 #### add(id, count, options, render)
 
@@ -198,11 +223,10 @@ The `render` parameter lets you get ready HTML from the server. Tokens must be r
   success: true,
   message: "Product added to cart",
   data: {
-    cart: [...],           // Updated cart
+    cart: {...},           // Cart lines, keyed by product_key
     status: {...},         // Totals
     render: {              // HTML (if requested)
-      mini: "<div>...</div>",
-      full: "<div>...</div>"
+      "ms3_a1b2c3...": "<div>...</div>"   // the key is the snippet call token
     }
   }
 }
@@ -219,19 +243,27 @@ Change product quantity.
 | `render` | array | Tokens for rendering |
 
 ```javascript
-await ms3.cartAPI.change('ms5d41d8cd98f00b204e9800998ecf8427e', 5)
+await ms3.cartAPI.change('ms43ce202fd27c84c28230cc771328e37f', 5)
 ```
 
 :::tip product_key
 Each product in the cart has a unique `product_key`. Same product with different options — different keys.
 :::
 
+#### changeOption(productKey, options, render)
+
+Change the options of a line. A new set of options changes the line key: the server returns the new one in `data.last_key`. The old key never comes back to the client — the calling code already has it, it is the first argument of `changeOption()`.
+
+```javascript
+await ms3.cartAPI.changeOption('ms43ce202fd27c84c28230cc771328e37f', { color: 'Pink' })
+```
+
 #### remove(productKey, render)
 
 Remove product from cart.
 
 ```javascript
-await ms3.cartAPI.remove('ms5d41d8cd98f00b204e9800998ecf8427e')
+await ms3.cartAPI.remove('ms43ce202fd27c84c28230cc771328e37f')
 ```
 
 #### clean(render)
@@ -241,6 +273,20 @@ Clear cart.
 ```javascript
 await ms3.cartAPI.clean()
 ```
+
+::: warning An API call only
+`cartAPI.clean()` is a headless method: it only sends the request to the server. The mini-cart, counters and product cards **do not refresh** by themselves. For a full UI update use `ms3.cartUI.handleClean()` — it calls the API, renders the HTML and dispatches `ms3:cart:updated`. More in [Frontend JavaScript](frontend-js#cartui).
+:::
+
+### What the cart methods return
+
+| Method | `data` in the response |
+| --- | --- |
+| `get` | `cart`, `status`, `items` |
+| `add`, `change`, `changeOption`, `remove` | `last_key`, `cart`, `status`, `items` |
+| `clean` | `cart`, `status`, `items` — no `last_key` |
+
+`last_key` is the key of the line the operation touched; for `changeOption` it is the new key. The old key is not in the response: only a PHP plugin on `msOnChangeOptionInCart` sees it, as `old_product_key`. When the request carries `render`, a `render` key with the ready markup joins the list.
 
 ## OrderAPI
 
@@ -310,21 +356,24 @@ Checkout.
 const response = await ms3.orderAPI.submit()
 
 if (response.success) {
+  // The built-in DefaultPayment puts payment_link (msorder is the order number),
+  // order_id and order_num. When the payment response has no data.redirect,
+  // submit adds redirect with msorder set to the order uuid.
   // response.data:
   {
+    payment_link: "https://shop.example/thanks?msorder=251015-1",
     order_id: 42,
-    redirect: "/shop/order-success?msorder=42"
+    order_num: "251015-1",
+    redirect: "/shop/order-success?msorder=8f3c-uuid"
   }
 
   window.location.href = response.data.redirect
 } else {
-  // response:
+  // Required fields: data is an array of names, lexicon ms3_order_err_requires
   {
     success: false,
-    message: "Fill required fields",
-    data: {
-      errors: ["first_name", "email", "phone"]
-    }
+    message: "Required fields are missing",
+    data: ["first_name", "email", "phone"]
   }
 }
 ```
@@ -354,12 +403,25 @@ const response = await ms3.orderAPI.getCost()
 }
 ```
 
+### What the order methods return
+
+| Method | `data` in the response |
+| --- | --- |
+| `get` | `order` — the whole draft |
+| `add` | the written field only: `{ "first_name": "Ivan" }` |
+| `remove` | `removed` — the name of the removed key |
+| `clean` | empty |
+| `submit` | `order_id`, `order_num`, `redirect`, plus `payment_link` with the built-in payment |
+| `getCost` | the order amounts together with the cart totals |
+
+`add` returns an empty `message`: there is no write confirmation, judge by `success`.
+
 ## CustomerAPI
 
 API for working with authenticated customer data.
 
 :::warning Authorization required
-All CustomerAPI methods are only available for authenticated users. For guests use `OrderAPI.add()` to save order data.
+Most CustomerAPI methods require authentication. The exceptions in this class are `login` and `register`. There is no password reset in `CustomerAPI`: `AuthUI` shows that the action is unavailable on the site. The server routes still exist: `POST /api/v1/customer/forgot-password` and `POST /api/v1/customer/reset-password`. A guest's order data is stored through `OrderAPI.add()`.
 :::
 
 ### Methods
@@ -411,7 +473,55 @@ Remove address.
 await ms3.customerAPI.deleteAddress(5)
 ```
 
-## Hook system
+#### add(key, value)
+
+Write a single customer field. `POST /api/v1/customer/add`.
+
+```javascript
+await ms3.customerAPI.add('phone', '+7 900 123-45-67')
+```
+
+#### changeAddress(key, value)
+
+Change the address in the order form. Hook context: `{ key, value }`, and `response` after the answer.
+
+```javascript
+await ms3.customerAPI.changeAddress('address_hash', 'addr_123')
+```
+
+#### login(email, password)
+
+`POST /api/v1/customer/login`. Two arguments, not an object.
+
+```javascript
+await ms3.customerAPI.login('ivan@example.com', 'secret')
+```
+
+#### register(data)
+
+`POST /api/v1/customer/register`.
+
+#### setDefaultAddress(id)
+
+`PUT /api/v1/customer/addresses/{id}/set-default`.
+
+#### getOrders(params)
+
+`GET /api/v1/customer/orders`. Query parameters: `limit`, `offset`, `status`.
+
+#### getOrder(orderId)
+
+`GET /api/v1/customer/orders/{orderId}`.
+
+#### cancelOrder(orderId)
+
+`POST /api/v1/customer/orders/{orderId}/cancel`.
+
+#### resendVerificationEmail()
+
+`POST /api/v1/customer/email/resend-verification`.
+
+## Hook system {#hooks}
 
 Hooks let you extend behavior without changing source code.
 
@@ -438,6 +548,10 @@ ms3Hooks.addHook('hookName', async (context) => {
 | `afterRemoveCart` | `{ productKey, response }` | After removing product |
 | `beforeCleanCart` | `{}` | Before clearing cart |
 | `afterCleanCart` | `{ response }` | After clearing cart |
+| `beforeChangeOptionCart` | `{ productKey, options }` | Before changing a line option |
+| `afterChangeOptionCart` | `{ productKey, options, response }` | After changing an option |
+| `beforeQuantityChange` | `{ productKey, count, form }` | Before a quantity change via the «+» and «−» buttons. The only cart hook whose context edits reach the request: `count` is read back, so a handler can both cancel the operation through `cancel` and replace the quantity |
+| `afterQuantityChange` | `{ productKey, count, response, form }` | After a quantity change |
 
 #### Order
 
@@ -449,6 +563,7 @@ ms3Hooks.addHook('hookName', async (context) => {
 | `afterSubmitOrder` | `{ response }` | After submit |
 | `beforeCleanOrder` | `{}` | Before clear |
 | `afterCleanOrder` | `{ response }` | After clear |
+| `afterUpdateOrderCosts` | `{ cost, cart_cost, delivery_cost }` | After the order cost is recalculated |
 
 #### Customer
 
@@ -460,6 +575,36 @@ ms3Hooks.addHook('hookName', async (context) => {
 | `afterUpdateProfile` | `{ data, response }` | After updating profile |
 | `beforeCreateAddress` | `{ data }` | Before creating address |
 | `afterCreateAddress` | `{ data, response }` | After creating address |
+| `beforeUpdateAddress` | `{ addressId, data }` | Before editing an address |
+| `afterUpdateAddress` | `{ addressId, data, response }` | After editing an address |
+| `beforeDeleteAddress` | `{ addressId }` | Before deleting an address |
+| `afterDeleteAddress` | `{ addressId, response }` | After deleting an address |
+| `beforeSetDefaultAddress` | `{ addressId }` | Before picking the default address |
+| `afterSetDefaultAddress` | `{ addressId, response }` | After picking the default address |
+| `beforeChangeAddressCustomer` | `{ key, value }` | Before changing the address in the order form |
+| `afterChangeAddressCustomer` | `{ key, value, response }` | After changing the address in the order form |
+| `beforeCancelOrder` | `{ orderId }` | Before the customer cancels an order |
+| `afterCancelOrder` | `{ orderId, response }` | After an order is cancelled |
+| `beforeResendVerificationEmail` | `{ button }` | Before resending the verification email |
+| `afterResendVerificationEmail` | `{ button, response }` | After the email is sent |
+
+#### Login and registration
+
+| Hook | Context | Description |
+| --- | --- | --- |
+| `beforeLogin` | `{ email }` | Before login |
+| `afterLogin` | `{ email, response }` | After login |
+| `beforeRegister` | `{ email }` | Before registration |
+| `afterRegister` | `{ email, response }` | After registration |
+
+#### Any form
+
+| Hook | Context | Description |
+| --- | --- | --- |
+| `beforeFormSubmit` | `{ entity, method, formData }` | Before any MiniShop3 form is submitted |
+| `afterFormSubmit` | `{ entity, method, formData }` | After submission |
+
+This pair fires for every form — cart, order and customer — and receives the whole `formData`. Subscribe here when you need the entered values: the specialized hooks such as `beforeSubmitOrder` do not get the form data.
 
 ### Hook examples
 
@@ -514,7 +659,7 @@ ms3Hooks.addHook('beforeCleanCart', async (ctx) => {
 | Event | Description | detail |
 | --- | --- | --- |
 | `ms3:ready` | ms3 initialized | — |
-| `ms3:cart:updated` | Cart updated | `{ cart, status }` |
+| `ms3:cart:updated` | Cart updated | `{ cart, items, status }`, plus `render` on re-render. Sometimes arrives empty — see below |
 
 ### Subscribing
 
@@ -524,13 +669,22 @@ document.addEventListener('ms3:ready', () => {
 })
 
 document.addEventListener('ms3:cart:updated', (e) => {
-  const { cart, status } = e.detail
+  const { cart, items, status } = e.detail ?? {}
+  if (!status) {
+    return
+  }
 
   // Update header counter
   document.querySelector('.cart-count').textContent = status.total_count
   document.querySelector('.cart-total').textContent = status.total_cost
 })
 ```
+
+::: warning The event also arrives without data
+Clearing the order form dispatches it empty — `detail` will be `null`. The clearing form ships in the default chunk `ms3_order.tpl`, so the path is live: a handler that reads the fields straight away throws a `TypeError` ([#802](https://github.com/modx-pro/MiniShop3/issues/802)).
+
+Check `detail` before touching the fields — every example below does.
+:::
 
 ## Usage in SPA
 
@@ -545,59 +699,41 @@ export function useCart() {
   const status = ref({ total_count: 0, total_cost: 0 })
   const loading = ref(false)
 
-  async function loadCart() {
-    loading.value = true
-    const response = await ms3.cartAPI.get()
+  // The shared shape: call a cartAPI method and move the answer into cart and status
+  function apply(response) {
     if (response.success) {
       cart.value = response.data.cart
       status.value = response.data.status
     }
+    return response
+  }
+
+  async function loadCart() {
+    loading.value = true
+    apply(await ms3.cartAPI.get())
     loading.value = false
   }
 
   async function addToCart(id, count = 1, options = {}) {
     loading.value = true
-    const response = await ms3.cartAPI.add(id, count, options)
-    if (response.success) {
-      cart.value = response.data.cart
-      status.value = response.data.status
-    }
+    const response = apply(await ms3.cartAPI.add(id, count, options))
     loading.value = false
     return response
   }
 
-  async function removeFromCart(productKey) {
-    const response = await ms3.cartAPI.remove(productKey)
-    if (response.success) {
-      cart.value = response.data.cart
-      status.value = response.data.status
-    }
-    return response
-  }
-
-  async function changeQuantity(productKey, count) {
-    const response = await ms3.cartAPI.change(productKey, count)
-    if (response.success) {
-      cart.value = response.data.cart
-      status.value = response.data.status
-    }
-    return response
-  }
-
-  async function clearCart() {
-    const response = await ms3.cartAPI.clean()
-    if (response.success) {
-      cart.value = []
-      status.value = { total_count: 0, total_cost: 0 }
-    }
-    return response
-  }
+  // removeFromCart(productKey) → cartAPI.remove()
+  // changeQuantity(productKey, count) → cartAPI.change()
+  // clearCart() → cartAPI.clean(); the response carries an empty cart, items: []
+  // and a zeroed status — handled by the same apply(response) as the rest
 
   onMounted(() => {
     loadCart()
 
-    // Subscribe to external updates
+    // Subscribe to outside updates
     document.addEventListener('ms3:cart:updated', (e) => {
+      if (!e.detail) {
+        return
+      }
       cart.value = e.detail.cart
       status.value = e.detail.status
     })
@@ -630,7 +766,7 @@ const { cart, status, loading, addToCart, removeFromCart } = useCart()
     <div v-if="loading">Loading...</div>
 
     <div v-for="item in cart" :key="item.product_key" class="cart-item">
-      <span>{{ item.pagetitle }}</span>
+      <span>{{ item.name }}</span>
       <span>{{ item.count }} x {{ item.price }}</span>
       <button @click="removeFromCart(item.product_key)">Remove</button>
     </div>
@@ -687,6 +823,9 @@ export function useCart() {
     loadCart()
 
     const handleCartUpdate = (e) => {
+      if (!e.detail) {
+        return
+      }
       setCart(e.detail.cart)
       setStatus(e.detail.status)
     }
@@ -713,6 +852,9 @@ class CartManager {
     await this.load()
 
     document.addEventListener('ms3:cart:updated', (e) => {
+      if (!e.detail) {
+        return
+      }
       this.cart = e.detail.cart
       this.status = e.detail.status
       this.notify()
@@ -772,50 +914,73 @@ All methods return a Promise with an object:
   success: true,           // Operation success
   message: "Text",         // Message (optional)
   data: {                  // Data (when success: true)
-    cart: [...],
+    cart: {...},
     status: {...},
     render: {...}
   }
 }
 ```
 
-**On error:**
+**On error** the `code`, `errors` and `error_code` keys are always there, even when `errors` is empty:
 
 ```javascript
 {
   success: false,
   message: "Error description",
-  data: {
-    errors: ["field1", "field2"]  // Error fields
-  }
+  code: 400,
+  errors: null,
+  error_code: "bad_request"
 }
 ```
 
+There are three shapes, and they differ in where the per-field breakdown sits.
+
+| When | How it looks |
+| --- | --- |
+| Malformed request, no authorization, not found | `errors: null`, no `data` |
+| Validation with a per-field breakdown | `code: 422`, `error_code: validation_failed`, `errors` is a field → message map; `data` carries the current draft |
+| A shop rule | `code: 400`, `error_code: business_rule`, `data` holds an array of field names, for example `["delivery_id"]` |
+
+So `errors` is always a map or `null`, and an array of field names arrives in `data`, not in `errors`.
+
 ## Tokens and authorization
 
-MiniShop3 uses tokens to identify the cart session.
+```mermaid
+flowchart LR
+  first[First request] --> get["token/get or the cart"]
+  get --> cookie["httpOnly cookie ms3_token"]
+  cookie --> next["Requests with credentials same-origin"]
+  next --> rotate["Rotation on login and token/refresh"]
+```
+
+The token identifies the cart session.
 
 ### How it works
 
-1. On first request the client gets a token (`GET /customer/token/get` or auto-mint on cart)
-2. Since 1.6 the main browser approach is httpOnly cookie `ms3_token`, not `localStorage`
-3. Same-site requests use `credentials: 'include'`; headless can send `Authorization: Bearer`
-4. Rotation on login / `token/refresh`
+1. On the first request the client gets a token: `GET /api/v1/customer/token/get`, or the first call to the cart.
+2. Since 1.6 the token in the browser lives in the httpOnly cookie `ms3_token`, not in `localStorage`.
+3. The client sends requests with `credentials: 'same-origin'`, and the cookie goes along. Calls from another domain use `Authorization: Bearer`.
+4. On login and on `token/refresh` the token changes.
 
 Details: [Web API authorization](/en/components/minishop3/development/web-api/auth), [Frontend JavaScript](/en/components/minishop3/development/frontend-js).
 
 ### Manual control
 
 ```javascript
-// Get current token
-const token = ms3.tokenManager.getToken()
+// Get a token from the server if there is none yet
+await ms3.tokenManager.ensureToken()
 
-// Force refresh
+// Force a new one
 await ms3.tokenManager.fetchNewToken()
-
-// Remove token
-ms3.tokenManager.removeToken()
 ```
+
+Both methods call `/api/v1/customer/token/get`, and the server sets the cookie in its response.
+
+::: warning The token cannot be read from the browser
+`getToken()` and `getTokenData()` always return `null`, and `setToken()` does nothing. That is not a bug: since 1.6 the token lives in an httpOnly cookie, and JavaScript has no access to it — that is the whole point of such a cookie.
+
+`removeToken()` does not remove the current token either: it only cleans up leftovers in `localStorage` from earlier versions. The cart session cannot be reset from the browser; the server does that.
+:::
 
 ## Related pages
 

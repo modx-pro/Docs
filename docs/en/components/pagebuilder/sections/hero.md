@@ -13,7 +13,6 @@ The first block below the site header. Visitors see a title, short text, and a l
 
 - Editors change title, text, and button without editing Fenom
 - Background and alignment come from inspector fields, not template CSS
-- Chunk `pagebuilder_hero` ships with `pb-hero` markup
 
 ## Where to place
 
@@ -48,7 +47,7 @@ The first block below the site header. Visitors see a title, short text, and a l
 
 ## Inspector fields
 
-Fill these fields in the section inspector. Field types are documented in the [field types reference](../fields/types).
+Field types: [field types reference](../fields/types).
 
 ### Title (`title`)
 
@@ -107,7 +106,7 @@ Example payload after save. Media, video, and map values may be enriched on outp
 Fenom chunk `pagebuilder_hero`:
 
 ```fenom
-{set $heroBg = is_array($background) ? ($background.url ?: '') : ($background ?: '')}
+{set $heroBg = $background|pb_image_src}
 <section class="pb-section pb-section--hero pb-hero{if $alignment == 'center'} pb-hero--center{/if}{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="hero"{if $id} id="pb-{$id|escape}"{/if}{if $heroBg} style="--pb-hero-bg: url('{$heroBg|escape}')"{/if}>
   <div class="pb-section__inner pb-hero__inner">
     <h2 class="pb-hero__title">{$title|pb_text}</h2>

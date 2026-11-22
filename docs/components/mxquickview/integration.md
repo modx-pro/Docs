@@ -47,19 +47,23 @@ title: Интеграция на сайт
 
 `modalLibrary`: `native` (по умолчанию), `bootstrap` или `fancybox`.
 
-`fancybox` вызывает `window.Fancybox.show()`. Если API Fancybox нет, JS переключает режим на `native` (разметка `#mxqv-modal` всегда в HTML). То же без `bootstrap.Modal` или без `#mxqv-bootstrap-modal`.
+`fancybox` вызывает `window.Fancybox.show()`. Если API Fancybox нет, JS переключает режим на `native` (разметка `#mxqv-modal` всегда в HTML). То же без `bootstrap.Modal` или без `#mxqv-bootstrap-modal`. Проверка выполняется на старте и повторяется при каждом открытии.
 
-В поставке уже есть локальные файлы Fancybox:
+В поставке лежат собственные файлы библиотек:
 
-- `assets/components/mxquickview/vendor/fancybox/fancybox.css`
-- `assets/components/mxquickview/vendor/fancybox/fancybox.umd.js`
+- Fancybox 6.1.13: `assets/components/mxquickview/vendor/fancybox/fancybox.css`, `fancybox.umd.js`
+- Bootstrap 5.3.2: `assets/components/mxquickview/vendor/bootstrap/bootstrap.min.css`, `bootstrap.min.js`
 
-Для `modalLibrary=bootstrap` в поставке есть:
+Рядом с ними лежат `LICENSE` и `THIRD_PARTY.txt`.
 
-- `assets/components/mxquickview/vendor/bootstrap/bootstrap.min.css`
-- `assets/components/mxquickview/vendor/bootstrap/bootstrap.min.js`
+Как выбирается файл: путь из параметра сниппета или из системной настройки приводится к URL (теги `[[++assets_url]]` разворачиваются) и подключается как есть, без проверки существования. Поиск в `assets/components/mxquickview/vendor/...` и CDN работают только при пустом значении, то есть если параметр и настройка оставлены пустыми:
 
-Если локальных файлов нет, подключается CDN (Fancybox — `@fancyapps/ui`, Bootstrap — `bootstrap`).
+- Fancybox: сначала `vendor/fancybox/`, затем CDN `@fancyapps/ui` без закреплённой версии.
+- Bootstrap: сначала `vendor/bootstrap/`, затем CDN Bootstrap 5.3.2.
+
+::: warning
+CDN-Bootstrap подключается файлом `bootstrap.min.js`, он не содержит Popper. Выпадающие списки и всплывающие подсказки Bootstrap в этой ветке не заработают, Popper нужно подключить отдельно. В поставленном `bootstrap.min.js` Popper есть.
+:::
 
 Пути можно задать явно:
 
@@ -345,7 +349,9 @@ title: Интеграция на сайт
 
 ## 8. Навигация prev/next в списке товаров
 
-Только при `modalLibrary` `native` или `bootstrap`. У Fancybox нет кнопок `[data-mxqv-nav]` и клавиш ←/→.
+Кнопки `data-mxqv-nav="prev"` и `data-mxqv-nav="next"` есть только в разметке `native` и `bootstrap`. У Fancybox их нет, навигация остаётся на клавишах ← / →, которые работают во всех режимах.
+
+Клавиши ← / → переключают товар в пределах родителя с `data-mxqv-loop="true"`. Escape закрывает модалку только в режиме `native`.
 
 ::: code-group
 
@@ -388,6 +394,25 @@ title: Интеграция на сайт
 - При установленном ms3Variants доступны `[[+variants_html]]`, `[[+variants_json]]`, `[[+has_variants]]`.
 
 ### Что делает mxQuickView на сервере
+
+Данные о вариантах идут от `Render` через плейсхолдеры в чанк и дальше в разметку, откуда их забирает `initVariantsInContent`:
+
+```mermaid
+flowchart TD
+  A[Render для ресурса с записью msProduct] --> B{Есть сниппет msProductVariants}
+  B -->|нет| C[has_variants false и пустые варианты]
+  B -->|да| D[variants_html и has_variants true]
+  D --> E[variants_json по моделям ProductVariant и VariantOption]
+  C --> F[Чанк mxqv_product или свой]
+  E --> F
+  F --> G[data-mxqv-variants и data-mxqv-variants-json]
+  G --> H{Флаг true 1 yes on}
+  H -->|нет| Z[Варианты не переключаются]
+  H -->|да| I[Слушаем click и change в qv-product__variants]
+  I --> J{Вариант есть в variants_json}
+  J -->|нет| K[Цена и старая цена из data-price]
+  J -->|да| L[Цена старая цена и картинка из JSON]
+```
 
 1. Для `msProduct` вызывается `msProductVariants` с параметрами `productId`, `product_id`, `id`.
 2. В чанк передаётся `[[+has_variants]]` как строка `true|false`.
@@ -439,13 +464,15 @@ title: Интеграция на сайт
 1. Ищет `.qv-product[data-mxqv-variants]` и проверяет флаг (`true|1|yes|on`).
 2. Парсит `data-mxqv-variants-json`.
 3. Слушает выбор варианта в `.qv-product__variants`.
-4. Поддерживает клик по элементам с `data-variant-id`.
-5. Поддерживает `change` для `select/input`, если id варианта передан в `value` или `data-variant-id`.
-6. При смене варианта обновляет цену (`[data-mxqv-price]`), old price (`.qv-product__price-old`) и изображение (`.qv-product__thumb`, если есть `data-thumb|data-image`).
+4. По клику берёт id из `data-variant-id` на самом элементе или на его `option`.
+5. По `change` берёт id из `data-variant-id` у `select`/`input`, из `value` выбранного `option` или из `value` самого поля, если в `name` есть подстрока `variant` (так работает разметка ms3Variants).
+6. При смене варианта обновляет цену (`[data-mxqv-price]`), old price (`.qv-product__price-old`) и изображение (`.qv-product__thumb`, если есть `data-thumb` или `data-image`).
+
+Если варианта нет в `data-mxqv-variants-json`, цена и старая цена берутся из атрибутов самого элемента: `data-price` и `data-old-price`.
 
 ### MiniShop3 и ms3Variants
 
-- Для данных вариантов в списках и карточках: `&includeThumbs` и `ms3Variants` в `usePackages` у `msProducts`/`pdoPage`.
+- mxQuickView не читает параметры `usePackages`, `includeThumbs`, `msProducts`, `pdoPage`: это API MiniShop3 и pdoTools. Варианты в список подставляет сниппет `msProductVariants`, который mxQuickView вызывает с параметрами `productId`, `product_id` и `id`.
 - [ms3Variants](/components/ms3variants/)
 - [MiniShop3: вкладки товара и `usePackages`](/components/minishop3/development/product-tabs-integration)
 

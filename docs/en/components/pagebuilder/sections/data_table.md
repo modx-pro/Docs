@@ -32,7 +32,7 @@ Requires PageBuilder Pro.
 
 ## table_key and limit
 
-In **Table**, set `table_key` from CMP and a row **Limit**. Edit data outside the section inspector.
+In **Table**, set `table_key` from CMP and a row **Limit**. Edit data outside the section inspector. The type is marked `"cacheable": false`.
 
 ## Similar sections
 
@@ -51,7 +51,7 @@ In **Table**, set `table_key` from CMP and a row **Limit**. Edit data outside th
 
 ## Inspector fields
 
-Fill these fields in the section inspector. Field types are documented in the [field types reference](../fields/types).
+Field types: [field types reference](../fields/types).
 
 ### Title (`title`)
 
@@ -71,7 +71,7 @@ Type [embeddedTable](../fields/embeddedTable#output-in-section-data). Required. 
 
 ## Section data {#output-in-section-data}
 
-Example payload after save. Media, video, and map values may be enriched on output:
+Example payload after save:
 
 ```json
 {

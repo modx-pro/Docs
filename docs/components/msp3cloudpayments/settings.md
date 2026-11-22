@@ -37,3 +37,4 @@ HMAC на `webhook.php` идёт по той же цепочке, что счё�
 | `msp3cloudpayments_success_url` | text | пусто | Куда вернуть после оплаты. Пусто: страница из `ms3_order_redirect_thanks_id` с `msorder` |
 | `msp3cloudpayments_fail_url` | text | пусто | Куда вернуть после ошибки. Пусто: та же страница с `msorder` и `payment_fail=1` |
 | `msp3cloudpayments_debug` | bool | нет | Подробный лог. На бою выключите |
+| `msp3cloudpayments_assets_url` | text | `{assets_url}components/msp3cloudpayments/` | URL ассетов для менеджера. Меняют при кастомизации админки |

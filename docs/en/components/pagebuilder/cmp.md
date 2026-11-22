@@ -5,26 +5,26 @@ description: "Blocks, UTM, Collections, Forms, Bundle, API tokens, and the PageB
 
 # PageBuilder control panel
 
-**Components → PageBuilder** (`SectionTypesManager.vue`). Permission **pagebuilder_manage_types** is required for the Blocks tab. Other control panel tabs use standard manager permissions.
+**Components → PageBuilder** (`SectionTypesManager.vue`). The CMP has no resource list. The editor opens on the resource **Sections** tab.
 
-The **Blocks** tab is in Free. The UTM registry, **Workspaces**, and the other tabs require PageBuilder Pro.
+The **Section models** tab (id `blocks`) needs `pagebuilder_manage_types`. Pro tabs appear only with their own capability (`utm`, `collections`, `basket`, and others). Processors usually require `pagebuilder_view`. The permission is not granted to every manager automatically.
 
 | Tab | Layer | Purpose |
 | --- | --- | --- |
-| **Blocks** | Free | UI builder for section types (`pb_section_types`) |
-| **UTM** | Pro | Global UTM parameter registry (`pb_utm_params`), capability `utm` |
+| **Section models** | Free | UI builder for section types (`pb_section_types`), id `blocks` |
+| **Visibility rules** | Pro | Global UTM parameter registry (`pb_utm_params`), capability `utm`, id `utm` |
 | **Workspaces** | Pro | Resource form tab sets by template (`pb_collections`), capability `collections` |
-| **Basket** | Pro | Global basket for deleted sections and table rows |
+| **Archive** | Pro | Global basket for deleted sections and table rows, id `basket` |
 | **Page templates** | Pro | Empty section skeletons (`pb_page_templates`), capability `page-templates` |
 | **Forms** | Pro | Schemas for [form builder](sections/form_builder), capability `forms` |
-| **Bundle** | Pro | Export and import of UI section types |
+| **Bundle** | Pro | Export and import of UI section types. Hidden in the current release (`BUNDLE_ENABLED = false`) |
 | **API tokens** | Pro | Bearer tokens for [REST API v1](rest-api) |
 
 ![PageBuilder control panel](/components/pagebuilder/screenshots/mgr-cmp-index.png)
 
 ## Blocks
 
-CRUD section types without PHP deploy. Built-in JSON from `core/components/pagebuilder/sections/*.json` can be edited, hidden, and restored in the catalog via the control panel.
+Change section types in the CMP. You do not upload PHP. Built-in JSON from `core/components/pagebuilder/sections/*.json` can be edited, hidden, and restored in the catalog.
 
 Filter by source (chips, choice persists in the browser):
 
@@ -47,7 +47,7 @@ With capability `presets` (Pro), the **Blocks** tab has **Show examples in catal
 | Delete (code type) | Tombstone `removedCode` in DB. Package JSON is not deleted |
 | Restore | Enable "Show hidden" → **Restore** |
 
-On extra upgrade, `pb_section_types` rows are **not overwritten**: DB wins. User system settings are not reset either (`update.settings = false`). Sections on already published pages keep rendering.
+On package upgrade, `pb_section_types` rows are **not overwritten**: DB wins. User system settings are not reset either (`update.settings = false`). Sections on already published pages keep rendering.
 
 Connector `mgr/sectiontype/remove` accepts POST parameter `lifecycle`: `hide`, `remove`, `restore` (not the connector `action`). Bulk hide passes array `keys`.
 
@@ -57,7 +57,9 @@ JSON schema details: [Developer → Section definition](developer#section-defini
 
 ## UTM
 
-Requires capability `utm`. Parameters for <code v-pre>{{utm:key}}</code> placeholders and default values. Section **visibility** rules are set in the **Visibility** dialog on the resource inspector (`settings.utm`) when `pagebuilder_inspector_visibility_enabled` is on. Not on this tab. Already published visibility rules still run in Free. <!-- markdownlint-disable-line MD033 -->
+Requires capability `utm`. Parameters for <code v-pre>{{utm:key}}</code> placeholders and default values. <!-- markdownlint-disable-line MD033 -->
+
+Section **visibility** rules are set in the **Visibility** dialog on the resource inspector (`settings.utm`) when `pagebuilder_inspector_visibility_enabled` is on. Not on this tab. Already published visibility rules still run in Free.
 
 Frontend UTM session: [PageBuilderUtmSession](snippets/PageBuilderUtmSession) before `PageBuilder`. Links: [Snippets](snippets/).
 
@@ -65,7 +67,7 @@ Frontend UTM session: [PageBuilderUtmSession](snippets/PageBuilderUtmSession) be
 
 The control panel tab is labeled **Workspaces**. Requires PageBuilder Pro and capability `collections`. Without the capability the tabs are absent even when `pagebuilder_collections_enabled = 1`.
 
-A collection binds to `template_ids` (empty list means all templates). With the setting on, legacy tabs `resource_tab_enabled` and `resource_tables_tab_enabled` are replaced by the dynamic set from the control panel.
+A collection binds to `template_ids` (empty list means all templates). When collections are on, the Tables tab is hidden. The Sections tab stays when the template has no row in `pb_collections`.
 
 ### Tab types (`tab_type`)
 
@@ -110,7 +112,9 @@ The server checks CSRF and the `nospam` honeypot. Email and webhook leave synchr
 
 ## Bundle {#bundle}
 
-Export UI section types, dry-run, and import in one transaction through `UiSectionTypeService`.
+The CMP tab is **not shown** (`BUNDLE_ENABLED = false`). `mgr/bundle/*` routes are not registered. A manager call returns `Invalid action.`
+
+When the flag is turned on, export, dry-run, and import run in one transaction through `UiSectionTypeService`.
 
 1. On the source site open **Bundle** and export JSON.
 2. On the target site paste the JSON and run dry-run.

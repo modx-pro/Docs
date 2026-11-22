@@ -7,21 +7,21 @@ description: Лексикон window.msrLexicon для JS витрины msRevie
 
 # Сниппет msReviewsLexiconScript
 
-Выводит `<script>window.msrLexicon = {...}</script>` с переводами для фронтенд-JS: ошибки AJAX, тексты форм, «полезно», правка и удаление отзыва.
+Выводит `<script>window.msrLexicon = {...}</script>` с переводами для JS витрины: ошибки AJAX, тексты форм, «полезно», правка и удаление отзыва.
 
 ## Назначение
 
-Подготовить строки лексикона на языке сайта до загрузки `review-form.js`, `question-form.js` и `reviews.js`. Без этого блока JS покажет ключи вместо текста.
+Строки лексикона на языке сайта до загрузки `review-form.js`, `question-form.js` и `reviews.js`. Без этого блока JS покажет ключи вместо текста.
 
 ## Где вызывать
 
-- **Один раз** в шаблоне карточки товара или layout витрины, **перед** `msReviewForm`, `msQuestionForm` и списками с engagement.
-- На главной с `msReviewsLatest` и `engagement=1` — если на странице есть кнопки «полезно».
+- **Один раз** в шаблоне карточки товара или layout витрины, **перед** `msReviewForm`, `msQuestionForm` и `msReviews`.
+- На главной лексикон нужен, если на странице есть `msReviews` с кнопками «полезно». `msReviewsLatest` эти кнопки не подключает.
 
 ## Зависимости
 
 - **MiniShop3** и установленный пакет **msReviews**
-- Параметров нет. Сниппет только читает лексикон `msreviews:default`
+- Сниппет только читает лексикон `msreviews:default`
 
 ## Параметры
 
@@ -43,8 +43,6 @@ description: Лексикон window.msrLexicon для JS витрины msRevie
 
 ## Блок отзывов на карточке товара
 
-Поставьте лексикон первым в секции отзывов:
-
 ::: code-group
 
 ```fenom
@@ -65,9 +63,9 @@ description: Лексикон window.msrLexicon для JS витрины msRevie
 
 ## Что попадает в window.msrLexicon
 
-Сниппет сериализует ключи вроде `msr_err_rating`, `msreviews_form_sent`, `msr_helpful`, `msr_edit_review`, `msreviews_media_lightbox_prev`, `msreviews_media_lightbox_next`, `msreviews_media_lightbox_counter`. Полный список — в исходнике сниппета пакета.
+Ключи: `msr_err_rating`, `msreviews_form_sent`, `msr_helpful`, `msr_edit_review`, `msreviews_media_lightbox_prev`, `msreviews_media_lightbox_next`, `msreviews_media_lightbox_counter`.
 
-Плагин `msr_register_storefront_assets` с флагом `lexicon` может подключить тот же блок при вызове `msReviews` / форм / [msReviewMediaGallery](msReviewMediaGallery) (lightbox). При кастомной разметке вызывайте сниппет в шаблоне явно.
+Плагин `msr_register_storefront_assets` с флагом `lexicon` может подключить тот же блок при вызове `msReviews` / форм / [msReviewMediaGallery](msReviewMediaGallery) (lightbox). При своей разметке вызывайте сниппет в шаблоне явно.
 
 ## См. также
 

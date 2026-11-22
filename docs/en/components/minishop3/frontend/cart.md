@@ -5,7 +5,7 @@ title: Cart
 
 Call parameters, placeholders and the data structure live in the snippet reference: [msCart](/en/components/minishop3/snippets/mscart).
 
-<!-- ![Storefront cart](/components/minishop3/screenshots/fe-cart.png) -->
+![Frontend cart](/components/minishop3/screenshots/fe-cart.png)
 
 [![](https://file.modx.pro/files/3/f/b/3fb27bc4fb74bcbbfad003ba2165498cs.jpg)](https://file.modx.pro/files/3/f/b/3fb27bc4fb74bcbbfad003ba2165498c.png)
 
@@ -128,6 +128,15 @@ The quantity form uses `min="0"`: submitting zero takes the product out of the c
 :::
 
 ### Changing options
+
+```mermaid
+flowchart TB
+  Add[cartAPI.add] --> Cart[Cart session]
+  Change[cartAPI.change] --> Cart
+  Opt[cartAPI.changeOption] --> Cart
+  Remove[cartAPI.remove] --> Cart
+  Clean[cartAPI.clean] --> Cart
+```
 
 If a line has options (size, colour), changing the combination goes through `POST /api/v1/cart/change-option`. The body takes `product_key` and `options`; without `product_key` the response is `400`.
 

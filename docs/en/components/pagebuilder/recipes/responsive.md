@@ -5,7 +5,7 @@ description: "Different text, url, and number values for desktop, tablet, and mo
 
 # Per-screen values
 
-Result: a title or a link differs on desktop, tablet, and phone. Requires PageBuilder Pro and capability `responsive`. Types: text, textarea, url, number, currency, richtext, slug.
+Result: a title or a link differs on desktop, tablet, and phone. Requires PageBuilder Pro and capability `responsive`. Types: text, textarea, url, number, currency, richtext, slug. A field named `slug`, `alt`, or `caption` does not get the toggle, even when its type is in that list.
 
 ## Before you start
 
@@ -14,7 +14,7 @@ Result: a title or a link differs on desktop, tablet, and phone. Requires PageBu
 
 ## Steps
 
-1. Open the field in the inspector and click the tablet icon. Tabs appear for desktop, tablet, and mobile.
+1. Open the field in the inspector and click the button whose hint is "Different values for tablet and mobile" (link icon). Tabs appear for desktop, tablet, and mobile.
 2. Fill the three values. **One value for every screen** collapses the map and keeps desktop, unless the schema forces `responsive: true`.
 3. On the site, `pagebuilder_responsive_apply` picks the mode.
    - `manual` (default): one value. It comes from `?pb_bp=` or `pagebuilder_default_breakpoint`.
@@ -34,11 +34,11 @@ Title on a `hero` section:
 | tablet | `Catalog` |
 | mobile | `Catalog` |
 
-With `pagebuilder_responsive_apply` set to `manual`, open the page as `?pb_bp=mobile` and as `?pb_bp=desktop`. With `css`, the HTML contains all three values and a media query hides the extras.
+With `manual`, open `?pb_bp=mobile` and `?pb_bp=desktop`. With `css`, the HTML contains all three values.
 
 ## What to check
 
-The tabs show up only after the tablet icon, and only while the editor setting is on. A collapsed field prints the desktop value. The chunk uses `{$title|pb_text}`, not `escape`.
+The tabs show up only after the "Different values for tablet and mobile" button, and only while the editor setting is on. A collapsed field prints the desktop value.
 
 ## Rollback
 

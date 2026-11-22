@@ -48,13 +48,13 @@ items: [
 ---
 # ms3ProductSets
 
-ms3ProductSets adds recommendation blocks to [MiniShop3](/en/components/minishop3/): “Frequently bought together”, similar products, VIP sets, cart suggestions. Manual links come first (TVs on the product and manager templates). When they are empty, auto logic runs by set type (category, orders, VIP settings).
+ms3ProductSets adds recommendation blocks to [MiniShop3](/en/components/minishop3/): “Frequently bought together”, similar products, VIP sets, cart suggestions. Manual links come first (TVs on the product and manager templates). When they are empty and `auto_recommendation` is 1, auto logic for the type runs. `vip` does not read that setting.
 
 ## Features
 
 - **Set types:** `buy_together`, `similar`, `popcorn`, `cart_suggestion`, `auto_sales`, `vip`, `auto`. Aliases `also-bought` / `cross-sell` use `buy_together` auto logic. `custom` uses `auto`. See [set types](/en/components/ms3productsets/types).
 - **Manual mode:** table `ms3_product_sets`, TVs `ms3productsets_*`, bulk **template** apply to categories in the manager.
-- **Auto mode:** picks by category, similar products, order stats (`auto_sales`), VIP fallback from `ms3productsets.vip_set_*`. Off when **`auto_recommendation=0`**. See [system settings](/en/components/ms3productsets/settings).
+- **Auto mode:** picks by category, similar products, and order stats (`auto_sales`) when **`auto_recommendation=1`**. VIP fallback from `ms3productsets.vip_set_*` does not read that setting. See [system settings](/en/components/ms3productsets/settings).
 - **Site output:** snippet **`ms3ProductSets`**. Optional AJAX via **`get_set`** and **`window.ms3ProductSets.render()`**. See [API](/en/components/ms3productsets/api) and [integration](/en/components/ms3productsets/integration).
 - **Cache:** TTL from **`ms3productsets.cache_lifetime`**. **`0`** disables cache. See [system settings](/en/components/ms3productsets/settings).
 - **Cart:** stock cards use MiniShop3 `ms3_form`. `productsets.js` hits MiniShop3 Web API first. Connector `add_to_cart` is the fallback. “Add whole set” is **`data-add-set`**.

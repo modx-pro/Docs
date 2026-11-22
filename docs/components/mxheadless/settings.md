@@ -60,12 +60,25 @@ Namespace: `mxheadless`. Ключи через подчёркивание (`mxhe
 
 | Ключ | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
-| `mxheadless_max_body_bytes` | numberfield | `1048576` | Макс. размер тела (1 MB) |
-| `mxheadless_max_uri_bytes` | numberfield | `2048` | Макс. длина URI |
+| `mxheadless_max_body_bytes` | numberfield | `1048576` | Макс. размер тела (1 MB). Превышение → `413` |
+| `mxheadless_max_uri_bytes` | numberfield | `2048` | Макс. длина path в байтах. Превышение → `414` |
 | `mxheadless_trusted_proxies` | textarea | пусто | IP прокси для `X-Forwarded-For` |
 | `mxheadless_csrf_enabled` | combo-boolean | `true` | CSRF для мутаций по сессии |
 | `mxheadless_idempotency_enabled` | combo-boolean | `true` | `Idempotency-Key` на POST |
 | `mxheadless_idempotency_ttl` | numberfield | `86400` | TTL кэша idempotency (секунды) |
+
+`mxheadless_max_uri_bytes` проверяет только path: длинный `filter[...]` в query под него не попадает.
+
+### Права на protected-поля
+
+Поле из списка `protected` в definition отдаётся не всем авторизованным, а только по отдельной проверке:
+
+| Тип identity | Что проверяется |
+| --- | --- |
+| API key, OAuth-токен | scope `fields.<field>` |
+| Сессия менеджера | права `mxheadless_fields_<field>` и `mxheadless_fields_all` |
+
+Права читаются через `hasPermission`, но транспорт их не создаёт: `_build/resolvers/permissions.php` заводит только `mxheadless_apikeys`. `mxheadless_fields_<field>` и `mxheadless_fields_all` нужно создать вручную в шаблоне ACL (**Система → Пользователи → Права**) и выдать нужной группе, иначе сессия менеджера не увидит protected-поля.
 
 ## OAuth
 
@@ -93,7 +106,7 @@ Namespace: `mxheadless`. Ключи через подчёркивание (`mxhe
 
 ## Лимиты query (значения по умолчанию в коде)
 
-`QueryParser` читает через `getOption`. Можно добавить как системные настройки:
+`QueryParser` читает через `getOption`. Транспорт эти ключи не создаёт: в `_build/elements/settings.php` их нет, поэтому в админке они не появятся. Задавайте их в `core/config/config.inc.php` (или любым другим способом через `getOption`) и добавляйте в системные настройки вручную, если нужно видеть их в Manager:
 
 | Ключ | По умолчанию |
 | --- | --- |

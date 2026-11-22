@@ -27,6 +27,7 @@ import { env as publicEnv } from '$env/dynamic/public'
 type Envelope<T> = {
   data: T
   meta?: Record<string, unknown>
+  // links приходит только в ответах списков
   links?: Record<string, string>
 }
 

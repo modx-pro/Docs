@@ -3,27 +3,25 @@ title: Grid columns
 ---
 # Utilities: Grid columns
 
-Configuring columns in MiniShop3 admin tables.
+Column setup for MiniShop3 manager tables.
 
 ## Purpose
 
-Main tool for configuring columns in MiniShop3 admin tables:
-
 ::: tip Cookbook
-Badge column in orders and inline edit in category: [Grid columns cookbook](/en/components/minishop3/manager/grid-config/cookbook).
+Badge column in orders and inline editing: [Grid columns cookbook](/en/components/minishop3/manager/grid-config/cookbook).
 :::
 
-<!-- ![Grid columns utility](/components/minishop3/screenshots/mgr-grid-columns.png) -->
+![Grid columns utility](/components/minishop3/screenshots/mgr-grid-columns.png)
 
-- Enable and disable columns
+- Turn columns on and off
 - Change column order
 - Configure sorting and filtering
 - Set column width
-- Add custom columns
+- Add your own columns
 - Configure inline editing (for the `category-products` grid)
 
-::: info From version 1.7.0
-The system setting `ms3_category_grid_fields` was removed. Category product table columns are configured only here.
+::: info Since version 1.7.0
+The system setting `ms3_category_grid_fields` was removed. Category product table columns are configured only in this screen.
 :::
 
 ## Available grids
@@ -32,35 +30,23 @@ The system setting `ms3_category_grid_fields` was removed. Category product tabl
 | --- | --- |
 | `customers` | Customer list |
 | `orders` | Order list |
-| `category-products` | Products in category |
-| `order_products` | Products in order |
+| `category-products` | Products in a category |
+| `order_products` | Products in an order |
 | `vendors` | Vendor list |
+
+There is a sixth seeded grid as well — `deliveries`. It is absent from the utility dropdown and is configured only through `GET` and `PUT /api/mgr/grid-config/deliveries`.
 
 ## Interface
 
 ### Grid selection
 
-Select a grid from the dropdown at the top of the page.
-
-### Columns table
-
-Shows current column configuration:
-
-| Column | Description |
-| --- | --- |
-| Name | System field name |
-| Label | Display header |
-| Visible | Show column |
-| Sortable | Allow sort on click |
-| Filter | Show filter |
-| Frozen | Fix on horizontal scroll |
-| Width | Width in pixels |
+At the top of the page, pick a grid from the list.
 
 ### Actions
 
-- **Drag** — reorder columns
-- **Edit** — click row to open dialog
-- **Add** — button to create new column
+- **Drag** changes column order
+- **Edit** opens the dialog when you click a row
+- **Add** creates a new column
 
 ## Column parameters
 
@@ -70,30 +56,30 @@ Shows current column configuration:
 | --- | --- |
 | Field name | Model field name or alias |
 | Label | Column header |
-| Visible | Show column |
-| Sortable | Allow sort on click |
-| Filterable | Show filter field |
-| Frozen | Fix on scroll |
+| Visible | Show the column |
+| Sortable | Allow sorting on click |
+| Filterable | Show the filter field |
+| Frozen | Keep the column fixed while scrolling |
 
 ### Sizes
 
 | Parameter | Description |
 | --- | --- |
-| Width | Width in px or % |
-| Min width | Minimum width when resizing |
+| Width | Width in pixels or % |
+| Min. width | Minimum width while resizing |
 
 ### Column type
 
 | Type | Description |
 | --- | --- |
-| `model` | Field from data model |
+| `model` | Field from the data model |
 | `template` | Template column (HTML) |
-| `relation` | Data from related table |
+| `relation` | Data from a related table |
 | `badge` | Colored label (`source_field`, `color_field`) |
 | `option` | Product option value (`category-products` grid) |
 | `computed` | Computed value |
-| `image` | Image display |
-| `boolean` | Yes/No flag |
+| `image` | Image |
+| `boolean` | Yes or no flag |
 | `price` | Money value (`displayConfig`: currency, decimals) |
 | `weight` | Weight (`displayConfig`: unit, decimals) |
 | `datetime` | Date and time (`displayConfig`: format) |
@@ -101,71 +87,81 @@ Shows current column configuration:
 
 ## Column types
 
-### Model (model field)
+### Model field (`model`)
 
-Standard column showing a field value.
+A plain column: the field value.
 
-```
+```text
 Type: model
-Field: email
+Field name: email
 Label: Email
 ```
 
-### Template (template)
+### Template (`template`)
 
-Column with HTML template.
+A column with an HTML template.
 
-```
+```text
 Type: template
 Template: <a href="mailto:{email}">{email}</a>
 ```
 
-Variables — current row fields in curly braces.
+Available variables are fields of the current row, wrapped in curly braces.
 
-### Badge
+### Colored label (`badge`)
 
-Colored label from text and HEX in other row fields. In `orders`, column `order_status` uses `status_name` and `status_color`.
+A colored label. The text and the HEX color come from other fields of the same row. In the `orders` grid, column `order_status` takes the caption from `status_name` and the color from `status_color`.
 
-```
+```text
 Type: badge
 source_field: status_name
 color_field: status_color
 ```
 
-### Option (product option)
+::: info The template is safe by data
+Substitution only catches `{field_name}` made of letters, digits and underscores, and the value is HTML-escaped. Markup comes from the template alone: HTML that ends up in the row data is printed as text and never executes ([#920](https://github.com/modx-pro/MiniShop3/issues/920)). An empty value and `null` both yield an empty string.
+:::
 
-Option column in `category-products`. Set `option.key` (key from `msOption`).
+### Product option (`option`)
 
-```
+An option column in the `category-products` grid. Set `option.key` (the option key from `msOption`).
+
+```text
 Type: option
 option.key: color
 ```
 
-### Relation (relation)
+::: warning The column name is checked for collisions
+In the `category-products` grid, the name of your `option` or `relation` column must not match any of the 24 built-in product columns, nor a reserved SQL word. The `color` option above is exactly such a case: a built-in `color` column already exists.
 
-Data from related table.
+The server refuses the name and suggests an alternative — `option_color` for an option, `vendor_address` for a relation. The `option.key` itself stays as it is; only the grid column name changes.
+:::
+
+### Relation (`relation`)
+
+Data from a related table.
 
 **Relation parameters:**
 
 | Parameter | Description |
 | --- | --- |
-| Table | Related table name |
-| Foreign key | Link field |
+| Table | A short MiniShop3 model name (`msOrder`), a fully qualified class name, or a table name without the prefix |
+| Foreign key | Field used for the link |
 | Display field | Field to show |
-| Aggregation | COUNT, SUM, AVG, MIN, MAX |
+| Aggregation | COUNT, SUM, AVG, MIN, MAX. The `category-products` grid does not support aggregation — such a column will not save |
 
-**Example — customer order count:**
+**Example, customer order count:**
 
-```
+```text
 Type: relation
 Table: msOrder
 Foreign key: customer_id
 Aggregation: COUNT
 ```
 
-### Computed (computed)
+### Computed value (`computed`)
 
-Value is computed on the server. JSON config must include **`computed.className`** (class implements `ComputedFieldInterface`):
+The server computes the value. The JSON config must include **`computed.className`** (the class implements `ComputedFieldInterface`):
 
 ```json
 {
@@ -176,64 +172,69 @@ Value is computed on the server. JSON config must include **`computed.className`
 }
 ```
 
-### Image (image)
+### Image (`image`)
 
-Image thumbnail.
+An image thumbnail.
 
-```
+```text
 Type: image
-Field: image
+Field name: image
 ```
 
-### Boolean (boolean)
+### Flag (`boolean`)
 
-Yes/No flag with icon.
+A flag with an icon.
 
-```
+```text
 Type: boolean
-Field: active
+Field name: active
 ```
 
-### Price (price)
+### Price (`price`)
 
-Formats a numeric field as money. Parameters in **displayConfig** JSON:
+A numeric field shown as a price. Parameters live in the **displayConfig** JSON:
 
 | Key | Description |
 | --- | --- |
-| `decimals` | Decimal places |
+| `decimals` | Digits after the decimal mark |
 | `currency` | Currency symbol |
 | `currency_position` | `before` or `after` |
 | `thousands_separator` | Thousands separator |
+| `decimal_separator` | Decimal separator |
 
-```
+```text
 Type: price
-Field: price
+Field name: price
 displayConfig: {"decimals":2,"currency":"₽","currency_position":"after","thousands_separator":" "}
 ```
 
-### Weight (weight)
+The defaults are hard-coded: `decimals` 2, a space for thousands, a comma for decimals, an empty currency and `after` for its position. The grid reads no price system settings. Weight has its own defaults — 2 digits and «kg».
 
-```
+### Weight (`weight`)
+
+Weight is shown with a unit:
+
+```text
 Type: weight
-Field: weight
+Field name: weight
 displayConfig: {"decimals":2,"unit":"kg","unit_position":"after"}
 ```
 
-### Datetime (datetime)
+### Date and time (`datetime`)
 
-```
+```text
 Type: datetime
-Field: createdon
+Field name: createdon
 displayConfig: {"format":"dd.MM.yyyy HH:mm"}
 ```
 
-Format follows PrimeVue date formatter tokens (`dd`, `MM`, `yyyy`, `HH`, `mm`).
+The format is a MiniShop3 template of its own, not PrimeVue. The supported tokens are `yyyy`, `yy`, `MM`, `dd`, `HH`, `mm`, `ss`; each is replaced exactly once, so repeating a token in the template does not work.
 
-### Actions (actions)
+### Actions (`actions`)
 
-Column with action buttons. Supports built-in and custom handlers.
+A column of action buttons. Built-in handlers and your own.
 
-**Action config:**
+**Action configuration:**
 
 ```json
 [
@@ -256,43 +257,62 @@ Column with action buttons. Supports built-in and custom handlers.
 ]
 ```
 
+**Column inline-editing parameters:**
+
+| Parameter | Description |
+| --- | --- |
+| `editable` | Allow editing the value right in the row |
+| `editor_type` | Editor: `text`, `number`, `select`, `combo` |
+| `editor_options` | Choices for `select` |
+| `editor_reference` | The related model for `combo` |
+| `editor_combo_endpoint` | Where `combo` takes its choices from. Only paths from an allowlist are accepted |
+
+A worked example is in the [grid configuration cookbook](/en/components/minishop3/manager/grid-config/cookbook).
+
 **Action parameters:**
 
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `name` | string | Unique action name |
-| `handler` | string | Handler name from registry |
-| `icon` | string | PrimeIcons icon (without `pi-` prefix) |
-| `label` | string | Tooltip text / lexicon key |
+| `handler` | string | Handler name from the registry |
+| `icon` | string | Full PrimeIcons class, for example `pi-pencil` |
+| `label` | string | Tooltip text or a lexicon key |
 | `severity` | string | Button style: `danger`, `success`, `secondary`, `info`, `warn` |
-| `confirm` | boolean | Require confirmation |
+| `confirm` | boolean | Ask for confirmation |
 | `confirmMessage` | string | Confirmation text |
 | `visible` | boolean | Button visibility |
-| `disabled` | boolean/function | Disable button |
-| `disabledField` | string | Row field to check for disabled |
+| `disabled` | boolean/function | Disable the button |
+| `disabledField` | string | Row field checked for the disabled state |
+| `confirmTitle` | string | Confirmation dialog title, a lexicon key |
+| `confirmAccept` | string | Accept button label |
+| `confirmReject` | string | Reject button label |
+| `permission` | string | MODX permission: without it the button is not rendered |
+| `toggleField` | string | Row field the button toggles on. This is the mechanism behind the publish button |
+| `iconOff` | string | Icon shown when `toggleField` is true |
+| `labelOff` | string | Label shown when `toggleField` is true |
+
+The confirmation text supports `{field}` substitution — values come from the row.
 
 **Built-in handlers:**
 
 | Handler | Description |
 | --- | --- |
-| `edit` | Open record for edit |
-| `delete` | Delete record |
-| `view` | View record |
+| `edit` | Open the record for editing |
+| `delete` | Delete the record |
+| `view` | View the record |
 | `addresses` | Manage addresses (customers) |
-| `refresh` | Refresh grid |
+| `publish` | Toggle publication, works with `toggleField` |
+| `duplicate` | Open the MODX resource duplication window |
+| `refresh` | Refresh the grid |
+
+`publish` and `duplicate` ship in the category products grid configuration.
 
 ## Configuration examples
 
-### Hide column
+### Add a "Total orders" column
 
-1. Find the column in the list
-2. Uncheck "Visible"
-3. Click "Save"
-
-### Add "Total orders" column
-
-1. Click "Add column"
-2. Fill:
+1. Click Add column
+2. Fill in:
    - Name: `total_spent`
    - Label: `Total orders`
    - Type: `relation`
@@ -302,22 +322,18 @@ Column with action buttons. Supports built-in and custom handlers.
    - Aggregation: `SUM`
 3. Save
 
-### Change column order
+### A link in the email column
 
-Drag columns into the desired order.
+1. Find the `email` column.
+2. Change its type to `template`.
+3. Set the template: `<a href="mailto:{email}">{email}</a>`.
+4. Save.
 
-### Add link in email column
+## API endpoints
 
-1. Find column `email`
-2. Change type to `template`
-3. Set template: `<a href="mailto:{email}">{email}</a>`
-4. Save
+### Get grid configuration
 
-## API Endpoints
-
-### Get grid config
-
-```
+```http
 GET /api/mgr/grid-config/{grid_name}
 ```
 
@@ -326,7 +342,7 @@ GET /api/mgr/grid-config/{grid_name}
 ```json
 {
   "success": true,
-  "object": {
+  "data": {
     "columns": [
       {
         "name": "id",
@@ -336,20 +352,34 @@ GET /api/mgr/grid-config/{grid_name}
         "filterable": false,
         "frozen": true,
         "width": 60,
+        "minWidth": "80px",
+        "isSystem": true,
         "type": "model"
       }
     ],
-    "direct_filter_keys": ["query", "status_id"],
-    "editor_references": []
+    "direct_filter_keys": ["query", "status_id"]
   }
 }
 ```
 
-`editor_references` is populated only for `grid_key=category-products`.
+`minWidth` and `isSystem` come back in camelCase; the database column is `min_width`, and the save request body also uses `minWidth`. The JSON from `config` is spread on top of them.
 
-### Save config
+`editor_references` is present only for `grid_key=category-products`. For the other grids the key is missing from the response entirely — not an empty array, an absent key.
 
-```
+### Working with a single column
+
+Besides saving the whole configuration there are two targeted routes:
+
+| Method | Route | Description |
+| --- | --- | --- |
+| `POST` | `/api/mgr/grid-config/{grid_key}/field` | Add a column. The body holds `field_name`, `label`, `type`, `config` and the other column parameters |
+| `PUT` | `/api/mgr/grid-config/{grid_key}/field/{field_name}` | Change one column. System columns cannot be edited this way |
+
+Targeted routes leave the other columns alone — unlike the full save below.
+
+### Save configuration
+
+```http
 PUT /api/mgr/grid-config/{grid_key}
 ```
 
@@ -372,13 +402,19 @@ PUT /api/mgr/grid-config/{grid_key}
 }
 ```
 
+::: danger The body is the complete column list
+The save compares the `fields` you send against what is in the database and **deletes** every non-system column missing from the array. A partial payload carrying one edited column will wipe the rest of your columns for that grid.
+
+The right order: read the configuration with `GET`, change what you need in the array you got, and send it back whole.
+:::
+
 ::: warning Permissions
 `GET /api/mgr/grid-config/{grid_key}` requires `view_document`. Writes (`PUT`, `POST`, column `DELETE`) require `mssetting_save`.
 :::
 
-### Delete column
+### Delete a column
 
-```
+```http
 DELETE /api/mgr/grid-config/{grid_key}/{field_name}
 ```
 
@@ -386,31 +422,31 @@ System columns (`is_system`) cannot be deleted.
 
 ## System columns
 
-Some columns are marked as system columns and have restrictions:
+System columns are limited:
 
-- Cannot be deleted
-- Field name cannot be changed
-- Can only be hidden
+- You cannot delete them
+- You cannot edit one through the column dialog: `PUT /api/mgr/grid-config/{grid}/field/{name}` answers «Cannot modify system field»
+- Through the whole-configuration save (`PUT /api/mgr/grid-config/{grid_key}` with the full `fields` array) the label, visibility, sorting, filtering, freezing, width and order all change
 
-System columns usually include `id` and action columns.
+Usually that is `id` and the actions column.
 
 ## Custom actions
 
-MiniShop3 provides the global action registry `MS3ActionRegistry` for adding custom buttons to the actions column.
+The global registry `MS3ActionRegistry` adds your own buttons to the actions column.
 
 ### Action registry
 
-The registry is available globally as `window.MS3ActionRegistry` and lets you:
+The registry is `window.MS3ActionRegistry`:
 
-- Register new action handlers
-- Add before/after hooks for existing actions
-- Override built-in handlers
+- register action handlers
+- attach hooks before and after existing actions
+- override built-in handlers
 
 ### Registry API
 
 #### register(name, handler, options)
 
-Registers a new action handler.
+Registers an action handler.
 
 **Parameters:**
 
@@ -418,18 +454,18 @@ Registers a new action handler.
 | --- | --- | --- |
 | `name` | string | Action name |
 | `handler` | function | Handler `(data, context) => void` |
-| `options.override` | boolean | Allow overwriting existing handler |
+| `options.override` | boolean | Allow replacing an existing handler |
 
-**Handler parameters:**
+**Handler arguments:**
 
-- `data` — grid row data object
-- `context` — execution context:
-  - `gridId` — grid identifier
-  - `emit(event, data)` — emit event
-  - `refresh()` — refresh grid
-  - `toast` — PrimeVue toast service
-  - `confirm` — PrimeVue confirm service
-  - `_(key)` — localization function
+- `data` is the grid row
+- `context` is the runtime context:
+  - `gridId` is the grid identifier
+  - `emit(event, data)` sends an event
+  - `refresh()` refreshes the grid
+  - `toast` is the PrimeVue notification service
+  - `confirm` is the PrimeVue confirmation service
+  - `_(key)` is the localization function
 
 #### registerBeforeHook(actionName, hook)
 
@@ -441,8 +477,8 @@ MS3ActionRegistry.registerBeforeHook('delete', (data, context) => {
   if (data.is_system) {
     context.toast.add({
       severity: 'warn',
-      summary: 'Forbidden',
-      detail: 'Cannot delete system record'
+      summary: 'Not allowed',
+      detail: 'Cannot delete a system record'
     })
     return false
   }
@@ -457,7 +493,7 @@ Registers a hook that runs **after** the action.
 ```javascript
 MS3ActionRegistry.registerAfterHook('delete', (data, context, result) => {
   console.log('Record deleted:', data.id)
-  // Send analytics, log, etc.
+  // Send analytics, write a log, and so on
 })
 ```
 
@@ -465,29 +501,30 @@ MS3ActionRegistry.registerAfterHook('delete', (data, context, result) => {
 
 | Method | Description |
 | --- | --- |
-| `has(name)` | Check if handler exists |
-| `get(name)` | Get handler |
-| `unregister(name)` | Remove handler (except built-in) |
-| `getRegisteredActions()` | List all registered actions |
-| `execute(name, data, context)` | Execute action programmatically |
+| `has(name)` | Check that a handler exists |
+| `get(name)` | Get the handler |
+| `unregister(name)` | Remove a handler. Only `edit`, `delete`, `view` and `refresh` are protected; `addresses`, `publish` and `duplicate` can be removed |
+| `getRegisteredActions()` | List every registered action |
+| `execute(name, data, context)` | Run an action from code |
+| `getActionInfo(name)` | Handler metadata: the label key and the icon. The actions editor builds its dropdown from them |
 
 ### Custom action examples
 
-#### Example 1: Block customer
+#### Example 1: Block a customer
 
-**Step 1. Register handler** (in MODX plugin or custom JS):
+**Step 1. Register the handler** (in a MODX plugin or your own JS):
 
 ```javascript
 // File: assets/components/mycomponent/js/customer-actions.js
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Wait for registry to load
+  // Wait until the registry is loaded
   if (!window.MS3ActionRegistry) {
     console.error('MS3ActionRegistry not available')
     return
   }
 
-  // Register "Block" action
+  // Register the Block action
   MS3ActionRegistry.register('blockCustomer', async (data, context) => {
     try {
       const response = await fetch('/assets/components/minishop3/connector.php', {
@@ -505,11 +542,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (result.success) {
         context.toast.add({
           severity: 'success',
-          summary: 'Success',
-          detail: `Customer ${data.email} blocked`,
+          summary: 'Done',
+          detail: `Customer ${data.email} is blocked`,
           life: 3000
         })
-        context.refresh() // Refresh grid
+        context.refresh() // Refresh the grid
       } else {
         throw new Error(result.message)
       }
@@ -523,7 +560,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   })
 
-  // Register "Unblock" action
+  // Register the Unblock action
   MS3ActionRegistry.register('unblockCustomer', async (data, context) => {
     const response = await fetch('/assets/components/minishop3/connector.php', {
       method: 'POST',
@@ -548,7 +585,7 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 ```
 
-**Step 2. Load the script** via MODX plugin:
+**Step 2. Load the script** with a MODX plugin:
 
 ```php
 <?php
@@ -566,20 +603,36 @@ $modx->regClientStartupScript(
 );
 ```
 
-**Step 3. Configure actions column** in the UI:
+**Step 3. Configure the actions column.**
 
-1. Open **Utilities → Grid columns**
-2. Select grid `customers`
-3. Find column `actions` and open editor
-4. Add action:
-   - Name: `blockCustomer`
-   - Handler: `blockCustomer`
-   - Icon: `pi-ban`
-   - Severity: `danger`
-   - Confirm: Yes
-   - Message: `Block customer {email}?`
+::: danger The dialog cannot save the `actions` column
+In all six seeded grids the `actions` column carries `is_system = 1`. The pencil icon next to it is not disabled, the dialog opens and even lets you add an action, but saving sends `PUT /api/mgr/grid-config/{grid}/field/actions` and gets back «Cannot modify system field».
 
-#### Example 2: Duplicate product
+The working path is the whole-configuration save: `PUT /api/mgr/grid-config/customers` with the full `fields` array and the `actions` key replaced on that column. System status is not checked there.
+:::
+
+The new entry in the column's `actions` array:
+
+```json
+{
+  "name": "blockCustomer",
+  "handler": "blockCustomer",
+  "icon": "pi-ban",
+  "severity": "danger",
+  "confirm": true,
+  "confirmMessage": "Block customer {email}?"
+}
+```
+
+::: warning Your handler will not be in the list
+The Handler field in the actions editor is a dropdown with no free input, and it shows only what is already registered in the registry **on the current page**. The plugin from step 2 loads the script on the customers page only, so `blockCustomer` will not appear on the utilities page. Either drop the controller filter in the plugin, or set `handler` by editing the JSON through the API.
+:::
+
+#### Example 2: Duplicate a product
+
+A handler of your own is not always needed here: `duplicate` is one of the seven built-in registry actions, and in the category products grid it already opens the `modx-window-resource-duplicate` window and reloads the table. Registering your own action named `duplicate` without `options.override` is refused by the registry.
+
+The example below is for another grid, or for behaviour of your own. MiniShop3 has no duplicate processor of its own, so it calls the MODX core processor `resource/duplicate` (`msProduct` extends a resource):
 
 ```javascript
 MS3ActionRegistry.register('duplicateProduct', async (data, context) => {
@@ -587,7 +640,7 @@ MS3ActionRegistry.register('duplicateProduct', async (data, context) => {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({
-      action: 'MiniShop3\\Processors\\Product\\Duplicate',
+      action: 'resource/duplicate',
       id: data.id,
       HTTP_MODAUTH: MODx.siteId
     })
@@ -598,7 +651,7 @@ MS3ActionRegistry.register('duplicateProduct', async (data, context) => {
   if (result.success) {
     context.toast.add({
       severity: 'success',
-      summary: 'Product duplicated',
+      summary: 'Product copied',
       detail: `Created product ID: ${result.object.id}`,
       life: 3000
     })
@@ -607,35 +660,29 @@ MS3ActionRegistry.register('duplicateProduct', async (data, context) => {
 })
 ```
 
-**Action config:**
+**Action configuration:**
 
 ```json
 {
   "name": "duplicate",
   "handler": "duplicateProduct",
   "icon": "pi-copy",
-  "label": "Duplicate",
+  "label": "Copy",
   "severity": "secondary",
   "confirm": false
 }
 ```
 
-#### Example 3: Send notification
+#### Example 3: Send a notification
+
+There is no built-in processor that sends a notification. REST routes `/api/mgr/notifications` only serve configuration CRUD. For a Send button, implement your own endpoint (call `NotificationManager` or `StatusChangedNotification` inside it) and call that endpoint from the handler:
 
 ```javascript
 MS3ActionRegistry.register('sendNotification', async (data, context) => {
-  const template = prompt('Enter notification template name:')
-  if (!template) return
-
-  const response = await fetch('/assets/components/minishop3/connector.php', {
+  const response = await fetch('/assets/components/mycomponent/notify.php', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({
-      action: 'MiniShop3\\Processors\\Notification\\Send',
-      customer_id: data.id,
-      template: template,
-      HTTP_MODAUTH: MODx.siteId
-    })
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ customer_id: data.id })
   })
 
   const result = await response.json()
@@ -653,41 +700,30 @@ MS3ActionRegistry.register('sendNotification', async (data, context) => {
 
 #### Example 4: Conditional button visibility
 
-Use a function for `disabled`:
+The row field `disabledField` turns the button off:
 
 ```javascript
-// In column config
+// In the column configuration
 {
   "name": "unblock",
   "handler": "unblockCustomer",
   "icon": "pi-unlock",
   "label": "Unblock",
   "severity": "success",
-  // Button disabled when customer is not blocked
+  // Inactive when the customer is not blocked
   "disabledField": "active"  // disabled when active = true
-}
-```
-
-Or check via a data field:
-
-```json
-{
-  "name": "block",
-  "handler": "blockCustomer",
-  "icon": "pi-ban",
-  "label": "Block",
-  "severity": "danger",
-  "disabledField": "blocked"  // disabled when blocked = true
 }
 ```
 
 ### Hooks for built-in actions
 
-#### Logging deletes
+The built-in `edit` and `delete` go through the registry too, so the same hooks apply to them.
+
+Logging deletes:
 
 ```javascript
 MS3ActionRegistry.registerAfterHook('delete', async (data, context, result) => {
-  // Send to audit system
+  // Send to the audit system
   await fetch('/api/audit/log', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -702,19 +738,19 @@ MS3ActionRegistry.registerAfterHook('delete', async (data, context, result) => {
 })
 ```
 
-#### Prevent delete
+Preventing a delete:
 
 ```javascript
 MS3ActionRegistry.registerBeforeHook('delete', (data, context) => {
-  // Prevent deleting records with status "paid"
+  // Do not let paid orders be deleted
   if (context.gridId === 'orders' && data.status === 2) {
     context.toast.add({
       severity: 'error',
       summary: 'Forbidden',
-      detail: 'Cannot delete paid order',
+      detail: 'A paid order cannot be deleted',
       life: 5000
     })
-    return false // Cancel action
+    return false // Cancel the action
   }
   return true // Continue
 })
@@ -722,22 +758,6 @@ MS3ActionRegistry.registerBeforeHook('delete', (data, context) => {
 
 ### Available icons
 
-Uses icons from [PrimeIcons](https://primevue.org/icons). Popular choices:
+Icons are [PrimeIcons](https://primevue.org/icons). The actions editor dropdown offers seventeen: `pi-pencil`, `pi-trash`, `pi-eye`, `pi-check`, `pi-times`, `pi-ban`, `pi-lock`, `pi-unlock`, `pi-user`, `pi-cog`, `pi-copy`, `pi-download`, `pi-external-link`, `pi-list`, `pi-refresh`, `pi-send`, `pi-print`.
 
-| Icon | Class | Use |
-| --- | --- | --- |
-| ✏️ | `pi-pencil` | Edit |
-| 🗑️ | `pi-trash` | Delete |
-| 👁️ | `pi-eye` | View |
-| 📋 | `pi-copy` | Copy |
-| ⬇️ | `pi-download` | Download |
-| 📤 | `pi-send` | Send |
-| 🔒 | `pi-lock` | Lock |
-| 🔓 | `pi-unlock` | Unlock |
-| 🚫 | `pi-ban` | Ban |
-| ✅ | `pi-check` | Confirm |
-| ❌ | `pi-times` | Cancel |
-| 🔄 | `pi-refresh` | Refresh |
-| ⚙️ | `pi-cog` | Settings |
-| 🖨️ | `pi-print` | Print |
-| 🔗 | `pi-external-link` | External link |
+Any other PrimeIcons class can only be set by editing the column configuration JSON through the API.

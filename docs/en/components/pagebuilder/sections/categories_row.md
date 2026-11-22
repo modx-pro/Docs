@@ -1,6 +1,6 @@
 ---
 title: "Categories row"
-description: "Subcategory cards from a parent via pdoResources (msCategory) (Pro)"
+description: "Subcategory cards from a parent via pdoResources (MiniShop3\\Model\\msCategory). Pro layer."
 ---
 
 # Categories row
@@ -15,11 +15,9 @@ Requires PageBuilder Pro and miniShop3.
 
 ## Why a categories row
 
-- Subcategories from msCategory via pdoResources
-- Catalog navigation without hand-built menus
-- Thumbnails and links from resources
+- Subcategories of class `MiniShop3\Model\msCategory` via pdoResources
 
-## Catalog navigation
+## Where to place
 
 - Catalog homepage: top sections
 - Parent category page: subcategories
@@ -32,7 +30,7 @@ Requires PageBuilder Pro and miniShop3.
 
 ## Parent and limit
 
-**Parent category** and **Limit**. Resources must be msCategory.
+**Parent category** and **Limit**. The chunk keeps only resources of class `MiniShop3\Model\msCategory`. The type is marked `"cacheable": false`.
 
 ## Similar sections
 
@@ -45,13 +43,13 @@ Requires PageBuilder Pro and miniShop3.
 | --- | --- |
 | key | `categories_row` |
 | Layer | Pro |
-| Category | commerce (`commerce`) |
+| Category | Commerce (`commerce`) |
 | Chunk | `pagebuilderpro_categories_row` |
 | Requires | pro, minishop3 |
 
 ## Inspector fields
 
-Fill these fields in the section inspector. Field types are documented in the [field types reference](../fields/types).
+Field types: [field types reference](../fields/types).
 
 ### Title (`title`)
 
@@ -71,7 +69,7 @@ Horizontal `pb-categories-row`.
 
 ## Section data {#output-in-section-data}
 
-Example payload after save. Media, video, and map values may be enriched on output:
+Example payload after save:
 
 ```json
 {

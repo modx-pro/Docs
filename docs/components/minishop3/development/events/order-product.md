@@ -8,14 +8,14 @@ title: События товаров в заказе
 ::: info Контекст
 С 1.12 позиции в админке меняет **Manager API** (`OrdersController`: `POST/PUT/DELETE …/orders/{id}/products/…`), не legacy-процессоры. Параметры включают `msOrder` и `msOrderProduct`.
 
-Для корзины на витрине см. [События корзины](cart).
+Для корзины на фронтенде см. [События корзины](cart).
 :::
 
 ::: info Второй источник msOnBeforeCreateOrderProduct / msOnCreateOrderProduct
 Помимо Manager API, эта пара событий вызывается ещё и из `OrderDraftManager` — при программном создании заказа без сессии (`ProgrammaticOrderService`, sessionless API для интеграций/cron). В этом канале в параметрах события есть **дополнительный ключ `origin`** (значение `'integration'` по умолчанию), которого нет у вызова из Manager API.
 :::
 
-::: warning After-хуки не откатывают БД
+::: warning After-события не откатывают БД
 `msOnCreateOrderProduct`, `msOnUpdateOrderProduct`, `msOnRemoveOrderProduct` вызываются **после** `save()` / `remove()`. Если after-плагин вернёт `output`, ядро только пишет предупреждение в лог — клиент Vue по-прежнему получит успех. Проверки и veto — в парных `msOnBefore*`.
 :::
 

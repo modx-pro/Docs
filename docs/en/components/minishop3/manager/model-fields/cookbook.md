@@ -9,7 +9,7 @@ Model fields configure **display** of columns that already exist in the database
 
 Reference: [Model fields](/en/components/minishop3/interface/utilities/model-fields).
 
-<!-- ![Model fields utility: sections and field list](/components/minishop3/screenshots/mgr-model-fields.png) -->
+![Model fields utility: sections and field list](/components/minishop3/screenshots/mgr-model-fields.png)
 
 ## Goal
 

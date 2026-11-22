@@ -17,11 +17,11 @@ description: "Строка URL с базовой проверкой формат
 
 - Ссылка кнопки, внешний ресурс, якорь
 - `href` для карточки или логотипа партнёра
-- Fallback, когда объект button не нужен
+- Запасной вариант, когда объект button не нужен
 
 ## Советы
 
-Кнопка с label и target: [button](button). Внутренние страницы MODX чаще через [relation](relation) или [resourcelist](resourcelist).
+Внутренние страницы MODX чаще через [relation](relation) или [resourcelist](resourcelist).
 
 ## Похожие типы
 
@@ -68,10 +68,6 @@ description: "Строка URL с базовой проверкой формат
 ```
 
 :::
-
-## Примечание
-
-Pro: `responsive`.
 
 ## Общие свойства
 

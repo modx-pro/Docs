@@ -5,7 +5,7 @@ description: Operation log, full and selective rollback
 
 # History and rollback
 
-Log of bulk operations and restore of previous values.
+The **History** tab stores the operation log. From here you roll back a whole operation or selected products.
 
 ![History tab](/components/msbulkeditor/screenshots/history-tab.png)
 
@@ -15,11 +15,11 @@ Log of bulk operations and restore of previous values.
 
 | Column | Contents |
 | --- | --- |
-| Checkbox | Only for status **Completed** (bulk rollback); otherwise disabled with hint “Rollback is available only for completed operations” |
+| Checkbox | Only for status **Completed** (bulk rollback). Otherwise disabled with hint “Rollback is available only for completed operations” |
 | ID | Operation identifier |
 | Type | `fieldType` |
 | Created | Date and time (compact, two lines) |
-| Status | queued, running, completed, failed, cancelled |
+| Status | queued, running, completed, failed |
 | Processed | `processed` |
 | Total | `total` |
 
@@ -36,14 +36,13 @@ Empty log: empty state “History is empty”. Load failure: empty state error.
 | Queued / Running | Unavailable |
 | **Completed** | Full or selective |
 | **Failed** | `applied` items only |
-| Cancelled | Unavailable |
 
 ---
 
 ## Failed operation (`failed`)
 
-1. Open **History** — status **Failed**.
-2. **Changes** — roll back `applied` items.
+1. Open **History**. Status **Failed**.
+2. **Changes.** Roll back `applied` items.
 3. Fix the cause and rerun on remaining products.
 
 ---
@@ -73,9 +72,9 @@ Select several completed operations → **Rollback selected**.
 
 **Changes** opens the panel below the table (page scrolls to it).
 
-- item list (product × field);
-- preview table with checkboxes;
-- **Rollback selected** — `productIds[]`.
+- item list (product × field)
+- preview table with checkboxes
+- **Rollback selected:** `productIds[]`
 
 Checkbox is active only for status **`applied`**. Other statuses show a disabled checkbox with a tooltip.
 
@@ -89,8 +88,9 @@ API: `history/items`, `products/rollback`.
 
 ## Record retention
 
-- Tables: `msbe_operations`, `msbe_operation_items` — see [Events](../events#database).
-- Auto cleanup: Scheduler task **`operation_cleanup`** when `msbulkeditor_scheduler_enabled = Yes`.
+- Tables: `msbe_operations`, `msbe_operation_items`. See [Events](../events#database).
+- Auto cleanup: task **`operation_cleanup`** when Scheduler is installed. Install and every package update set `msbulkeditor_scheduler_enabled = Yes`.
+- Without Scheduler, plugin `msbulkeditor_bootstrap` still cleans the log at most once a day when a manager page opens.
 - Retention: `msbulkeditor_history_retention_days` (default 90).
 
 ---
@@ -98,7 +98,7 @@ API: `history/items`, `products/rollback`.
 ## Notes
 
 - Snapshots are written for all field types with a value snapshot, not only price.
-- Side-effect ops (gallery regenerate, clear cache) roll back metadata per handler rules; files on disk are not always restored — see [product and prices](product-and-prices).
+- Side-effect ops (gallery regenerate, clear cache) roll back metadata per handler rules. Files on disk are not always restored. See [product and prices](product-and-prices).
 
 ---
 

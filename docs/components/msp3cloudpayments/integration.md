@@ -15,7 +15,7 @@ description: Уведомления CloudPayments, холд, чек 54-ФЗ и �
 | Узнать статус | `v2/payments/find` | Кнопка синхронизации во вкладке. Без Public ID и API Secret запрос в API не уходит: ответ `success` со списком попыток и полем `note` |
 | Списать холд | `payments/confirm` | После блокировки. Затем заказ отмечается оплаченным |
 | Отменить холд | `payments/void` | До списания |
-| Вернуть деньги | `payments/refund` | Нужен `TransactionId` из уведомления Pay |
+| Вернуть деньги | `payments/refund` | Нужен `TransactionId` из уведомления Pay. Поддерживается частичный возврат (статус `PARTIALLY_REFUNDED`). |
 | Отменить неоплаченный счёт | `orders/cancel` | По номеру счёта. Webhook не ждёт |
 
 В запросах логин это Public ID, пароль это API Secret.
@@ -57,7 +57,7 @@ Check статус заказа не меняет. Он ищет попытку 
 | confirm | paid |
 | fail | failed |
 | cancel | cancelled |
-| refund | refunded |
+| refund | refunded (или `PARTIALLY_REFUNDED` при частичном возврате) |
 
 ## Как проходит оплата
 
@@ -84,6 +84,8 @@ flowchart LR
 
 ## Вкладка заказа
 
+<!-- MEDIA: Скриншот вкладки заказа в админке MiniShop3 с кнопками: списание холда, отмена холда, возврат, отмена счёта, запрос статуса -->
+
 Запросы вкладки идут в `assets/components/msp3cloudpayments/connector.php` с параметром `action`:
 
 | `action` | Назначение |
@@ -106,7 +108,7 @@ flowchart LR
 
 Включите **`msp3cloudpayments_payment_receipt`**. Тогда вместе со счётом уходит чек. В данных счёта это блок `CloudPayments.CustomerReceipt` внутри `JsonData`. В адресе заказа нужен email или телефон.
 
-Строку чека можно поправить событием `msp3CloudPaymentsOnPrepareReceiptItem`.
+Строку чека можно поправить событием `msp3CloudPaymentsOnPrepareReceiptItem`. Обработчик может изменить `$params['item']` по ссылке, возвращая изменённый объект счета.
 
 Система налогообложения: 0-5. НДС по умолчанию `none`. Признак способа расчёта по умолчанию `4`. Предмет товара `1`, предмет доставки `4`.
 

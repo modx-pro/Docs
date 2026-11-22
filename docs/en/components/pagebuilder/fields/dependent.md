@@ -63,7 +63,7 @@ The value is **not** stored in the section data.
 | Key | Role | CMP |
 | --- | --- | --- |
 | `tab` | Group in the inspector | yes |
-| `width` | Label width, 25–100 (%) | yes |
+| `width` | Label width in % of the row (flex): 25, 33, 50, 66, 75, 100. The CMP offers only these values | yes |
 | `label` | Subtitle / marker text | yes |
 
 See [fields overview](overview#obshchie-svoystva-polya).

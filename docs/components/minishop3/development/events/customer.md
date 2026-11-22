@@ -382,6 +382,10 @@ switch ($modx->event->name) {
 
 Вызывается **после** создания нового покупателя.
 
+::: warning Ответ плагина только пишется в журнал
+При `success=false` ядро пишет `WARN` и всё равно возвращает созданного покупателя. Отменить создание можно только в парном `msOnBeforeCreateCustomer` — там `output()` возвращает `null` вместо объекта.
+:::
+
 ### Параметры
 
 | Параметр | Тип | Описание |
@@ -482,6 +486,10 @@ switch ($modx->event->name) {
 
 Вызывается **после** добавления адреса покупателю.
 
+::: warning Ответ плагина только пишется в журнал
+При `success=false` ядро пишет `WARN`, а `add()` всё равно возвращает `true`. Отменяет добавление только парное `msOnBeforeAddCustomerAddress`.
+:::
+
 ### Параметры
 
 | Параметр | Тип | Описание |
@@ -527,8 +535,8 @@ switch ($modx->event->name) {
 | `msCustomer` | `msCustomer` | Ссылка на объект покупателя |
 | `object` | `msCustomer` | Та же ссылка, что и `msCustomer` (MS2-style алиас) |
 
-::: tip Возврат значения, а не `$modx->event->output()`
-В отличие от событий `Customer/*` выше (они построены на `Utils::invokeEvent()` и читают `output()`/`returnedValues`), это событие — часть стандартного MODX `UpdateProcessor` и читает **непосредственно возвращаемое значение** обработчика. Верните непустую строку или непустой массив сообщений, чтобы отменить сохранение.
+::: tip Отмена — через `$modx->event->output()`
+Событие относится к стандартному MODX `UpdateProcessor`, но канал отмены тот же, что у событий `Customer/*` выше: `fireBeforeSaveEvent()` собирает `$modx->event->_output` всех плагинов. Значение, просто возвращённое обработчиком, ядро лишь пишет в журнал ошибок события — `return 'строка'` сохранение не отменит.
 :::
 
 ### Прерывание операции
@@ -548,7 +556,8 @@ switch ($modx->event->name) {
             ]);
 
             if ($existing) {
-                return 'Email уже используется другим покупателем';
+                $modx->event->output('Email уже используется другим покупателем');
+                return;
             }
         }
         break;
@@ -668,7 +677,7 @@ switch ($modx->event->name) {
 
 ## msOnBeforeGetOrderUser
 
-Вызывается **перед** разрешением системного пользователя MODX (`modUser`) для заказа. Срабатывает в `OrderUserResolver` при сабмите заказа, когда системная настройка `ms3_order_register_user_on_submit` включена.
+Вызывается **перед** разрешением системного пользователя MODX (`modUser`) для заказа. Срабатывает в `OrderUserResolver` при оформлении заказа, когда системная настройка `ms3_order_register_user_on_submit` включена.
 
 ::: tip Чем `modUser` отличается от `msCustomer`
 `modUser` — это системный пользователь MODX (логин, пароль, профиль). `msCustomer` — отдельная сущность покупателя магазина (имя, телефон, токен сессии). Резолвер `modUser` нужен для регистрации заказчика в системе авторизации MODX, а не для управления его покупательским профилем.
@@ -684,7 +693,25 @@ switch ($modx->event->name) {
 
 ### Подмена пользователя
 
-Плагин может вернуть готового `modUser` через `returnedValues['user']`, чтобы обойти стандартный поиск/создание:
+У события два канала. Первый — готовый `modUser` в `returnedValues['user']`, он обходит стандартный поиск и создание. Второй — `returnedValues['orderData']`: подменённый массив полей заказа, из которого ядро само возьмёт `address_email`, `address_first_name`, `address_last_name` и `address_phone` и по ним найдёт или создаст пользователя.
+
+Второй канал обычно удобнее: достаточно поправить контакты, не собирая `modUser` руками.
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnBeforeGetOrderUser':
+        $orderData = $scriptProperties['orderData'];
+
+        // Нормализуем телефон до того, как ядро начнёт искать пользователя
+        $orderData['address_phone'] = preg_replace('/\D+/', '', $orderData['address_phone'] ?? '');
+
+        $modx->event->returnedValues = ['orderData' => $orderData];
+        break;
+}
+```
+
+Готовый `modUser` возвращают так:
 
 ```php
 <?php

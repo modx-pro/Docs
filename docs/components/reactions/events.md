@@ -5,7 +5,7 @@ title: События MODX
 
 Reactions вызывает системные события при изменении реакций. Через плагины можно логировать, блокировать выборочные объекты, чистить кэш, слать уведомления.
 
-Исходящие HTTP-колбэки после успеха — отдельно: [webhooks.md](webhooks). Встроенные сообщения автору — настройка `reactions_notify_authors`.
+Исходящие HTTP-вебхуки после успеха — отдельно: [webhooks.md](webhooks). Встроенные сообщения автору — настройка `reactions_notify_authors`.
 
 ## Список событий
 
@@ -39,6 +39,26 @@ Reactions вызывает системные события при измене
 10. AggregateService::recount
 11. WebhookDispatcher (если включён)
 12. NotificationService (только для react/POST-ветви, не для чистого unreact-пути уведомлений — см. код)
+```
+
+```mermaid
+flowchart TD
+  A["POST или DELETE react"] --> B[Origin и CSRF]
+  B --> C[Идентификация посетителя]
+  C --> D{Бот, бан или rate limit?}
+  D -->|да| X1[403 reactions_err_forbidden]
+  D -->|нет| E[Объект существует, тип активен, тип в наборе]
+  E --> F["OnBeforeReaction — можно отменить"]
+  F --> G["Транзакция: added, changed или removed"]
+  G --> H[OnAfterReaction]
+  H --> I{Действие}
+  I -->|changed| J[OnReactionChanged]
+  I -->|removed| K[OnReactionRemoved]
+  I -->|added| L[OnReactionChanged не срабатывает]
+  H --> M[AggregateService recount]
+  M --> N[Webhook reaction.added, removed или changed]
+  N --> O{Действие added?}
+  O -->|да| P["NotificationService: modUserMessage автору"]
 ```
 
 Важно:

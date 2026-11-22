@@ -82,7 +82,7 @@ PHP-зависимости (`vendor/`) входят в пакет. Отдель�
 | Яндекс Пэй | `MspYandexPay\Payment\YandexPayPayment` | active |
 | Яндекс Пэй (двухстадийная) | `MspYandexPay\Payment\YandexPayTwoStagePayment` | active |
 | Яндекс Пэй + Сплит | `MspYandexPay\Payment\YandexPaySplitPayment` | active |
-| Яндекс Пэй QR | `MspYandexPay\Payment\YandexPayQrPayment` | inactive |
+| Яндекс Пэй QR | `MspYandexPay\Payment\YandexPayQrPayment` | inactive <!-- MEDIA: скриншот списка способов оплаты в MiniShop3 с четырьмя способами Яндекс Пэй --> |
 
 При установке и обновлении резолвер линкует активные способы ко всем активным доставкам (`msDeliveryMember`). Если оплаты нет на чекауте: **MiniShop3 → Доставки** → у нужной доставки отметьте способы «Яндекс Пэй*».
 
@@ -90,7 +90,7 @@ PHP-зависимости (`vendor/`) входят в пакет. Отдель�
 
 ## Быстрая настройка webhook
 
-В кабинете Яндекс Пэй укажите **Callback URL**:
+В кабинете Яндекс Пэй укажите **Callback URL** <!-- MEDIA: скриншот поля Callback URL в настройках кабинета Яндекс Пэй -->:
 
 ```text
 https://ваш-домен.ru/assets/components/mspyandexpay/webhook.php
@@ -122,6 +122,8 @@ flowchart LR
   Webhook --> Jwt
   Jwt --> Status
 ```
+
+<!-- MEDIA: схема архитектуры mspYandexPay в виде отдельного PNG для вставки в статью -->
 
 ## Быстрые ссылки
 

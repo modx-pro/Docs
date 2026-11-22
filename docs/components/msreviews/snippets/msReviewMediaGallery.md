@@ -9,7 +9,7 @@ description: UGC-галерея фото из отзывов на карточк
 
 ## Назначение
 
-UGC-блок на странице товара: миниатюры фото покупателей. По умолчанию клик открывает **lightbox** (`mediaLinkMode=lightbox`). Режим `anchor` ведёт к секции отзывов. Режим `raw` отдаёт плейсхолдеры без служебных атрибутов (свой Fancybox и т.п.).
+Миниатюры фото из отзывов. По умолчанию **lightbox** (`mediaLinkMode=lightbox`). `anchor` — к секции отзывов. `raw` — плейсхолдеры без служебных атрибутов (свой lightbox).
 
 ## Где вызывать
 
@@ -40,15 +40,15 @@ UGC-блок на странице товара: миниатюры фото п�
 | `showHeading` | `1` | Заголовок `<h3>` «Фото из отзывов» |
 | `reviewAnchor` | *(пусто)* | Якорь секции отзывов (для `anchor` или вместе с режимом) |
 | `registerCss` | `1` | Подключать `reviews.css` |
-| `registerJs` | `1` | Подключать JS витрины |
+| `registerJs` | `1` | При `1` всегда подключается лексикон. `reviews.js` добавляется при lightbox и непустом списке. При `0` остаётся только CSS |
 
 Плейсхолдеры item: `url`, `href`, `link_class`, `img_class`, `link_attrs`, `img_width`, `img_height`, `author_name`, `review_id`, `media_id`, `rating`, `gallery_group`, `review_anchor`, `label_open`, `link_html`. Body: `items`, `gallery_group`, `list_empty`.
 
 ## Lightbox (по умолчанию)
 
-`mediaLinkMode=lightbox` (и пустой `reviewAnchor` в типовом сценарии): миниатюры получают атрибуты lightbox. `reviews.js` открывает диалог с навигацией.
+Миниатюры с атрибутами lightbox, диалог — `reviews.js`. Пустой `reviewAnchor` — типовой сценарий.
 
-Перед галереей вызовите **`msReviewsLexiconScript`**, иначе подписи кнопок lightbox возьмутся из fallback в JS.
+Сначала **`msReviewsLexiconScript`**, иначе подписи кнопок — fallback в JS.
 
 ::: code-group
 
