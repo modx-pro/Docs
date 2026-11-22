@@ -7,28 +7,62 @@ description: basket/check, сессия checkout, placed и soft-reserve
 
 ## Корзина (`basket/check`)
 
-1. Пакет нормализует `items` / `products` (`offer_id` = id ресурса `msProduct`).
-2. Берёт `final_price` из `msProduct::getPrice()` (рубли в каталоге).
-3. В JSON ответа цены — в **копейках** (`ProductMapper::toMinor`), как `price` у delivery.
-4. В успешном item `available` = `true` (bool). Число доступного количества — в `details.errors[].available` при `INSUFFICIENT_STOCK`.
-5. Доступно = остаток из [stock](stock) минус активные soft-reserve.
+Ответ успеха: `{"items":[…]}`. Успешный item **не** содержит `available`.
+
+| Поле | Значение |
+|------|----------|
+| `final_price` / `regular_price` | целые рубли (`floor`), не копейки |
+| `decimal_final_price` / `decimal_regular_price` | всегда рядом |
+| доставка `cost` | рубли |
+| `items[].warehouses[].available_quantity` | int |
+| `warehouses[].id` | `warehouse_id` |
+
+`ProductMapper::toMinor()` в runtime не вызывается. `price` после `publishCosts` снимается. Доступно = остаток из [stock](stock) минус активные soft-reserve (`status = active`).
+
+1. Пакет нормализует `items` / `products` (`offer_id`, иначе `id`, иначе `product_id` = id ресурса `msProduct`).
+2. Берёт цену из `msProduct::getPrice()`, если метод есть. Иначе `msProductData.price` (рубли каталога).
+
+Ошибки: HTTP 422, верхний `error.code` = `BASKET_CHECK_FAILED`.
+
+| Поле | Значение |
+|------|----------|
+| `error.details.errors[].code` | `PRODUCT_NOT_FOUND` или `INSUFFICIENT_STOCK` |
+| `error.details.errors[].id` | не `offer_id` |
+| у нехватки | ещё `available` (int) |
+| неопубликованный товар | `PRODUCT_NOT_FOUND` |
 
 ## Сессия (`POST /api/v1/checkout`)
 
-Ответ включает `session_id` и `order_number` (= тот же `session_id`). Soft-reserve пишется в `ms_yandexcommerce_reservations`. Повтор с тем же ключом идемпотентности не удваивает резерв ([ycp](ycp)).
+Ответ: `session_id` и `order_number` (= тот же `session_id`). Soft-reserve пишется в `ms_yandexcommerce_reservations` через `replaceForSession` (строки сессии удаляются и вставляются заново).
+
+- Повтор с тем же ключом идемпотентности резерв не удваивает ([ycp](ycp)).
+- Тот же `session_id` без нового ключа резерв тоже не удваивает.
+- Чужой `session_id`: другая сессия и другой резерв.
 
 ## Размещение (`placed`)
 
-1. CAS claim: `checkout` → `placing` (`SessionService::claimForPlace`). При гонке — `409 ORDER_IN_PROGRESS`.
-2. Собирает товары из snapshot сессии (цены из snapshot / каталога).
-3. `CreateMs2Order::execute()`:
-   - xPDO: `msOrder` + `msOrderAddress` (`receiver`, …) + `msOrderProduct`
-   - события `msOnBeforeCreateOrder` / `msOnCreateOrder`
-   - `$miniShop2->changeOrderStatus($id, status_placed_id или ms2_status_new)`
-   - при сбое после save — compensate (`status_cancelled_id` или `ms2_status_canceled`) + `releasePlaceClaim`. Маппинг статусов: [statuses](statuses).
-4. **Не** вызывается `$order->submit()` и `payment->send()`.
-5. Идемпотентность: повтор `placed` — заказ из таблицы сессий или `msOrder.properties.ycp_session_id`.
-6. В ответе `order_number` = внешний `order_id` из тела `placed` (тот же, что `ycp_external_order_id`).
+CAS claim: `checkout` → `placing` (`SessionService::claimForPlace`). `409 ORDER_IN_PROGRESS` только когда CAS проигран и чужой запрос всё ещё в `placing`.
+
+| Случай | Результат |
+|--------|-----------|
+| Своя сессия уже `placing` (обрыв запроса) | claim возвращает сессию, создание продолжается, `409` нет |
+| Проигравший CAS при статусе `placed` и непустом `order_id` | тот же заказ, не `409` |
+
+Собирает товары из `payload.items` snapshot. Цена: непустой `decimal_final_price`, иначе `final_price` snapshot, иначе каталог в `CreateMs2Order`. Пустой snapshot: `releasePlaceClaim`, HTTP 422, `EMPTY_CART`. Compensate не вызывается.
+
+`CreateMs2Order::execute()`:
+
+1. xPDO: `msOrder` + `msOrderAddress` (`receiver`, …) + `msOrderProduct`
+2. `save` пишет `ms2_status_draft`, если он > 0, иначе `0`
+3. события `msOnBeforeCreateOrder` (до `save`) / `msOnCreateOrder` (после)
+4. `$miniShop2->changeOrderStatus($id, …)`: `status_placed_id` или `ms2_status_new`, иначе `1`
+5. Сбой после save (пустой `msOnCreateOrder` или исключение на статусе): compensate (`status_cancelled_id` или `ms2_status_canceled`, иначе `4`) и `releasePlaceClaim`. Маппинг: [statuses](statuses).
+
+**Не** вызывается `$order->submit()` и `payment->send()`.
+
+Идемпотентность повторного `placed`: заказ из таблицы сессий или `msOrder.properties.ycp_session_id` (поиск `LIKE %session_id%`).
+
+В ответе `order_number` = `session.external_order_id` из тела `order_id`, иначе `external_order_id` (то же в `msOrder.properties.ycp_external_order_id`).
 
 ```mermaid
 flowchart TB
@@ -38,10 +72,20 @@ flowchart TB
   Status --> Ok[placed + releaseBySession]
   Create -->|сбой после save| Comp[compensate cancelled]
   Comp --> Release[releasePlaceClaim]
-  Claim -->|гонка| Conflict["409 ORDER_IN_PROGRESS"]
+  Claim -->|чужой placing| Conflict["409 ORDER_IN_PROGRESS"]
   Repeat[Повтор placed] --> Idem[тот же msOrder]
 ```
 
-## Soft-reserve
+## Soft-reserve и отмена
 
-Учёт в `ms_yandexcommerce_reservations`. Поле `remains` в каталоге пакет не декрементирует. Резерв снимается при успешном `placed` (`releaseBySession`), при `checkout/cancel` / `order/cancel` и при expire сессии.
+Учёт в `ms_yandexcommerce_reservations`. Поле `remains` в каталоге пакет не уменьшает.
+
+Резерв снимается:
+
+- при успешном `placed` (`releaseBySession`)
+- при `checkout/cancel` / `order/cancel`
+- при expire сессии (`expire()` из `applyExpiry`, когда `expires_at` в прошлом)
+
+Если у сессии `order_id > 0`, `cancelCheckout` и `cancelOrder` сначала вызывают `changeOrderStatus` на `getCanceledStatusId()`, затем `cancelLocal` снимает резерв.
+
+Уже `cancelled` или `expired`: ранний ответ без повторной смены статуса.
