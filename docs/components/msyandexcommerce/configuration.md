@@ -9,7 +9,6 @@ description: Системные настройки msyandexcommerce, склад�
 
 ## Включение и режим
 
-
 | Ключ | Тип | По умолчанию | Эффект |
 |------|-----|--------------|--------|
 | `msyandexcommerce_enabled` | bool | `false` | После middleware: при `false` YCP-маршруты (кроме `/health`) → `503`, `error.code=DISABLED`. Раньше: нет HTTPS → `403 HTTPS_REQUIRED`; пустой `api_token` → `503 UNAUTHORIZED`; чужой Bearer → `401 UNAUTHORIZED`. `POST /v1/webhook` при `enabled=false` тоже здесь, тело Pay: `{"reasonCode":"FORBIDDEN"}` при HTTP 503, не YCP `DISABLED` |
@@ -27,7 +26,6 @@ description: Системные настройки msyandexcommerce, склад�
 **Сгенерировать API-токен** (CMP **Yandex Commerce (YCP)**, страница **Yandex Commerce: диагностика**) → processor `settings/regenerate_token`. Ответ один раз: `object.api_token`. Перенесите в кабинет YCP (имя поля задаёт Яндекс).
 
 Не храните токен в JS, чанках и git.
-
 
 ## Сессия и лимиты
 
@@ -70,7 +68,6 @@ curl -sS "$BASE/api/v1/warehouses" \
 
 ## Доставка и оплата
 
-
 | Ключ | Тип | По умолчанию | Эффект |
 |------|-----|--------------|--------|
 | `msyandexcommerce_delivery_courier_id` | number | `0` | `msDelivery.id` для типа `courier` |
@@ -90,7 +87,6 @@ curl -sS "$BASE/api/v1/warehouses" \
 
 ## Статусы YCP → miniShop2
 
-
 `0` в настройке = miniShop2 по умолчанию (кроме paid). Статус меняет только `Ms2Gateway::changeOrderStatus` (id < 1 — выход).
 
 `GET /api/v1/order`, `StatusMapper::toYcpStatus`: id доставки → `delivered`, отмены → `cancelled`, остальное (placed, paid) → `in_progress`. Четыре id в ответ YCP-строками placed/paid не отдаются.
@@ -106,7 +102,6 @@ curl -sS "$BASE/api/v1/warehouses" \
 
 ## Яндекс Пэй webhook
 
-
 | Ключ | Тип | По умолчанию | Эффект |
 |------|-----|--------------|--------|
 | `msyandexcommerce_yapay_webhook_enabled` | bool | `false` | Принимать `POST /v1/webhook` |
@@ -118,6 +113,6 @@ URL вебхука: `…/assets/components/msyandexcommerce/api.php/v1/webhook`.
 
 | Ключ | Тип | По умолчанию | Эффект |
 |------|-----|--------------|--------|
-| `msyandexcommerce_button_enabled` | bool | `true` | `false` → `BUTTON_DISABLED` (403). Сниппет без `&debug=`1`` — пустая строка. С `&debug=`1`` — HTML-комментарий с текстом исключения |
+| `msyandexcommerce_button_enabled` | bool | `true` | `false` → `BUTTON_DISABLED` (403). Сниппет без свойства `debug` — пустая строка. Со свойством `debug=1` — HTML-комментарий с текстом исключения |
 
 Подробнее: [button](button).
