@@ -84,11 +84,23 @@ Package: [modstore.pro/packages/utilities/localizator3](https://modstore.pro/pac
 ### After install
 
 1. Create languages in the **Localizator3** menu (Localizations page).
-2. Set `localizator3_default_language`. An empty value falls back to the first active language by rank for the site, manager auto-translation, and the `translate_resources.php` CLI. Without the setting and without an active language, auto-translation and CLI stop with an error.
+2. Set `localizator3_default_language`.
 3. Enable required TVs with the «TV available in localizations» flag.
 4. Fill the **Localization** tab on resources.
 5. Output lists with `getLocalizedResources`.
 
-The resolver sets `pdotools_fetch_class` = `ModxPro\PdoTools\FetchLocalizator` (extends `Fetch`). The class is loaded by the Localizator3 namespace bootstrap via Composer PSR-4, so `getLocalizedResources` and pdoTools snippets return localized fields.
-
 [Quick start](quick-start) and [System settings](settings).
+
+## Page language {#page-language}
+
+The open page language comes from the language `http_host`, not from `localizator3_default_language`.
+
+::: warning
+An empty key falls back to the first active language by rank only in manager auto-translation and the `translate_resources.php` CLI. Without the setting and without an active language, auto-translation and CLI stop with an error. On the resource form an empty key stays empty.
+:::
+
+## Selection on the site {#selection}
+
+`getLocalizedResources` localizes resource fields itself, without the `FetchLocalizator` class. `FetchLocalizator` is for direct `pdoResources` and `pdoMenu` calls: the same fields, localized TVs, and the language prefix in links.
+
+The resolver sets `pdotools_fetch_class` = `ModxPro\PdoTools\FetchLocalizator` (extends `Fetch`). Before `OnMODXInit`, MODX loads the namespace `bootstrap.php`. The file loads Composer PSR-4 (`vendor/autoload.php`). The plugin does the same on `OnMODXInit`.

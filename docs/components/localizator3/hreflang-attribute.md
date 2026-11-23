@@ -7,7 +7,7 @@ description: 'Сниппет getLocalizedCanonical: canonical, alternate и x-de
 
 Сниппет **getLocalizedCanonical** выводит `link rel="canonical"` для текущего языка и `link rel="alternate" hreflang="..."` для активных языков. Свой сниппет с разметкой писать не нужно.
 
-Сниппет добавляет `hreflang="x-default"`, если нашёлся URL языка по умолчанию. `localizator3_default_language` сравнивается с `cultureKey`, при пустом `cultureKey` с `key`. Пустая настройка: URL текущего языка.
+Сниппет добавляет `hreflang="x-default"`, если нашёлся URL языка по умолчанию. `localizator3_default_language` сравнивается с `key` языка (не с `cultureKey`). Пустая настройка: URL текущего языка.
 
 ## Параметры
 

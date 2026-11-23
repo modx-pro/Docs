@@ -7,7 +7,7 @@ description: 'getLocalizedCanonical snippet: canonical, alternate, and x-default
 
 The **getLocalizedCanonical** snippet outputs `link rel="canonical"` for the current language and `link rel="alternate" hreflang="..."` for active languages. You do not need a custom markup snippet.
 
-It adds `hreflang="x-default"` when a default-language URL is found. `localizator3_default_language` is compared to `cultureKey`, or to `key` when `cultureKey` is empty. Empty setting: current language URL.
+It adds `hreflang="x-default"` when a default-language URL is found. `localizator3_default_language` is compared to the language `key` (not `cultureKey`). Empty setting: current language URL.
 
 ## Parameters
 

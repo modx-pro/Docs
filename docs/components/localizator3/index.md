@@ -53,7 +53,7 @@ items: [
 
 Жёсткие требования транспорта: только PHP и MODX.
 
-- Если VueTools нет, резолвер пытается скачать первую запись `vuetools` у провайдера. Резолвер сам не обновляет уже стоящий VueTools ниже 1.1.2-pl.
+- Если VueTools нет, резолвер пытается скачать первую запись `vuetools` у провайдера. Уже установленный VueTools ниже 1.1.2-pl резолвер не обновляет.
 - Резолвер скачивает первую запись `pdoTools`, если пакета нет или установленная версия старше 2.11.3-pl.
 - Ошибка скачивания VueTools или pdoTools установку Localizator3 не откатывает.
 
@@ -78,11 +78,23 @@ items: [
 ### После установки
 
 1. Создайте языки в меню **Localizator3** (страница «Локализации»).
-2. Задайте `localizator3_default_language`. Пустой ключ заменяется первым активным языком по рангу: страница, автоперевод в менеджере, CLI `translate_resources.php`. Без настройки и без активного языка автоперевод и CLI останавливаются с ошибкой.
+2. Задайте `localizator3_default_language`.
 3. Включите нужные TV флагом «TV доступно в локализациях».
 4. Заполните вкладку **Локализация** у ресурсов.
 5. Списки на сайте выводите через `getLocalizedResources`.
 
-Резолвер пишет `pdotools_fetch_class` = `ModxPro\PdoTools\FetchLocalizator` (наследник `Fetch`). Класс подключает bootstrap пространства имён Localizator3 через Composer PSR-4, поэтому `getLocalizedResources` и сниппеты pdoTools отдают локализованные поля.
-
 [Быстрый старт](quick-start) и [Системные настройки](settings).
+
+## Язык страницы {#page-language}
+
+Язык открытой страницы берётся из `http_host` языка, не из `localizator3_default_language`.
+
+::: warning
+Пустой ключ заменяется первым активным языком по рангу только в автопереводе менеджера и в CLI `translate_resources.php`. Без настройки и без активного языка автоперевод и CLI останавливаются с ошибкой. На форме ресурса пустой ключ остаётся пустым.
+:::
+
+## Выборка на сайте {#selection}
+
+`getLocalizedResources` переводит поля ресурса сам, без класса `FetchLocalizator`. `FetchLocalizator` нужен прямым вызовам `pdoResources` и `pdoMenu`: те же поля, локализованные TV и префикс языка в ссылке.
+
+Резолвер пишет `pdotools_fetch_class` = `ModxPro\PdoTools\FetchLocalizator` (наследник `Fetch`). До `OnMODXInit` MODX подключает `bootstrap.php` пространства имён. Файл грузит Composer PSR-4 (`vendor/autoload.php`). Плагин на `OnMODXInit` делает то же.
