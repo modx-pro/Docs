@@ -11,11 +11,11 @@ Key prefix: `localizator3_`. Namespace: `localizator3`.
 
 ## Selection via pdoTools
 
-Output localized lists with the **getLocalizedResources** snippet. On install and upgrade the resolver creates or overwrites `pdotools_fetch_class` = `ModxPro\PdoTools\FetchLocalizator` (extends `Fetch`). The class is loaded by the Localizator3 namespace bootstrap via Composer PSR-4.
+Use the **getLocalizedResources** snippet for localized lists; it localizes fields itself. On install and upgrade the resolver creates or overwrites `pdotools_fetch_class` = `ModxPro\PdoTools\FetchLocalizator` (extends `Fetch`). The namespace bootstrap loads Composer `vendor/autoload.php` (PSR-4); the `OnMODXInit` plugin does the same. The class does not load bootstrap. Use `FetchLocalizator` for direct `pdoResources` / `pdoMenu`.
 
 ## Content output on the page
 
-The plugin assigns resource fields from `localizator3_translate_fields`. The `content` field is written to `localizator3_content` and does not replace resource `content`. Non-empty TVs from `getTVKeys()` are assigned to the resource.
+The plugin assigns resource fields from `localizator3_translate_fields`. `content` goes to `localizator3_content` and does not replace resource `content`. Non-empty TVs from `getTVKeys()` are assigned to the resource.
 
 ```fenom
 {$_modx->resource.localizator3_content}
@@ -27,27 +27,27 @@ The **Localization** tab shows only TVs with the `localizator3_enabled` flag on 
 
 | Key | Default | Description |
 | --- | --- | --- |
-| `localizator3_default_language` | empty | Default language. Empty value falls back to the first active language by rank: site, selection, mSearch, auto-translation, CLI, and blocking localization of the base language. The base language is hidden on the tab only when the setting is filled. Without the setting and without an active language, auto-translation and CLI stop with an error |
-| `localizator3_default_from_resource` | No | Base language from resource fields and TVs. The tab keeps translations only |
+| `localizator3_default_language` | empty | Default language. Empty value falls back to the first active language by rank only in auto-translation and CLI. Site and selection languages do not use that fallback. mSearch and blocking base-language localization use the fallback only when `localizator3_default_from_resource` is Yes. Without the setting and without an active language, auto-translation and CLI stop with an error. With `localizator3_default_from_resource` off and a non-empty key, saving a new resource creates that language’s localization |
+| `localizator3_default_from_resource` | No | Base language from resource fields and TVs. The base language disappears from the tab only when Yes and `localizator3_default_language` is non-empty. An empty setting does not hide the tab via fallback |
 | `localizator3_check_permissions` | No | Enforce LocalizatorManagerPolicy permissions |
 | `localizator3_disabled_templates` | empty | Template IDs without the Localization tab, comma-separated |
 | `localizator3_404_if_no_localization` | No | Return 404 when localization is missing. Skipped without a language key and for the base language when `localizator3_default_from_resource` is on. Before the response: `OnHasLocalizatorError404`; `false` cancels the 404 |
-| `localizator3_auto_detect_language` | No | No language segment in the URL: request param, else `localizator3_key` cookie, else Accept-Language. Then 302 redirect to the language `http_host` plus the current request path |
-| `localizator3_request_language_param` | `language` | Parameter name in `$_REQUEST`. Value must be an active key matching `^[a-z]{2}(-[a-z0-9]{2,8})?$`. Empty name disables the check |
+| `localizator3_auto_detect_language` | No | On the front end with friendly URLs on. No language segment in the URL: request param, else `localizator3_key` cookie, else Accept-Language. Then 302 redirect to the language `http_host` plus the current request path |
+| `localizator3_request_language_param` | `language` | Parameter name in `$_REQUEST` on the front end with `friendly_urls`. Value must be an active key matching `^[a-z]{2}(-[a-z0-9]{2,8})?$`. Empty name disables the check. The param overrides the cookie in the connector and AJAX |
 | `localizator3_debug_log` | No | Extra `$modx->log` lines with prefixes like `[localizator3 getformconfig]`. With the setting on, some lines are INFO, some DEBUG. TV render errors are always ERROR. The same toggle is `LOCALIZATOR3_DEBUG_LOG`. Target is the MODX log (usually `core/cache/logs/error.log`). DEBUG needs `log_level` not stricter than DEBUG |
 
 ## Translator
 
 | Key | Default | Description |
 | --- | --- | --- |
-| `localizator3_default_translator` | Yandex | `Yandex`, `Google`, `DeepL`, `LibreTranslate`, `MyMemory`, `SimpleCopy` |
+| `localizator3_default_translator` | Yandex | `Yandex`, `Google`, `DeepL`, `LibreTranslate`, `MyMemory`, `SimpleCopy`. Empty value or a name outside the list → `SimpleCopy` (unknown names are also logged) |
 | `localizator3_key_yandex` | empty | Yandex Translate API key |
 | `localizator3_key_google` | empty | Google Cloud Translation API key |
 | `localizator3_key_deepl` | empty | DeepL API key |
 | `localizator3_libretranslate_url` | `http://localhost:5000` | LibreTranslate URL |
 | `localizator3_key_libretranslate` | empty | LibreTranslate API key |
 | `localizator3_mymemory_email` | empty | Email for MyMemory |
-| `localizator3_translate_fields` | pagetitle, longtitle, menutitle, seotitle, keywords, introtext, description, content | Auto-translation fields |
+| `localizator3_translate_fields` | `pagetitle,longtitle,menutitle,seotitle,keywords,introtext,description,content` | Auto-translation fields. Transport has no spaces after commas: the auto-translate processor does not `trim` |
 | `localizator3_translate_translated` | No | Translate empty fields on existing resource localizations |
 | `localizator3_translate_translated_fields` | No | Resource: overwrite non-empty `translate_fields` only when `localizator3_translate_translated` is Yes. Lexicon: this flag alone is enough |
 
@@ -76,7 +76,7 @@ Environment variables: `MODX_BASE_PATH`, `LOCALIZATOR_CONTEXT` (default `web`).
 
 ## Localizations like site.example/en/ {#localizations-like-siteexampleen}
 
-For `site.example/en/...` configure the web server. The samples below are not part of the package. PHP routing looks at `http_host` and the first URL segment.
+PHP routing looks at `http_host` and the first URL segment. For `site.example/en/...` configure the web server. The samples below are not part of the package.
 
 ### Apache (.htaccess)
 

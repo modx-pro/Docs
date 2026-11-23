@@ -5,7 +5,13 @@ description: Parameters and examples for getLocalizedResources, getLocalizedFiel
 
 # getLocalizedResources snippet
 
-Selects resources for the current localization. Runs another snippet (pdoResources, pdoMenu, msProducts, ms3Products, and others) and joins the localizations table.
+Selects resources for the current localization and runs another snippet (pdoResources, pdoMenu, msProducts, ms3Products, and others) that joins the localizations table.
+
+Fields `pagetitle`, `longtitle`, `menutitle`, `description`, `introtext`, `content` come from `localizator3_content`. Without `localizator3_default_from_resource`, an empty cell uses the document. With that setting on and a non-base key, an empty cell stays empty; a missing row (`id IS NULL`) uses the document. Empty `menutitle` uses localized `pagetitle`, otherwise the document `menutitle`. `seotitle` and `keywords` are not in the listing SELECT.
+
+Direct `pdoResources` / `pdoMenu` with fetch class `ModxPro\PdoTools\FetchLocalizator` join the same fields (if a `localizator` join is not already present). The `getLocalizedResources` wrapper adds the join itself. Legacy `pdoFetchLocalizator` does not.
+
+Listing `uri` has no leading slash (`en/page.html`); `link` from `makeUrl` has a leading slash. Base `/` gets no language prefix. Only `FetchLocalizator` writes the prefix.
 
 ## Parameters
 
@@ -13,8 +19,8 @@ Selects resources for the current localization. Runs another snippet (pdoResourc
 | --- | --- | --- |
 | **snippet** | `pdoResources` | Snippet to run. `name@propertySet` is allowed |
 | **class** | `modResource` | Object class. For `msProducts` and `ms3Products` the MiniShop3 product class is used |
-| **localizator3_key** | current | Language key |
-| **onlyWithLocalization** | No | Only resources with a localization row (INNER JOIN) |
+| **localizator3_key** | current | Language key. Inserted into SQL as-is; case is not normalized |
+| **onlyWithLocalization** | No | INNER JOIN only to rows with the same key and `active = 1`. With `localizator3_default_from_resource` and the default key, `getListingQuery` builds no join: the parameter filters nothing |
 
 Other parameters are passed to the inner snippet.
 
@@ -52,7 +58,7 @@ Other parameters are passed to the inner snippet.
   'snippet' => 'pdoResources',
   'parents' => 0,
   'limit' => 10,
-  'tpl' => '@INLINE <li><a href="{$uri}">{$pagetitle}</a></li>',
+  'tpl' => '@INLINE <li><a href="/{$uri}">{$pagetitle}</a></li>',
 ]}
 ```
 
@@ -62,7 +68,7 @@ Other parameters are passed to the inner snippet.
   &snippet=`pdoResources`
   &parents=`0`
   &limit=`10`
-  &tpl=`@INLINE <li><a href="[[+uri]]">[[+pagetitle]]</a></li>`
+  &tpl=`@INLINE <li><a href="/[[+uri]]">[[+pagetitle]]</a></li>`
 ]]
 ```
 
@@ -78,7 +84,7 @@ Other parameters are passed to the inner snippet.
 {'!getLocalizedResources' | snippet : [
   'snippet' => 'ms3Products',
   'parents' => 5,
-  'tpl' => '@INLINE <div><a href="{$uri}">{$pagetitle}</a></div>',
+  'tpl' => '@INLINE <div><a href="/{$uri}">{$pagetitle}</a></div>',
   'onlyWithLocalization' => 1,
 ]}
 ```
@@ -87,7 +93,7 @@ Other parameters are passed to the inner snippet.
 [[!getLocalizedResources?
   &snippet=`ms3Products`
   &parents=`5`
-  &tpl=`@INLINE <div><a href="[[+uri]]">[[+pagetitle]]</a></div>`
+  &tpl=`@INLINE <div><a href="/[[+uri]]">[[+pagetitle]]</a></div>`
   &onlyWithLocalization=`1`
 ]]
 ```
@@ -120,14 +126,14 @@ For a language other than `localizator3_default_language`, the mSearch call usua
 
 ## Field of another resource
 
-**getLocalizedField** snippet:
+The `getLocalizedField` snippet:
 
 | Name | Default | Description |
 | --- | --- | --- |
 | **id** | current resource | Resource ID. Empty `null` and `''` use the current resource. Pass `&id` for another resource |
 | **field** | `pagetitle` | Field or TV |
 | **language** | current | Language key |
-| **default** | empty | Fallback. For a normal key: when there is no active localization and the resource field is empty. With `localizator3_default_from_resource` and the default key, localization is not read: an empty resource field returns `default` even if a localization row is filled |
+| **default** | empty | Fallback. Setting off: after an empty active localization and an empty document field. Setting on and non-base key: `default` even if the document field is filled. Setting on and base key: localization is not read; an empty resource field returns `default` |
 
 ::: code-group
 
@@ -149,7 +155,9 @@ For a language other than `localizator3_default_language`, the mSearch call usua
 
 :::
 
-With `localizator3_default_from_resource = true` and key `localizator3_default_language`, the value comes from resource fields: the `localizator3_content` row is not read, even when `active` = 1. For another key the query requires `active` = 1; an empty or inactive row falls back to the resource field, then `default`. For TVs the `localizator3_enabled` flag is required; otherwise the resource TV is used.
+With `localizator3_default_from_resource = true` and key `localizator3_default_language`, the value comes from resource fields: the `localizator3_content` row is not read, even when `active` = 1. For another key the query requires `active` = 1. An empty or inactive localization returns `default`, not the document field/TV. For TVs: the `localizator3_enabled` flag is required to read `locTemplateVarResource` (not on the base language when `localizator3_default_from_resource` is on). On the base language in that mode the document TV is used without the flag. Another key without the flag, without a published row, or with an empty cell returns `default`. An empty string is not a value; `0` is.
+
+In a web context an unpublished or deleted resource returns `default` immediately (before reading localization). The `locfield` modifier does not repeat that filter. The `language` argument / key in `locfield` goes through `resolveLanguageKey`: `EN` and `en` look up the stored key.
 
 ## locfield modifier
 
@@ -163,4 +171,4 @@ A non-numeric first argument is the field name of the current resource.
 
 ## TVs in localizations
 
-On the TV form enable «TV available in localizations». The field then appears on the **Localization** tab. Auto-translation walks nested MIGX fields only if the TV name is listed in `localizator3_translate_fields`. The default list has no TV names.
+On the TV form enable «TV available in localizations». The field then appears on the **Localization** tab. In listings, `includeTVs` on `pdoResources` reads the localized value by TV name when the flag is on and the fetch class is `FetchLocalizator`. Without the flag the document TV remains. Auto-translation walks nested MIGX fields only if the TV name is listed in `localizator3_translate_fields`. The default list has no TV names.
