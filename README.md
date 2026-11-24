@@ -34,7 +34,7 @@
 
 - Исходники — [Markdown] на базе [VitePress] (Vue 3).
 - Русские страницы: каталог [`docs/`](./docs/).
-- Английские страницы: каталог [`docs/en/`](./docs/en/) — по возможности **поддерживайте паритет** с русской версией для одного и того же компонента.
+- Английские страницы: каталог [`docs/en/`](./docs/en/) — **опционально**; по возможности поддерживайте паритет с русской версией для одного и того же компонента.
 
 Файлы можно читать на GitHub или собрать сайт у себя (см. [локальную разработку](#local-dev)).
 
@@ -60,7 +60,7 @@ We document third-party extras and MODX itself in **Russian** and **English**. I
 
 - Sources are [Markdown] built with [VitePress] (Vue 3).
 - Russian content: [`docs/`](./docs/).
-- English content: [`docs/en/`](./docs/en/) — when possible, **keep RU/EN in sync** for the same component.
+- English content: [`docs/en/`](./docs/en/) — **optional**; when possible, keep RU/EN in sync for the same component.
 
 You can read files on GitHub or run the site locally (see [Local development](#local-dev)).
 
@@ -112,14 +112,14 @@ pnpm dev
 | `pnpm generate:og` | OG-картинки компонентов (запускается и в `pnpm build`). Перерисовываются только изменившиеся, кэш — `.vitepress/cache/og`; в git картинки (`docs/public/og/`, `og-default.png`) не хранятся. `pnpm generate:og -- --force` перерисовывает всё и заново скачивает логотипы |
 | `pnpm lint:changed` / `pnpm lint` | Markdownlint: изменённые строки / все файлы; автоисправление — `pnpm exec markdownlint --fix <путь>` (`pnpm lint:fix` — по всему репозиторию) |
 | `pnpm spellcheck:changed` / `pnpm spellcheck` | Проверка орфографии (RU и EN): изменённые строки / все файлы |
-| `pnpm check:sync:changed` | У новых русских страниц есть английские версии (заготовка — `node scripts/sync-docs-en.mjs <путь>`); предупреждение, если изменена только русская |
+| `pnpm check:sync:changed` | EN опционален: предупреждение, если у новой RU-страницы нет EN или изменена только русская; заготовка — `node scripts/sync-docs-en.mjs <путь>`; `pnpm check:sync -- --strict` — падать без EN |
 | `pnpm check:structure:changed` / `pnpm check:structure` | Разделов `##`/`###` в EN не меньше, чем в RU: изменённые страницы (предупреждения, как в CI) / все страницы |
 | `pnpm generate` | Мастер создания заготовок документации (Plop) |
 
 <h1 id="contributor-tips">💡 Советы контрибьюторам / Contributor tips</h1>
 
 - ✅ **Мелкие PR** проще и быстрее ревьюить: одна тема (один компонент, один раздел) вместо «всего сразу».
-- ✅ Перед отправкой PR прогоните **`pnpm lint:changed`**, **`pnpm spellcheck:changed`** и **`pnpm check:sync:changed`** — их же запускает CI в PR (разметка и орфография — по изменённым строкам).
+- ✅ Перед отправкой PR прогоните **`pnpm lint:changed`** и **`pnpm spellcheck:changed`** — их же запускает CI в PR (разметка и орфография — по изменённым строкам). EN-зеркало опционально; `pnpm check:sync:changed` только предупреждает.
 - ✅ Следуйте структуре соседних статей в том же каталоге: front matter, заголовки, внутренние ссылки VitePress.
 - ✅ Скриншоты и схемы кладите в соответствующие папки рядом с документацией или в `docs/public/`, если так принято для вашего раздела — ориентируйтесь на существующие статьи.
 - ✅ Не знаете, с чего начать? Откройте [Issues][repository-issues] — там можно обсудить идею до большого объёма правок.

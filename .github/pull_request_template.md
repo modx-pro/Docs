@@ -15,4 +15,4 @@
 
 ## Чеклист перед отправкой
 
-- [ ] Локально выполнены `pnpm run lint:changed`, `pnpm run spellcheck:changed` и `pnpm run check:sync:changed` (или правки по замечаниям внесены).
+- [ ] Локально выполнены `pnpm run lint:changed` и `pnpm run spellcheck:changed` (или правки по замечаниям внесены). EN-зеркало в `docs/en/` — по желанию.

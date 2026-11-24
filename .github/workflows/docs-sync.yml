@@ -29,7 +29,7 @@ jobs:
         env:
           BASE_REF: ${{ github.base_ref }}
         run: git fetch --no-tags origin "$BASE_REF"
-      # a new Russian page needs an English one (fails); an edited one with untouched EN gets a warning
+      # EN is optional: missing counterparts and untouched EN on RU edits are warnings only
       - name: EN counterparts of new pages
         env:
           GITHUB_BASE_REF: ${{ github.base_ref }}

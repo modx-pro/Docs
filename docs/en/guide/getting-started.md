@@ -181,12 +181,12 @@ From the repository root after `pnpm install`:
 | `pnpm preview` | Preview the built static output |
 | `pnpm run lint:changed` | Markup checks ([markdownlint](https://github.com/DavidAnson/markdownlint)) on changed lines; `pnpm run lint` — all files; to fix automatically — `pnpm exec markdownlint --fix <path>` (`pnpm run lint:fix` fixes every file in the repo) |
 | `pnpm run spellcheck:changed` | Spell check on changed lines (RU and EN); `pnpm run spellcheck` — all files, see [Spell checking](/en/guide/cspell) |
-| `pnpm run check:sync:changed` | New Russian pages have English counterparts; warns when a Russian page changed but its English one didn't |
+| `pnpm run check:sync:changed` | English is optional: warns when a new Russian page has no EN counterpart or only the Russian page changed; `pnpm run check:sync -- --strict` fails on missing EN |
 | `pnpm run check:structure:changed` | In changed pages the English version has at least as many `##`/`###` sections as the Russian one (warnings only); `pnpm run check:structure` — all pages |
 
 CI runs these checks on every PR that changes `docs/`. Markup and spelling count only changed lines, so old issues elsewhere in a file don't get in the way. Locally the `:changed` commands compare against `origin/master` (run `git fetch` first; set another base with `CHECK_BASE=origin/<branch>`).
 
-A new Russian page needs an English one, otherwise the check fails: if there is no translation yet, create a stub with `node scripts/sync-docs-en.mjs docs/path/to/page.md` — it copies the page to `docs/en/` with a TODO note. If you edit a Russian page but not its English counterpart, CI prints a warning: check whether the translation needs the same edit. If a changed page has fewer `##`/`###` sections in English than in Russian, CI prints a warning too.
+English is optional: CI does not block a PR without `docs/en/…`. If you want a stub, run `node scripts/sync-docs-en.mjs docs/path/to/page.md` — it copies the page to `docs/en/` with a TODO note. If you edit a Russian page but not its English counterpart (or EN is missing), CI prints a warning. If a changed page has fewer `##`/`###` sections in English than in Russian, CI prints a warning too.
 
 More on markup and pages: [Markdown](/en/guide/markdown), [VitePress](/en/guide/vitepress), [Frontmatter](/en/guide/frontmatter).
 
