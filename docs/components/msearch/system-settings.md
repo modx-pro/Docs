@@ -28,7 +28,7 @@ pagetitle:3,longtitle:2,description:2,introtext:2,content:1
 - TV-поля с префиксом `tv_` или `tv.` (например, `tv_color:2` или `tv.tags:1`).
 - Для `mse_index_fields_product` — поля `msProductData` (например, `article`).
 
-::: warning Кэширование адаптеров
+::: warning Переиндексация после изменений
 Изменение настройки требует переиндексации — старые записи в индексе сформированы по предыдущему списку полей.
 :::
 
@@ -38,7 +38,7 @@ pagetitle:3,longtitle:2,description:2,introtext:2,content:1
 |------|-----|--------------|----------|
 | `mse_search_split_words` | textfield | `#\s+#u` | Регулярное выражение для разбиения поискового запроса на слова. Обычно проще, чем при индексации (только пробелы) |
 | `mse_search_exact_match_bonus` | numberfield | `10` | Дополнительный вес результата, если в `mse_intro` найдено точное вхождение всего запроса целиком |
-| `mse_search_like_match_bonus` | numberfield | `3` | Дополнительный вес для результатов, найденных только через LIKE-fallback (когда слов нет в индексе) |
+| `mse_search_like_match_bonus` | numberfield | `3` | Дополнительный вес для каждого результата LIKE-поиска — запрос целиком как подстрока `mse_intro`. Прибавляется и к ресурсам, которых нет в словарном индексе, и к уже найденным в нём |
 | `mse_search_all_words_bonus` | numberfield | `5` | Дополнительный вес, если в документе найдены **все** слова запроса (а не только часть) |
 | `mse_suggest_min_query_length` | numberfield | `2` | Минимальная длина запроса для срабатывания автодополнения. Запросы короче — `/search/suggest` отвечает `{"items": []}` без обращения к индексу. Нижний порог — `1`: значение `0` трактуется как `1`, на пустой запрос подсказки не выдаются |
 
@@ -50,7 +50,9 @@ pagetitle:3,longtitle:2,description:2,introtext:2,content:1
 |----------|------------------|
 | Точное вхождение полной фразы | `+exact_match_bonus` |
 | Все слова запроса найдены в документе | `+all_words_bonus` |
-| Документ найден только LIKE-поиском (нет в индексе) | `+like_match_bonus` |
+| Документ найден LIKE-поиском | `+like_match_bonus` |
+
+Бонусы за точное вхождение и за все слова считаются только для топ-100 результатов по набранному до них весу. LIKE-поиск возвращает не более 1000 совпадений.
 
 Увеличивая `exact_match_bonus` и `all_words_bonus`, вы повышаете «качественные» результаты над частичными совпадениями. Уменьшая `like_match_bonus` — снижаете влияние LIKE-результатов на топ выдачи.
 
@@ -58,7 +60,7 @@ pagetitle:3,longtitle:2,description:2,introtext:2,content:1
 
 | Ключ | Тип | По умолчанию | Описание |
 |------|-----|--------------|----------|
-| `mse_frontend_css` | textfield | `[[++assets_url]]components/msearch/css/web/msearch.css` | URL CSS-файла, который регистрирует `mSearchForm`. Пустое значение — CSS не подключается |
+| `mse_frontend_css` | textfield | `[[++assets_url]]components/msearch/css/web/msearch.css` | URL CSS-файла, который регистрируют `mSearchForm` и `mSearch` (при `return=chunks`). Пустое значение — CSS не подключается |
 | `mse_frontend_js` | textfield | `[[++assets_url]]components/msearch/js/web/msearch.js` | Зарезервировано; в текущей реализации `mSearchForm` использует жёстко прописанный layered-стек из 6 файлов (см. ниже). Настройка не подключается автоматически |
 
 ### Замена CSS
@@ -68,6 +70,8 @@ pagetitle:3,longtitle:2,description:2,introtext:2,content:1
 ```
 mse_frontend_css = [[++assets_url]]templates/mytheme/css/my-msearch.css
 ```
+
+В значении поддерживаются подстановки `[[++assets_url]]` и `{$assets_url}`.
 
 ### Замечание о `mse_frontend_js`
 
