@@ -379,7 +379,7 @@ SendIt.Sending.sendRequest(form, 'auto_preset');
 
 ::: details Конфигурация по умолчанию
 
-```js:line-numbers{3-16}
+```js:line-numbers{3-17}
 export const ModulesConfig = {
   Sending: {
     forceLoad: true,
@@ -394,7 +394,8 @@ export const ModulesConfig = {
     actionUrl: '/assets/components/sendit/action.php',
     errorBlockSelector: '[data-si-error="${fieldName}"]',
     eventSelector: '[data-si-event="${eventName}"]',
-    errorClass: 'si-error'
+    errorClass: 'si-error',
+    tokenRefreshMargin: 60
   },
 }
 ```
@@ -416,3 +417,4 @@ export const ModulesConfig = {
 | `errorBlockSelector` |   **[data-si-error="${fieldName}"]**     |                     селектор блока вывода ошибок                      |
 |   `eventSelector`    |   **[data-si-event="${eventName}"]**     |                       селектор события отправки                       |
 |     `errorClass`     |              **si-error**                |                  класс, добавляемый полям с ошибками                  |
+| `tokenRefreshMargin` |                 **60**                   |   за сколько секунд до истечения токена взять новый перед отправкой   |
