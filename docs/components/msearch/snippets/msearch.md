@@ -229,7 +229,9 @@
         <p class="mse-result-intro">{$intro}</p>
     {/if}
     <div class="mse-result-meta">
-        <span class="mse-result-date">{$publishedon | date : 'd.m.Y'}</span>
+        {if $publishedon?}
+            <span class="mse-result-date">{$publishedon | date : 'd.m.Y'}</span>
+        {/if}
         {if $weight?}
             <span class="mse-result-weight">{'mse_weight' | lexicon}: {$weight | number : 2}</span>
         {/if}
