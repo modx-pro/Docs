@@ -124,18 +124,17 @@
 
 ## Автодополнение
 
-При `autocomplete=1` сниппет:
+CSS из системной настройки `mse_frontend_css` сниппет регистрирует всегда (если настройка не пустая). При `autocomplete=1` он дополнительно:
 
-1. Записывает конфигурацию (`tpl`, `limit`, `ctx`, `element`, `elementProperties`) в кэш MODX под ключом `formId` (TTL 24 часа, partition `msearch/forms`).
-2. Регистрирует CSS из системной настройки `mse_frontend_css`.
-3. Регистрирует JavaScript-слой (6 файлов в правильном порядке):
+1. Записывает конфигурацию (`tpl`, `limit`, `ctx`, `classKey`, `element`, `elementProperties`, `includeTVs`, `tvPrefix`, `processTVs`, `prepareTVs`) в кэш MODX под ключом `formId` (TTL 24 часа, partition `msearch/forms`).
+2. Регистрирует JavaScript-слой (6 файлов в правильном порядке):
    - `core/ApiClient.js` — HTTP-клиент
    - `core/SearchAPI.js` — фасад поискового API
    - `modules/hooks.js` — система хуков
    - `msearch.headless.js` — headless-точка входа (`window.msearch`)
    - `ui/SearchUI.js` — UI-слой автодополнения
    - `msearch.js` — автоинициализация по `[data-msearch-form]`
-4. Добавляет inline-скрипт с `window.msearchConfig` (содержит только `apiUrl` и `autoInit` — никаких служебных параметров на клиенте).
+3. Добавляет inline-скрипт с `window.msearchConfig`. В нём только публичные значения — `apiUrl`, `autoInit` и `minQueryLength`; служебные параметры на клиент не попадают.
 
 ![Выпадающие подсказки автодополнения: совпадения подсвечены; у товаров miniShop3 — артикул, цена и зачёркнутая старая цена](../img/autocomplete-suggestions.png)
 

@@ -1,75 +1,90 @@
 # Queries
 
-Tab with statistics of visitor search queries.
+Tab with search query statistics.
 
 ## Purpose
 
-Shows the history of all search queries on the site. Use it to:
+The search query history helps you:
 
-- See what visitors search for
-- Tune the index and [aliases](/en/components/msearch/interface/aliases)
-- Find zero-result queries
-- Plan content from demand
+- Understand what visitors are looking for
+- Optimize the index and [aliases](/en/components/msearch/interface/aliases)
+- Find queries with zero results
+- Plan content based on demand
+
+::: tip What gets into the statistics
+Visitors' **meaningful queries** are recorded — a submitted search form (Enter or the button) and the first page of results. **Not logged** on purpose:
+
+- autocomplete — intermediate input (`ip`, `iph`, `ipho`…) does not clutter the statistics;
+- pagination pages (2nd and further) — only the first request counts;
+- checks on the [Search](/en/components/msearch/interface/search) tab in the manager (manager context).
+
+The `mSearch` snippet can be excluded from the statistics altogether with the `&log=`0`` property — e.g. for a service `return=ids` call.
+:::
+
+The query is recorded after [aliases](/en/components/msearch/interface/aliases) are applied: with a "Full replace" alias the table shows the replaced query, with a synonym — the query with the synonym appended.
+
+::: warning Clicks on suggestions
+A search that ends with a click right on an autocomplete suggestion (the visitor goes straight to the resource, bypassing the results page) does not get into the statistics. If you need autocomplete analytics, you have to collect it separately.
+:::
 
 ## Interface
+
+![Queries tab: query statistics with count, number of results and sorting](/components/msearch/img/queries-tab.png)
 
 ### Queries table
 
 | Column | Description |
 |--------|-------------|
 | Query | Search query text |
-| Count | How many times it was searched |
+| Count | How many times this query was searched |
 | Results | How many results were found |
 | Found | Whether at least one result was found |
 
-Default sort is by query count (descending).
+By default the table is sorted by count (descending). The "Query", "Count" and "Results" columns are clickable for re-sorting. Records are paginated, 20 per page.
 
 ### Actions
 
 | Button | Description |
 |--------|-------------|
-| Delete (trash) | Delete a single query |
-| Delete all | Clear entire query history |
+| Remove (trash icon) | Remove a single query |
+| Remove all | Clear the whole query history |
 
 ## Use cases
 
 ### Content optimization
 
-Analyze popular zero-result queries:
+Analyze popular queries without results:
 
-1. Find queries with “Found: No”
-2. Check if relevant content exists on the site
-3. If it does — check indexing
-4. If not — consider creating content
+1. Find queries with `Found: No`
+2. Check whether the site has relevant content
+3. If it does, check the indexing
+4. If it does not, consider creating it
 
 ### Setting up aliases
 
-When users search with synonyms or typos:
+If users search for synonyms or make typos:
 
-1. Find zero-result queries
-2. Determine correct spelling
-3. Create an [alias](/en/components/msearch/interface/aliases) for replacement
+1. Find queries with zero results
+2. Determine the correct spelling
+3. Create an [alias](/en/components/msearch/interface/aliases) for the replacement
 
-### Example analysis
+### Analysis example
 
 | Query | Count | Results | Action |
 |-------|-------|---------|--------|
 | iphone 15 | 150 | 12 | OK |
-| iphone 15 (typo) | 45 | 0 | Add alias for typo → “iphone” |
-| delivery | 30 | 0 | Create delivery page |
+| `aifon 15` | 45 | 0 | Add the alias `aifon` → `iphone` |
+| iphome 15 | 8 | 0 | Add the alias "iphome" → "iphone" (typo) |
+| delivery | 30 | 0 | Create a delivery page |
 
-## Autocomplete
+## Clearing the history
 
-Queries that returned results are used for [mSearchForm](/en/components/msearch/snippets/msearchform) autocomplete. Zero-result queries are not shown in suggestions.
-
-## Deleting history
-
-::: warning Note
-Deleting queries is irreversible. Statistics will be lost.
+::: warning Attention
+Removing queries is irreversible — the statistics will be lost. A confirmation is requested before removing (a single record or all of them).
 :::
 
-You might delete history to:
+You may need to clear the history to:
 
-- Clear old data
-- Reset stats after index update
+- Clean up outdated data
+- Reset the statistics after an index update
 - Remove test queries

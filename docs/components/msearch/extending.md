@@ -1,6 +1,10 @@
 # Расширение компонента
 
-mSearch индексирует не только ресурсы MODX, но и любые xPDO-объекты — комментарии, товары, пользователей, чужие модели. Каждый тип объекта обслуживается своим **адаптером**, реализующим `ContentAdapterInterface`.
+Архитектура mSearch построена на **адаптерах**: каждый тип объекта обслуживается своим адаптером, реализующим `ContentAdapterInterface`. Интерфейс рассчитан на любые xPDO-объекты — комментарии, товары, пользователей, чужие модели.
+
+::: warning В текущей версии индексируются только ресурсы
+`Indexer::indexResource()` загружает каждый объект как `modResource` по его ID, а через него работают и `$msearch->index()`, и пакетная индексация. Поэтому на деле в индекс попадают только `modResource` и его наследники (например, товары miniShop3). Адаптер для модели, которая не является ресурсом (как в примере с комментариями Tickets ниже), регистрируется, но её объекты корректно не индексируются: индексатор ищет ресурс с тем же ID.
+:::
 
 ## Архитектура
 
@@ -167,9 +171,13 @@ if (class_exists(\MyApp\Model\Article::class)) {
 
 Подробное описание всех событий — см. [Плагин и события](/components/msearch/plugin-and-events).
 
-## Пример: адаптер для комментариев Tickets
+## Пример: адаптер для комментариев Tickets {#tickets-comments-adapter}
 
 Допустим, у вас есть модель `Tickets\Model\TicketComment` и вы хотите индексировать тексты комментариев.
+
+::: warning В текущей версии не индексируется
+`TicketComment` — не ресурс, поэтому с текущим `Indexer` (см. примечание в начале страницы) комментарии в индекс не попадут. Пример показывает контракт адаптера: `getDisplayData()`, чанк подсказки и регистрация работают так, как описано.
+:::
 
 ### Шаг 1. Класс адаптера
 
@@ -272,7 +280,7 @@ class TicketCommentAdapter extends AbstractAdapter
                 'id' => (int) $id,
                 'type' => $this->getType(),
                 'url' => $ticketUrl . '#comment-' . $id,
-                'text' => $this->highlight((string) $row['text'], $query, ['ellipsisLength' => 150]),
+                'text' => $this->highlight((string) $row['text'], $query),
                 'name' => $this->highlight((string) $row['name'], $query),
                 'name_raw' => (string) $row['name'],
                 'createdon' => $row['createdon'],
@@ -344,6 +352,10 @@ switch ($modx->event->name) {
         break;
 }
 ```
+
+::: warning
+`$msearch->index()` и `$msearch->removeFromIndex()` принимают ID **ресурса**. В текущей версии вызов с ID комментария проиндексирует или удалит ресурс с тем же ID, а не комментарий.
+:::
 
 ### Шаг 4. Чанк подсказки
 
@@ -440,8 +452,8 @@ public function getDisplayData(array $ids, string $query = '', array $options = 
 /** @var \MSearch\MSearch $msearch */
 $msearch = $modx->services->get('msearch');
 
-// Один объект
-$msearch->index($objectId);
+// Один ресурс
+$msearch->index($resourceId);
 
 // Пакетная индексация
 $result = $msearch->indexBatch([
@@ -451,7 +463,7 @@ $result = $msearch->indexBatch([
 // ['indexed' => 95, 'offset' => 100, 'total' => 500, 'done' => false]
 
 // Удаление из индекса
-$msearch->removeFromIndex($objectId);
+$msearch->removeFromIndex($resourceId);
 
 // Полная очистка
 $msearch->clearIndex();
@@ -504,9 +516,10 @@ $msearch = $modx->services->get('msearch');
 $highlighted = $msearch->highlight($text, $query, [
     'tagOpen' => '<mark>',
     'tagClose' => '</mark>',
-    'ellipsisLength' => 200,
 ]);
 ```
+
+`highlight()` подсвечивает весь текст без обрезки. Теги по умолчанию — `<mark class="mse-highlight">` и `</mark>`. Опции `ellipsisLength` и `ellipsis` принимаются, но на `highlight()` не влияют.
 
 ::: tip HTML-safe by default
 С версии 1.3.0 `Highlighter` экранирует входной текст через `htmlspecialchars` **до** оборачивания совпадений в `<mark>`. Результат можно безопасно вставлять в DOM через `innerHTML` или выводить в чанк без дополнительного `|escape`.
