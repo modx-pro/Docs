@@ -249,5 +249,12 @@
   "wfoojjaec": {
     "modstore": "https://modstore.pro/authors/wfoojjaec",
     "name": "wfoojjaec"
-  }
+  },
+  "vitos88": {
+    "modstore": "https://modstore.pro/authors/22856",
+    "name": {
+      "en": "Vitos",
+      "ru": "Витос"
+    }
+  },
 }

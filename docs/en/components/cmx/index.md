@@ -28,7 +28,7 @@ Package: **1.0.0-pl**. Repository: [vitos88/Cmx](https://github.com/vitos88/Cmx)
 - **Code editor:** PHP, HTML, CSS/SCSS/Less, JavaScript, JSON, SQL, XML/SVG, Markdown, Fenom, and Twig
 - **MODX integration:** semantic tag highlighting, element and property autocompletion, go to element, and hover tooltips
 - **Tools:** search and replace, multiple cursors, Emmet, formatting, command and element palettes, and a media browser
-- **Appearance:** 12 themes, Standard/Sublime/Vim keymaps, and configurable fonts, word wrap, and indentation
+- **Appearance:** 12 themes, Standard, Sublime, and Vim keyboard layouts, and configurable fonts, word wrap, and indentation
 - **Validation:** PHP in the browser and via `php -l`, plus CSS, Fenom, and MODX tag validation
 - **Change safety:** local drafts with diffs and version history with viewing, comparison, and export
 - **Additional features:** the CMX input type for TVs and the CMX Scratchpad widget

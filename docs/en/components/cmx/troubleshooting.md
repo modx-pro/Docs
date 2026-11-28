@@ -57,7 +57,7 @@ Check:
 - whether `exec()` is available on the hosting;
 - the `lint` processor response in the browser console.
 
-Without PHP CLI, browser-based validation of brackets, strings, comments, and heredoc/nowdoc continues to work.
+Without PHP CLI, browser-based validation of brackets, strings, comments, and `heredoc`/`nowdoc` continues to work.
 
 ## A CMX TV Is Not Displayed or Its Value Is Empty
 

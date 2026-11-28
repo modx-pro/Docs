@@ -44,7 +44,7 @@ flowchart TD
 ```
 
 1. `use_editor` and `which_editor` are read with the resource context taken into account.
-2. `use_editor = No`: CMX replaces the content field and textareas with the `modx-richtext` class.
+2. `use_editor = No`: CMX replaces the content field and `<textarea>` elements with the `modx-richtext` class.
 3. `use_editor = Yes` and richtext enabled: CMX does not take over the field.
 4. For `modStaticResource`, `modSymLink`, `modWebLink`, and `modXMLRPCResource`, the field is also not replaced in the RTE branch.
 5. `use_editor = Yes`, richtext disabled, `which_editor` empty or `cmx`: CMX is used.
@@ -137,7 +137,7 @@ With `cmx.hovers = Yes`, hovering displays:
 
 ## Code Validation
 
-- **PHP:** browser-based scanning of brackets, strings, comments, and heredoc/nowdoc; additionally, server-side `php -l` validation.
+- **PHP:** browser-based scanning of brackets, strings, comments, and `heredoc`/`nowdoc`; additionally, server-side `php -l` validation.
 - **CSS:** unknown properties, likely typos, and curly brackets in CSS files and `<style>` blocks.
 - **Fenom/MODX:** unclosed and mismatched blocks, quotation marks, apostrophes, and brackets.
 

@@ -51,7 +51,7 @@ Existing setting values are preserved when the package is updated.
 | `cmx.emmet` | combo-boolean | `Yes` | Expand Emmet abbreviations with Tab in supported contexts |
 | `cmx.autosave` | combo-boolean | `Yes` | Local drafts in `localStorage` |
 | `cmx.autosave_lifetime` | textfield | `240` | Draft retention period in minutes |
-| `cmx.keymap` | cmx-combo | `standard` | Keymap: `standard`, `sublime`, or `vim` |
+| `cmx.keymap` | cmx-combo | `standard` | Keyboard layout: `standard`, `sublime`, or `vim` |
 | `cmx.trim_trailing` | combo-boolean | `No` | Remove trailing spaces and tabs before submitting the form |
 
 ## MODX Integration
