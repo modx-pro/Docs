@@ -28,6 +28,9 @@ items: [
       { text: 'Dictionaries', link: 'interface/dictionaries' },
     ],
   },
+  { text: 'JavaScript API', link: 'javascript-api' },
+  { text: 'System settings', link: 'system-settings' },
+  { text: 'Plugin and events', link: 'plugin-and-events' },
   { text: 'Extending the component', link: 'extending' },
 ]
 ---
@@ -37,14 +40,18 @@ Full-text search with morphological analysis for MODX Revolution 3.x.
 
 ## Features
 
-- **Morphological analysis** — search by word forms via phpMorphy (Russian, English, German, Ukrainian)
+- **Morphological analysis** — search by word forms with the phpMorphy library (Russian, English, German, Ukrainian)
 - **Dictionary index** — fast search with configurable field weights
-- **Search aliases** — synonyms and replacements to broaden results
+- **Search aliases** — synonyms and replacements that broaden results
 - **Query statistics** — track popular queries
 - **Automatic indexing** — on resource save
 - **Deferred indexing** — background indexing via [Scheduler](/en/components/scheduler/)
 - **Vue interface** — admin panel on Vue 3 + PrimeVue
 - **Autocomplete** — suggestions while typing
+- **Public API** — REST endpoint for AJAX search and integrations
+- **Headless mode** — JavaScript API (`window.msearch`) for React, Vue and custom UIs
+- **Hook system** — extend search behavior with `msearchHooks`
+- **Multi-context** — filter results by MODX contexts
 
 ## Requirements
 
@@ -56,8 +63,8 @@ Full-text search with morphological analysis for MODX Revolution 3.x.
 
 ### Dependencies
 
-- **pdoTools 3.x** — for snippets and Fenom
-- **[VueTools](/en/components/vuetools/)** — for admin interface
+- **pdoTools 3.x** — for snippets and the Fenom template engine
+- **[VueTools](/en/components/vuetools/) 1.2.0+** — for the admin interface
 - **[Scheduler](/en/components/scheduler/)** *(optional)* — for deferred indexing
 
 ## Installation
@@ -67,29 +74,31 @@ Full-text search with morphological analysis for MODX Revolution 3.x.
 1. Go to **Extras → Installer**
 2. Click **Download Extras**
 3. Find **mSearch** in the list
-4. Click **Download** then **Install**
+4. Click **Download**, then **Install**
 
 After installation:
 
 1. Go to **Extras → mSearch → Dictionaries**
 2. Download a morphological dictionary for your language (Russian, English, German, Ukrainian)
-3. Open the **Indexing** tab and create a search index
+3. Open the **Index** tab and create the search index
+
+![Dictionaries tab: the Russian dictionary is installed, the others have install buttons](/components/msearch/img/dictionaries-tab.png)
 
 ## Quick start
 
-### 1. Create search page
+### 1. Create a search page
 
 Create a resource for search results, e.g. `/search/`.
 
-### 2. Add form and results
+### 2. Add the form and results
 
 ```fenom
-{'!mSearchForm' | snippet: [
+{'!mSearchForm' | snippet : [
     'pageId' => 5,
     'autocomplete' => 1
 ]}
 
-{'!mSearch' | snippet: [
+{'!mSearch' | snippet : [
     'tpl' => 'mSearch.row',
     'limit' => 10
 ]}
@@ -97,70 +106,51 @@ Create a resource for search results, e.g. `/search/`.
 
 ### 3. Configure indexing
 
-Set indexed fields in system settings:
+Set the indexed fields in system settings:
 
 ```
 mse_index_fields = pagetitle:3,longtitle:2,description:2,introtext:2,content:1
 ```
 
-Numbers are field weights. Higher weight ranks matches in that field higher.
+The numbers are field weights. The higher the weight, the higher results with matches in that field rank.
+
+mSearch settings are grouped into the **Indexing**, **Search** and **Frontend** areas — filter system settings by the `msearch` namespace:
+
+![mSearch system settings grouped by area; mse_index_fields with its default value](/components/msearch/img/system-settings.png)
 
 ## System settings
 
-All settings use prefix `mse_` and namespace `msearch`.
+Settings live in the `msearch` namespace with the `mse_` prefix and are grouped into the **Indexing**, **Search** and **Frontend** areas.
 
-### Indexing
-
-| Setting | Default | Description |
-|---------|---------|-------------|
-| `mse_index_fields` | `pagetitle:3,longtitle:2,description:2,introtext:2,content:1` | Indexed fields with weights |
-| `mse_index_min_word_length` | `3` | Minimum word length to index |
-| `mse_index_split_words` | `#\s\|[,.:;!?"'«»„"()\[\]{}<>]#u` | Regex to split text into words |
-| `mse_use_scheduler` | `false` | Use Scheduler for deferred indexing |
-
-### Search
-
-| Setting | Default | Description |
-|---------|---------|-------------|
-| `mse_search_exact_match_bonus` | `10` | Bonus for exact query match |
-| `mse_search_like_match_bonus` | `3` | Bonus for LIKE match |
-| `mse_search_all_words_bonus` | `5` | Bonus when all query words are found |
-| `mse_search_split_words` | `#\s+#u` | Regex to split query |
-
-### Frontend
-
-| Setting | Default | Description |
-|---------|---------|-------------|
-| `mse_frontend_css` | `[[++assets_url]]components/msearch/css/web/msearch.css` | CSS URL |
-| `mse_frontend_js` | `[[++assets_url]]components/msearch/js/web/msearch.js` | JS URL |
+Full reference with defaults and use cases: [System settings](/en/components/msearch/system-settings).
 
 ## Placeholders
 
-After search:
+After a search the following placeholders are available:
 
 | Placeholder | Description |
 |-------------|-------------|
-| `[[+mse.total]]` | Total results |
-| `[[+mse.query]]` | Processed query |
+| `[[+mse.total]]` | Total number of results found |
+| `[[+mse.query]]` | Search query as entered (before alias processing) |
 
-In result chunk (tpl):
+In the result chunk (tpl):
 
 | Placeholder | Description |
 |-------------|-------------|
 | `[[+weight]]` | Result weight (relevance) |
 | `[[+intro]]` | Text with highlighted matches |
-| `[[+idx]]` | Result index |
+| `[[+idx]]` | Result number in the list |
 
 ## Events
 
 | Event | Description |
 |-------|-------------|
-| `mseOnRegisterAdapters` | Register adapters for custom model indexing |
+| `mseOnRegisterAdapters` | Register adapters for indexing your own models |
 | `mseOnBeforeIndex` | Before indexing a resource |
-| `mseOnGetWorkFields` | Change list of fields to index |
+| `mseOnGetWorkFields` | Change the list of fields to index |
 | `mseOnAfterIndex` | After indexing a resource |
-| `mseOnBeforeSearch` | Before running search |
-| `mseOnAfterSearch` | After search |
+| `mseOnBeforeSearch` | Before running a search |
+| `mseOnAfterSearch` | After running a search |
 
 ## Differences from mSearch2
 
@@ -173,14 +163,14 @@ mSearch is a full rewrite for MODX 3.x:
 | Interface | ExtJS | Vue 3 + PrimeVue |
 | Architecture | Procedural | Service-based |
 | Aliases | Synonyms | Aliases (synonyms + replacements) |
-| Filtering | mFilter2 | No (use pdoTools) |
-| phpMorphy | Bundled | Composer `cijic/phpmorphy` |
+| Filtering | mFilter2 | None (use pdoTools) |
+| phpMorphy | Bundled | Composer package `cijic/phpmorphy` |
 | Dictionary source | SourceForge | GitHub |
 | Estonian | Yes | No |
 | Scheduler | No | Yes (deferred indexing) |
 
 ::: warning mFilter2
-The mFilter2 snippet is not part of mSearch. Use pdoTools or other solutions for filtering.
+The mFilter2 snippet is not part of mSearch. Use the standard pdoTools features or third-party solutions for filtering.
 :::
 
 ## Examples
@@ -193,7 +183,7 @@ The mFilter2 snippet is not part of mSearch. Use pdoTools or other solutions for
     <button type="submit">Search</button>
 </form>
 
-{'!mSearch' | snippet: [
+{'!mSearch' | snippet : [
     'tpl' => 'mSearch.row',
     'limit' => 10
 ]}
@@ -201,11 +191,12 @@ The mFilter2 snippet is not part of mSearch. Use pdoTools or other solutions for
 
 ### With pagination
 
-```fenom
-{'!mSearchForm' | snippet: ['pageId' => $_modx->resource.id]}
+`mSearch` reads `offset` and writes the total number of results to `totalVar`, so `pdoPage` can page through it directly:
 
-{'!pdoPage' | snippet: [
+```fenom
+{'!pdoPage' | snippet : [
     'element' => 'mSearch',
+    'totalVar' => 'page.total',
     'tpl' => 'mSearch.row',
     'limit' => 10
 ]}
@@ -213,13 +204,15 @@ The mFilter2 snippet is not part of mSearch. Use pdoTools or other solutions for
 {$_modx->getPlaceholder('page.nav')}
 ```
 
+For miniShop3 products (they are rendered by `msProducts`, not `mSearch`) use the `return=ids` pattern — see below.
+
 ### MiniShop3 product search
 
 ```fenom
-{'!pdoPage' | snippet: [
+{'!pdoPage' | snippet : [
     'element' => 'msProducts',
     'parents' => 0,
-    'resources' => '!mSearch' | snippet: ['return' => 'ids', 'limit' => 0] | default : '999999',
+    'resources' => '!mSearch' | snippet : ['return' => 'ids', 'limit' => 0] | default : '999999',
     'sortby' => 'ids'
 ]}
 
