@@ -23,7 +23,7 @@ The **context-specific** values of `use_editor` and `which_editor`, as well as t
 
 | Goal | Settings |
 | --- | --- |
-| CMX in the content field of all resources | `use_editor = No`. This also replaces textareas with the `modx-richtext` class |
+| CMX in the content field of all resources | `use_editor = No`. This also replaces `<textarea>` elements with the `modx-richtext` class |
 | CMX only for resources without richtext | `use_editor = Yes`, `which_editor` empty or `cmx`, richtext disabled |
 | TinyMCE / another RTE | `use_editor = Yes`, `which_editor` not `cmx`, richtext enabled for the resource |
 | Textarea without CMX | `use_editor = Yes`, `which_editor` not `cmx`, richtext disabled |
